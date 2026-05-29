@@ -1,34 +1,72 @@
 # DoneGraph
 
-**把你和 AI 的协作过程变成可见的任务成就图谱。**
+Turn your work with AI into a visible achievement graph: what you asked for, what changed, what was proven, what is blocked, and where the next session should continue.
 
-DoneGraph 面向一个很具体的黑客松痛点：大型任务做着做着，聊天记录越来越长，进度感开始消失。它把你和 AI 的目标、动作、决策、产物、验证、阻塞和下一步沉淀到 `.donegraph/`，再生成一个本地 dashboard，让团队马上看清楚：完成了什么，哪些有证据，下一轮接哪里。
+Works as a local plugin for Codex, Claude Code, Cursor, VS Code Copilot, and shell-based AI workflows.
 
-DoneGraph 是 clean-room 的独立项目：它不依赖外部代码知识图谱，不读取第三方 graph schema，也不复用其他 dashboard。它只围绕一个对象建模：**人和 AI 一起推进任务时留下的协作进度图谱**。
+[English](./README.md) | [简体中文](./READMEs/README.zh-CN.md)
+
+---
+
+**You have been building with an AI agent for three hours. It edited files, ran tests, changed direction twice, and left a long chat behind. What is actually done?**
+
+DoneGraph is a clean-room AI collaboration plugin that records goals, actions, decisions, artifacts, evidence, blockers, and next steps into a local `.donegraph/` folder. It then generates a static dashboard and handoff files so a human team, a judge, or the next AI session can understand the state of the work without rereading the whole conversation.
+
+> **The goal is not to make your project look busy. The goal is to make progress feel earned, inspectable, and easy to resume.**
+
+---
+
+## Features
+
+### Capture The Current Context
+
+Run `/donegraph-capture` when you join an existing task. DoneGraph reads local context such as changed files, file names, `package.json` scripts, and an optional goal, then turns that into starting collaboration events.
+
+### Track Human-AI Progress
+
+Record meaningful checkpoints as the task moves forward: implementation work, design decisions, generated artifacts, verification results, blockers, and completion milestones.
+
+### Show Evidence, Not Just Activity
+
+Progress is tied to proof. A passing command, manual check, failing test, unknown verification state, or blocker becomes part of the graph instead of disappearing into chat history.
+
+### Generate A Local Dashboard
+
+Open `.donegraph/dashboard.html` to see completed work, clean-room schema labels, relationship edges, captured sources, evidence state, and next-session handoff steps.
+
+### Resume Large Tasks Cleanly
+
+DoneGraph writes `achievement-log.md` and `next-steps.md` so the next AI session can continue from the real task state instead of asking you to reconstruct the story.
+
+### Stay Clean-Room
+
+DoneGraph does not import external code graphs, third-party graph schemas, or `.understand-anything` artifacts. Its graph models one thing only: collaboration progress between a person and AI.
+
+---
 
 ## Quick Start
 
-### 1. Install
+### 1. Install The Plugin
 
-从本地 checkout 安装到 Codex：
+From a local checkout:
 
 ```bash
 ./install.sh codex
 ```
 
-安装后重启你的 CLI/IDE。脚本会把 DoneGraph skills 链接到平台目录，并创建通用插件入口：
+After installation, restart your CLI or IDE. The installer links the DoneGraph skills for the selected platform and creates a universal local plugin entry:
 
 ```text
 ~/.donegraph-plugin
 ```
 
-发布到 GitHub 后，一行安装会是：
+From GitHub:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/serein431/DoneGraph/main/install.sh | bash -s codex
 ```
 
-Codex 插件包形态在仓库内已经就位：
+Native plugin package shape:
 
 ```text
 .agents/plugins/marketplace.json
@@ -37,14 +75,7 @@ plugins/donegraph/skills/
 plugins/donegraph/scripts/donegraph
 ```
 
-其中 marketplace 指向 `./plugins/donegraph`，这个目录是可验证的插件根。`skills/` 内的命令通过相对路径调用插件自带脚本，不依赖 `~/.donegraph-plugin` 才能运行。
-
-Claude Code marketplace 形态对齐为：
-
-```bash
-/plugin marketplace add serein431/DoneGraph
-/plugin install donegraph
-```
+The marketplace entry points at `./plugins/donegraph`, which is the validated plugin root. Skills call the plugin-owned wrapper by relative path, so the package can run as a self-contained plugin.
 
 ### 2. Start A Session
 
@@ -82,6 +113,8 @@ DoneGraph writes:
 .donegraph/dashboard.html
 ```
 
+---
+
 ## Commands
 
 Plugin commands:
@@ -111,66 +144,24 @@ Development fallback inside this repo:
 
 ```bash
 npm run cli -- start "Build DoneGraph" --platform generic
+npm run cli -- capture --goal "Build DoneGraph" --platform generic
 npm run cli -- checkpoint "Added installer and plugin skills"
 npm run cli -- proof "Typecheck passed" --pass --command "npm run typecheck"
 npm run cli -- dashboard --no-open
 ```
 
-## Product Shape
-
-```text
-AI platform command
-        |
-        v
-DoneGraph plugin skill
-        |
-        v
-donegraph CLI
-        |
-        v
-.donegraph/session.jsonl
-        |
-        v
-task-graph.json + achievement-log.md + next-steps.md + dashboard.html
-```
-
-Adapters stay thin. The graph logic lives in `packages/core`; the CLI and storage layer live in `apps/cli`; each platform wrapper only maps a user command to the same CLI.
-
-## Clean-Room Graph Schema
-
-DoneGraph is not a code dependency graph. Its nodes are collaboration facts:
-
-```text
-goal, task, decision, artifact, evidence, blocker, achievement, next_step
-```
-
-Its edges describe work progress:
-
-```text
-belongs_to_goal, continues_as, produced, verified_by,
-blocked_by, decided_by, needs_followup, supersedes
-```
-
-The `capture` command only reads local context such as git status, file names, `package.json` scripts, and the optional user goal. It does not consume `.understand-anything`, external graph files, or third-party schemas.
-
-## 3 Minute Hackathon Demo
-
-```bash
-npm install
-npm run build
-
-npm run cli -- start "Ship a hackathon demo that shows AI progress clearly" --platform codex
-npm run cli -- capture --goal "Ship a standalone clean-room DoneGraph demo" --platform codex
-npm run cli -- checkpoint "Implemented the command-first DoneGraph CLI" --command "npm test"
-npm run cli -- checkpoint "Generated a static dashboard" --path ".donegraph/dashboard.html"
-npm run cli -- proof "Tests passed" --pass --command "npm test"
-npm run cli -- done "The demo can now show completed work, evidence, and the next handoff"
-npm run cli -- dashboard
-```
-
-Use `--no-open` if you only want to generate the HTML.
+---
 
 ## Multi-Platform Installation
+
+### Claude Code
+
+```bash
+/plugin marketplace add serein431/DoneGraph
+/plugin install donegraph
+```
+
+### Codex / Cursor / VS Code / Gemini / OpenCode / Generic Agents
 
 macOS / Linux:
 
@@ -196,20 +187,91 @@ Cursor and VS Code can also discover metadata from:
 .copilot-plugin/plugin.json
 ```
 
-## Artifact Contract
+---
 
-- `.donegraph/session.jsonl`: append-only event log for AI agents and platform wrappers.
-- `.donegraph/task-graph.json`: portable graph data for dashboards and handoff.
-- `.donegraph/achievement-log.md`: human-readable completed work and evidence.
-- `.donegraph/next-steps.md`: next-session handoff prompt for AI.
-- `.donegraph/dashboard.html`: static visual graph, no server required.
+## Share The Graph With Your Team
+
+The graph is just local artifacts. Commit or attach the files when they are useful for reviews, handoffs, demos, and async collaboration.
+
+Good candidates:
+
+```text
+.donegraph/task-graph.json
+.donegraph/achievement-log.md
+.donegraph/next-steps.md
+.donegraph/dashboard.html
+```
+
+Keep `session.jsonl` private if the raw event stream contains sensitive task notes.
+
+---
+
+## Under The Hood
+
+### Clean-Room Collaboration Schema
+
+DoneGraph is not a code dependency graph. Its nodes are collaboration facts:
+
+```text
+goal, task, decision, artifact, evidence, blocker, achievement, next_step
+```
+
+Its edges describe how work moves:
+
+```text
+belongs_to_goal, continues_as, produced, verified_by,
+blocked_by, decided_by, needs_followup, supersedes
+```
+
+The `capture` command only reads local context such as git status, file names, `package.json` scripts, and the optional user goal. It does not consume `.understand-anything`, external graph files, or third-party schemas.
+
+### Local Artifact Pipeline
+
+```text
+AI platform command
+        |
+        v
+DoneGraph plugin skill
+        |
+        v
+donegraph CLI
+        |
+        v
+.donegraph/session.jsonl
+        |
+        v
+task-graph.json + achievement-log.md + next-steps.md + dashboard.html
+```
+
+Adapters stay thin. The graph logic lives in `packages/core`; the CLI and storage layer live in `apps/cli`; each platform wrapper only maps a user command to the same CLI.
+
+---
+
+## 3 Minute Hackathon Demo
+
+```bash
+npm install
+npm run build
+
+npm run cli -- start "Ship a hackathon demo that shows AI progress clearly" --platform codex
+npm run cli -- capture --goal "Ship a standalone clean-room DoneGraph demo" --platform codex
+npm run cli -- checkpoint "Implemented the command-first DoneGraph CLI" --command "npm test"
+npm run cli -- checkpoint "Generated a static dashboard" --path ".donegraph/dashboard.html"
+npm run cli -- proof "Tests passed" --pass --command "npm test"
+npm run cli -- done "The demo can now show completed work, evidence, and the next handoff"
+npm run cli -- dashboard
+```
+
+Use `--no-open` if you only want to generate the HTML.
+
+---
 
 ## Repository Shape
 
 ```text
 apps/cli                  DoneGraph CLI and local artifact storage
 packages/core             Pure graph, summary, Markdown, and dashboard rendering
-plugins/donegraph         Plugin skills and wrapper script
+plugins/donegraph         Codex plugin root, skills, and wrapper script
 platforms/*               Thin integration notes for other AI environments
 install.sh                Multi-platform local installer
 scripts/demo-donegraph.sh 3-minute hackathon demo path
@@ -223,3 +285,7 @@ npm run typecheck
 npm run build
 python3 /Users/dgsp/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/donegraph
 ```
+
+---
+
+Stop losing the thread. Start seeing what you and AI actually finished.
