@@ -504,16 +504,37 @@ function renderNode(node: DoneGraphNode, index: number): string {
     `<p>${escapeHtml(node.detail)}</p>`,
     node.metadata.path ? `<code>${escapeHtml(node.metadata.path)}</code>` : "",
     node.metadata.command ? `<code>${escapeHtml(node.metadata.command)}</code>` : "",
+    node.metadata.source ? `<small class="source">${escapeHtml(node.metadata.source)}</small>` : "",
     "</article>"
   ].join("");
 }
 
 export function renderDashboardHtml(graph: DoneGraph): string {
   const nodes = graph.nodes.map(renderNode).join("\n");
+  const nodeIndex = new Map(graph.nodes.map((node, index) => [node.id, index + 1]));
   const achievements = graph.achievements
     .map((item) => `<li><span>${escapeHtml(statusLabel(item.status))}</span>${escapeHtml(item.title)}</li>`)
     .join("\n");
   const nextSteps = graph.next_steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("\n");
+  const schemaLabels = graph.schema.edge_labels
+    .map((label) => `<span class="badge">${escapeHtml(label)}</span>`)
+    .join("");
+  const relationshipTrace = graph.edges
+    .slice(0, 14)
+    .map((edge) => {
+      const from = String(nodeIndex.get(edge.from) ?? "?").padStart(2, "0");
+      const to = String(nodeIndex.get(edge.to) ?? "?").padStart(2, "0");
+      return `<li><span>${escapeHtml(edge.label)}</span><small>${escapeHtml(from)} -> ${escapeHtml(to)}</small></li>`;
+    })
+    .join("\n");
+  const sourceCounts = graph.nodes.reduce((counts, node) => {
+    if (!node.metadata.source) return counts;
+    counts.set(node.metadata.source, (counts.get(node.metadata.source) ?? 0) + 1);
+    return counts;
+  }, new Map<string, number>());
+  const sources = Array.from(sourceCounts.entries())
+    .map(([source, count]) => `<li><span>${escapeHtml(source)}</span>${count} captured nodes</li>`)
+    .join("\n");
 
   return `<!doctype html>
 <html lang="zh-CN">
@@ -571,12 +592,18 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     h3 { margin: 0; font-size: 22px; line-height: 1; overflow-wrap: anywhere; }
     p { margin: 0; color: var(--muted); line-height: 1.5; overflow-wrap: anywhere; }
     code { display: block; padding: 8px; background: rgba(21, 23, 19, .08); font: 12px "SFMono-Regular", Menlo, monospace; overflow-wrap: anywhere; }
+    .source { width: max-content; max-width: 100%; padding: 5px 7px; border: 1px solid rgba(21, 23, 19, .24); color: var(--accent); font-size: 11px; line-height: 1; text-transform: uppercase; overflow-wrap: anywhere; }
     .panel { margin-bottom: 18px; padding: 16px; border: 1px solid var(--line); background: var(--surface); }
     .panel h2 { margin: 0 0 14px; font-size: 25px; line-height: 1; }
     .panel ul { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
     .panel li { padding-bottom: 10px; border-bottom: 1px solid rgba(21, 23, 19, .16); line-height: 1.45; }
     .panel li:last-child { padding-bottom: 0; border-bottom: 0; }
     .panel li span { display: inline-block; margin-right: 8px; color: var(--proof); font-size: 11px; letter-spacing: .09em; text-transform: uppercase; }
+    .schema-line { margin: 0 0 12px; color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .badge-list { display: flex; flex-wrap: wrap; gap: 7px; }
+    .badge { max-width: 100%; padding: 6px 8px; border: 1px solid rgba(21, 23, 19, .24); background: rgba(197, 69, 36, .08); color: var(--accent); font-size: 11px; line-height: 1; text-transform: uppercase; overflow-wrap: anywhere; }
+    .edge-list li { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+    .edge-list small { color: var(--muted); font: 12px "SFMono-Regular", Menlo, monospace; white-space: nowrap; }
     .footer-note { color: var(--muted); font-size: 12px; line-height: 1.5; }
     @media (max-width: 1100px) {
       main, .graph { grid-template-columns: 1fr; }
@@ -610,12 +637,25 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     </section>
     <aside class="side">
       <section class="panel">
+        <h2>Clean-room Schema</h2>
+        <p class="schema-line">${escapeHtml(graph.schema.purpose)}</p>
+        <div class="badge-list">${schemaLabels}</div>
+      </section>
+      <section class="panel">
+        <h2>Relationship Trace</h2>
+        <ul class="edge-list">${relationshipTrace || "<li>还没有关系边。</li>"}</ul>
+      </section>
+      <section class="panel">
         <h2>成就账本</h2>
         <ul>${achievements || "<li>还没有完成信号。</li>"}</ul>
       </section>
       <section class="panel">
         <h2>下一轮接力</h2>
         <ul>${nextSteps}</ul>
+      </section>
+      <section class="panel">
+        <h2>捕获来源</h2>
+        <ul>${sources || "<li>当前记录来自手动事件。</li>"}</ul>
       </section>
       <p class="footer-note">Generated at ${escapeHtml(graph.generated_at)} from .donegraph/session.jsonl. This dashboard is static and can be opened without a server.</p>
     </aside>

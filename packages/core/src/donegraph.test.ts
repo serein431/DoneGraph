@@ -72,6 +72,8 @@ describe("DoneGraph core", () => {
     expect(renderAchievementLog(graph)).toContain("DoneGraph Achievement Log");
     expect(renderNextSteps(graph)).toContain("Give This To The Next AI");
     expect(renderDashboardHtml(graph)).toContain("Done Task Map");
+    expect(renderDashboardHtml(graph)).toContain("Clean-room Schema");
+    expect(renderDashboardHtml(graph)).toContain("verified_by");
     expect(renderDashboardHtml(graph)).toContain("Generated at 2026-05-28T00:04:00.000Z");
   });
 
@@ -101,5 +103,27 @@ describe("DoneGraph core", () => {
     expect(captured[1]?.metadata.source).toBe("clean-room-capture");
     expect(captured[2]?.text).toContain("2 个本地改动文件");
     expect(captured[3]?.metadata.status).toBe("unknown");
+  });
+
+  it("surfaces capture sources and relationship labels in the dashboard", () => {
+    const graph = buildDoneGraph(
+      buildCaptureEvents({
+        platform: "codex",
+        goal: "Make progress visible",
+        projectName: "donegraph-workspace",
+        changedFiles: ["README.md"],
+        packageScripts: ["test"],
+        existingEvents: [],
+        now: () => "2026-05-28T00:05:00.000Z",
+        uuid: () => "capture"
+      }),
+      "2026-05-28T00:06:00.000Z"
+    );
+
+    const html = renderDashboardHtml(graph);
+
+    expect(html).toContain("clean-room-capture");
+    expect(html).toContain("Relationship Trace");
+    expect(html).toContain("belongs_to_goal");
   });
 });
