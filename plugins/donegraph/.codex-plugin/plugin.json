@@ -16,7 +16,6 @@
     "defaultPrompt": [
       "Start a DoneGraph for this task.",
       "Capture local context into DoneGraph.",
-      "Record this verification result in DoneGraph.",
       "Build and open the DoneGraph dashboard."
     ],
     "brandColor": "#C54524"

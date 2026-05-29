@@ -11,13 +11,13 @@ DoneGraph turns the current AI collaboration into local artifacts under `.donegr
 Prefer the user-friendly commands:
 
 ```bash
-$HOME/.donegraph-plugin/scripts/donegraph start "<goal>" --platform codex
-$HOME/.donegraph-plugin/scripts/donegraph capture --goal "<goal>" --platform codex
-$HOME/.donegraph-plugin/scripts/donegraph checkpoint "<what changed>" --command "<command>"
-$HOME/.donegraph-plugin/scripts/donegraph proof "<what was verified>" --pass --command "<command>"
-$HOME/.donegraph-plugin/scripts/donegraph block "<what is blocked>"
-$HOME/.donegraph-plugin/scripts/donegraph done "<stable stopping point>"
-$HOME/.donegraph-plugin/scripts/donegraph dashboard
+../../scripts/donegraph start "<goal>" --platform codex
+../../scripts/donegraph capture --goal "<goal>" --platform codex
+../../scripts/donegraph checkpoint "<what changed>" --command "<command>"
+../../scripts/donegraph proof "<what was verified>" --pass --command "<command>"
+../../scripts/donegraph block "<what is blocked>"
+../../scripts/donegraph done "<stable stopping point>"
+../../scripts/donegraph dashboard
 ```
 
 ## When To Record
@@ -32,7 +32,7 @@ $HOME/.donegraph-plugin/scripts/donegraph dashboard
 
 ## Command Routing
 
-- If `$ARGUMENTS` begins with `capture`, `start`, `checkpoint`, `proof`, `verify`, `block`, `done`, `build`, `dashboard`, or `summary`, pass the arguments directly to `$HOME/.donegraph-plugin/scripts/donegraph`.
+- If `$ARGUMENTS` begins with `capture`, `start`, `checkpoint`, `proof`, `verify`, `block`, `done`, `build`, `dashboard`, or `summary`, pass the arguments directly to `../../scripts/donegraph`.
 - If the user gives a plain goal with no subcommand, run `start "$ARGUMENTS" --platform codex`.
 - If the wrapper is missing, ask the user to run `./install.sh codex` from the DoneGraph checkout and restart the CLI.
 

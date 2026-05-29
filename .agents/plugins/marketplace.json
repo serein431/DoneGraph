@@ -1,0 +1,20 @@
+{
+  "name": "donegraph-marketplace",
+  "interface": {
+    "displayName": "DoneGraph"
+  },
+  "plugins": [
+    {
+      "name": "donegraph",
+      "source": {
+        "source": "local",
+        "path": "./plugins/donegraph"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

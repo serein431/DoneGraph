@@ -11,7 +11,7 @@ Capture the current project context without using any external code graph or thi
 Run:
 
 ```bash
-$HOME/.donegraph-plugin/scripts/donegraph capture $ARGUMENTS
+../../scripts/donegraph capture $ARGUMENTS
 ```
 
 Use this when the user wants DoneGraph to infer a starting progress map from local files, package scripts, and git status. If the user gives a goal, pass it as `--goal`.

@@ -25,13 +25,24 @@ DoneGraph 是 clean-room 的独立项目：它不依赖外部代码知识图谱�
 发布到 GitHub 后，一行安装会是：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Lum1104/DoneGraph/main/install.sh | bash -s codex
+curl -fsSL https://raw.githubusercontent.com/serein431/DoneGraph/main/install.sh | bash -s codex
 ```
+
+Codex 插件包形态在仓库内已经就位：
+
+```text
+.agents/plugins/marketplace.json
+plugins/donegraph/.codex-plugin/plugin.json
+plugins/donegraph/skills/
+plugins/donegraph/scripts/donegraph
+```
+
+其中 marketplace 指向 `./plugins/donegraph`，这个目录是可验证的插件根。`skills/` 内的命令通过相对路径调用插件自带脚本，不依赖 `~/.donegraph-plugin` 才能运行。
 
 Claude Code marketplace 形态对齐为：
 
 ```bash
-/plugin marketplace add Lum1104/DoneGraph
+/plugin marketplace add serein431/DoneGraph
 /plugin install donegraph
 ```
 

@@ -9,8 +9,8 @@
 #   ./install.sh --help
 #
 # Curl-pipe usage after publishing:
-#   curl -fsSL https://raw.githubusercontent.com/Lum1104/DoneGraph/main/install.sh | bash
-#   curl -fsSL https://raw.githubusercontent.com/Lum1104/DoneGraph/main/install.sh | bash -s codex
+#   curl -fsSL https://raw.githubusercontent.com/serein431/DoneGraph/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/serein431/DoneGraph/main/install.sh | bash -s codex
 #
 # Environment:
 #   DONEGRAPH_REPO_URL  Override clone URL
@@ -18,7 +18,7 @@
 
 set -euo pipefail
 
-REPO_URL="${DONEGRAPH_REPO_URL:-https://github.com/Lum1104/DoneGraph.git}"
+REPO_URL="${DONEGRAPH_REPO_URL:-https://github.com/serein431/DoneGraph.git}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [[ -f "$SCRIPT_DIR/package.json" && -d "$SCRIPT_DIR/plugins/donegraph/skills" ]]; then

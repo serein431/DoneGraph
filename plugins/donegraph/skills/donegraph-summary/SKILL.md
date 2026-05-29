@@ -11,7 +11,7 @@ Print the current DoneGraph summary for the project.
 Run:
 
 ```bash
-$HOME/.donegraph-plugin/scripts/donegraph summary
+../../scripts/donegraph summary
 ```
 
 Use this when the user asks what has been completed, what evidence exists, or where the next AI session should continue.

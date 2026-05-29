@@ -11,7 +11,7 @@ Record verification evidence for the current DoneGraph.
 Run:
 
 ```bash
-$HOME/.donegraph-plugin/scripts/donegraph proof $ARGUMENTS
+../../scripts/donegraph proof $ARGUMENTS
 ```
 
 Use `--pass` only when verification actually passed. Use `--fail` for failing tests or review findings, `--blocked` when verification cannot proceed, and `--unknown` when evidence exists but is not conclusive.

@@ -3,7 +3,7 @@
 Native marketplace shape:
 
 ```bash
-/plugin marketplace add Lum1104/DoneGraph
+/plugin marketplace add serein431/DoneGraph
 /plugin install donegraph
 ```
 

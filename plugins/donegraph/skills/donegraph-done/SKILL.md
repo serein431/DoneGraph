@@ -11,7 +11,7 @@ Record a stable stopping point as a `completion` event.
 Run:
 
 ```bash
-$HOME/.donegraph-plugin/scripts/donegraph done $ARGUMENTS
+../../scripts/donegraph done $ARGUMENTS
 ```
 
 After recording completion, run `/donegraph-summary` or `/donegraph-dashboard` so the user can see what was completed and where the next session should continue.
