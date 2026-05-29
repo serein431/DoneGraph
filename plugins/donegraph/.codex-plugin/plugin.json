@@ -1,0 +1,24 @@
+{
+  "name": "donegraph",
+  "version": "0.1.0",
+  "description": "Turn AI collaboration into a visible clean-room task achievement graph.",
+  "author": {
+    "name": "DoneGraph Hackathon Team"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "DoneGraph",
+    "shortDescription": "Record AI collaboration as a task achievement graph.",
+    "longDescription": "DoneGraph records and auto-captures goals, decisions, actions, artifacts, evidence, blockers, and completions into clean-room .donegraph artifacts and a static dashboard.",
+    "developerName": "DoneGraph Hackathon Team",
+    "category": "Productivity",
+    "capabilities": ["Write", "Interactive"],
+    "defaultPrompt": [
+      "Start a DoneGraph for this task.",
+      "Capture local context into DoneGraph.",
+      "Record this verification result in DoneGraph.",
+      "Build and open the DoneGraph dashboard."
+    ],
+    "brandColor": "#C54524"
+  }
+}

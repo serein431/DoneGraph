@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": false,
+    "noEmit": false,
+    "paths": {
+      "@donegraph/core": ["../../packages/core/dist/index.d.ts"],
+      "@donegraph/core/*": ["../../packages/core/dist/*"]
+    }
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts"]
+}

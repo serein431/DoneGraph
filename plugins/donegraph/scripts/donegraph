@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PLUGIN_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
+REPO_ROOT="$(cd -P "$PLUGIN_DIR/../.." && pwd -P)"
+CALLER_CWD="${DONEGRAPH_WORKSPACE:-$(pwd)}"
+
+has_workspace_arg() {
+  local arg
+  for arg in "$@"; do
+    [[ "$arg" == "--workspace" || "$arg" == --workspace=* ]] && return 0
+  done
+  return 1
+}
+
+cd "$REPO_ROOT"
+if has_workspace_arg "$@"; then
+  exec npm run cli -- "$@"
+fi
+
+exec npm run cli -- "$@" --workspace "$CALLER_CWD"

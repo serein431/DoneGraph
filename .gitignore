@@ -1,0 +1,6 @@
+node_modules/
+dist/
+.donegraph/
+.understand-anything/
+.DS_Store
+npm-debug.log*

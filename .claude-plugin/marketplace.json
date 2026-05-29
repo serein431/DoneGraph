@@ -1,0 +1,15 @@
+{
+  "name": "donegraph",
+  "metadata": {
+    "description": "Turn AI collaboration into a visible clean-room task achievement graph with evidence, auto-capture, and handoff steps"
+  },
+  "owner": {
+    "name": "DoneGraph Hackathon Team"
+  },
+  "plugins": [
+    {
+      "name": "donegraph",
+      "source": "./plugins/donegraph"
+    }
+  ]
+}

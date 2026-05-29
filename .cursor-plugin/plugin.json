@@ -1,0 +1,14 @@
+{
+  "name": "donegraph",
+  "displayName": "DoneGraph",
+  "description": "Clean-room AI collaboration progress tracking with auto-capture, a local achievement graph, and dashboard",
+  "version": "0.1.0",
+  "author": {
+    "name": "DoneGraph Hackathon Team"
+  },
+  "homepage": "https://github.com/Lum1104/DoneGraph",
+  "repository": "https://github.com/Lum1104/DoneGraph",
+  "license": "MIT",
+  "keywords": ["ai-collaboration", "progress-tracking", "achievement-graph", "auto-capture", "dashboard", "handoff"],
+  "skills": "./plugins/donegraph/skills/"
+}
