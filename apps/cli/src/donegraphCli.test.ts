@@ -30,6 +30,7 @@ describe("donegraph CLI", () => {
     expect(fs.existsSync(path.join(workspace, ".donegraph", "session.jsonl"))).toBe(true);
     expect(fs.existsSync(path.join(workspace, ".donegraph", "task-graph.json"))).toBe(true);
     expect(fs.existsSync(path.join(workspace, ".donegraph", "dashboard.html"))).toBe(true);
+    expect(fs.existsSync(path.join(workspace, ".donegraph", "vibecraft.html"))).toBe(true);
     expect(output.join("\n")).toContain("DoneGraph started");
   });
 
@@ -150,6 +151,7 @@ describe("donegraph CLI", () => {
     expect(code).toBe(0);
     expect(opened).toBe(false);
     expect(output.join("\n")).toContain("dashboard.html");
+    expect(output.join("\n")).toContain("vibecraft.html");
   });
 
   it("auto-captures project context into DoneGraph events", async () => {

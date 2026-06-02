@@ -663,3 +663,220 @@ export function renderDashboardHtml(graph: DoneGraph): string {
 </body>
 </html>`;
 }
+
+function renderVibeCraftPack(node: DoneGraphNode, index: number): string {
+  return [
+    `<article class="pack ${escapeHtml(statusLabel(node.status))}">`,
+    `<span>${String(index + 1).padStart(2, "0")}</span>`,
+    `<strong>${escapeHtml(node.title)}</strong>`,
+    `<p>${escapeHtml(node.detail)}</p>`,
+    node.metadata.command ? `<code>${escapeHtml(node.metadata.command)}</code>` : "",
+    "</article>"
+  ].join("");
+}
+
+export function renderVibeCraftHtml(graph: DoneGraph): string {
+  const packs = graph.nodes
+    .filter((node) => node.type !== "next_step")
+    .slice(0, 8)
+    .map(renderVibeCraftPack)
+    .join("\n");
+  const nextSteps = graph.next_steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("\n");
+  const publicWorks = graph.achievements
+    .slice(0, 4)
+    .map((item) => `<li><span>${escapeHtml(statusLabel(item.status))}</span>${escapeHtml(item.title)}</li>`)
+    .join("\n");
+  const evidenceState = [
+    ["Passed", graph.summary.evidence_passed],
+    ["Failed", graph.summary.evidence_failed],
+    ["Unknown", graph.summary.evidence_unknown],
+    ["Blocked", graph.summary.evidence_blocked]
+  ]
+    .map(([label, value]) => `<tr><th>${escapeHtml(String(label))}</th><td>${escapeHtml(String(value))}</td></tr>`)
+    .join("\n");
+  const agentPrompt = [
+    "You are syncing my VibeCraft profile from this DoneGraph workspace.",
+    "Read .donegraph/task-graph.json and .donegraph/session.jsonl if I authorize it.",
+    `Goal: ${graph.goal || "No goal recorded yet"}`,
+    "Return a vibecraft.proof.v1 JSON proof with verified progress, skill signals, and public work summaries."
+  ].join("\n");
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VibeCraft Wiki</title>
+  <style>
+    :root {
+      --page: #f6f6f2;
+      --paper: #fff;
+      --panel: rgba(252, 252, 252, .9);
+      --border: #a2a9b1;
+      --green: #3a971e;
+      --green-dark: #2f6f16;
+      --green-soft: #eef6e9;
+      --link: #0645ad;
+      --text: #202122;
+      --muted: #54595d;
+      --head: #f8f9fa;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        linear-gradient(90deg, rgba(0,0,0,.025) 0 1px, transparent 1px 64px),
+        linear-gradient(rgba(0,0,0,.018) 0 1px, transparent 1px 64px),
+        var(--page);
+      background-size: 64px 64px, 64px 64px, auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "PingFang SC", sans-serif;
+    }
+    a { color: var(--link); text-decoration: none; }
+    .site { width: min(1280px, calc(100% - 28px)); margin: 0 auto 36px; display: grid; grid-template-columns: 188px minmax(0, 1fr); gap: 0 18px; }
+    .topbar { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) auto; border: 1px solid var(--border); border-top: 5px solid var(--green); background: var(--head); }
+    .brand { display: flex; gap: 12px; align-items: center; padding: 12px; min-width: 0; }
+    .mark { width: 46px; height: 46px; display: grid; place-items: center; border: 1px solid var(--green-dark); background: var(--green); color: #fff; font-weight: 800; }
+    .brand h1 { margin: 0; font-size: clamp(26px, 4vw, 38px); line-height: 1.05; }
+    .brand p { margin: 5px 0 0; color: var(--muted); font-size: 13px; font-weight: 600; }
+    .top-actions { display: flex; flex-wrap: wrap; gap: 8px; align-content: center; justify-content: flex-end; padding: 12px; border-left: 1px solid var(--border); }
+    .tab, button { min-height: 32px; display: inline-flex; align-items: center; justify-content: center; padding: 6px 10px; border: 1px solid var(--border); background: #fff; color: var(--link); font-weight: 700; cursor: pointer; }
+    .tab.active, button.primary { border-color: var(--green-dark); background: var(--green); color: #fff; }
+    .sidebar { grid-column: 1; position: sticky; top: 12px; align-self: start; padding-top: 16px; font-size: 13px; }
+    .sidebar-card, .portlet { border: 1px solid var(--border); background: var(--paper); padding: 10px; margin-bottom: 10px; }
+    .portlet h2 { margin: 0 0 6px; color: var(--muted); font-size: 12px; }
+    .portlet ul { display: grid; gap: 5px; margin: 0; padding: 0; list-style: none; }
+    .article { grid-column: 2; min-width: 0; padding-top: 16px; }
+    .page-tabs { display: flex; flex-wrap: wrap; justify-content: flex-end; border-bottom: 1px solid var(--border); }
+    .page-tabs .tab { border-bottom: 0; }
+    .heading { padding: 8px 0 12px; border-bottom: 1px solid var(--border); }
+    .heading h2 { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: clamp(34px, 6vw, 50px); font-weight: 400; line-height: 1.08; }
+    .heading p { margin: 6px 0 0; color: var(--muted); line-height: 1.45; }
+    .grid { display: grid; grid-template-columns: minmax(0, 1fr) 292px; gap: 10px; margin-top: 12px; }
+    .section, .infobox, .pack { border: 2px solid #bbb; background: var(--panel); box-shadow: inset -2px -2px rgba(0,0,0,.055), inset 2px 2px rgba(255,255,255,.45); }
+    .section { margin-bottom: 10px; padding: 12px; }
+    .section h3, .infobox h3 { margin: -12px -12px 10px; padding: 8px 10px; border-bottom: 2px solid var(--green-dark); background: var(--green); color: #fff; font-size: 18px; }
+    .message { margin: 0 0 10px; padding: 10px; border: 2px solid #bbb; border-left: 8px solid var(--green); background: var(--green-soft); }
+    .pack-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .pack { padding: 10px; background: #fff; }
+    .pack span { display: inline-flex; margin-bottom: 7px; padding: 4px 7px; border: 1px solid var(--border); background: var(--green-soft); font-size: 12px; font-weight: 700; }
+    .pack strong { display: block; font-size: 16px; line-height: 1.2; }
+    .pack p, .section p, .section li { color: var(--muted); line-height: 1.5; }
+    .pack code, pre { display: block; padding: 9px; border: 1px solid var(--border); background: #f8f9fa; color: var(--text); font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+    .infobox { background: #fff; }
+    .infobox h3 { margin: 0; text-align: center; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th { width: 40%; background: #eaecf0; }
+    .avatar { height: 172px; display: grid; place-items: center; border: 1px solid var(--border); background: var(--green-soft); }
+    .cube { width: 74px; height: 92px; position: relative; border: 5px solid #2a1b10; background: var(--green); box-shadow: inset -10px -10px rgba(0,0,0,.2); }
+    .cube::before { content: ""; position: absolute; left: 14px; top: -44px; width: 38px; height: 38px; border: 5px solid #2a1b10; background: #efc9a6; box-shadow: inset -6px -6px rgba(0,0,0,.18); }
+    .cube::after { content: ""; position: absolute; right: -22px; top: -18px; width: 25px; height: 25px; border: 5px solid #2a1b10; background: #f0c64d; }
+    .list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+    .list li { padding: 8px; border: 1px solid var(--border); background: #fff; }
+    @media (max-width: 980px) {
+      .site, .topbar, .grid, .pack-grid { grid-template-columns: 1fr; }
+      .topbar, .sidebar, .article { grid-column: 1; }
+      .sidebar { position: relative; top: auto; }
+      .top-actions { justify-content: flex-start; border-left: 0; border-top: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+  <div class="site">
+    <header class="topbar">
+      <div class="brand">
+        <span class="mark">VC</span>
+        <div>
+          <h1>VibeCraft / 灵感工坊</h1>
+          <p>Generated from DoneGraph · ${escapeHtml(graph.platform)} · ${escapeHtml(graph.generated_at)}</p>
+        </div>
+      </div>
+      <nav class="top-actions" aria-label="Top actions">
+        <a class="tab" href="dashboard.html">Dashboard</a>
+        <a class="tab" href="task-graph.json">Data Pack</a>
+        <button class="primary" type="button" data-copy-agent>Copy Agent Prompt</button>
+      </nav>
+    </header>
+    <aside class="sidebar">
+      <div class="sidebar-card"><span class="mark">VC</span><strong>VibeCraft Wiki</strong><br /><small>DoneGraph artifact</small></div>
+      <section class="portlet">
+        <h2>Navigation / 导览</h2>
+        <ul>
+          <li><a href="#summary">Summary</a></li>
+          <li><a href="#packs">Growth Packs</a></li>
+          <li><a href="#proof">Agent Proof</a></li>
+          <li><a href="#brain">Vibe Brain</a></li>
+        </ul>
+      </section>
+    </aside>
+    <main class="article">
+      <div class="page-tabs"><a class="tab active" href="#summary">Article</a><a class="tab" href="#packs">Packs</a><a class="tab" href="#proof">Sync</a></div>
+      <section class="heading">
+        <h2>VibeCraft</h2>
+        <p>From VibeCraft Wiki · DoneGraph progress becomes Agent-readable identity, completion proof, public works, and next quests.</p>
+      </section>
+      <div class="grid">
+        <div>
+          <div class="message"><strong>Current build state</strong><br />${escapeHtml(graph.narrative)}</div>
+          <section class="section" id="summary">
+            <h3>Summary</h3>
+            <p>${escapeHtml(graph.goal || "No goal recorded yet.")}</p>
+            <p>VibeCraft translates collaboration traces into plain-language growth packs, so non-technical builders can understand what changed without reading the whole AI conversation.</p>
+          </section>
+          <section class="section" id="packs">
+            <h3>Growth Packs</h3>
+            <div class="pack-grid">${packs || "<p>No packs recorded yet.</p>"}</div>
+          </section>
+          <section class="section" id="proof">
+            <h3>Agent Proof Sync</h3>
+            <p>The Web side presents the state. The Agent reads authorized DoneGraph files and returns a scoped <code>vibecraft.proof.v1</code> payload.</p>
+            <pre data-agent-prompt>${escapeHtml(agentPrompt)}</pre>
+          </section>
+          <section class="section" id="brain">
+            <h3>Vibe Brain</h3>
+            <ul class="list">
+              <li>Achievements: ${graph.achievements.length}</li>
+              <li>Next quests: ${graph.next_steps.length}</li>
+              <li>Relationship edges: ${graph.edges.length}</li>
+            </ul>
+          </section>
+        </div>
+        <aside>
+          <section class="infobox">
+            <h3>VibeCraft</h3>
+            <div class="avatar"><div class="cube"></div></div>
+            <table>
+              <tbody>
+                <tr><th>Chinese name</th><td>灵感工坊</td></tr>
+                <tr><th>Progress</th><td>${graph.summary.progress_percent}%</td></tr>
+                <tr><th>Completed</th><td>${graph.summary.completed_count}</td></tr>
+                ${evidenceState}
+              </tbody>
+            </table>
+          </section>
+          <section class="section">
+            <h3>Public Works</h3>
+            <ul class="list">${publicWorks || "<li>No public work yet.</li>"}</ul>
+          </section>
+          <section class="section">
+            <h3>Next Quest</h3>
+            <ul>${nextSteps}</ul>
+          </section>
+        </aside>
+      </div>
+    </main>
+  </div>
+  <script>
+    document.querySelector("[data-copy-agent]")?.addEventListener("click", async () => {
+      const prompt = document.querySelector("[data-agent-prompt]")?.textContent || "";
+      try {
+        await navigator.clipboard.writeText(prompt);
+      } catch {
+        window.prompt("Copy Agent prompt", prompt);
+      }
+    });
+  </script>
+</body>
+</html>`;
+}

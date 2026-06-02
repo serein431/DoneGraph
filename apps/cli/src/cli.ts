@@ -311,6 +311,7 @@ function printArtifacts(write: WriteLine, workspacePath: string): void {
   write(`- ${paths.achievementLog}`);
   write(`- ${paths.nextSteps}`);
   write(`- ${paths.dashboardHtml}`);
+  write(`- ${paths.vibeCraftHtml}`);
 }
 
 export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {}): Promise<number> {
@@ -407,6 +408,7 @@ export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {
   if (parsed.command === "dashboard") {
     const { paths } = buildDoneGraphArtifacts(parsed.workspacePath, now());
     write(`DoneGraph dashboard: ${paths.dashboardHtml}`);
+    write(`VibeCraft view: ${paths.vibeCraftHtml}`);
     if (!parsed.options.has("no-open")) {
       (options.openFile ?? openDashboardFile)(paths.dashboardHtml);
     }
@@ -421,7 +423,7 @@ export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {
     write("");
     write(graph.narrative);
     write("");
-    write(`Artifacts: ${paths.achievementLog}, ${paths.nextSteps}`);
+    write(`Artifacts: ${paths.achievementLog}, ${paths.nextSteps}, ${paths.dashboardHtml}, ${paths.vibeCraftHtml}`);
     write("");
     write("Next steps:");
     graph.next_steps.forEach((step, index) => write(`${index + 1}. ${step}`));

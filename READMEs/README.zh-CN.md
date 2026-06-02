@@ -22,6 +22,8 @@ DoneGraph 是一个 clean-room 的 AI 协作插件。它会把目标、动作、
 
 打开 `docs/vibecraft/index.html`，可以看到一个 Wiki 风格的产品原型：它把 DoneGraph 进展转成 Agent 注册、完成证明、成长包、Vibe Radio、公开名片和可携带的 Vibe Brain。
 
+产品上下文和开发记录沉淀在 `docs/vibecraft/development-context.md`。
+
 ### 捕获当前上下文
 
 接手一个已经进行中的任务时，运行 `/donegraph-capture`。DoneGraph 会读取本地改动文件、文件名、`package.json` scripts 和可选目标，生成一组协作进度起点。

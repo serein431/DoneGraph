@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { buildCaptureEvents, buildDoneGraph, renderAchievementLog, renderDashboardHtml, renderNextSteps } from "./donegraph";
+import {
+  buildCaptureEvents,
+  buildDoneGraph,
+  renderAchievementLog,
+  renderDashboardHtml,
+  renderNextSteps,
+  renderVibeCraftHtml
+} from "./donegraph";
 import type { DoneGraphEvent } from "./donegraph";
 
 const events: DoneGraphEvent[] = [
@@ -75,6 +82,9 @@ describe("DoneGraph core", () => {
     expect(renderDashboardHtml(graph)).toContain("Clean-room Schema");
     expect(renderDashboardHtml(graph)).toContain("verified_by");
     expect(renderDashboardHtml(graph)).toContain("Generated at 2026-05-28T00:04:00.000Z");
+    expect(renderVibeCraftHtml(graph)).toContain("VibeCraft / 灵感工坊");
+    expect(renderVibeCraftHtml(graph)).toContain("Agent Proof Sync");
+    expect(renderVibeCraftHtml(graph)).toContain("vibecraft.proof.v1");
   });
 
   it("uses clean-room collaboration edges instead of code graph relationships", () => {

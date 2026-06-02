@@ -22,6 +22,8 @@ DoneGraph is a clean-room AI collaboration plugin that records goals, actions, d
 
 Open `docs/vibecraft/index.html` for a wiki-style product prototype that turns DoneGraph progress into Agent registration, completion proofs, growth packs, Vibe Radio, a public bio, and a portable Vibe Brain.
 
+The durable product context is tracked in `docs/vibecraft/development-context.md`.
+
 ### Capture The Current Context
 
 Run `/donegraph-capture` when you join an existing task. DoneGraph reads local context such as changed files, file names, `package.json` scripts, and an optional goal, then turns that into starting collaboration events.
