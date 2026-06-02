@@ -1,0 +1,1240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VibeCraft Wiki / 灵感工坊百科</title>
+    <meta
+      name="description"
+      content="VibeCraft is a wiki-style Happy Build learning engine for non-technical vibe builders and their AI Agents."
+    />
+    <style>
+      :root {
+        --page: #f6f6f2;
+        --paper: #fff;
+        --panel: rgba(252, 252, 252, 0.88);
+        --border: #a2a9b1;
+        --border-strong: #72777d;
+        --green: #3a971e;
+        --green-dark: #2f6f16;
+        --green-soft: #eef6e9;
+        --link: #0645ad;
+        --visited: #0b0080;
+        --text: #202122;
+        --muted: #54595d;
+        --head: #f8f9fa;
+        --gold: #f0c64d;
+        --red: #b73b2b;
+        --blue: #4f9ed8;
+        --wood: #8b5a35;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--text);
+        background:
+          linear-gradient(90deg, rgba(0, 0, 0, 0.025) 0 1px, transparent 1px 64px),
+          linear-gradient(rgba(0, 0, 0, 0.018) 0 1px, transparent 1px 64px),
+          var(--page);
+        background-size: 64px 64px, 64px 64px, auto;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+      }
+
+      a {
+        color: var(--link);
+        text-decoration: none;
+      }
+
+      a:visited {
+        color: var(--visited);
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      button,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      .site {
+        width: min(1280px, calc(100% - 28px));
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 188px minmax(0, 1fr);
+        gap: 0 18px;
+        padding-bottom: 40px;
+      }
+
+      .topbar {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1fr);
+        border: 1px solid var(--border);
+        border-top: 5px solid var(--green);
+        background: var(--head);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0;
+        padding: 12px;
+      }
+
+      .mark,
+      .sidebar-mark {
+        width: 46px;
+        height: 46px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--green-dark);
+        background: var(--green);
+        color: #fff;
+        font-weight: 800;
+        box-shadow: inset -3px -3px rgba(0, 0, 0, 0.18);
+      }
+
+      .brand h1 {
+        margin: 0;
+        font-size: clamp(26px, 4vw, 38px);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .brand p {
+        margin: 5px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.35;
+        font-weight: 600;
+      }
+
+      .top-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+        align-content: center;
+        align-items: center;
+        padding: 12px;
+        border-left: 1px solid var(--border);
+      }
+
+      .tab,
+      .wiki-button,
+      .top-actions button,
+      .top-actions a {
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 10px;
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--link);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .wiki-button.primary,
+      .tab.active {
+        border-color: var(--green-dark);
+        background: var(--green);
+        color: #fff;
+      }
+
+      .top-actions .profile-pill {
+        flex-basis: 100%;
+        justify-content: flex-start;
+        background: var(--green-soft);
+        color: var(--text);
+      }
+
+      .sidebar {
+        grid-column: 1;
+        position: sticky;
+        top: 12px;
+        align-self: start;
+        display: grid;
+        gap: 10px;
+        padding-top: 16px;
+        font-size: 13px;
+      }
+
+      .sidebar-card {
+        display: grid;
+        gap: 5px;
+        padding: 10px;
+        border: 1px solid var(--border);
+        background: var(--paper);
+      }
+
+      .sidebar-card strong {
+        font-size: 14px;
+      }
+
+      .sidebar-card small,
+      .portlet h2 {
+        color: var(--muted);
+      }
+
+      .portlet {
+        border-top: 1px solid var(--border);
+        padding-top: 8px;
+      }
+
+      .portlet h2 {
+        margin: 0 0 5px;
+        font-size: 12px;
+        line-height: 1.2;
+      }
+
+      .portlet ul {
+        display: grid;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .article {
+        grid-column: 2;
+        min-width: 0;
+        padding-top: 16px;
+      }
+
+      .page-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .page-tabs .tab {
+        border-bottom: 0;
+      }
+
+      .page-heading {
+        padding: 8px 0 12px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .page-heading h2 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
+        font-size: clamp(34px, 6vw, 50px);
+        line-height: 1.08;
+        font-weight: 400;
+        letter-spacing: 0;
+      }
+
+      .page-heading p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.45;
+      }
+
+      .article-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 292px;
+        gap: 10px;
+        margin-top: 12px;
+      }
+
+      .article-main,
+      .right-rail {
+        min-width: 0;
+      }
+
+      .mp-section,
+      .infobox,
+      .message-box,
+      .wiki-table,
+      .process-card,
+      .proof-console,
+      .radio-panel,
+      .community-card {
+        border: 2px solid #bbb;
+        background: var(--panel);
+        box-shadow: inset -2px -2px rgba(0, 0, 0, 0.055), inset 2px 2px rgba(255, 255, 255, 0.45);
+      }
+
+      .mp-section {
+        margin-bottom: 10px;
+        padding: 12px;
+      }
+
+      .mp-section h3,
+      .infobox h3 {
+        margin: -12px -12px 10px;
+        padding: 8px 10px;
+        border-bottom: 2px solid var(--green-dark);
+        background: var(--green);
+        color: #fff;
+        font-size: 18px;
+        line-height: 1.2;
+      }
+
+      .mp-section h4 {
+        margin: 12px 0 6px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid var(--border);
+        font-size: 17px;
+      }
+
+      .mp-section p,
+      .mp-section li,
+      .infobox td,
+      .infobox th {
+        font-size: 14px;
+        line-height: 1.55;
+      }
+
+      .mp-section p {
+        margin: 0 0 10px;
+      }
+
+      .message-box {
+        display: grid;
+        gap: 4px;
+        margin: 0 0 10px;
+        padding: 10px;
+        border-left: 8px solid var(--green);
+        background: var(--green-soft);
+      }
+
+      .message-box strong {
+        font-size: 15px;
+      }
+
+      .message-box p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .infobox {
+        margin-bottom: 10px;
+        background: #fff;
+      }
+
+      .infobox h3 {
+        margin: 0;
+        text-align: center;
+      }
+
+      .infobox table,
+      .wiki-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .infobox th,
+      .infobox td,
+      .wiki-table th,
+      .wiki-table td {
+        padding: 8px;
+        border: 1px solid var(--border);
+        vertical-align: top;
+      }
+
+      .infobox th,
+      .wiki-table th {
+        width: 34%;
+        background: #eaecf0;
+        text-align: left;
+      }
+
+      .vibe-avatar {
+        height: 180px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--border);
+        background:
+          linear-gradient(90deg, rgba(0, 0, 0, 0.035) 0 1px, transparent 1px 32px),
+          linear-gradient(rgba(0, 0, 0, 0.03) 0 1px, transparent 1px 32px),
+          #eef6e9;
+        background-size: 32px 32px, 32px 32px, auto;
+      }
+
+      .avatar-sprite {
+        position: relative;
+        width: 86px;
+        height: 118px;
+      }
+
+      .avatar-sprite i,
+      .avatar-sprite b,
+      .avatar-sprite em,
+      .avatar-sprite strong {
+        position: absolute;
+        display: block;
+        border: 4px solid #2a1b10;
+        box-shadow: inset -6px -6px rgba(0, 0, 0, 0.18);
+      }
+
+      .avatar-sprite i {
+        left: 22px;
+        top: 0;
+        width: 42px;
+        height: 38px;
+        background: #efc9a6;
+      }
+
+      .avatar-sprite b {
+        left: 12px;
+        top: 42px;
+        width: 62px;
+        height: 56px;
+        background: var(--green);
+      }
+
+      .avatar-sprite em {
+        right: 3px;
+        top: 26px;
+        width: 26px;
+        height: 26px;
+        background: var(--gold);
+      }
+
+      .avatar-sprite strong {
+        left: 34px;
+        top: 15px;
+        width: 7px;
+        height: 7px;
+        border-width: 2px;
+        background: #111;
+        box-shadow: 14px 0 #111;
+      }
+
+      .overview-grid,
+      .process-grid,
+      .pack-grid,
+      .radio-grid {
+        display: grid;
+        gap: 8px;
+      }
+
+      .overview-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .process-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .pack-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .process-card,
+      .pack-card {
+        padding: 10px;
+        background: #fff;
+      }
+
+      .process-card span,
+      .pack-card span,
+      .tag {
+        display: inline-flex;
+        width: fit-content;
+        max-width: 100%;
+        margin-bottom: 7px;
+        padding: 4px 7px;
+        border: 1px solid var(--border);
+        background: var(--green-soft);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .process-card strong,
+      .pack-card strong {
+        display: block;
+        font-size: 16px;
+        line-height: 1.2;
+      }
+
+      .process-card p,
+      .pack-card p {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.45;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      label {
+        display: grid;
+        gap: 5px;
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        min-height: 38px;
+        padding: 8px;
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--text);
+        font-size: 14px;
+      }
+
+      textarea {
+        min-height: 92px;
+        resize: vertical;
+        line-height: 1.45;
+      }
+
+      .agent-command,
+      .proof-console {
+        display: grid;
+        gap: 8px;
+        margin-top: 10px;
+        padding: 10px;
+      }
+
+      .agent-command pre,
+      .proof-console pre {
+        max-height: 180px;
+        margin: 0;
+        overflow: auto;
+        padding: 9px;
+        border: 1px solid var(--border);
+        background: #f8f9fa;
+        color: var(--text);
+        font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        white-space: pre-wrap;
+      }
+
+      .action-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .feedback {
+        min-height: 20px;
+        color: var(--muted);
+        font-size: 13px;
+        font-weight: 600;
+      }
+
+      .status-list {
+        display: grid;
+        gap: 6px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .status-list li {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        padding: 8px;
+        border: 1px solid var(--border);
+        background: #fff;
+      }
+
+      .meter {
+        height: 18px;
+        border: 1px solid var(--border);
+        background: #fff;
+        overflow: hidden;
+      }
+
+      .meter i {
+        display: block;
+        width: var(--value, 40%);
+        height: 100%;
+        background: var(--green);
+      }
+
+      .public-card {
+        display: grid;
+        grid-template-columns: 76px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        padding: 12px;
+        border: 1px solid var(--border);
+        background: #fff;
+      }
+
+      .public-card .avatar-sprite {
+        transform: scale(0.62);
+        transform-origin: top left;
+      }
+
+      .public-card h4 {
+        margin: 0;
+        font-size: 22px;
+      }
+
+      .public-card p {
+        margin: 4px 0 0;
+        color: var(--muted);
+      }
+
+      .radio-grid {
+        grid-template-columns: 160px minmax(0, 1fr);
+      }
+
+      .radio-tower {
+        min-height: 220px;
+        position: relative;
+        border: 1px solid var(--border);
+        background:
+          linear-gradient(#dff4ff 0 52%, #d9efd1 52% 100%);
+        overflow: hidden;
+      }
+
+      .radio-tower i,
+      .radio-tower b,
+      .radio-tower em {
+        position: absolute;
+        display: block;
+        border: 4px solid #2a1b10;
+      }
+
+      .radio-tower i {
+        left: 62px;
+        bottom: 28px;
+        width: 34px;
+        height: 118px;
+        background: var(--wood);
+      }
+
+      .radio-tower b {
+        left: 38px;
+        bottom: 138px;
+        width: 82px;
+        height: 34px;
+        background: var(--gold);
+      }
+
+      .radio-tower em {
+        left: 68px;
+        bottom: 172px;
+        width: 22px;
+        height: 38px;
+        background: var(--red);
+      }
+
+      .radio-script {
+        display: grid;
+        gap: 8px;
+      }
+
+      .radio-script p {
+        margin: 0;
+        padding: 9px;
+        border-left: 5px solid var(--blue);
+        background: #fff;
+      }
+
+      .footer {
+        grid-column: 2;
+        margin-top: 12px;
+        padding: 12px;
+        border: 1px solid var(--border);
+        background: var(--head);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      @media (max-width: 980px) {
+        .site {
+          width: min(100% - 16px, 1280px);
+          grid-template-columns: 1fr;
+        }
+
+        .topbar,
+        .sidebar,
+        .article,
+        .footer {
+          grid-column: 1;
+        }
+
+        .topbar,
+        .article-grid,
+        .form-grid,
+        .overview-grid,
+        .process-grid,
+        .pack-grid,
+        .radio-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .top-actions {
+          justify-content: flex-start;
+          border-left: 0;
+          border-top: 1px solid var(--border);
+        }
+
+        .sidebar {
+          position: relative;
+          top: auto;
+          padding-top: 10px;
+        }
+
+        .sidebar nav {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 10px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .brand {
+          align-items: flex-start;
+        }
+
+        .brand h1 {
+          font-size: 25px;
+        }
+
+        .page-tabs {
+          justify-content: flex-start;
+        }
+
+        .sidebar nav {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="site">
+      <header class="topbar">
+        <div class="brand">
+          <span class="mark">VC</span>
+          <div>
+            <h1>VibeCraft / 灵感工坊</h1>
+            <p>Build for Fun · Create for Happy · A wiki-style learning world for AI-era builders.</p>
+          </div>
+        </div>
+        <nav class="top-actions" aria-label="Top actions">
+          <a href="#bio">Vibe Bio</a>
+          <a href="#register">Agent Pass</a>
+          <a href="#sync">Proof Sync</a>
+          <a href="#radio">Radio</a>
+          <button type="button" data-lang-toggle>中文</button>
+          <button type="button" data-sound-toggle aria-pressed="true">SFX + MUSIC ON</button>
+          <span class="profile-pill" data-profile-pill>Unnamed Builder · Happy Builder</span>
+        </nav>
+      </header>
+
+      <aside class="sidebar" aria-label="VibeCraft navigation">
+        <div class="sidebar-card">
+          <span class="sidebar-mark">VC</span>
+          <strong>VibeCraft Wiki</strong>
+          <small>灵感工坊百科</small>
+        </div>
+        <nav>
+          <section class="portlet">
+            <h2>Navigation / 导览</h2>
+            <ul>
+              <li><a href="#overview">Overview</a></li>
+              <li><a href="#register">Agent Registration</a></li>
+              <li><a href="#sync">Completion Proof</a></li>
+              <li><a href="#bio">Public Bio</a></li>
+            </ul>
+          </section>
+          <section class="portlet">
+            <h2>Gameplay / 玩法</h2>
+            <ul>
+              <li><a href="#loop">Gameplay Loop</a></li>
+              <li><a href="#packs">Growth Packs</a></li>
+              <li><a href="#radio">Vibe Radio</a></li>
+              <li><a href="#community">Community</a></li>
+            </ul>
+          </section>
+          <section class="portlet">
+            <h2>Tools / 工具</h2>
+            <ul>
+              <li><a href="#agent-command">Copy Agent Prompt</a></li>
+              <li><a href="#auth-code">Verify Auth Code</a></li>
+              <li><a href="#brain">Vibe Brain</a></li>
+            </ul>
+          </section>
+        </nav>
+      </aside>
+
+      <main class="article">
+        <div class="page-tabs" aria-label="Page tabs">
+          <a class="tab active" href="#overview">Article</a>
+          <a class="tab" href="#loop">Gameplay</a>
+          <a class="tab" href="#sync">Sync</a>
+          <a class="tab" href="#bio">Public page</a>
+        </div>
+
+        <section class="page-heading" id="overview">
+          <h2>VibeCraft</h2>
+          <p>From VibeCraft Wiki · A Happy Build visual learning engine where Agent completion proofs become identity, skills, drops, and collaboration signals.</p>
+        </section>
+
+        <div class="article-grid">
+          <div class="article-main">
+            <div class="message-box">
+              <strong>Current design direction</strong>
+              <p>VibeCraft uses a wiki-style information architecture: dense navigation, readable article sections, compact tables, and game-like evidence hidden inside clear encyclopedia structure.</p>
+            </div>
+
+            <section class="mp-section">
+              <h3>Summary</h3>
+              <p>
+                VibeCraft turns AI-assisted creation into a personal growth wiki. A non-technical builder does not need to understand every tool log; their Agent finishes work, submits a completion proof, and the Web side updates identity, skill packs, public works, and collaboration signals.
+              </p>
+              <div class="overview-grid">
+                <article class="process-card">
+                  <span>User</span>
+                  <strong>Non-technical vibe builders</strong>
+                  <p>People who build with Codex, Claude Code, Cursor, or other Agents and want progress to feel understandable.</p>
+                </article>
+                <article class="process-card">
+                  <span>Aha</span>
+                  <strong>Work becomes a profile</strong>
+                  <p>After Agent completes a task, the user sees skills, drops, and identity update like an encyclopedia entry.</p>
+                </article>
+                <article class="process-card">
+                  <span>Value</span>
+                  <strong>Knowledge enters gently</strong>
+                  <p>Technical progress is translated into plain-language blocks, radio notes, packs, and collaboration cues.</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="mp-section" id="register">
+              <h3>Agent Registration</h3>
+              <p>
+                Registration is intentionally Agent-only. The front stage asks the user to copy one instruction into their Agent. The Agent reads only authorized local context, creates a Village Pass, and returns an authorization code.
+              </p>
+              <div class="form-grid">
+                <label>
+                  Builder name
+                  <input data-name-input value="Happy Builder" autocomplete="name" />
+                </label>
+                <label>
+                  Village ID
+                  <input data-handle-input value="happy-builder" autocomplete="username" />
+                </label>
+                <label>
+                  Role
+                  <input data-role-input value="Knowledge Explorer" />
+                </label>
+                <label>
+                  Public intro
+                  <input data-intro-input value="I turn strange build traces into useful little knowledge blocks." />
+                </label>
+              </div>
+              <div class="agent-command" id="agent-command">
+                <strong>Agent instruction</strong>
+                <pre data-agent-command></pre>
+                <div class="action-row">
+                  <button class="wiki-button primary" type="button" data-copy-agent>Copy Agent Prompt</button>
+                  <button class="wiki-button" type="button" data-simulate-agent>Simulate Agent Code</button>
+                  <span class="feedback" data-register-feedback></span>
+                </div>
+              </div>
+              <label id="auth-code">
+                Agent authorization code
+                <textarea data-auth-input placeholder="Paste VC-AUTH-... or a vibecraft.registration.v1 proof."></textarea>
+              </label>
+              <div class="action-row">
+                <button class="wiki-button primary" type="button" data-verify-agent>Verify Agent Registration</button>
+                <span class="feedback" data-auth-feedback>Waiting for Agent authorization.</span>
+              </div>
+            </section>
+
+            <section class="mp-section" id="loop">
+              <h3>Gameplay Loop</h3>
+              <div class="process-grid">
+                <article class="process-card">
+                  <span>01</span>
+                  <strong>Create identity</strong>
+                  <p>Pick a public name, role, intro, and avatar seed.</p>
+                </article>
+                <article class="process-card">
+                  <span>02</span>
+                  <strong>Sync real work</strong>
+                  <p>Agent submits completion proof after a build task.</p>
+                </article>
+                <article class="process-card">
+                  <span>03</span>
+                  <strong>Craft knowledge</strong>
+                  <p>Logs, terms, and screenshots become plain-language blocks.</p>
+                </article>
+                <article class="process-card">
+                  <span>04</span>
+                  <strong>Meet collaborators</strong>
+                  <p>Skill identity helps other users invite complementary builders.</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="mp-section" id="sync">
+              <h3>Completion Proof Sync</h3>
+              <p>
+                The Web side is mostly read-only. It stores public profile edits, while the Agent is responsible for uploading completion proofs that unlock progress.
+              </p>
+              <table class="wiki-table">
+                <tbody>
+                  <tr>
+                    <th>Local route</th>
+                    <td><code>vibecraft/inbox/*.json</code></td>
+                  </tr>
+                  <tr>
+                    <th>Future API</th>
+                    <td><code>POST /api/vibecraft/proofs</code></td>
+                  </tr>
+                  <tr>
+                    <th>Unlock policy</th>
+                    <td>Only verified Agent proofs update skill packs, drops, Vibe Brain, and community signals.</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="proof-console">
+                <strong>Latest proof preview</strong>
+                <pre data-proof-preview>{
+  "schema_version": "vibecraft.proof.v1",
+  "source_agent": "codex",
+  "status": "ready_to_sync"
+}</pre>
+                <div class="action-row">
+                  <button class="wiki-button primary" type="button" data-sync-proof>Sync Demo Proof</button>
+                  <span class="feedback" data-sync-feedback>Proof not synced yet.</span>
+                </div>
+              </div>
+            </section>
+
+            <section class="mp-section" id="packs">
+              <h3>Growth Packs</h3>
+              <div class="pack-grid">
+                <article class="pack-card">
+                  <span>Starter</span>
+                  <strong>Identity Seed Pack</strong>
+                  <p>Unlocked after Agent registration confirms the user's starting level.</p>
+                </article>
+                <article class="pack-card">
+                  <span>Proof</span>
+                  <strong>Verified Build Pack</strong>
+                  <p>Unlocked when completion proofs show real shipped progress.</p>
+                </article>
+                <article class="pack-card">
+                  <span>Community</span>
+                  <strong>Complementary Invite Pack</strong>
+                  <p>Unlocked when skill identity becomes clear enough for collaboration matching.</p>
+                </article>
+              </div>
+            </section>
+
+            <section class="mp-section" id="radio">
+              <h3>Vibe Radio</h3>
+              <div class="radio-grid">
+                <div class="radio-tower" aria-hidden="true"><i></i><b></b><em></em></div>
+                <div class="radio-script">
+                  <p><strong>Opening signal:</strong> Your Agent finished a build. The village has a new proof to read.</p>
+                  <p><strong>Knowledge mine:</strong> Three confusing terms were translated into plain-language blocks.</p>
+                  <p><strong>Next quest:</strong> Verify the proof, update your public bio, and invite one complementary builder.</p>
+                </div>
+              </div>
+            </section>
+
+            <section class="mp-section" id="brain">
+              <h3>Vibe Brain</h3>
+              <p>
+                Vibe Brain is the user's portable, positive memory layer. It stores distilled project traces, learned skills, collaboration preferences, and public works. The user controls the download key and can grant scoped access to Agents.
+              </p>
+              <ul class="status-list">
+                <li><span>Knowledge blocks</span><strong data-block-count>0</strong></li>
+                <li><span>Skill signals</span><strong data-skill-count>0</strong></li>
+                <li><span>Public works</span><strong data-work-count>0</strong></li>
+              </ul>
+            </section>
+
+            <section class="mp-section" id="community">
+              <h3>Community Card</h3>
+              <div class="community-card">
+                <div class="public-card" id="bio">
+                  <div class="avatar-sprite"><i></i><b></b><em></em><strong></strong></div>
+                  <div>
+                    <h4 data-public-name>Happy Builder</h4>
+                    <p><a data-public-url href="#">happy-builder.vibecraft.bio</a></p>
+                    <p data-public-intro>I turn strange build traces into useful little knowledge blocks.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <aside class="right-rail">
+            <section class="infobox">
+              <h3>VibeCraft</h3>
+              <div class="vibe-avatar">
+                <div class="avatar-sprite"><i></i><b></b><em></em><strong></strong></div>
+              </div>
+              <table>
+                <tbody>
+                  <tr>
+                    <th>Chinese name</th>
+                    <td>灵感工坊</td>
+                  </tr>
+                  <tr>
+                    <th>Category</th>
+                    <td>Happy Build learning engine</td>
+                  </tr>
+                  <tr>
+                    <th>Primary user</th>
+                    <td>Non-technical vibe builders</td>
+                  </tr>
+                  <tr>
+                    <th>Registration</th>
+                    <td data-registration-state>Agent authorization required</td>
+                  </tr>
+                  <tr>
+                    <th>Sound</th>
+                    <td data-sound-state>On by default</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+
+            <section class="infobox">
+              <h3>Skill Attributes</h3>
+              <table>
+                <tbody>
+                  <tr>
+                    <th>Plain-language translation</th>
+                    <td><div class="meter" style="--value: 70%"><i></i></div></td>
+                  </tr>
+                  <tr>
+                    <th>Agent direction</th>
+                    <td><div class="meter" style="--value: 58%"><i></i></div></td>
+                  </tr>
+                  <tr>
+                    <th>Knowledge crafting</th>
+                    <td><div class="meter" style="--value: 64%"><i></i></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </aside>
+        </div>
+      </main>
+
+      <footer class="footer">
+        VibeCraft prototype · Wiki-style product surface for DoneGraph-powered Agent collaboration.
+      </footer>
+    </div>
+
+    <script>
+      const state = {
+        sound: true,
+        registered: false,
+        synced: false,
+      };
+
+      const elements = {
+        name: document.querySelector("[data-name-input]"),
+        handle: document.querySelector("[data-handle-input]"),
+        role: document.querySelector("[data-role-input]"),
+        intro: document.querySelector("[data-intro-input]"),
+        command: document.querySelector("[data-agent-command]"),
+        auth: document.querySelector("[data-auth-input]"),
+        registerFeedback: document.querySelector("[data-register-feedback]"),
+        authFeedback: document.querySelector("[data-auth-feedback]"),
+        syncFeedback: document.querySelector("[data-sync-feedback]"),
+        profilePill: document.querySelector("[data-profile-pill]"),
+        publicName: document.querySelector("[data-public-name]"),
+        publicUrl: document.querySelector("[data-public-url]"),
+        publicIntro: document.querySelector("[data-public-intro]"),
+        registrationState: document.querySelector("[data-registration-state]"),
+        soundState: document.querySelector("[data-sound-state]"),
+        proofPreview: document.querySelector("[data-proof-preview]"),
+      };
+
+      let audioContext;
+      let drone;
+
+      function normalizedHandle() {
+        return (elements.handle.value || "happy-builder")
+          .toLowerCase()
+          .replace(/[^a-z0-9-]+/g, "-")
+          .replace(/^-+|-+$/g, "")
+          .slice(0, 32) || "happy-builder";
+      }
+
+      function authCode() {
+        return "VC-AUTH-" + normalizedHandle().toUpperCase().replace(/-/g, "") + "-2026";
+      }
+
+      function agentPrompt() {
+        return [
+          "You are registering my VibeCraft profile.",
+          "Only read local skills and project traces I explicitly authorize.",
+          "Builder name: " + (elements.name.value || "Happy Builder"),
+          "Village ID: " + normalizedHandle(),
+          "Role: " + (elements.role.value || "Knowledge Explorer"),
+          "Public intro: " + (elements.intro.value || ""),
+          "Return an authorization code in this format: " + authCode(),
+          "Then prepare a vibecraft.registration.v1 proof for the Web page.",
+        ].join("\n");
+      }
+
+      function updateProfile() {
+        const handle = normalizedHandle();
+        const name = elements.name.value || "Happy Builder";
+        const role = elements.role.value || "Knowledge Explorer";
+        const intro = elements.intro.value || "I turn strange build traces into useful little knowledge blocks.";
+        elements.handle.value = handle;
+        elements.command.textContent = agentPrompt();
+        elements.profilePill.textContent = name + " · " + role;
+        elements.publicName.textContent = name;
+        elements.publicIntro.textContent = intro;
+        elements.publicUrl.textContent = handle + ".vibecraft.bio";
+        elements.publicUrl.href = "https://" + handle + ".vibecraft.bio";
+      }
+
+      async function copyText(text, feedback) {
+        try {
+          await navigator.clipboard.writeText(text);
+          feedback.textContent = "Copied.";
+        } catch {
+          feedback.textContent = "Copy failed. Select the text manually.";
+        }
+      }
+
+      function playClick() {
+        if (!state.sound) return;
+        try {
+          audioContext ||= new AudioContext();
+          const osc = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          osc.type = "square";
+          osc.frequency.value = 420;
+          gain.gain.setValueAtTime(0.025, audioContext.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.08);
+          osc.connect(gain).connect(audioContext.destination);
+          osc.start();
+          osc.stop(audioContext.currentTime + 0.08);
+        } catch {}
+      }
+
+      function startMusic() {
+        if (!state.sound || drone) return;
+        try {
+          audioContext ||= new AudioContext();
+          drone = audioContext.createOscillator();
+          const gain = audioContext.createGain();
+          drone.type = "triangle";
+          drone.frequency.value = 110;
+          gain.gain.value = 0.008;
+          drone.connect(gain).connect(audioContext.destination);
+          drone.start();
+        } catch {}
+      }
+
+      function stopMusic() {
+        if (!drone) return;
+        try {
+          drone.stop();
+        } catch {}
+        drone = null;
+      }
+
+      function verifyAgent() {
+        const value = elements.auth.value.trim();
+        if (!value) {
+          elements.authFeedback.textContent = "Paste the Agent authorization code first.";
+          return;
+        }
+        if (value.includes(authCode()) || value === authCode()) {
+          state.registered = true;
+          elements.authFeedback.textContent = "Agent registration verified. Village Pass active.";
+          elements.registrationState.textContent = "Registered by Agent";
+        } else {
+          elements.authFeedback.textContent = "Authorization did not match this Village ID.";
+        }
+      }
+
+      function syncProof() {
+        if (!state.registered) {
+          elements.syncFeedback.textContent = "Verify Agent registration before syncing proof.";
+          return;
+        }
+        state.synced = true;
+        const proof = {
+          schema_version: "vibecraft.proof.v1",
+          source_agent: "codex",
+          profile_handle: normalizedHandle(),
+          unlocked: ["Identity Seed Pack", "Verified Build Pack", "Knowledge Crafting"],
+          counts: { knowledge_blocks: 12, skill_signals: 6, public_works: 3 },
+        };
+        elements.proofPreview.textContent = JSON.stringify(proof, null, 2);
+        document.querySelector("[data-block-count]").textContent = proof.counts.knowledge_blocks;
+        document.querySelector("[data-skill-count]").textContent = proof.counts.skill_signals;
+        document.querySelector("[data-work-count]").textContent = proof.counts.public_works;
+        elements.syncFeedback.textContent = "Demo proof synced. Packs and Vibe Brain updated.";
+      }
+
+      document.querySelectorAll("button, a, input, textarea").forEach((node) => {
+        node.addEventListener("pointerdown", playClick);
+      });
+
+      document.querySelector("[data-copy-agent]").addEventListener("click", () => {
+        updateProfile();
+        copyText(agentPrompt(), elements.registerFeedback);
+      });
+
+      document.querySelector("[data-simulate-agent]").addEventListener("click", () => {
+        updateProfile();
+        elements.auth.value = authCode();
+        elements.registerFeedback.textContent = "Demo Agent returned an authorization code.";
+      });
+
+      document.querySelector("[data-verify-agent]").addEventListener("click", verifyAgent);
+      document.querySelector("[data-sync-proof]").addEventListener("click", syncProof);
+
+      document.querySelector("[data-sound-toggle]").addEventListener("click", (event) => {
+        state.sound = !state.sound;
+        event.currentTarget.setAttribute("aria-pressed", String(state.sound));
+        event.currentTarget.textContent = state.sound ? "SFX + MUSIC ON" : "SFX + MUSIC OFF";
+        elements.soundState.textContent = state.sound ? "On by default" : "Off";
+        if (state.sound) startMusic();
+        else stopMusic();
+      });
+
+      [elements.name, elements.handle, elements.role, elements.intro].forEach((input) => {
+        input.addEventListener("input", updateProfile);
+        input.addEventListener("change", updateProfile);
+      });
+
+      window.addEventListener("pointerdown", startMusic, { once: true });
+      window.addEventListener("keydown", startMusic, { once: true });
+      setTimeout(startMusic, 300);
+      updateProfile();
+    </script>
+  </body>
+</html>
