@@ -218,6 +218,7 @@
       position: relative;
       z-index: 2;
       min-width: 0;
+      --scene-floor: 204px;
       min-height: 500px;
       border: 6px solid var(--line);
       background:
@@ -237,6 +238,7 @@
       border: 5px solid var(--line);
       background: var(--gold);
       box-shadow: inset -12px -12px 0 #d69a21, 8px 8px 0 rgba(38,24,15,.18);
+      animation: sunPulse 5.5s steps(3, end) infinite;
     }
     .pixel-cloud,
     .pixel-cloud::before,
@@ -247,10 +249,12 @@
       background: var(--cream);
     }
     .pixel-cloud {
+      --cloud-scale: 1;
       top: 88px;
       left: 34px;
       width: 116px;
       height: 34px;
+      animation: cloudDrift 12s steps(6, end) infinite;
     }
     .pixel-cloud::before,
     .pixel-cloud::after {
@@ -265,7 +269,8 @@
       top: 158px;
       left: auto;
       right: 130px;
-      transform: scale(.72);
+      --cloud-scale: .72;
+      animation: cloudDriftSmall 14s steps(7, end) infinite;
     }
     .block-ground {
       position: absolute;
@@ -295,10 +300,14 @@
     }
     .block-tree {
       position: absolute;
+      --tree-scale: 1;
       left: 50px;
       bottom: 190px;
       width: 126px;
       height: 214px;
+      transform-origin: 50% 100%;
+      transform: scale(var(--tree-scale));
+      animation: treeReact 2.8s steps(4, end) infinite;
     }
     .block-tree::before {
       content: "";
@@ -373,6 +382,7 @@
       background: var(--sky-soft);
       z-index: 1;
       box-shadow: inset -8px -8px 0 var(--sky);
+      animation: windowBlink 4.8s steps(2, end) infinite;
     }
     .pixel-player {
       position: absolute;
@@ -419,7 +429,66 @@
       width: 24px;
       height: 58px;
       background: var(--gold);
+      transform-origin: 50% 88%;
       transform: rotate(-18deg);
+      animation: pickaxeSwing 2.8s steps(5, end) infinite;
+    }
+    .mine-spark,
+    .drop-block,
+    .receipt-chip {
+      position: absolute;
+      z-index: 3;
+      display: block;
+      border: 4px solid var(--line);
+      pointer-events: none;
+    }
+    .mine-spark {
+      left: calc(46% + 48px);
+      bottom: calc(var(--scene-floor) + 112px);
+      width: 18px;
+      height: 18px;
+      background: var(--gold);
+      box-shadow: 22px -16px 0 -5px var(--cream), -18px 18px 0 -6px var(--red);
+      opacity: 0;
+      animation: sparkPop 2.8s steps(4, end) infinite;
+    }
+    .mine-spark.two {
+      left: calc(46% + 68px);
+      bottom: calc(var(--scene-floor) + 72px);
+      width: 14px;
+      height: 14px;
+      background: var(--sky);
+      animation-delay: .24s;
+    }
+    .drop-block {
+      right: 88px;
+      bottom: calc(var(--scene-floor) + 178px);
+      width: 32px;
+      height: 32px;
+      background: var(--gold);
+      box-shadow: inset -7px -7px 0 rgba(38,24,15,.2), 6px 6px 0 rgba(38,24,15,.16);
+      opacity: 0;
+      animation: blockDrop 4.2s steps(7, end) infinite;
+    }
+    .drop-block.two {
+      right: 142px;
+      bottom: calc(var(--scene-floor) + 122px);
+      width: 26px;
+      height: 26px;
+      background: var(--grass-soft);
+      animation-delay: .9s;
+    }
+    .receipt-chip {
+      left: calc(50% + 16px);
+      bottom: calc(var(--scene-floor) + 188px);
+      width: 48px;
+      height: 36px;
+      background:
+        linear-gradient(var(--line) 0 4px, transparent 4px 11px, var(--line) 11px 15px, transparent 15px),
+        var(--cream);
+      box-shadow: 6px 6px 0 rgba(38,24,15,.18);
+      opacity: 0;
+      animation: receiptFloat 5.6s steps(8, end) infinite;
     }
     .scene-label {
       position: absolute;
@@ -434,6 +503,17 @@
       font-size: 13px;
       line-height: 1.3;
       font-weight: 950;
+    }
+    .scene-label::after {
+      content: "";
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      margin-left: 8px;
+      border: 3px solid var(--line);
+      background: var(--grass);
+      vertical-align: -1px;
+      animation: receiptPulse 1.4s steps(2, end) infinite;
     }
     .hotbar {
       display: grid;
@@ -452,13 +532,14 @@
       border: 3px solid var(--line);
       background: var(--cream);
       box-shadow: inset -6px -6px 0 rgba(38,24,15,.16);
+      animation: slotPulse 4.8s steps(2, end) infinite;
     }
     .hotbar i:nth-child(1) { background: var(--grass); }
-    .hotbar i:nth-child(2) { background: var(--wood); }
-    .hotbar i:nth-child(3) { background: var(--stone-soft); }
-    .hotbar i:nth-child(4) { background: var(--gold); }
-    .hotbar i:nth-child(5) { background: var(--sky); }
-    .hotbar i:nth-child(6) { background: var(--red); }
+    .hotbar i:nth-child(2) { background: var(--wood); animation-delay: .18s; }
+    .hotbar i:nth-child(3) { background: var(--stone-soft); animation-delay: .36s; }
+    .hotbar i:nth-child(4) { background: var(--gold); animation-delay: .54s; }
+    .hotbar i:nth-child(5) { background: var(--sky); animation-delay: .72s; }
+    .hotbar i:nth-child(6) { background: var(--red); animation-delay: .9s; }
     .cta-row {
       display: flex;
       flex-wrap: wrap;
@@ -810,6 +891,60 @@
       outline: 5px solid var(--red);
       outline-offset: 4px;
     }
+    @keyframes sunPulse {
+      0%, 100% { transform: translateY(0); filter: brightness(1); }
+      45% { transform: translateY(4px); filter: brightness(1.08); }
+      70% { transform: translateY(0); filter: brightness(1.14); }
+    }
+    @keyframes cloudDrift {
+      0%, 100% { transform: translateX(0) scale(var(--cloud-scale, 1)); }
+      50% { transform: translateX(28px) scale(var(--cloud-scale, 1)); }
+    }
+    @keyframes cloudDriftSmall {
+      0%, 100% { transform: translateX(0) scale(var(--cloud-scale, .72)); }
+      50% { transform: translateX(-24px) scale(var(--cloud-scale, .72)); }
+    }
+    @keyframes treeReact {
+      0%, 42%, 100% { transform: translateX(0) rotate(0) scale(var(--tree-scale, 1)); }
+      50% { transform: translateX(-3px) rotate(-1deg) scale(var(--tree-scale, 1)); }
+      58% { transform: translateX(4px) rotate(1deg) scale(var(--tree-scale, 1)); }
+      66% { transform: translateX(0) rotate(0) scale(var(--tree-scale, 1)); }
+    }
+    @keyframes windowBlink {
+      0%, 58%, 100% { background: var(--sky-soft); }
+      60%, 68% { background: var(--gold); }
+    }
+    @keyframes pickaxeSwing {
+      0%, 38%, 100% { transform: rotate(-18deg); }
+      48% { transform: rotate(34deg) translate(8px, -4px); }
+      56% { transform: rotate(-34deg) translate(-7px, 5px); }
+      64% { transform: rotate(-18deg); }
+    }
+    @keyframes sparkPop {
+      0%, 42%, 70%, 100% { opacity: 0; transform: scale(.6); }
+      48% { opacity: 1; transform: scale(1); }
+      58% { opacity: .86; transform: translate(10px, -12px) scale(.86); }
+    }
+    @keyframes blockDrop {
+      0%, 28%, 100% { opacity: 0; transform: translateY(-28px) scale(.8); }
+      38% { opacity: 1; transform: translateY(0) scale(1); }
+      62% { opacity: 1; transform: translateY(42px) scale(1); }
+      72% { opacity: 0; transform: translateY(56px) scale(.86); }
+    }
+    @keyframes receiptFloat {
+      0%, 34%, 100% { opacity: 0; transform: translateY(18px) rotate(0); }
+      44% { opacity: 1; transform: translateY(0) rotate(-3deg); }
+      66% { opacity: 1; transform: translateY(-20px) rotate(3deg); }
+      78% { opacity: 0; transform: translateY(-28px) rotate(0); }
+    }
+    @keyframes receiptPulse {
+      0%, 100% { transform: scale(1); background: var(--grass); }
+      50% { transform: scale(1.25); background: var(--gold); }
+    }
+    @keyframes slotPulse {
+      0%, 12%, 100% { transform: translateY(0); box-shadow: inset -6px -6px 0 rgba(38,24,15,.16); }
+      6% { transform: translateY(-7px); box-shadow: inset -6px -6px 0 rgba(38,24,15,.16), 0 7px 0 rgba(38,24,15,.22); }
+    }
     @media (max-width: 920px) {
       .topbar {
         position: absolute;
@@ -824,7 +959,7 @@
       .hero-inner { grid-template-columns: 1fr; }
       .world-scene { min-height: 430px; }
       .block-house { right: 22px; transform: scale(.84); transform-origin: right bottom; }
-      .block-tree { left: 24px; transform: scale(.82); transform-origin: left bottom; }
+      .block-tree { left: 24px; --tree-scale: .82; transform-origin: left bottom; }
       .pixel-player { left: 48%; transform: translateX(-50%) scale(.86); transform-origin: bottom center; }
       .section-head,
       .stage,
@@ -862,11 +997,12 @@
         box-shadow: 5px 5px 0 var(--shadow);
       }
       .world-scene {
+        --scene-floor: 160px;
         min-height: 300px;
         box-shadow: 8px 8px 0 var(--shadow);
       }
       .pixel-sun { width: 58px; height: 58px; top: 22px; right: 22px; }
-      .pixel-cloud { transform: scale(.72); transform-origin: left top; }
+      .pixel-cloud { --cloud-scale: .72; transform-origin: left top; }
       .pixel-cloud.second { display: none; }
       .block-ground { height: 118px; }
       .grass-top {
@@ -881,7 +1017,7 @@
       .block-tree {
         left: -6px;
         bottom: 150px;
-        transform: scale(.54);
+        --tree-scale: .54;
       }
       .pixel-player {
         left: 48%;
@@ -994,6 +1130,23 @@
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
+      .pixel-sun,
+      .pixel-cloud,
+      .block-tree,
+      .house-window,
+      .pixel-player strong,
+      .hotbar i,
+      .mine-spark,
+      .drop-block,
+      .receipt-chip,
+      .scene-label::after {
+        animation: none;
+      }
+      .mine-spark,
+      .drop-block,
+      .receipt-chip {
+        opacity: 0;
+      }
     }
   </style>
 </head>
@@ -1042,6 +1195,11 @@
             <span class="block-tree" aria-hidden="true"></span>
             <span class="block-house" aria-hidden="true"><i class="house-door"></i><i class="house-window"></i></span>
             <span class="pixel-player" aria-hidden="true"><i></i><b></b><em></em><strong></strong></span>
+            <span class="mine-spark" aria-hidden="true"></span>
+            <span class="mine-spark two" aria-hidden="true"></span>
+            <span class="drop-block" aria-hidden="true"></span>
+            <span class="drop-block two" aria-hidden="true"></span>
+            <span class="receipt-chip" aria-hidden="true"></span>
             <span class="grass-top" aria-hidden="true"></span>
             <span class="block-ground" aria-hidden="true"></span>
             <strong class="scene-label" data-i18n="sceneLabel">Agent builds the quest. Your village changes when the receipt lands.</strong>
