@@ -34,6 +34,7 @@
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
+      overflow-x: hidden;
       background:
         linear-gradient(90deg, rgba(38,24,15,.06) 0 2px, transparent 2px 54px),
         linear-gradient(rgba(38,24,15,.05) 0 2px, transparent 2px 54px),
@@ -170,12 +171,15 @@
       width: min(1160px, 100%);
       margin: 0 auto;
       display: grid;
-      grid-template-columns: minmax(0, .92fr) minmax(360px, .78fr);
-      gap: 22px;
+      grid-template-columns: minmax(0, .92fr) minmax(360px, .68fr);
+      gap: clamp(18px, 3vw, 42px);
       align-items: end;
       padding-bottom: 54px;
     }
     .hero-copy-wrap {
+      position: relative;
+      z-index: 3;
+      min-width: 0;
       display: grid;
       gap: 22px;
       align-content: end;
@@ -193,11 +197,12 @@
       overflow-wrap: anywhere;
     }
     h1 {
-      max-width: 760px;
+      max-width: 100%;
       margin: 0;
-      font-size: clamp(60px, 12vw, 154px);
-      line-height: .86;
+      font-size: clamp(54px, 8.2vw, 112px);
+      line-height: .9;
       letter-spacing: 0;
+      overflow-wrap: anywhere;
       text-shadow: 6px 6px 0 rgba(38,24,15,.16);
     }
     .hero-copy {
@@ -207,9 +212,12 @@
       font-size: clamp(20px, 2.6vw, 30px);
       line-height: 1.2;
       font-weight: 850;
+      overflow-wrap: anywhere;
     }
     .world-scene {
       position: relative;
+      z-index: 2;
+      min-width: 0;
       min-height: 500px;
       border: 6px solid var(--line);
       background:
@@ -811,6 +819,7 @@
       .nav { justify-content: flex-start; }
       .hero {
         min-height: 92vh;
+        padding-top: 184px;
       }
       .hero-inner { grid-template-columns: 1fr; }
       .world-scene { min-height: 430px; }
@@ -836,26 +845,143 @@
     }
     @media (max-width: 560px) {
       .hero {
-        padding-top: 188px;
+        min-height: auto;
+        padding: 174px 14px 34px;
       }
-      .world-scene { min-height: 360px; }
+      .hero-copy-wrap {
+        gap: 16px;
+      }
+      h1 {
+        font-size: clamp(48px, 15vw, 58px);
+        line-height: .95;
+        text-shadow: 4px 4px 0 rgba(38,24,15,.16);
+      }
+      .eyebrow {
+        padding: 6px 8px;
+        font-size: 11px;
+        box-shadow: 5px 5px 0 var(--shadow);
+      }
+      .world-scene {
+        min-height: 300px;
+        box-shadow: 8px 8px 0 var(--shadow);
+      }
       .pixel-sun { width: 58px; height: 58px; top: 22px; right: 22px; }
       .pixel-cloud { transform: scale(.72); transform-origin: left top; }
       .pixel-cloud.second { display: none; }
-      .block-house { right: -22px; transform: scale(.58); }
-      .block-tree { left: 4px; transform: scale(.6); }
-      .pixel-player { left: 48%; transform: translateX(-50%) scale(.68); }
-      .hotbar { grid-template-columns: repeat(6, 34px); }
-      .hotbar i { width: 34px; height: 34px; }
+      .block-ground { height: 118px; }
+      .grass-top {
+        bottom: 118px;
+        height: 42px;
+      }
+      .block-house {
+        right: -34px;
+        bottom: 150px;
+        transform: scale(.5);
+      }
+      .block-tree {
+        left: -6px;
+        bottom: 150px;
+        transform: scale(.54);
+      }
+      .pixel-player {
+        left: 48%;
+        bottom: 150px;
+        transform: translateX(-50%) scale(.62);
+      }
+      .scene-label {
+        display: none;
+      }
+      .hotbar {
+        grid-template-columns: repeat(6, 32px);
+        gap: 4px;
+        padding: 5px;
+        box-shadow: 7px 7px 0 var(--shadow);
+      }
+      .hotbar i { width: 32px; height: 32px; }
       .topbar {
-        width: calc(100% - 18px);
-        top: 9px;
+        width: calc(100% - 16px);
+        top: 8px;
+        gap: 8px;
+        padding: 8px;
+        box-shadow: 7px 7px 0 var(--shadow);
+      }
+      .brand {
+        width: 100%;
+        font-size: 14px;
+      }
+      .mark {
+        width: 38px;
+        height: 38px;
+      }
+      .nav {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 6px;
+      }
+      .nav a[href="#world"],
+      .nav a[href="#how"] {
+        display: none;
       }
       .nav a,
       .nav button {
+        width: 100%;
+        min-width: 0;
         min-height: 38px;
-        padding: 7px 9px;
-        font-size: 12px;
+        padding: 7px 6px;
+        font-size: 11px;
+        text-align: center;
+        box-shadow: 4px 4px 0 var(--shadow);
+        overflow-wrap: break-word;
+      }
+      .nav a.primary {
+        grid-column: 1 / -1;
+      }
+      .hero-inner,
+      .hero-copy-wrap,
+      .cta-row,
+      .world-scene,
+      .hotbar {
+        min-width: 0;
+      }
+      .hero-inner {
+        width: calc(100vw - 28px);
+        max-width: calc(100vw - 28px);
+        margin: 0 auto;
+      }
+      .hero-copy-wrap,
+      .cta-row,
+      .world-scene {
+        width: 100%;
+        max-width: 100%;
+      }
+      .hero-copy-wrap,
+      .cta-row {
+        width: min(100%, 340px);
+        max-width: calc(100vw - 48px);
+      }
+      .world-scene {
+        width: min(100%, 340px);
+        max-width: calc(100vw - 48px);
+      }
+      .hero-copy {
+        width: 100%;
+        max-width: 100%;
+        font-size: 17px;
+        line-height: 1.22;
+        overflow-wrap: break-word;
+      }
+      .cta-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 9px;
+      }
+      .cta {
+        width: 100%;
+        min-height: 48px;
+        padding: 10px 12px;
+        font-size: 14px;
+        box-shadow: 5px 5px 0 var(--shadow);
       }
       .section {
         width: min(100% - 18px, 1160px);
@@ -894,7 +1020,7 @@
             <span class="eyebrow" data-i18n="heroEyebrow">Build for Fun · Create for Happy</span>
             <h1 id="hero-title">VibeCraft</h1>
             <p class="hero-copy" data-i18n="heroCopy">
-              A Happy Build visual learning engine for non-technical vibe coders. Let knowledge enter your brain in cute, weird, game-like forms.
+              Happy Build for people creating with AI, no tech jargon required. Knowledge enters your brain as cute, weird, game-like blocks.
             </p>
             <div class="cta-row">
               <a class="cta primary" href="vibecraft-demo.html" data-i18n="ctaPrimary">Enter the Workshop</a>
@@ -1082,7 +1208,7 @@
         navHow: "How It Works",
         navWorkshop: "Enter Workshop",
         heroEyebrow: "Build for Fun · Create for Happy",
-        heroCopy: "A Happy Build visual learning engine for non-technical vibe coders. Let knowledge enter your brain in cute, weird, game-like forms.",
+        heroCopy: "Happy Build for people creating with AI, no tech jargon required. Knowledge enters your brain as cute, weird, game-like blocks.",
         sceneLabel: "Agent builds the quest. Your village changes when the receipt lands.",
         ctaPrimary: "Enter the Workshop",
         ctaSecondary: "See Your Vibe Bio",
@@ -1149,7 +1275,7 @@
         navHow: "如何运转",
         navWorkshop: "进入工坊",
         heroEyebrow: "Build for Fun · Create for Happy",
-        heroCopy: "面向非技术 vibe coding 人群的 Happy Build 可视化学习引擎。让知识以可爱、奇怪、游戏化的形式进入脑袋。",
+        heroCopy: "给用 AI 创作的人一套快乐建造引擎，不被技术黑话挡住。知识会变成可爱、奇怪、游戏化的方块进入脑袋。",
         sceneLabel: "Agent 完成任务，receipt 落地后，你的村庄就会变化。",
         ctaPrimary: "进入工坊",
         ctaSecondary: "看看 Vibe Bio",
