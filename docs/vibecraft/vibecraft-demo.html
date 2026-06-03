@@ -44,6 +44,8 @@
       min-height: 100vh;
       margin: 0 auto;
       padding: 24px;
+      display: flex;
+      flex-direction: column;
     }
     .topbar {
       display: grid;
@@ -246,6 +248,15 @@
       box-shadow: 10px 10px 0 var(--shadow);
       backdrop-filter: blur(6px);
     }
+    .topbar { order: 0; }
+    .workshop-hotbar { order: 1; }
+    .app > .demo-brief { display: none !important; }
+    .exploration-map { order: 2; }
+    .world-region-banner { order: 3; }
+    .world-region,
+    .world-grid,
+    .section-grid { order: 4; }
+    .footer { order: 9; }
     .hotbar-slot {
       min-height: 74px;
       display: grid;
@@ -922,9 +933,54 @@
       padding: 12px;
       border: 4px solid var(--line);
       background:
-        linear-gradient(135deg, rgba(255,255,255,.18) 25%, transparent 25%) 0 0 / 18px 18px,
-        #d8c0a0;
-      box-shadow: inset 0 0 0 4px rgba(255,255,255,.18);
+        linear-gradient(90deg, rgba(255,255,255,.12) 0 18px, transparent 18px 54px),
+        linear-gradient(rgba(255,255,255,.1) 0 18px, transparent 18px 54px),
+        #a66a3f;
+      background-size: 54px 54px, 54px 54px, auto;
+      box-shadow: inset -8px -8px 0 rgba(38,24,15,.18);
+    }
+    .agent-onramp {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: agent-step;
+    }
+    .agent-onramp li {
+      counter-increment: agent-step;
+      min-width: 0;
+      padding: 10px;
+      border: 4px solid var(--line);
+      background: rgba(255,248,220,.95);
+      box-shadow: 5px 5px 0 var(--shadow);
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.25;
+      font-weight: 900;
+      overflow-wrap: anywhere;
+    }
+    .agent-onramp li::before {
+      content: counter(agent-step);
+      display: inline-grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      margin-right: 6px;
+      border: 3px solid var(--line);
+      background: var(--gold);
+      color: var(--ink);
+    }
+    .agent-registration-box textarea[data-agent-registration-command] {
+      min-height: 230px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.08) 0 18px, transparent 18px 54px),
+        #22170f;
+      color: #fff2c8;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      text-shadow: 2px 2px 0 rgba(0,0,0,.34);
     }
     .crafting-preview {
       display: grid;
@@ -1927,6 +1983,58 @@
     .exploration-map {
       margin-bottom: 18px;
     }
+    .world-region {
+      scroll-margin-top: 124px;
+    }
+    .world-region:not(.is-active) {
+      display: none !important;
+    }
+    .world-region.is-active {
+      animation: region-enter .22s steps(2, end);
+    }
+    .world-grid > .world-region.is-active,
+    .world-grid > .side-stack.world-region.is-active,
+    .section-grid > .world-region.is-active {
+      grid-column: 1 / -1;
+    }
+    body[data-active-world-region="mine"] #brain,
+    body[data-active-world-region="brain"] #explore,
+    body[data-active-world-region="brain"] .world-grid > .panel[data-world-region="mine"] {
+      display: none;
+    }
+    .world-region-banner {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      margin: 18px 0;
+      padding: 12px;
+      border: 5px solid var(--line);
+      background: rgba(255,248,220,.96);
+      box-shadow: 8px 8px 0 var(--shadow);
+      color: #4f3b29;
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 900;
+    }
+    .world-region-banner strong {
+      color: var(--ink);
+      font-size: 15px;
+    }
+    .world-region-banner button {
+      min-height: 38px;
+      border: 4px solid var(--line);
+      background: var(--gold);
+      box-shadow: 5px 5px 0 var(--shadow);
+      color: var(--ink);
+      font-weight: 950;
+      cursor: pointer;
+    }
+    @keyframes region-enter {
+      from { transform: translateY(10px); opacity: .55; }
+      to { transform: translateY(0); opacity: 1; }
+    }
     .map-stage {
       min-height: 590px;
       position: relative;
@@ -1953,17 +2061,17 @@
     .map-copy {
       position: relative;
       z-index: 2;
-      width: min(460px, 100%);
+      width: min(390px, 100%);
       display: grid;
       gap: 12px;
-      padding: 16px;
+      padding: 14px;
       border: 5px solid var(--line);
       background: rgba(255, 248, 220, .94);
       box-shadow: 10px 10px 0 var(--shadow);
     }
     .map-copy h3 {
       margin: 0;
-      font-size: clamp(28px, 4.8vw, 58px);
+      font-size: clamp(26px, 3.2vw, 42px);
       line-height: .95;
     }
     .map-copy p {
@@ -2032,7 +2140,14 @@
       transform: translate(-3px, -3px);
       box-shadow: 12px 12px 0 var(--shadow);
     }
-    .map-location.mine { left: 28%; top: 38%; background: #c6eafa; }
+    .map-location[aria-pressed="true"] {
+      outline: 6px solid var(--gold);
+      outline-offset: 3px;
+      box-shadow: 13px 13px 0 var(--shadow);
+    }
+    .map-location.spawn { left: 9%; bottom: 62px; background: #fff8dc; }
+    .map-location.quest { left: 34%; top: 28%; background: #d8c0a0; }
+    .map-location.mine { left: 31%; top: 48%; background: #c6eafa; }
     .map-location.craft { left: 53%; top: 31%; background: #fff2c8; }
     .map-location.skills { right: 9%; top: 43%; background: #cde9b9; }
     .map-location.brain { left: 39%; bottom: 46px; background: #b9dcea; }
@@ -3014,6 +3129,8 @@
       .map-location.skills { right: 6%; top: 42%; }
       .map-location.brain { left: 22%; bottom: 52px; }
       .map-location.village { right: 8%; bottom: 58px; }
+      .map-location.spawn { left: 6%; top: 60%; bottom: auto; }
+      .map-location.quest { left: 8%; top: 22%; }
     }
     @media (max-width: 760px) {
       .app { padding: 14px; }
@@ -3043,6 +3160,7 @@
       .demo-path,
       .mvp-steps,
       .agent-registration-actions,
+      .agent-onramp,
       .registration-actions,
       .sync-stats,
       .stats {
@@ -3097,6 +3215,8 @@
       .map-location.craft,
       .map-location.skills,
       .map-location.brain,
+      .map-location.spawn,
+      .map-location.quest,
       .map-location.village {
         inset: auto;
         left: auto;
@@ -3136,6 +3256,65 @@
       .npc-ring {
         display: grid;
         gap: 12px;
+      }
+    }
+    .topbar {
+      grid-template-columns: minmax(360px, .48fr) minmax(0, 1fr);
+      align-items: start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .brand {
+      align-items: center;
+      gap: 12px;
+    }
+    .mark {
+      width: 50px;
+      height: 50px;
+      box-shadow: inset -7px -7px 0 var(--grass-dark), 6px 6px 0 var(--shadow);
+    }
+    .brand h1 {
+      max-width: none;
+      font-size: clamp(28px, 3.2vw, 44px);
+      line-height: .92;
+      white-space: nowrap;
+    }
+    .brand p {
+      max-width: 460px;
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 1.28;
+    }
+    .nav {
+      align-content: start;
+      gap: 6px;
+    }
+    .nav a,
+    .nav button {
+      min-height: 36px;
+      padding: 8px 10px;
+      font-size: 12px;
+      box-shadow: 4px 4px 0 var(--shadow);
+    }
+    .player-badge {
+      min-height: 34px;
+      padding: 7px 10px;
+      font-size: 12px;
+      box-shadow: 4px 4px 0 var(--shadow);
+    }
+    .workshop-hotbar {
+      margin-top: 0;
+    }
+    @media (max-width: 760px) {
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+      .brand h1 {
+        white-space: normal;
+        font-size: clamp(30px, 10vw, 42px);
+      }
+      .brand p {
+        max-width: 100%;
       }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -3220,7 +3399,7 @@
       </div>
     </section>
 
-    <section class="panel mvp-quest" id="playable-loop" data-mvp-quest aria-label="VibeCraft playable loop">
+    <section class="panel mvp-quest world-region" id="playable-loop" data-world-region="quest" data-mvp-quest aria-label="VibeCraft playable loop">
       <div class="panel-head">
         <h2 data-i18n="mvpTitle">Goal Tree Quest</h2>
         <span data-mvp-progress>0/5</span>
@@ -3286,7 +3465,7 @@
       </div>
     </section>
 
-    <section class="panel onboarding" data-onboarding>
+    <section class="panel onboarding world-region is-active" data-world-region="register" data-onboarding>
       <div class="panel-head">
         <h2 data-i18n="onboardingTitle">Join Vibe Village</h2>
         <span data-i18n="onboardingTag">Registration + Avatar</span>
@@ -3336,6 +3515,11 @@
               <strong class="crafting-output" data-i18n="craftingOutput">Village Pass</strong>
               <p class="crafting-caption" data-i18n="craftingCaption">Role, avatar, authorized local context, and Agent proof combine into one verified starter identity.</p>
             </div>
+            <ol class="agent-onramp" aria-label="Agent-only registration steps">
+              <li data-i18n="agentOnrampOne">Copy one command block instruction.</li>
+              <li data-i18n="agentOnrampTwo">Paste it into Codex or another Agent.</li>
+              <li data-i18n="agentOnrampThree">Paste back the returned code or JSON proof.</li>
+            </ol>
             <label class="name-field">
               <span data-i18n="agentCommandLabel">Agent registration command</span>
               <textarea data-agent-registration-command readonly aria-label="Agent registration command"></textarea>
@@ -3542,7 +3726,7 @@
       </div>
     </section>
 
-    <section class="panel vibe-bio-panel" id="vibe-bio" data-vibe-bio aria-label="VibeCraft public bio">
+    <section class="panel vibe-bio-panel world-region" id="vibe-bio" data-world-region="village" data-vibe-bio aria-label="VibeCraft public bio">
       <div class="panel-head">
         <h2 data-i18n="publicBioTitle">Vibe Bio Passport</h2>
         <span class="public-domain-badge" data-public-domain>username.vibecraft.bio</span>
@@ -3606,7 +3790,7 @@
       </div>
     </section>
 
-    <section class="panel sync-panel" id="agent-sync" data-agent-sync>
+    <section class="panel sync-panel world-region" id="agent-sync" data-world-region="quest" data-agent-sync>
       <div class="panel-head">
         <h2 data-i18n="agentSyncTitle">Agent Completion Sync</h2>
         <span data-i18n="agentSyncTag">Completion Receipt</span>
@@ -3666,31 +3850,43 @@
         </div>
         <div class="map-path" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
 
-        <button class="map-location mine" type="button" data-map-target="#explore">
+        <button class="map-location spawn" type="button" data-map-region="register" data-map-target="#register" aria-pressed="true">
+          <span class="map-icon house" aria-hidden="true"><i></i><b></b><em></em></span>
+          <strong data-i18n="mapSpawnTitle">Spawn Point</strong>
+          <small data-i18n="mapSpawnTag">Register through your Agent</small>
+        </button>
+
+        <button class="map-location quest" type="button" data-map-region="quest" data-map-target="#playable-loop" aria-pressed="false">
+          <span class="map-icon tree" aria-hidden="true"><i></i><b></b><em></em></span>
+          <strong data-i18n="mapQuestTitle">Goal Tree</strong>
+          <small data-i18n="mapQuestTag">Watch work become progress</small>
+        </button>
+
+        <button class="map-location mine" type="button" data-map-region="mine" data-map-target="#blocks" aria-pressed="false">
           <span class="map-icon crystal" aria-hidden="true"><i></i><b></b><em></em></span>
           <strong data-i18n="mapMineTitle">Knowledge Mine</strong>
           <small data-i18n="mapMineTag">Dig into unclear parts</small>
         </button>
 
-        <button class="map-location craft" type="button" data-map-target="#crafting">
+        <button class="map-location craft" type="button" data-map-region="craft" data-map-target="#crafting" aria-pressed="false">
           <span class="map-icon table" aria-hidden="true"><i></i><b></b><em></em></span>
           <strong data-i18n="mapCraftTitle">Crafting Table</strong>
           <small data-i18n="mapCraftTag">Turn blocks into cards</small>
         </button>
 
-        <button class="map-location skills" type="button" data-map-target="#skills">
+        <button class="map-location skills" type="button" data-map-region="skills" data-map-target="#skills" aria-pressed="false">
           <span class="map-icon tree" aria-hidden="true"><i></i><b></b><em></em></span>
           <strong data-i18n="mapSkillsTitle">Skill Tree</strong>
           <small data-i18n="mapSkillsTag">See identity growth</small>
         </button>
 
-        <button class="map-location brain" type="button" data-map-target="#brain">
+        <button class="map-location brain" type="button" data-map-region="brain" data-map-target="#brain" aria-pressed="false">
           <span class="map-icon brain" aria-hidden="true"><i></i><b></b><em></em></span>
           <strong data-i18n="mapBrainTitle">Vibe Brain</strong>
           <small data-i18n="mapBrainTag">Grant memory with keys</small>
         </button>
 
-        <button class="map-location village" type="button" data-map-target="#village">
+        <button class="map-location village" type="button" data-map-region="village" data-map-target="#village" aria-pressed="false">
           <span class="map-icon house" aria-hidden="true"><i></i><b></b><em></em></span>
           <strong data-i18n="mapVillageTitle">Vibe Village</strong>
           <small data-i18n="mapVillageTag">Meet possible collaborators</small>
@@ -3698,8 +3894,16 @@
       </div>
     </section>
 
+    <div class="world-region-banner" data-world-region-banner>
+      <div>
+        <strong data-active-region-title>Spawn Point</strong>
+        <span data-active-region-copy>Copy the Agent command, paste it into your Agent, then bring the authorization proof back here.</span>
+      </div>
+      <button type="button" data-return-map data-i18n="returnToMap">Return to World Map</button>
+    </div>
+
     <section class="world-grid">
-      <div class="panel">
+      <div class="panel world-region" data-world-region="mine">
         <div class="hero-world">
           <article class="session-card">
             <span>Happy Build Session</span>
@@ -4293,7 +4497,7 @@
         </button></div>
       </div>
 
-      <aside class="side-stack">
+      <aside class="side-stack world-region" data-world-region="mine brain">
         <section class="panel" id="explore">
           <div class="panel-head">
             <h2 data-i18n="explainerTitle">Plain-Language Explainer</h2>
@@ -4336,7 +4540,7 @@
     </section>
 
     <section class="section-grid">
-      <div class="panel" id="crafting">
+      <div class="panel world-region" id="crafting" data-world-region="craft">
         <div class="panel-head">
           <h2 data-i18n="craftingTitle">Knowledge Crafting Table</h2>
           <span>Agent Crafting</span>
@@ -4378,7 +4582,7 @@
         </article></div>
         </div>
       </div>
-      <div class="panel" id="skills">
+      <div class="panel world-region" id="skills" data-world-region="skills">
         <div class="panel-head">
           <h2 data-i18n="skillTreeTitle">Skill Tree</h2>
           <span data-i18n="skillTreeTag">Identity gets clearer</span>
@@ -4435,7 +4639,7 @@
         </article></div>
         </div>
       </div>
-      <div class="panel" id="packs">
+      <div class="panel world-region" id="packs" data-world-region="skills">
         <div class="panel-head">
           <h2 data-i18n="packsTitle">Growth Packs</h2>
           <span data-i18n="packsTag">Unlocked by Agent sync</span>
@@ -4555,7 +4759,7 @@
         </article></div>
         </div>
       </div>
-      <div class="panel" id="insights">
+      <div class="panel world-region" id="insights" data-world-region="skills">
         <div class="panel-head">
           <h2 data-i18n="insightTitle">Vibe Insight</h2>
           <span data-i18n="insightTag">Positive only</span>
@@ -4587,7 +4791,7 @@
         </article></div>
         </div>
       </div>
-      <div class="panel" id="village">
+      <div class="panel world-region" id="village" data-world-region="village">
         <div class="panel-head">
           <h2 data-i18n="villageTitle">Vibe Village</h2>
           <span data-i18n="villageTag">Complementary collaboration</span>
@@ -4769,9 +4973,12 @@
         inviteLabel: "Invite code (optional)",
         invitePlaceholder: "e.g. HAPPYBUILD",
         inviteHint: "Optional; for hackathons, communities, or special skill packs.",
-        agentCommandLabel: "Agent registration command",
-        agentCommandHint: "Copy this instruction into your Agent. The Agent returns a scoped authorization proof for this Village ID.",
-        copyAgentCommand: "Copy Agent Command",
+        agentCommandLabel: "Agent command block",
+        agentCommandHint: "Paste this whole block into Codex or another Agent. The Agent only needs to return the authorization code or the JSON proof.",
+        agentOnrampOne: "Copy one command block instruction.",
+        agentOnrampTwo: "Paste it into Codex or another Agent.",
+        agentOnrampThree: "Paste back the returned code or JSON proof.",
+        copyAgentCommand: "Copy Command Block",
         simulateAgentProof: "Simulate Agent Proof",
         craftingOutput: "Village Pass",
         craftingCaption: "Role, avatar, authorized local context, and Agent proof combine into one verified starter identity.",
@@ -4837,10 +5044,14 @@
         syncHeadline: "When Agent finishes, your world changes",
         webPolicy: "The Web side is mostly a viewer and profile editor. Unlocks come from Agent completion proofs after real work, so game progress stays believable.",
         mapTitle: "Explore Your Vibe World",
-        mapTag: "Each place answers one simple question",
+        mapTag: "Choose one place to enter",
         mapKicker: "World Map",
-        mapHeadline: "Walk through progress instead of reading a pile of cards.",
-        mapCopy: "Mine asks what you learned. Crafting asks what you can reuse. Skill Tree asks who you are becoming. Vibe Brain asks what future Agents may remember. Village asks who should build with you.",
+        mapHeadline: "Pick a place. Enter it. Do not read the whole world at once.",
+        mapCopy: "Like a real block world, VibeCraft opens one location at a time. Spawn registers your identity. Goal Tree shows work progress. Mine, Crafting, Skills, Brain, and Village unlock as you explore.",
+        mapSpawnTitle: "Spawn Point",
+        mapSpawnTag: "Register through your Agent",
+        mapQuestTitle: "Goal Tree",
+        mapQuestTag: "Watch work become progress",
         mapMineTitle: "Knowledge Mine",
         mapMineTag: "Dig into unclear parts",
         mapCraftTitle: "Crafting Table",
@@ -4851,6 +5062,21 @@
         mapBrainTag: "Grant memory with keys",
         mapVillageTitle: "Vibe Village",
         mapVillageTag: "Meet possible collaborators",
+        returnToMap: "Return to World Map",
+        activeRegionRegisterTitle: "Spawn Point",
+        activeRegionRegisterCopy: "Copy the Agent command, paste it into your Agent, then bring the authorization proof back here.",
+        activeRegionQuestTitle: "Goal Tree",
+        activeRegionQuestCopy: "Agent completion hits the tree. Sync a receipt to turn real work into visible progress.",
+        activeRegionMineTitle: "Knowledge Mine",
+        activeRegionMineCopy: "Open mined blocks only when you want to inspect what was learned.",
+        activeRegionCraftTitle: "Crafting Table",
+        activeRegionCraftCopy: "Crafted understanding cards appear after Agent drops give the Web something real to show.",
+        activeRegionSkillsTitle: "Skill Tree",
+        activeRegionSkillsCopy: "Your identity becomes clearer as Agent receipts confirm repeated strengths.",
+        activeRegionBrainTitle: "Vibe Brain",
+        activeRegionBrainCopy: "Your accumulated memory can be exported or granted to future Agents with a key.",
+        activeRegionVillageTitle: "Vibe Village",
+        activeRegionVillageCopy: "Show the public card, meet complementary builders, and invite collaboration.",
         syncMechanism: "Completion Upload Flow",
         dropReceiptLabel: "Drop Receipt",
         syncWaiting: "Waiting",
@@ -5093,9 +5319,12 @@
         inviteLabel: "邀请码（可选）",
         invitePlaceholder: "例如：HAPPYBUILD",
         inviteHint: "可选；黑客松、社群或技能包的邀请码。",
-        agentCommandLabel: "Agent 注册指令",
-        agentCommandHint: "复制这段指令给你的 Agent。Agent 会为这个灵感村 ID 返回一个带权限范围的授权证明。",
-        copyAgentCommand: "复制 Agent 指令",
+        agentCommandLabel: "Agent 命令方块",
+        agentCommandHint: "把整段命令方块粘贴给 Codex 或其他 Agent。Agent 只需要返回授权码，或返回完整 JSON 证明。",
+        agentOnrampOne: "复制一整段命令方块。",
+        agentOnrampTwo: "粘贴给 Codex 或其他 Agent。",
+        agentOnrampThree: "把返回的授权码或 JSON 证明贴回来。",
+        copyAgentCommand: "复制命令方块",
         simulateAgentProof: "模拟 Agent 证明",
         craftingOutput: "村庄通行证",
         craftingCaption: "角色、人物形象、授权本地上下文和 Agent 证明，会合成为一个已验证的初始身份。",
@@ -5161,10 +5390,14 @@
         syncHeadline: "Agent 做完，世界就会变化",
         webPolicy: "Web 端主要负责查看和修改公开资料。解锁来自 Agent 完成真实任务后的完成凭证，所以游戏进度不是手刷出来的。",
         mapTitle: "探索你的 Vibe 世界",
-        mapTag: "每个地点回答一个简单问题",
+        mapTag: "一次只进入一个地点",
         mapKicker: "世界地图",
-        mapHeadline: "不要读一堆卡片，直接走进进展里。",
-        mapCopy: "矿洞问：我学到了什么？合成台问：什么能复用？技能树问：我正在变成谁？进化大脑问：未来的 Agent 可以记住什么？灵感村问：谁适合和我一起 build？",
+        mapHeadline: "选一个地点，进入它。不要一次读完整个世界。",
+        mapCopy: "像真实方块世界一样，VibeCraft 一次只打开一个地点。出生点负责注册，目标树展示工作进度；矿洞、合成台、技能树、进化大脑和村庄会随着探索进入。",
+        mapSpawnTitle: "出生点",
+        mapSpawnTag: "通过 Agent 注册",
+        mapQuestTitle: "目标树",
+        mapQuestTag: "看工作变成进度",
         mapMineTitle: "知识矿洞",
         mapMineTag: "挖开不懂的部分",
         mapCraftTitle: "合成台",
@@ -5175,6 +5408,21 @@
         mapBrainTag: "用 key 授权记忆",
         mapVillageTitle: "灵感村",
         mapVillageTag: "遇见可合作的人",
+        returnToMap: "返回世界地图",
+        activeRegionRegisterTitle: "出生点",
+        activeRegionRegisterCopy: "复制 Agent 命令方块，粘贴给你的 Agent，再把授权证明带回这里。",
+        activeRegionQuestTitle: "目标树",
+        activeRegionQuestCopy: "Agent 完成任务就像砍树命中。同步凭证后，真实工作会变成可见进度。",
+        activeRegionMineTitle: "知识矿洞",
+        activeRegionMineCopy: "想检查自己学到了什么时，再进入矿洞打开知识方块。",
+        activeRegionCraftTitle: "合成台",
+        activeRegionCraftCopy: "Agent 掉落提供真实材料后，Web 才展示合成出的理解卡。",
+        activeRegionSkillsTitle: "技能树",
+        activeRegionSkillsCopy: "随着 Agent 凭证确认重复优势，你的身份会越来越清晰。",
+        activeRegionBrainTitle: "进化大脑",
+        activeRegionBrainCopy: "你的积累可以导出，也可以用 key 授权给未来的 Agent。",
+        activeRegionVillageTitle: "灵感村",
+        activeRegionVillageCopy: "展示公开名片，遇见互补建造者，发起合作邀请。",
         syncMechanism: "完成状态上传机制",
         dropReceiptLabel: "掉落凭证",
         syncWaiting: "待同步",
@@ -5529,17 +5777,42 @@
     }
     function buildRegistrationCommand() {
       const proof = buildRegistrationProof();
+      const commandPayload = {
+        schema_version: proof.schema_version,
+        profile_handle: proof.profile_handle,
+        builder_name: proof.builder_name,
+        role: proof.role,
+        public_intro: proof.public_intro,
+        authorized_scopes: proof.authorized_scopes,
+        authorization_code: proof.authorization_code,
+        output_schema: "vibecraft.registration.v1"
+      };
       return [
-        "You are registering my VibeCraft profile.",
-        "Only read local Skills and project traces I explicitly authorize.",
-        "Builder name: " + proof.builder_name,
-        "Village ID: " + proof.profile_handle,
-        "Role: " + proof.role,
-        "Public intro: " + proof.public_intro,
-        "Authorized scopes: " + proof.authorized_scopes.join(", "),
-        "Return authorization code: " + proof.authorization_code,
-        "Then return a vibecraft.registration.v1 JSON proof with this shape:",
-        JSON.stringify(proof, null, 2)
+        "BEGIN VIBECRAFT_AGENT_REGISTER",
+        "",
+        "You are my Agent. Register my VibeCraft player identity.",
+        "Do this like a command block: read the request, perform the allowed local scan, then return one proof.",
+        "",
+        "Allowed local context:",
+        "- Read local Skill names/descriptions.",
+        "- Read current project traces that describe completed work, tests, screenshots, or build receipts.",
+        "- Do not upload raw private files, secrets, emails, tokens, or unrelated local content.",
+        "",
+        "Player request JSON:",
+        JSON.stringify(commandPayload, null, 2),
+        "",
+        "Your task:",
+        "1. Confirm the Village ID and role.",
+        "2. Distill 1-5 starter skill seeds from the allowed local context.",
+        "3. Keep the result positive, useful, and non-diagnostic.",
+        "4. Return ONLY one of these:",
+        "   A) the authorization code: " + proof.authorization_code,
+        "   B) a vibecraft.registration.v1 JSON proof matching the schema below.",
+        "",
+        "JSON proof schema:",
+        JSON.stringify(proof, null, 2),
+        "",
+        "END VIBECRAFT_AGENT_REGISTER"
       ].join("\n");
     }
     function parseRegistrationProof(value) {
@@ -6061,6 +6334,64 @@
           : t("mvpStatusProgressPrefix") + completed + "/" + steps.length + t("mvpStatusProgressSuffix");
       }
     }
+    const worldRegionByHash = {
+      "#register": "register",
+      "#playable-loop": "quest",
+      "#agent-sync": "quest",
+      "#blocks": "mine",
+      "#explore": "mine",
+      "#today-drop": "mine",
+      "#crafting": "craft",
+      "#skills": "skills",
+      "#packs": "skills",
+      "#insights": "skills",
+      "#brain": "brain",
+      "#vibe-bio": "village",
+      "#village": "village"
+    };
+    const defaultWorldRegion = "register";
+    function worldRegionKey(region) {
+      return ["register", "quest", "mine", "craft", "skills", "brain", "village"].includes(region) ? region : defaultWorldRegion;
+    }
+    function regionTokens(element) {
+      return (element.dataset.worldRegion || "").split(/\s+/).filter(Boolean);
+    }
+    function activeRegionTitleKey(region) {
+      return "activeRegion" + region.charAt(0).toUpperCase() + region.slice(1) + "Title";
+    }
+    function activeRegionCopyKey(region) {
+      return "activeRegion" + region.charAt(0).toUpperCase() + region.slice(1) + "Copy";
+    }
+    function targetForRegion(region) {
+      const preferred = document.querySelector("[data-map-region='" + region + "']")?.dataset.mapTarget;
+      return preferred ? document.querySelector(preferred) : document.querySelector("[data-world-region~='" + region + "']");
+    }
+    function activateWorldRegion(region, options = {}) {
+      const nextRegion = worldRegionKey(region);
+      document.body.dataset.activeWorldRegion = nextRegion;
+      document.querySelectorAll("[data-world-region]").forEach((section) => {
+        const active = regionTokens(section).includes(nextRegion);
+        section.classList.toggle("is-active", active);
+        section.toggleAttribute("hidden", !active);
+      });
+      document.querySelectorAll("[data-map-region]").forEach((button) => {
+        button.setAttribute("aria-pressed", button.dataset.mapRegion === nextRegion ? "true" : "false");
+      });
+      const title = document.querySelector("[data-active-region-title]");
+      if (title) title.textContent = t(activeRegionTitleKey(nextRegion));
+      const copy = document.querySelector("[data-active-region-copy]");
+      if (copy) copy.textContent = t(activeRegionCopyKey(nextRegion));
+      if (options.scroll !== false) {
+        const target = options.target || targetForRegion(nextRegion);
+        target?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+    function activateRegionForHash(hash, options = {}) {
+      const region = worldRegionByHash[hash];
+      if (!region) return false;
+      activateWorldRegion(region, { ...options, target: document.querySelector(hash) || undefined });
+      return true;
+    }
     function renderGrowthPacks() {
       document.querySelectorAll("[data-growth-pack-id]").forEach((card) => {
         const pack = growthPacks.find((item) => item.id === card.dataset.growthPackId);
@@ -6254,7 +6585,7 @@
         if (feedback) feedback.textContent = t("syncNeedsRegistration");
         const syncFeedback = document.querySelector("[data-sync-feedback]");
         if (syncFeedback) syncFeedback.textContent = t("syncBlockedMissingPass");
-        document.querySelector("[data-registration-module]")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        activateWorldRegion("register", { target: document.querySelector("[data-registration-module]") });
         return;
       }
       playSfx("sync");
@@ -6473,6 +6804,7 @@
       applyLanguageText();
       renderSoundToggle();
       renderOnboardingProfile();
+      activateWorldRegion(document.body.dataset.activeWorldRegion || defaultWorldRegion, { scroll: false });
     }
     async function copyPublicBioLink(button) {
       const handle = displayHandle();
@@ -6496,6 +6828,7 @@
     function showBlock(blockId) {
       const block = byId.get(blockId);
       if (!block) return;
+      activateWorldRegion("mine", { scroll: false });
       playSfx("open");
       fields.title.textContent = block.name;
       fields.plain.textContent = block.explainer.plain;
@@ -6581,19 +6914,19 @@
         playSfx("blocked");
         const feedback = document.querySelector("[data-onboard-feedback]");
         if (feedback) feedback.textContent = t("startNeedsRegistration");
-        document.querySelector("[data-registration-module]")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        activateWorldRegion("register");
         return;
       }
       if (!profile.agent_synced) {
         playSfx("blocked");
         saveProfile(t("startNeedsSync"));
-        document.getElementById("agent-sync").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        activateWorldRegion("quest", { target: document.getElementById("agent-sync") });
         return;
       }
       playSfx("enter");
       saveProfile(t("enteredPrefix") + playerName() + " / " + roleText(selectedRole(), "label") + (currentLanguage === "zh" ? "。" : "."));
       renderOnboardingProfile();
-      document.getElementById("today-drop").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      activateWorldRegion("mine", { target: document.getElementById("today-drop") });
     });
     document.querySelector("[data-sync-agent]")?.addEventListener("click", applyAgentReceipt);
     document.querySelector("[data-copy-receipt]")?.addEventListener("click", (event) => {
@@ -6627,10 +6960,23 @@
       button.addEventListener("click", () => {
         playSfx("open");
         pulseSound(button);
-        const selector = button.dataset.mapTarget;
-        if (!selector) return;
-        const target = document.querySelector(selector);
-        if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+        const region = button.dataset.mapRegion || worldRegionByHash[button.dataset.mapTarget || ""];
+        const target = button.dataset.mapTarget ? document.querySelector(button.dataset.mapTarget) : undefined;
+        activateWorldRegion(region, { target });
+      });
+    });
+    document.querySelector("[data-return-map]")?.addEventListener("click", (event) => {
+      playSfx("open");
+      pulseSound(event.currentTarget);
+      document.getElementById("world-map")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    document.querySelectorAll("a[href^='#']").forEach((link) => {
+      link.addEventListener("click", (event) => {
+        const hash = link.getAttribute("href") || "";
+        if (!worldRegionByHash[hash]) return;
+        event.preventDefault();
+        playSfx("open");
+        activateRegionForHash(hash);
       });
     });
     document.querySelectorAll("[data-block-id]").forEach((button) => {
@@ -6678,6 +7024,13 @@
     loadSoundPreference();
     loadProfile();
     applyLanguage();
+    if (publicRouteHandle) {
+      activateWorldRegion("village", { target: document.getElementById("vibe-bio"), scroll: false });
+    } else if (window.location.hash && worldRegionByHash[window.location.hash]) {
+      activateRegionForHash(window.location.hash, { scroll: false });
+    } else {
+      activateWorldRegion(defaultWorldRegion, { scroll: false });
+    }
     window.setTimeout(() => startBackgroundMusic(), 320);
     if (publicRouteHandle) {
       window.setTimeout(() => {

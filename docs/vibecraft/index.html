@@ -1148,6 +1148,248 @@
         opacity: 0;
       }
     }
+    .topbar {
+      color: #fff8dc;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.08) 0 2px, transparent 2px 54px),
+        rgba(25, 20, 16, .76);
+      box-shadow: 0 5px 0 rgba(0,0,0,.58), 0 10px 0 rgba(255,255,255,.08);
+      backdrop-filter: blur(2px);
+    }
+    .brand,
+    .nav a,
+    .nav button {
+      text-shadow: 2px 2px 0 rgba(0,0,0,.65);
+    }
+    .nav a,
+    .nav button,
+    .cta {
+      background:
+        linear-gradient(180deg, #9c9c9c 0, #777 48%, #5f5f5f 49%, #4f4f4f 100%);
+      color: #fff8dc;
+      border-color: #151515;
+      box-shadow:
+        inset 4px 4px 0 rgba(255,255,255,.38),
+        inset -5px -5px 0 rgba(0,0,0,.36),
+        4px 4px 0 rgba(0,0,0,.55);
+    }
+    .nav a.primary,
+    .cta.primary {
+      background:
+        linear-gradient(180deg, #62c94b 0, #46a933 48%, #358f28 49%, #2b7221 100%);
+      color: #fff8dc;
+    }
+    .language-toggle,
+    .sound-toggle,
+    .cta.secondary {
+      background:
+        linear-gradient(180deg, #8fd0ee 0, #55abd5 48%, #358bb8 49%, #2b6e95 100%);
+      color: #fff8dc;
+    }
+    .sound-toggle[aria-pressed="false"] {
+      background:
+        linear-gradient(180deg, #8d8d8d 0, #696969 48%, #505050 49%, #3f3f3f 100%);
+    }
+    .hero {
+      min-height: 100vh;
+      align-items: center;
+      padding: 112px 18px 64px;
+      background:
+        linear-gradient(rgba(0,0,0,.12), rgba(0,0,0,.18)),
+        linear-gradient(180deg, #82d5ff 0 58%, #78cc55 58% 70%, var(--dirt) 70% 100%);
+    }
+    .hero::before,
+    .hero::after {
+      z-index: 1;
+    }
+    .hero-inner {
+      min-height: calc(100vh - 176px);
+      display: grid;
+      grid-template-columns: 1fr;
+      place-items: center;
+      padding: 0;
+    }
+    .world-scene {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      width: 100%;
+      min-height: 100%;
+      border: 0;
+      box-shadow: none;
+      pointer-events: none;
+    }
+    .world-scene::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.08), transparent 34%, rgba(0,0,0,.18)),
+        linear-gradient(90deg, rgba(255,255,255,.12) 0 2px, transparent 2px 54px),
+        linear-gradient(rgba(255,255,255,.10) 0 2px, transparent 2px 54px);
+      background-size: auto, 54px 54px, 54px 54px;
+      pointer-events: none;
+    }
+    .hero-copy-wrap {
+      width: min(660px, 100%);
+      place-items: center;
+      gap: 18px;
+      text-align: center;
+    }
+    .eyebrow {
+      order: 2;
+      transform: rotate(-9deg);
+      background: #ffff55;
+      color: #2b210d;
+      border-color: #151515;
+      box-shadow:
+        inset -4px -4px 0 rgba(0,0,0,.16),
+        5px 5px 0 rgba(0,0,0,.5);
+      text-transform: none;
+    }
+    h1 {
+      order: 1;
+      color: #d9d9d9;
+      font-size: clamp(66px, 10vw, 138px);
+      line-height: .78;
+      white-space: nowrap;
+      -webkit-text-stroke: 5px #151515;
+      text-shadow:
+        0 7px 0 #8b8b8b,
+        0 13px 0 #242424,
+        8px 17px 0 rgba(0,0,0,.4);
+    }
+    .hero-copy {
+      order: 3;
+      max-width: 580px;
+      padding: 10px 14px;
+      border: 4px solid #151515;
+      background: rgba(20, 16, 12, .72);
+      color: #fff8dc;
+      box-shadow:
+        inset 3px 3px 0 rgba(255,255,255,.14),
+        inset -4px -4px 0 rgba(0,0,0,.28);
+      font-size: clamp(15px, 1.6vw, 20px);
+      line-height: 1.32;
+      text-shadow: 2px 2px 0 rgba(0,0,0,.55);
+    }
+    .cta-row {
+      order: 4;
+      width: min(450px, 100%);
+      display: grid;
+      gap: 10px;
+    }
+    .cta {
+      min-height: 52px;
+      justify-content: center;
+      font-size: 18px;
+      text-shadow: 2px 2px 0 rgba(0,0,0,.62);
+    }
+    .cta:hover,
+    .cta:focus-visible,
+    .nav a:hover,
+    .nav a:focus-visible,
+    .nav button:hover,
+    .nav button:focus-visible {
+      filter: brightness(1.12);
+      transform: translateY(-2px);
+    }
+    .hotbar {
+      order: 5;
+      margin-top: 8px;
+      background: rgba(0,0,0,.62);
+      border-color: #151515;
+      box-shadow:
+        inset 4px 4px 0 rgba(255,255,255,.16),
+        inset -5px -5px 0 rgba(0,0,0,.3),
+        5px 5px 0 rgba(0,0,0,.5);
+    }
+    .scene-label {
+      left: 50%;
+      bottom: 20px;
+      transform: translateX(-50%);
+      width: min(720px, calc(100% - 36px));
+      text-align: center;
+      background: rgba(20, 16, 12, .72);
+      color: #fff8dc;
+      border-color: #151515;
+      text-shadow: 2px 2px 0 rgba(0,0,0,.55);
+    }
+    .section {
+      position: relative;
+      z-index: 2;
+    }
+    @media (max-width: 920px) {
+      .hero {
+        min-height: 100vh;
+        padding-top: 184px;
+      }
+      .hero-inner {
+        min-height: calc(100vh - 232px);
+        grid-template-columns: 1fr;
+      }
+      .world-scene {
+        position: absolute;
+        min-height: 100%;
+      }
+    }
+    @media (max-width: 560px) {
+      .topbar {
+        left: 8px;
+        right: 18px;
+        width: auto;
+        transform: none;
+        overflow: hidden;
+      }
+      .nav {
+        width: 100%;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        overflow: hidden;
+      }
+      .nav a,
+      .nav button {
+        min-width: 0;
+        max-width: 100%;
+      }
+      .hero {
+        min-height: 100vh;
+        padding: 168px 14px 40px;
+      }
+      .hero-inner {
+        width: calc(100vw - 28px);
+        max-width: calc(100vw - 28px);
+        min-height: calc(100vh - 208px);
+      }
+      .hero-copy-wrap {
+        width: min(270px, calc(100vw - 96px));
+        max-width: calc(100vw - 96px);
+      }
+      h1 {
+        max-width: calc(100vw - 36px);
+        font-size: clamp(40px, 12vw, 48px);
+        -webkit-text-stroke-width: 3px;
+        text-shadow:
+          0 5px 0 #8b8b8b,
+          0 9px 0 #242424,
+          5px 12px 0 rgba(0,0,0,.4);
+      }
+      .hero-copy {
+        width: 100%;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+      }
+      .cta-row,
+      .hotbar {
+        width: 100%;
+        max-width: 100%;
+        justify-self: center;
+      }
+      .world-scene {
+        width: 100%;
+        max-width: none;
+        box-shadow: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1173,7 +1415,7 @@
             <span class="eyebrow" data-i18n="heroEyebrow">Build for Fun · Create for Happy</span>
             <h1 id="hero-title">VibeCraft</h1>
             <p class="hero-copy" data-i18n="heroCopy">
-              Happy Build for people creating with AI, no tech jargon required. Knowledge enters your brain as cute, weird, game-like blocks.
+              Agent-only registration. Open-world workshop. Build receipts unlock blocks, skills, radio, and Vibe Bio.
             </p>
             <div class="cta-row">
               <a class="cta primary" href="vibecraft-demo.html" data-i18n="ctaPrimary">Enter the Workshop</a>
@@ -1366,7 +1608,7 @@
         navHow: "How It Works",
         navWorkshop: "Enter Workshop",
         heroEyebrow: "Build for Fun · Create for Happy",
-        heroCopy: "Happy Build for people creating with AI, no tech jargon required. Knowledge enters your brain as cute, weird, game-like blocks.",
+        heroCopy: "Agent-only registration. Open-world workshop. Build receipts unlock blocks, skills, radio, and Vibe Bio.",
         sceneLabel: "Agent builds the quest. Your village changes when the receipt lands.",
         ctaPrimary: "Enter the Workshop",
         ctaSecondary: "See Your Vibe Bio",
@@ -1433,7 +1675,7 @@
         navHow: "如何运转",
         navWorkshop: "进入工坊",
         heroEyebrow: "Build for Fun · Create for Happy",
-        heroCopy: "给用 AI 创作的人一套快乐建造引擎，不被技术黑话挡住。知识会变成可爱、奇怪、游戏化的方块进入脑袋。",
+        heroCopy: "Agent 注册，开放世界工坊。真实 build 凭证会解锁知识方块、技能、radio 和 Vibe Bio。",
         sceneLabel: "Agent 完成任务，receipt 落地后，你的村庄就会变化。",
         ctaPrimary: "进入工坊",
         ctaSecondary: "看看 Vibe Bio",
