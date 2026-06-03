@@ -3600,8 +3600,8 @@
         <div class="live-world-status">
           <i class="live-world-avatar" aria-hidden="true"></i>
           <div>
-            <strong>Happy Builder</strong>
-            <small data-live-xp>Lv.12</small>
+            <strong data-live-player-name>Happy Builder</strong>
+            <small><span data-live-xp>Lv.12</span> · <span data-live-pass>Pass pending</span></small>
           </div>
         </div>
         <div class="live-world-hearts" aria-label="Player health"><i></i><i></i><i></i><i></i><i></i></div>
@@ -3616,6 +3616,17 @@
         <span>Vibe Radio</span>
         <p data-live-radio-copy>Radio Tower is quiet. Visit it or press Play Broadcast.</p>
         <button type="button" data-live-radio-button>Play Broadcast</button>
+      </article>
+      <article class="live-world-daybook" data-live-daybook>
+        <span>Daybook</span>
+        <strong>Day 1 · Sunny Build</strong>
+        <p data-live-daybook-copy>Morning note: register your Village Pass, then let Agent work become a world event.</p>
+        <ul>
+          <li data-live-daybook-task="pass">Village Pass pending</li>
+          <li data-live-daybook-task="tree">Goal Tree 100%</li>
+          <li data-live-daybook-task="drop">No drops collected yet</li>
+        </ul>
+        <button type="button" data-live-daybook-toggle>Open Daybook</button>
       </article>
       <div class="live-world-inventory" aria-label="Inventory hotbar">
         <span class="live-world-slot" data-live-slot></span>
@@ -6566,6 +6577,9 @@
         const feedback = document.querySelector("[data-onboard-feedback]");
         if (feedback) feedback.textContent = message || t("identitySaved");
         renderMvpQuest();
+        window.dispatchEvent(new CustomEvent("vibecraft:profile-saved", {
+          detail: JSON.parse(localStorage.getItem(storageKey) || "{}")
+        }));
       } catch {
         const feedback = document.querySelector("[data-onboard-feedback]");
         if (feedback) feedback.textContent = t("identitySavedNoStorage");
@@ -7332,6 +7346,10 @@
       playSfx("select");
       pulseSound(event.currentTarget);
       applyLanguage();
+    });
+    window.addEventListener("vibecraft:open-register", () => {
+      playSfx("open");
+      activateWorldRegion("register", { target: document.querySelector("[data-registration-module]") });
     });
     document.addEventListener("click", globalClickFeedback);
     document.addEventListener("pointerdown", primeAudioFromGesture, { passive: true });

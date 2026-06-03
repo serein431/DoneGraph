@@ -15,7 +15,17 @@
     radioButton: shell.querySelector("[data-live-radio-button]"),
     minimapDot: shell.querySelector("[data-live-minimap-dot]"),
     xp: shell.querySelector("[data-live-xp]"),
+    playerName: shell.querySelector("[data-live-player-name]"),
+    pass: shell.querySelector("[data-live-pass]"),
     slots: Array.from(shell.querySelectorAll("[data-live-slot]")),
+    daybook: shell.querySelector("[data-live-daybook]"),
+    daybookCopy: shell.querySelector("[data-live-daybook-copy]"),
+    daybookToggle: shell.querySelector("[data-live-daybook-toggle]"),
+    daybookTasks: {
+      pass: shell.querySelector("[data-live-daybook-task='pass']"),
+      tree: shell.querySelector("[data-live-daybook-task='tree']"),
+      drop: shell.querySelector("[data-live-daybook-task='drop']")
+    },
     loading: shell.querySelector("[data-live-loading]")
   };
 
@@ -32,6 +42,9 @@
     treeHealth: 100,
     xp: 12,
     inventory: ["AXE", "MAP", "RADIO", "LENS"],
+    profile: null,
+    registered: false,
+    daybookLine: null,
     activeLocation: null,
     activeAction: null,
     stream: null,
@@ -120,6 +133,68 @@
     "Radio Tower: Village signal is open. Your public Vibe Bio now explains what you can build with others."
   ];
 
+  const profileStorageKey = "vibecraft:onboarding";
+
+  const readProfile = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(profileStorageKey) || "null");
+      return saved && typeof saved === "object" ? saved : null;
+    } catch {
+      return null;
+    }
+  };
+
+  const profileHandle = (profile) => {
+    const raw = String(profile?.handle || profile?.name || "happy-builder").toLowerCase();
+    return raw.replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 32) || "happy-builder";
+  };
+
+  const applyProfile = (profile = readProfile()) => {
+    state.profile = profile;
+    state.registered = Boolean(profile?.registered && profile?.registration_authorized);
+    if (!state.registered) state.daybookLine = null;
+    if (hud.playerName) {
+      hud.playerName.textContent = state.registered
+        ? String(profile.name || profile.handle || "Happy Builder").slice(0, 24)
+        : "Guest Builder";
+    }
+    if (hud.pass) {
+      hud.pass.textContent = state.registered ? "Village Pass" : "Pass pending";
+    }
+    if (state.registered && !state.inventory.includes("PASS")) state.inventory.push("PASS");
+    updateHud();
+    renderDaybook(state.registered ? "Village Pass verified. Today's world is open for Agent-powered progress." : undefined);
+  };
+
+  const renderDaybook = (line) => {
+    if (typeof line === "string") state.daybookLine = line;
+    const handle = profileHandle(state.profile);
+    if (hud.daybookCopy) {
+      hud.daybookCopy.textContent = state.daybookLine || (state.registered
+        ? `Morning note for @${handle}: chop one Goal Tree hit, mine one Knowledge Block, then broadcast the recap.`
+        : "Morning note: register your Village Pass, then let Agent work become a world event.");
+    }
+    if (hud.daybookTasks.pass) hud.daybookTasks.pass.textContent = state.registered ? "Village Pass verified" : "Village Pass pending";
+    if (hud.daybookTasks.tree) hud.daybookTasks.tree.textContent = `Goal Tree ${state.treeHealth}%`;
+    if (hud.daybookTasks.drop) {
+      const drops = state.inventory.filter((item) => !["AXE", "MAP", "RADIO", "LENS", "PASS"].includes(item));
+      hud.daybookTasks.drop.textContent = drops.length ? `Drops collected: ${drops.join(", ")}` : "No drops collected yet";
+    }
+  };
+
+  const requirePass = (action) => {
+    if (state.registered) return true;
+    if (["spawn", "radio", "lens"].includes(action)) return true;
+    setHint("Village Pass required. Walk to Spawn, copy the Agent command, and paste back the proof.");
+    if (hud.actionTitle) hud.actionTitle.textContent = "Village Pass Required";
+    if (hud.actionCopy) hud.actionCopy.textContent = "This part of the world unlocks after Agent registration.";
+    if (hud.actionButton) hud.actionButton.textContent = "Open Agent Register";
+    state.activeAction = "spawn";
+    beep(180, 0.12, 0.08);
+    renderDaybook("The village gate is waiting for your Agent proof. Start at Spawn.");
+    return false;
+  };
+
   const updateHud = () => {
     if (hud.health) hud.health.textContent = `${state.treeHealth}%`;
     if (hud.healthMeter) hud.healthMeter.style.setProperty("--tree-health", `${state.treeHealth}%`);
@@ -128,6 +203,7 @@
       slot.textContent = state.inventory[index] || "";
       slot.classList.toggle("is-active", index === 0);
     });
+    renderDaybook();
   };
 
   const setHint = (text) => {
@@ -203,16 +279,20 @@
   const runAction = () => {
     if (!state.activeAction) return;
     const action = state.activeAction;
+    if (!requirePass(action)) return;
     beep(460);
     if (action === "spawn") {
+      window.dispatchEvent(new CustomEvent("vibecraft:open-register"));
       document.getElementById("register")?.scrollIntoView({ behavior: "smooth", block: "start" });
       setHint("Spawn opened: copy the Agent command and bring back the authorization proof.");
+      dispatchWorldEvent("spawn", {});
     }
     if (action === "chop") {
       state.treeHealth = Math.max(0, state.treeHealth - 20);
       state.xp += 1;
       if (!state.inventory.includes("WOOD")) state.inventory.push("WOOD");
       setHint(state.treeHealth <= 0 ? "Goal shipped. The tree dropped an achievement and skill XP." : "Axe hit landed. Agent proof became visible progress.");
+      renderDaybook("Afternoon note: the Goal Tree took a real hit. The proof became wood, XP, and a public story.");
       syncExistingQuestHud();
       dispatchWorldEvent("chop", { treeHealth: state.treeHealth });
     }
@@ -221,11 +301,13 @@
       if (next) state.inventory.push(next);
       state.xp += 1;
       setHint(next ? `${next} block mined. Bring it to the Crafting Table.` : "Mine is clear for now. All starter blocks are in your inventory.");
+      renderDaybook(next ? `Mine log: ${next} became a Knowledge Block.` : "Mine log: starter blocks are cleared for today.");
       dispatchWorldEvent("mine", { inventory: state.inventory });
     }
     if (action === "craft") {
       if (!state.inventory.includes("CARD")) state.inventory.push("CARD");
       setHint("Crafted: a confusing block became a plain-language card.");
+      renderDaybook("Crafting note: one confusing block became a plain-language card.");
       dispatchWorldEvent("craft", { inventory: state.inventory });
     }
     if (action === "radio") {
@@ -237,11 +319,13 @@
     if (action === "brain") {
       if (!state.inventory.includes("KEY")) state.inventory.push("KEY");
       setHint("Brain Vault forged a scoped memory key for future Agents.");
+      renderDaybook("Vault note: a scoped memory key is ready for a trusted Agent.");
       dispatchWorldEvent("brain", { inventory: state.inventory });
     }
     if (action === "village") {
       if (!state.inventory.includes("INVITE")) state.inventory.push("INVITE");
       setHint("Collaboration signal sent. A complementary builder can understand your role quickly.");
+      renderDaybook("Village note: collaboration signal sent. Your identity card is clearer now.");
       dispatchWorldEvent("village", { inventory: state.inventory });
     }
     updateHud();
@@ -257,6 +341,7 @@
     state.radioIndex += 1;
     if (hud.radio) hud.radio.textContent = line;
     setHint("Vibe Radio broadcast played.");
+    renderDaybook("Radio recap: " + line.replace(/^Radio Tower:\s*/, ""));
     beep(330, 0.08, 0.07);
     window.setTimeout(() => beep(440, 0.08, 0.06), 90);
     dispatchWorldEvent("radio", { line });
@@ -314,6 +399,15 @@
   });
   hud.actionButton?.addEventListener("click", runAction);
   hud.radioButton?.addEventListener("click", playRadio);
+  hud.daybookToggle?.addEventListener("click", () => {
+    hud.daybook?.classList.toggle("is-open");
+    beep(520, 0.06, 0.05);
+  });
+  window.addEventListener("vibecraft:profile-saved", (event) => {
+    applyProfile(event.detail || readProfile());
+    setHint(state.registered ? "Village Pass verified. The workshop world is now unlocked." : "Profile saved.");
+    dispatchWorldEvent("profile", { registered: state.registered, profile: state.profile });
+  });
 
   if (!window.Phaser) {
     setHint("Game engine failed to load. Check the local Phaser vendor file.");
@@ -340,6 +434,7 @@
       this.createPlayer();
       this.createInput();
       this.createAmbientMotion();
+      applyProfile();
       updateHud();
       shell.classList.add("is-loaded");
       setHint("Click anywhere to walk. Click a place, then use the action prompt.");

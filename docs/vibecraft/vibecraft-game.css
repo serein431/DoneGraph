@@ -31,6 +31,7 @@
 .live-world-hud,
 .live-world-action,
 .live-world-radio,
+.live-world-daybook,
 .live-world-inventory,
 .live-world-help {
   position: absolute;
@@ -68,6 +69,7 @@
 .live-world-quest,
 .live-world-minimap,
 .live-world-radio,
+.live-world-daybook,
 .live-world-action,
 .live-world-inventory,
 .live-world-help {
@@ -86,6 +88,7 @@
 .live-world-title span,
 .live-world-quest span,
 .live-world-radio span,
+.live-world-daybook span,
 .live-world-action span,
 .live-world-inventory span {
   display: block;
@@ -279,6 +282,7 @@
 .live-world-action button,
 .live-world-radio button,
 .live-world-help button,
+.live-world-daybook button,
 .vibe-lens-modal button {
   border: 4px solid #1a100a;
   background: #72bd49;
@@ -292,6 +296,7 @@
 .live-world-action button:active,
 .live-world-radio button:active,
 .live-world-help button:active,
+.live-world-daybook button:active,
 .vibe-lens-modal button:active {
   transform: translate(3px, 3px);
   box-shadow: inset -3px -3px 0 #3c7c2c, 1px 1px 0 #120a05;
@@ -305,11 +310,58 @@
   padding: 12px;
 }
 
+.live-world-daybook {
+  right: 18px;
+  bottom: 326px;
+  width: min(360px, 34vw);
+  min-height: 158px;
+  padding: 12px;
+  background: rgba(255, 242, 200, .96);
+  color: #2b170c;
+}
+
 .live-world-radio p {
   margin: 0 0 10px;
   color: #fff7d6;
   font-weight: 850;
   line-height: 1.4;
+}
+
+.live-world-daybook strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #2b170c;
+  font-size: 18px;
+  line-height: 1.1;
+}
+
+.live-world-daybook p {
+  margin: 0 0 8px;
+  color: #5d331d;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.live-world-daybook ul {
+  display: grid;
+  gap: 5px;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.live-world-daybook li {
+  border: 3px solid #1a100a;
+  background: rgba(255, 249, 231, .86);
+  box-shadow: inset -4px -4px 0 rgba(138, 91, 48, .16);
+  padding: 5px 7px;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.live-world-daybook.is-open {
+  width: min(440px, 42vw);
+  min-height: 220px;
 }
 
 .live-world-inventory {
@@ -471,6 +523,7 @@
   .live-world-title,
   .live-world-quest,
   .live-world-radio,
+  .live-world-daybook,
   .live-world-help {
     width: auto;
     max-width: none;
@@ -487,6 +540,7 @@
 
   .live-world-title p,
   .live-world-radio,
+  .live-world-daybook,
   .live-world-help,
   .live-world-minimap {
     display: none;
