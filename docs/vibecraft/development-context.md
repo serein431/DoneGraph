@@ -113,6 +113,7 @@ Avoid:
 ## Current Implementation Notes
 
 - `docs/vibecraft/index.html` is a standalone prototype that demonstrates Agent-only registration, public handle updates, proof sync, Vibe Radio, and Vibe Brain.
+- Agent-only registration now has a durable MVP contract: `vibecraft.registration.v1`, deterministic `VC-AUTH-*` codes, authorized scopes, initial skill seeds, and proof validation helpers in `packages/core/src/vibecraft.ts`.
 - `.donegraph/vibecraft.html` is generated from DoneGraph artifacts and turns recorded Agent work into a wiki-style VibeCraft view.
 - The web app should default to English and support Chinese.
 - Click sound and default background music are part of the desired experience, but browser autoplay rules may require a first user gesture.
@@ -127,4 +128,3 @@ Avoid:
 6. Implement `username.vibecraft.bio` routing and profile lookup.
 7. Add community discovery with complementary skill matching.
 8. Add Vibe Brain export/import with user-controlled scoped access keys.
-

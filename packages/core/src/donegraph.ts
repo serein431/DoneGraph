@@ -1,3 +1,5 @@
+import { buildVibeCraftRegistrationPrompt, buildVibeCraftRegistrationProof } from "./vibecraft.js";
+
 export type EvidenceStatus = "pass" | "fail" | "unknown" | "blocked";
 
 export type DoneGraphPlatform = "codex" | "claude" | "cursor" | "generic";
@@ -676,6 +678,23 @@ function renderVibeCraftPack(node: DoneGraphNode, index: number): string {
 }
 
 export function renderVibeCraftHtml(graph: DoneGraph): string {
+  const registrationProof = buildVibeCraftRegistrationProof({
+    builderName: "Happy Builder",
+    handle: "happy-builder",
+    role: "Knowledge Explorer",
+    intro: "I turn DoneGraph traces into a readable VibeCraft profile.",
+    sourceAgent: graph.platform,
+    issuedAt: graph.generated_at
+  });
+  const registrationPrompt = buildVibeCraftRegistrationPrompt({
+    builderName: registrationProof.builder_name,
+    handle: registrationProof.profile_handle,
+    role: registrationProof.role,
+    intro: registrationProof.public_intro,
+    sourceAgent: registrationProof.source_agent,
+    authorizedScopes: registrationProof.authorized_scopes,
+    issuedAt: registrationProof.issued_at
+  });
   const packs = graph.nodes
     .filter((node) => node.type !== "next_step")
     .slice(0, 8)
@@ -700,6 +719,7 @@ export function renderVibeCraftHtml(graph: DoneGraph): string {
     `Goal: ${graph.goal || "No goal recorded yet"}`,
     "Return a vibecraft.proof.v1 JSON proof with verified progress, skill signals, and public work summaries."
   ].join("\n");
+  const registrationPreview = JSON.stringify(registrationProof, null, 2);
 
   return `<!doctype html>
 <html lang="en">
@@ -830,8 +850,10 @@ export function renderVibeCraftHtml(graph: DoneGraph): string {
           </section>
           <section class="section" id="proof">
             <h3>Agent Proof Sync</h3>
-            <p>The Web side presents the state. The Agent reads authorized DoneGraph files and returns a scoped <code>vibecraft.proof.v1</code> payload.</p>
-            <pre data-agent-prompt>${escapeHtml(agentPrompt)}</pre>
+            <p>The Web side presents the state. Registration stays Agent-only: the builder copies a challenge, the Agent reads authorized local context, and the Web side verifies a scoped <code>vibecraft.registration.v1</code> payload before accepting <code>vibecraft.proof.v1</code> updates.</p>
+            <pre data-agent-prompt>${escapeHtml(registrationPrompt)}</pre>
+            <pre>${escapeHtml(registrationPreview)}</pre>
+            <pre>${escapeHtml(agentPrompt)}</pre>
           </section>
           <section class="section" id="brain">
             <h3>Vibe Brain</h3>

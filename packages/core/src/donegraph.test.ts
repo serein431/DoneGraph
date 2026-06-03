@@ -84,6 +84,7 @@ describe("DoneGraph core", () => {
     expect(renderDashboardHtml(graph)).toContain("Generated at 2026-05-28T00:04:00.000Z");
     expect(renderVibeCraftHtml(graph)).toContain("VibeCraft / 灵感工坊");
     expect(renderVibeCraftHtml(graph)).toContain("Agent Proof Sync");
+    expect(renderVibeCraftHtml(graph)).toContain("vibecraft.registration.v1");
     expect(renderVibeCraftHtml(graph)).toContain("vibecraft.proof.v1");
   });
 

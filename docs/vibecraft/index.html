@@ -854,12 +854,32 @@
                 <pre data-agent-command></pre>
                 <div class="action-row">
                   <button class="wiki-button primary" type="button" data-copy-agent>Copy Agent Prompt</button>
-                  <button class="wiki-button" type="button" data-simulate-agent>Simulate Agent Code</button>
+                  <button class="wiki-button" type="button" data-simulate-agent>Simulate Agent Proof</button>
                   <span class="feedback" data-register-feedback></span>
                 </div>
               </div>
+              <table class="wiki-table" aria-label="Registration contract">
+                <tbody>
+                  <tr>
+                    <th>Registration schema</th>
+                    <td><code>vibecraft.registration.v1</code></td>
+                  </tr>
+                  <tr>
+                    <th>Authorized scopes</th>
+                    <td><code>local.skills.read</code>, <code>donegraph.read</code>, <code>public_profile.write</code>, <code>completion_proof.write</code></td>
+                  </tr>
+                  <tr>
+                    <th>Initial level</th>
+                    <td data-initial-level>Waiting for Agent proof</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="proof-console">
+                <strong>Registration proof preview</strong>
+                <pre data-registration-preview></pre>
+              </div>
               <label id="auth-code">
-                Agent authorization code
+                Agent authorization code or registration proof
                 <textarea data-auth-input placeholder="Paste VC-AUTH-... or a vibecraft.registration.v1 proof."></textarea>
               </label>
               <div class="action-row">
@@ -1072,8 +1092,13 @@
         publicIntro: document.querySelector("[data-public-intro]"),
         registrationState: document.querySelector("[data-registration-state]"),
         soundState: document.querySelector("[data-sound-state]"),
+        initialLevel: document.querySelector("[data-initial-level]"),
+        registrationPreview: document.querySelector("[data-registration-preview]"),
         proofPreview: document.querySelector("[data-proof-preview]"),
       };
+
+      const registrationIssuedAt = "2026-06-03T00:00:00.000Z";
+      const authorizedScopes = ["local.skills.read", "donegraph.read", "public_profile.write", "completion_proof.write"];
 
       let audioContext;
       let drone;
@@ -1086,20 +1111,53 @@
           .slice(0, 32) || "happy-builder";
       }
 
+      function checksum(value) {
+        let hash = 2166136261;
+        for (let index = 0; index < value.length; index += 1) {
+          hash ^= value.charCodeAt(index);
+          hash = Math.imul(hash, 16777619);
+        }
+        return (hash >>> 0).toString(36).toUpperCase().padStart(6, "0").slice(0, 6);
+      }
+
       function authCode() {
-        return "VC-AUTH-" + normalizedHandle().toUpperCase().replace(/-/g, "") + "-2026";
+        const handle = normalizedHandle();
+        return "VC-AUTH-" + handle.toUpperCase().replace(/-/g, "") + "-" + checksum(handle + ":" + registrationIssuedAt);
+      }
+
+      function registrationProof() {
+        return {
+          schema_version: "vibecraft.registration.v1",
+          profile_handle: normalizedHandle(),
+          builder_name: elements.name.value || "Happy Builder",
+          role: elements.role.value || "Knowledge Explorer",
+          public_intro: elements.intro.value || "I turn strange build traces into useful little knowledge blocks.",
+          source_agent: "codex",
+          authorization_code: authCode(),
+          authorized_scopes: authorizedScopes,
+          initial_level: "Village Pass L1",
+          skill_seeds: [
+            { id: "plain-language-translation", label: "Plain-language translation", level: 2 },
+            { id: "agent-direction", label: "Agent direction", level: 1 },
+            { id: "knowledge-crafting", label: "Knowledge crafting", level: 2 },
+          ],
+          issued_at: registrationIssuedAt,
+        };
       }
 
       function agentPrompt() {
+        const proof = registrationProof();
         return [
           "You are registering my VibeCraft profile.",
           "Only read local skills and project traces I explicitly authorize.",
-          "Builder name: " + (elements.name.value || "Happy Builder"),
-          "Village ID: " + normalizedHandle(),
-          "Role: " + (elements.role.value || "Knowledge Explorer"),
-          "Public intro: " + (elements.intro.value || ""),
-          "Return an authorization code in this format: " + authCode(),
-          "Then prepare a vibecraft.registration.v1 proof for the Web page.",
+          "Builder name: " + proof.builder_name,
+          "Village ID: " + proof.profile_handle,
+          "Role: " + proof.role,
+          "Public intro: " + proof.public_intro,
+          "Authorized scopes: " + proof.authorized_scopes.join(", "),
+          "Return authorization code: " + proof.authorization_code,
+          "Then return a vibecraft.registration.v1 JSON proof with this shape:",
+          JSON.stringify(proof, null, 2),
         ].join("\n");
       }
 
@@ -1115,6 +1173,7 @@
         elements.publicIntro.textContent = intro;
         elements.publicUrl.textContent = handle + ".vibecraft.bio";
         elements.publicUrl.href = "https://" + handle + ".vibecraft.bio";
+        elements.registrationPreview.textContent = JSON.stringify(registrationProof(), null, 2);
       }
 
       async function copyText(text, feedback) {
@@ -1170,12 +1229,32 @@
           elements.authFeedback.textContent = "Paste the Agent authorization code first.";
           return;
         }
-        if (value.includes(authCode()) || value === authCode()) {
+        let proof;
+        if (value.startsWith("{")) {
+          try {
+            proof = JSON.parse(value);
+          } catch {
+            elements.authFeedback.textContent = "Registration proof is not valid JSON.";
+            return;
+          }
+        }
+        const proofMatches =
+          proof?.schema_version === "vibecraft.registration.v1" &&
+          proof.profile_handle === normalizedHandle() &&
+          proof.authorization_code === authCode() &&
+          Array.isArray(proof.authorized_scopes) &&
+          proof.authorized_scopes.includes("donegraph.read") &&
+          Array.isArray(proof.skill_seeds) &&
+          proof.skill_seeds.length > 0;
+        if (value.includes(authCode()) || value === authCode() || proofMatches) {
           state.registered = true;
+          const activeProof = proofMatches ? proof : registrationProof();
           elements.authFeedback.textContent = "Agent registration verified. Village Pass active.";
           elements.registrationState.textContent = "Registered by Agent";
+          elements.initialLevel.textContent = activeProof.initial_level || "Village Pass L1";
+          document.querySelector("[data-skill-count]").textContent = String(activeProof.skill_seeds?.length || 3);
         } else {
-          elements.authFeedback.textContent = "Authorization did not match this Village ID.";
+          elements.authFeedback.textContent = "Authorization proof did not match this Village ID and scope.";
         }
       }
 
@@ -1189,6 +1268,7 @@
           schema_version: "vibecraft.proof.v1",
           source_agent: "codex",
           profile_handle: normalizedHandle(),
+          status: "synced",
           unlocked: ["Identity Seed Pack", "Verified Build Pack", "Knowledge Crafting"],
           counts: { knowledge_blocks: 12, skill_signals: 6, public_works: 3 },
         };
@@ -1210,8 +1290,8 @@
 
       document.querySelector("[data-simulate-agent]").addEventListener("click", () => {
         updateProfile();
-        elements.auth.value = authCode();
-        elements.registerFeedback.textContent = "Demo Agent returned an authorization code.";
+        elements.auth.value = JSON.stringify(registrationProof(), null, 2);
+        elements.registerFeedback.textContent = "Demo Agent returned a registration proof.";
       });
 
       document.querySelector("[data-verify-agent]").addEventListener("click", verifyAgent);
