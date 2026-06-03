@@ -1390,6 +1390,214 @@
         box-shadow: none;
       }
     }
+    /* 1:1 title-screen implementation from the approved game mockup. */
+    body {
+      background: #061712;
+    }
+    .shell {
+      background: #061712;
+    }
+    main {
+      background:
+        linear-gradient(90deg, rgba(38,24,15,.06) 0 2px, transparent 2px 54px),
+        linear-gradient(rgba(38,24,15,.05) 0 2px, transparent 2px 54px),
+        linear-gradient(180deg, #f8e8b6, #cde9b9);
+      background-size: 54px 54px, 54px 54px, auto;
+    }
+    .topbar {
+      position: absolute;
+      top: 28px;
+      right: 30px;
+      left: auto;
+      z-index: 20;
+      width: auto;
+      transform: none;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      backdrop-filter: none;
+    }
+    .topbar .brand,
+    .topbar .nav a {
+      display: none;
+    }
+    .topbar .nav {
+      display: flex;
+      gap: 22px;
+    }
+    .topbar .nav button {
+      width: clamp(132px, 10.8vw, 182px);
+      height: clamp(52px, 4vw, 68px);
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      color: transparent;
+      text-shadow: none;
+      opacity: .01;
+    }
+    .hero {
+      min-height: 100vh;
+      padding: 0;
+      border: 0;
+      background: url("assets/vibecraft-title-screen.png") center / cover no-repeat #061712;
+      overflow: hidden;
+    }
+    .hero::before,
+    .hero::after,
+    .world-scene,
+    .hero-copy-wrap .eyebrow,
+    .hero-copy-wrap h1,
+    .hero-copy,
+    .hotbar {
+      display: none !important;
+    }
+    .hero-inner {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: block;
+      padding: 0;
+      margin: 0;
+    }
+    .hero-copy-wrap {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      width: 100%;
+      max-width: none;
+      display: block;
+      transform: none;
+    }
+    .hero .cta-row {
+      position: absolute;
+      left: 50%;
+      top: 54.6%;
+      width: min(30vw, 470px);
+      min-width: 360px;
+      display: grid;
+      gap: clamp(16px, 2.4vh, 28px);
+      transform: translateX(-50%);
+    }
+    .hero .cta {
+      width: 100%;
+      min-height: clamp(58px, 9vh, 96px);
+      padding: 0;
+      border: 0;
+      background: transparent;
+      box-shadow: none;
+      color: transparent;
+      text-shadow: none;
+      opacity: .01;
+    }
+    .hero .cta:hover,
+    .hero .cta:focus-visible,
+    .topbar .nav button:hover,
+    .topbar .nav button:focus-visible {
+      opacity: 1;
+      outline: 4px solid rgba(255, 224, 91, .9);
+      outline-offset: 4px;
+      background: rgba(255, 224, 91, .08);
+      box-shadow: 0 0 0 6px rgba(0, 0, 0, .35);
+    }
+    @media (max-width: 920px) {
+      .topbar {
+        top: 18px;
+        right: 18px;
+      }
+      .topbar .nav {
+        gap: 10px;
+      }
+      .topbar .nav button {
+        width: 110px;
+        height: 46px;
+      }
+      .hero {
+        min-height: 100vh;
+        padding: 0;
+      }
+      .hero-inner {
+        min-height: 100vh;
+      }
+      .hero .cta-row {
+        top: 54.8%;
+        width: 48vw;
+        min-width: 270px;
+      }
+    }
+    @media (max-width: 560px) {
+      .topbar {
+        top: 12px;
+        right: 12px;
+        left: auto;
+        width: auto;
+      }
+      .topbar .nav button {
+        width: 72px;
+        height: 36px;
+      }
+      .hero {
+        min-height: 100svh;
+        background-position: 48% center;
+      }
+      .hero-inner {
+        width: 100%;
+        max-width: none;
+        min-height: 100svh;
+      }
+      .hero .cta-row {
+        top: 54.8%;
+        width: 64vw;
+        min-width: 0;
+        gap: 12px;
+      }
+      .hero .cta {
+        min-height: 58px;
+      }
+      .topbar .nav button {
+        width: 44px;
+        height: 20px;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        color: transparent;
+        opacity: .01;
+      }
+      .hero {
+        min-height: calc(100vw * 941 / 1672);
+        height: calc(100vw * 941 / 1672);
+        background: url("assets/vibecraft-title-screen.png") top center / contain no-repeat #061712;
+      }
+      .hero-copy-wrap {
+        display: block;
+        padding: 0;
+      }
+      .hero-copy-wrap h1,
+      .hero-copy-wrap .eyebrow {
+        display: none !important;
+      }
+      .hero .cta-row {
+        position: absolute;
+        left: 50%;
+        top: 54.6%;
+        width: 29%;
+        min-width: 0;
+        display: grid;
+        gap: 8px;
+        margin: 0;
+        transform: translateX(-50%);
+      }
+      .hero .cta {
+        min-height: 26px;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        color: transparent;
+        opacity: .01;
+      }
+    }
   </style>
 </head>
 <body>

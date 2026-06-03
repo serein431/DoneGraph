@@ -3317,6 +3317,214 @@
         max-width: 100%;
       }
     }
+    /* 1:1 open-world workshop implementation from the approved game mockup. */
+    body[data-vibecraft="interactive-demo"] {
+      background: #06140f;
+    }
+    body[data-vibecraft="interactive-demo"] .app {
+      width: 100%;
+      max-width: none;
+      padding: 0;
+      background: #06140f;
+    }
+    body[data-vibecraft="interactive-demo"] .topbar,
+    body[data-vibecraft="interactive-demo"] .workshop-hotbar {
+      display: none !important;
+    }
+    body[data-vibecraft="interactive-demo"] .exploration-map {
+      order: 0;
+      width: 100%;
+      min-height: 100vh;
+      margin: 0;
+      border: 0;
+      background: #06140f;
+      box-shadow: none;
+    }
+    body[data-vibecraft="interactive-demo"] .exploration-map > .panel-head {
+      display: none !important;
+    }
+    body[data-vibecraft="interactive-demo"] .map-stage {
+      width: 100%;
+      min-height: 100vh;
+      height: 100vh;
+      padding: 0;
+      border: 0;
+      background: url("assets/vibecraft-open-world.png") center / cover no-repeat #06140f;
+      box-shadow: none;
+    }
+    body[data-vibecraft="interactive-demo"] .map-stage > :not(.map-location) {
+      display: none !important;
+    }
+    body[data-vibecraft="interactive-demo"] .map-location {
+      z-index: 8;
+      display: block;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: rgba(255, 224, 91, 0);
+      box-shadow: none;
+      color: transparent;
+      text-shadow: none;
+      opacity: .01;
+      cursor: pointer;
+    }
+    body[data-vibecraft="interactive-demo"] .map-location strong,
+    body[data-vibecraft="interactive-demo"] .map-location small,
+    body[data-vibecraft="interactive-demo"] .map-icon {
+      display: none;
+    }
+    body[data-vibecraft="interactive-demo"] .map-location:hover,
+    body[data-vibecraft="interactive-demo"] .map-location:focus-visible {
+      opacity: 1;
+      transform: none;
+      outline: 4px solid rgba(255, 218, 72, .92);
+      outline-offset: 4px;
+      background: rgba(255, 218, 72, .1);
+      box-shadow: 0 0 0 6px rgba(0, 0, 0, .38);
+    }
+    body[data-vibecraft="interactive-demo"] .map-location[aria-pressed="true"] {
+      outline: 0;
+      box-shadow: none;
+    }
+    body[data-vibecraft="interactive-demo"] .map-location.spawn {
+      left: 30.5%;
+      top: 54%;
+      width: 15%;
+      height: 20%;
+    }
+    body[data-vibecraft="interactive-demo"] .map-location.quest {
+      left: 19%;
+      top: 13%;
+      width: 20%;
+      height: 28%;
+    }
+    body[data-vibecraft="interactive-demo"] .map-location.mine {
+      left: 40.5%;
+      top: 14%;
+      width: 19%;
+      height: 24%;
+    }
+    body[data-vibecraft="interactive-demo"] .map-location.craft {
+      left: 39.5%;
+      top: 38%;
+      width: 18%;
+      height: 18%;
+    }
+    body[data-vibecraft="interactive-demo"] .map-location.skills {
+      left: 8%;
+      top: 42%;
+      width: 18%;
+      height: 25%;
+    }
+    body[data-vibecraft="interactive-demo"] .map-location.brain {
+      left: 63%;
+      top: 14%;
+      width: 17%;
+      height: 27%;
+    }
+    body[data-vibecraft="interactive-demo"] .map-location.village {
+      left: 62%;
+      top: 51%;
+      width: 21%;
+      height: 23%;
+    }
+    body[data-vibecraft="interactive-demo"] .world-region-banner,
+    body[data-vibecraft="interactive-demo"] .world-region.is-active,
+    body[data-vibecraft="interactive-demo"] .world-grid,
+    body[data-vibecraft="interactive-demo"] .section-grid,
+    body[data-vibecraft="interactive-demo"] .footer {
+      width: min(1180px, calc(100% - 32px));
+      margin-left: auto;
+      margin-right: auto;
+    }
+    body[data-vibecraft="interactive-demo"] .world-region-banner {
+      margin-top: 18px;
+    }
+    body[data-vibecraft="interactive-demo"] .panel {
+      border-color: #151515;
+    }
+    @media (max-width: 920px) {
+      body[data-vibecraft="interactive-demo"] .map-stage {
+        min-height: 72vh;
+        height: 72vh;
+        background-position: center;
+      }
+    }
+    @media (max-width: 560px) {
+      body[data-vibecraft="interactive-demo"] .exploration-map {
+        min-height: 0;
+      }
+      body[data-vibecraft="interactive-demo"] .world-region-banner {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+      body[data-vibecraft="interactive-demo"] .world-region-banner > div,
+      body[data-vibecraft="interactive-demo"] .world-region-banner span,
+      body[data-vibecraft="interactive-demo"] .world-region-banner strong {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+      body[data-vibecraft="interactive-demo"] .world-region-banner button {
+        width: 100%;
+      }
+      body[data-vibecraft="interactive-demo"] .panel-head {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      body[data-vibecraft="interactive-demo"] .panel-head > * {
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+      body[data-vibecraft="interactive-demo"] .map-stage {
+        min-height: 0;
+        height: calc(100vw * 941 / 1672);
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: top center;
+      }
+      body[data-vibecraft="interactive-demo"] .map-location.spawn {
+        left: 30.5%;
+        top: 55%;
+        width: 15%;
+        height: 19%;
+      }
+      body[data-vibecraft="interactive-demo"] .map-location.quest {
+        left: 19%;
+        top: 13%;
+        width: 20%;
+        height: 28%;
+      }
+      body[data-vibecraft="interactive-demo"] .map-location.mine {
+        left: 40.5%;
+        top: 14%;
+        width: 19%;
+        height: 24%;
+      }
+      body[data-vibecraft="interactive-demo"] .map-location.craft {
+        left: 39.5%;
+        top: 38%;
+        width: 18%;
+        height: 18%;
+      }
+      body[data-vibecraft="interactive-demo"] .map-location.skills {
+        left: 8%;
+        top: 42%;
+        width: 18%;
+        height: 25%;
+      }
+      body[data-vibecraft="interactive-demo"] .map-location.brain {
+        left: 63%;
+        top: 14%;
+        width: 17%;
+        height: 27%;
+      }
+      body[data-vibecraft="interactive-demo"] .map-location.village {
+        left: 62%;
+        top: 51%;
+        width: 21%;
+        height: 23%;
+      }
+    }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       *,
