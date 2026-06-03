@@ -11,6 +11,7 @@ This file records the durable product context for VibeCraft so future Agent work
 - Domain: https://vibecraft.bio
 - Deployment status: live on Vercel. A header check on 2026-06-03 returned HTTP 200.
 - Active repo branch: `codex/vibecraft-wiki-prototype` (legacy branch name; current restored UI is the live front-stage/workshop style)
+- Product PRD: `docs/vibecraft/PRD.md` (updated from the original `vibecraft-prd.pdf` v0.1 source on 2026-06-04)
 - Durable prototype: `docs/vibecraft/index.html`
 - Generated product view: `.donegraph/vibecraft.html`
 
@@ -19,6 +20,7 @@ This file records the durable product context for VibeCraft so future Agent work
 - Git commit `9e598b4 Add VibeCraft wiki prototype` added the first durable VibeCraft prototype to the original DoneGraph repo.
 - The production site at `https://vibecraft.bio/` preserved a stronger front-stage and workshop version. On 2026-06-03, those live static artifacts were restored into `docs/vibecraft/` as the current design baseline.
 - `README.md` and `READMEs/README.zh-CN.md` now point to the VibeCraft prototype.
+- The original PRD was provided as `vibecraft-prd.pdf` and extracted into `docs/vibecraft/PRD.md`; preserve its 24-section structure when updating product requirements.
 - A temporary earlier prototype workspace under `/tmp` is no longer present, so the stable source of truth is this repository, the restored production artifacts, and this context file.
 - A local recovery copy also exists at `/Users/k/Documents/清客送/vibecraft/index.html`, but the original repo should be treated as the product repo.
 
