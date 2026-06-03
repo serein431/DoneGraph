@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>VibeCraft Interactive Demo</title>
+  <link rel="stylesheet" href="vibecraft-game.css" />
   <style>
     :root {
       --ink: #17120e;
@@ -3548,6 +3549,7 @@
         </div>
       </div>
       <nav class="nav" aria-label="VibeCraft demo links">
+        <a href="#live-world" data-i18n="navLiveWorld">Live World</a>
         <a href="#vibe-bio" data-i18n="navBio">Vibe Bio</a>
         <a href="#register" data-i18n="navRegister">Register</a>
         <a href="#playable-loop" data-i18n="navQuest">Quest</a>
@@ -3571,6 +3573,65 @@
       <a class="hotbar-slot" href="#skills"><i aria-hidden="true"></i><span data-i18n="hotbarSkills">Skills</span></a>
       <a class="hotbar-slot" href="#vibe-bio"><i aria-hidden="true"></i><span data-i18n="hotbarBio">Vibe Bio</span></a>
     </nav>
+
+    <section class="live-world-panel" id="live-world" data-live-world aria-label="Playable VibeCraft world">
+      <div class="live-world-game" data-vibecraft-game></div>
+      <div class="live-world-loading" data-live-loading>
+        <strong>Loading VibeCraft World</strong>
+      </div>
+      <div class="live-world-toolbar">
+        <article class="live-world-title">
+          <span>Playable Workshop</span>
+          <h2>Walk the world. Let Agent work become motion.</h2>
+          <p>Click the ground to move. Visit the Goal Tree, Knowledge Mine, Radio Tower, Vibe Lens, Brain Vault, and Vibe Village. The world reacts when you interact.</p>
+        </article>
+        <article class="live-world-quest">
+          <span>Active Quest</span>
+          <strong><b>Goal Tree</b><em data-live-tree-health>100%</em></strong>
+          <div class="live-world-meter" data-live-tree-meter><i></i></div>
+          <small>Agent completion proof becomes axe hits, drops, XP, and public progress.</small>
+        </article>
+        <article class="live-world-minimap">
+          <span><b>Mini Map</b><em>N</em></span>
+          <div class="live-world-minimap-grid"><i data-live-minimap-dot></i></div>
+        </article>
+      </div>
+      <div class="live-world-hud">
+        <div class="live-world-status">
+          <i class="live-world-avatar" aria-hidden="true"></i>
+          <div>
+            <strong>Happy Builder</strong>
+            <small data-live-xp>Lv.12</small>
+          </div>
+        </div>
+        <div class="live-world-hearts" aria-label="Player health"><i></i><i></i><i></i><i></i><i></i></div>
+      </div>
+      <article class="live-world-action" data-live-action>
+        <span>Nearby</span>
+        <strong data-live-action-title>Spawn Point</strong>
+        <p data-live-action-copy>Walk near a world object to interact.</p>
+        <button type="button" data-live-action-button>Interact</button>
+      </article>
+      <article class="live-world-radio">
+        <span>Vibe Radio</span>
+        <p data-live-radio-copy>Radio Tower is quiet. Visit it or press Play Broadcast.</p>
+        <button type="button" data-live-radio-button>Play Broadcast</button>
+      </article>
+      <div class="live-world-inventory" aria-label="Inventory hotbar">
+        <span class="live-world-slot" data-live-slot></span>
+        <span class="live-world-slot" data-live-slot></span>
+        <span class="live-world-slot" data-live-slot></span>
+        <span class="live-world-slot" data-live-slot></span>
+        <span class="live-world-slot" data-live-slot></span>
+        <span class="live-world-slot" data-live-slot></span>
+        <span class="live-world-slot" data-live-slot></span>
+        <span class="live-world-slot" data-live-slot></span>
+      </div>
+      <article class="live-world-help">
+        <p data-live-hint>Click a place to walk. Use WASD or arrow keys for direct movement.</p>
+        <button type="button" onclick="window.vibeCraftPlayableWorld?.runAction()">Use Nearby Action</button>
+      </article>
+    </section>
 
     <section class="panel demo-brief" id="demo-logic" aria-label="VibeCraft world entrance">
       <article class="brief-copy">
@@ -3606,6 +3667,23 @@
         </a>
       </div>
     </section>
+
+    <div class="vibe-lens-modal" data-vibe-lens-modal aria-hidden="true">
+      <article class="vibe-lens-card" role="dialog" aria-modal="true" aria-label="Vibe Lens camera interaction">
+        <h3>Vibe Lens</h3>
+        <p>Use camera input to turn real-world notes, words, screenshots, or sketches into Knowledge Blocks. This is the bridge between your desk and the world.</p>
+        <div class="vibe-lens-view">
+          <video data-vibe-lens-video muted playsinline></video>
+          <i class="vibe-lens-reticle" aria-hidden="true"></i>
+        </div>
+        <div class="vibe-lens-actions">
+          <button type="button" data-vibe-lens-start>Start Camera</button>
+          <button type="button" data-vibe-lens-scan>Scan Into World</button>
+          <button type="button" data-vibe-lens-close>Close</button>
+        </div>
+        <div class="vibe-lens-result" data-vibe-lens-result>Lens ready.</div>
+      </article>
+    </div>
 
     <section class="panel mvp-quest world-region" id="playable-loop" data-world-region="quest" data-mvp-quest aria-label="VibeCraft playable loop">
       <div class="panel-head">
@@ -5141,6 +5219,7 @@
         mvpStatusComplete: "Goal shipped: the tree is down, achievement dropped, and the build story is ready.",
         mvpExploredSaved: "Knowledge block opened. Goal tree updated.",
         mvpInviteSaved: "Collaboration invite generated. Goal tree updated.",
+        navLiveWorld: "Live World",
         navBio: "Vibe Bio",
         navRegister: "Register",
         navQuest: "Quest",
@@ -5191,13 +5270,14 @@
         craftingOutput: "Village Pass",
         craftingCaption: "Role, avatar, authorized local context, and Agent proof combine into one verified starter identity.",
         agentProofLabel: "Agent authorization proof",
-        agentProofPlaceholder: "Paste vibecraft.registration.v1 JSON proof here.",
-        agentProofHint: "Registration only activates after the proof matches your Village ID and required scopes.",
+        agentProofPlaceholder: "Paste the VC-AUTH code or vibecraft.registration.v1 JSON proof here.",
+        agentProofHint: "The Agent may return either a VC-AUTH code or a JSON proof. Both can activate the same Village Pass.",
         agentProofWaiting: "Waiting for Agent authorization proof.",
         agentProofCopied: "Agent command copied. Paste it into Codex or another Agent to register this Village ID.",
         agentProofCopyFailed: "Clipboard is unavailable. Select the Agent command manually.",
         agentProofSimulated: "Demo Agent returned a scoped registration proof. Verify it to activate your pass.",
         agentProofMissing: "Paste the Agent registration proof before verifying.",
+        agentProofLooksLikeCommand: "This looks like the command you should send to Agent. Paste the Agent's returned code or proof here.",
         agentProofInvalidJson: "Registration proof is not valid JSON.",
         agentProofInvalidSchema: "Registration proof must use vibecraft.registration.v1.",
         agentProofHandleMismatch: "Proof does not match this Village ID.",
@@ -5487,6 +5567,7 @@
         mvpStatusComplete: "目标已上线：树倒下了，成就掉落，进展故事可以展示。",
         mvpExploredSaved: "已打开知识方块，目标树进度已更新。",
         mvpInviteSaved: "合作邀请已生成，目标树进度已更新。",
+        navLiveWorld: "动态世界",
         navBio: "Vibe 名片",
         navRegister: "注册",
         navQuest: "任务",
@@ -5537,13 +5618,14 @@
         craftingOutput: "村庄通行证",
         craftingCaption: "角色、人物形象、授权本地上下文和 Agent 证明，会合成为一个已验证的初始身份。",
         agentProofLabel: "Agent 授权证明",
-        agentProofPlaceholder: "把 vibecraft.registration.v1 JSON 证明粘贴到这里。",
-        agentProofHint: "只有证明匹配当前灵感村 ID 和必要权限时，注册才会激活。",
+        agentProofPlaceholder: "把 VC-AUTH 授权码或 vibecraft.registration.v1 JSON 证明粘贴到这里。",
+        agentProofHint: "Agent 可以只返回 VC-AUTH 授权码，也可以返回 JSON proof；两种都能激活通行证。",
         agentProofWaiting: "等待 Agent 授权证明。",
         agentProofCopied: "Agent 指令已复制。把它粘贴给 Codex 或其他 Agent 来注册这个灵感村 ID。",
         agentProofCopyFailed: "当前剪贴板不可用；可以手动选中 Agent 指令复制。",
         agentProofSimulated: "示例 Agent 已返回注册证明。验证后即可激活通行证。",
         agentProofMissing: "请先粘贴 Agent 注册证明，再进行验证。",
+        agentProofLooksLikeCommand: "这里像是原始 Agent 指令。请粘贴 Agent 返回的授权码或 proof。",
         agentProofInvalidJson: "注册证明不是有效 JSON。",
         agentProofInvalidSchema: "注册证明必须使用 vibecraft.registration.v1。",
         agentProofHandleMismatch: "证明中的灵感村 ID 与当前填写不一致。",
@@ -6000,6 +6082,7 @@
         "",
         "You are my Agent. Register my VibeCraft player identity.",
         "Do this like a command block: read the request, perform the allowed local scan, then return one proof.",
+        "IMPORTANT OUTPUT RULE: Reply with ONLY the VC-AUTH code on the first line, or ONLY the JSON proof. Do not explain.",
         "",
         "Allowed local context:",
         "- Read local Skill names/descriptions.",
@@ -6013,9 +6096,12 @@
         "1. Confirm the Village ID and role.",
         "2. Distill 1-5 starter skill seeds from the allowed local context.",
         "3. Keep the result positive, useful, and non-diagnostic.",
-        "4. Return ONLY one of these:",
-        "   A) the authorization code: " + proof.authorization_code,
+        "4. Return ONLY one of these two formats:",
+        "   A) one-line authorization code: " + proof.authorization_code,
         "   B) a vibecraft.registration.v1 JSON proof matching the schema below.",
+        "",
+        "Fast path response:",
+        proof.authorization_code,
         "",
         "JSON proof schema:",
         JSON.stringify(proof, null, 2),
@@ -6026,14 +6112,36 @@
     function parseRegistrationProof(value) {
       const trimmed = (value || "").trim();
       if (!trimmed) return { ok: false, reason: "agentProofMissing" };
-      if (!trimmed.startsWith("{")) {
+      if (trimmed.includes("BEGIN VIBECRAFT_AGENT_REGISTER") || trimmed.includes("Player request JSON:")) {
+        return { ok: false, reason: "agentProofLooksLikeCommand" };
+      }
+      const authMatch = trimmed.match(/VC-AUTH-[A-Z0-9]+-[A-Z0-9]{6}/i);
+      if (authMatch && !trimmed.startsWith("{") && !trimmed.includes("```")) {
         const proof = buildRegistrationProof();
-        proof.authorization_code = trimmed;
+        proof.authorization_code = authMatch[0].toUpperCase();
+        return { ok: true, proof };
+      }
+      const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
+      const jsonCandidate = fenced
+        ? fenced[1].trim()
+        : trimmed.startsWith("{")
+          ? trimmed
+          : trimmed.includes("{") && trimmed.includes("}")
+            ? trimmed.slice(trimmed.indexOf("{"), trimmed.lastIndexOf("}") + 1)
+            : "";
+      if (!jsonCandidate && authMatch) {
+        const proof = buildRegistrationProof();
+        proof.authorization_code = authMatch[0].toUpperCase();
         return { ok: true, proof };
       }
       try {
-        return { ok: true, proof: JSON.parse(trimmed) };
+        return { ok: true, proof: JSON.parse(jsonCandidate || trimmed) };
       } catch {
+        if (authMatch) {
+          const proof = buildRegistrationProof();
+          proof.authorization_code = authMatch[0].toUpperCase();
+          return { ok: true, proof };
+        }
         return { ok: false, reason: "agentProofInvalidJson" };
       }
     }
@@ -7246,5 +7354,7 @@
       }, 0);
     }
   </script>
+  <script src="vendor/phaser.min.js"></script>
+  <script src="vibecraft-game.js"></script>
 </body>
 </html>

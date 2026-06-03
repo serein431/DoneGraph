@@ -284,13 +284,14 @@
     return [
       "You are registering my VibeCraft profile.",
       "Only read local skills and project traces I explicitly authorize.",
+      "IMPORTANT OUTPUT RULE: Reply with ONLY the VC-AUTH code on the first line, or ONLY the JSON proof. Do not explain.",
       "Builder name: " + proof.builder_name,
       "Village ID: " + proof.profile_handle,
       "Role: " + proof.role,
       "Public intro: " + proof.public_intro,
       "Authorized scopes: " + proof.authorized_scopes.join(", "),
-      "Return authorization code: " + proof.authorization_code,
-      "Then return a vibecraft.registration.v1 JSON proof with this shape:",
+      "Fast path response: " + proof.authorization_code,
+      "Alternative: return a vibecraft.registration.v1 JSON proof with this shape:",
       JSON.stringify(proof, null, 2)
     ].join("\n");
   }

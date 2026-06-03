@@ -114,13 +114,14 @@ export function buildVibeCraftRegistrationPrompt(input: VibeCraftRegistrationInp
   return [
     "You are registering my VibeCraft profile.",
     "Only read local skills and project traces I explicitly authorize.",
+    "IMPORTANT OUTPUT RULE: Reply with ONLY the VC-AUTH code on the first line, or ONLY the JSON proof. Do not explain.",
     `Builder name: ${proof.builder_name}`,
     `Village ID: ${proof.profile_handle}`,
     `Role: ${proof.role}`,
     `Public intro: ${proof.public_intro}`,
     `Authorized scopes: ${proof.authorized_scopes.join(", ")}`,
-    `Return authorization code: ${proof.authorization_code}`,
-    "Then return a vibecraft.registration.v1 JSON proof with this shape:",
+    `Fast path response: ${proof.authorization_code}`,
+    "Alternative: return a vibecraft.registration.v1 JSON proof with this shape:",
     JSON.stringify(proof, null, 2)
   ].join("\n");
 }
@@ -135,10 +136,12 @@ export function validateVibeCraftRegistrationProof(
     return { ok: false, reason: "Profile handle does not match the registration challenge." };
   }
   if (!proof.authorization_code?.startsWith("VC-AUTH-")) return { ok: false, reason: "Missing authorization code." };
+  if (proof.authorization_code !== buildVibeCraftAuthCode(proof.profile_handle, proof.issued_at)) {
+    return { ok: false, reason: "Authorization code does not match the registration challenge." };
+  }
   if (!proof.authorized_scopes?.includes("donegraph.read")) {
     return { ok: false, reason: "Agent proof must include donegraph.read scope." };
   }
   if (!proof.skill_seeds?.length) return { ok: false, reason: "Missing initial skill seeds." };
   return { ok: true };
 }
-

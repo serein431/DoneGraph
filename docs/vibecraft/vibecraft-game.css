@@ -1,0 +1,533 @@
+.live-world-panel {
+  position: relative;
+  min-height: calc(100vh - 134px);
+  margin: 0 0 24px;
+  border: 5px solid var(--line);
+  background: #1d5f9f;
+  box-shadow: 10px 10px 0 var(--shadow);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.live-world-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(255, 255, 255, .1) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255, 255, 255, .1) 2px, transparent 2px);
+  background-size: 32px 32px;
+  mix-blend-mode: soft-light;
+  z-index: 1;
+}
+
+.live-world-panel.is-loaded .live-world-loading {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.live-world-toolbar,
+.live-world-hud,
+.live-world-action,
+.live-world-radio,
+.live-world-inventory,
+.live-world-help {
+  position: absolute;
+  z-index: 20;
+  pointer-events: auto;
+}
+
+.live-world-game {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 0;
+}
+
+.live-world-game canvas {
+  display: block;
+  max-width: 100%;
+  max-height: 100%;
+  image-rendering: pixelated;
+}
+
+.live-world-toolbar {
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  pointer-events: none;
+}
+
+.live-world-title,
+.live-world-quest,
+.live-world-minimap,
+.live-world-radio,
+.live-world-action,
+.live-world-inventory,
+.live-world-help {
+  border: 4px solid #1a100a;
+  background: rgba(27, 19, 12, .9);
+  color: #fff7d6;
+  box-shadow: inset -5px -5px 0 rgba(0, 0, 0, .28), 5px 5px 0 rgba(21, 12, 6, .48);
+}
+
+.live-world-title {
+  width: min(520px, 58vw);
+  padding: 12px 14px;
+  pointer-events: auto;
+}
+
+.live-world-title span,
+.live-world-quest span,
+.live-world-radio span,
+.live-world-action span,
+.live-world-inventory span {
+  display: block;
+  margin-bottom: 4px;
+  color: #8dff77;
+  font-size: 12px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.live-world-title h2 {
+  margin: 0 0 6px;
+  font-size: clamp(22px, 3vw, 42px);
+  line-height: .96;
+  letter-spacing: 0;
+  text-shadow: 3px 3px 0 #000;
+}
+
+.live-world-title p {
+  margin: 0;
+  max-width: 46rem;
+  color: #f8e9b5;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.live-world-quest {
+  width: min(370px, 38vw);
+  padding: 12px;
+  pointer-events: auto;
+}
+
+.live-world-quest strong {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #fff;
+  font-size: 16px;
+}
+
+.live-world-meter {
+  width: 100%;
+  height: 18px;
+  margin: 10px 0 8px;
+  border: 3px solid #120a05;
+  background: #471a13;
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .12);
+}
+
+.live-world-meter i {
+  display: block;
+  width: var(--tree-health, 100%);
+  height: 100%;
+  background: linear-gradient(90deg, #52cd45, #a5f06d);
+  transition: width 280ms steps(5, end);
+}
+
+.live-world-quest small {
+  display: block;
+  color: #ead499;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.live-world-hud {
+  left: 18px;
+  bottom: 92px;
+  display: grid;
+  gap: 8px;
+  min-width: 220px;
+}
+
+.live-world-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 4px solid #1a100a;
+  background: rgba(255, 249, 231, .94);
+  box-shadow: 5px 5px 0 rgba(21, 12, 6, .42);
+  padding: 8px;
+}
+
+.live-world-avatar {
+  width: 42px;
+  height: 42px;
+  border: 3px solid #1a100a;
+  background:
+    linear-gradient(#f1c39c 0 34%, #4fa548 34% 70%, #2f6dba 70%);
+  box-shadow: inset -6px -6px 0 rgba(0, 0, 0, .16);
+  image-rendering: pixelated;
+}
+
+.live-world-status strong,
+.live-world-status small {
+  display: block;
+}
+
+.live-world-status strong {
+  font-size: 15px;
+  line-height: 1.1;
+}
+
+.live-world-status small {
+  color: #5d331d;
+  font-weight: 850;
+}
+
+.live-world-hearts {
+  display: flex;
+  gap: 5px;
+}
+
+.live-world-hearts i {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #1a100a;
+  background: #cf3d33;
+  box-shadow: inset -3px -3px 0 #7f1815;
+}
+
+.live-world-minimap {
+  width: 160px;
+  min-height: 132px;
+  padding: 10px;
+  pointer-events: auto;
+}
+
+.live-world-minimap span {
+  display: flex;
+  justify-content: space-between;
+  color: #fff7d6;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.live-world-minimap-grid {
+  position: relative;
+  height: 90px;
+  margin-top: 8px;
+  border: 3px solid #120a05;
+  background:
+    linear-gradient(90deg, rgba(26, 16, 10, .25) 2px, transparent 2px),
+    linear-gradient(rgba(26, 16, 10, .25) 2px, transparent 2px),
+    linear-gradient(135deg, #57953b, #72bc46 40%, #3998c8 41% 54%, #7aad47 55%);
+  background-size: 18px 18px, 18px 18px, auto;
+}
+
+.live-world-minimap-grid i {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border: 2px solid #120a05;
+  background: #fff;
+  box-shadow: 0 0 0 2px #2f6dba;
+  transform: translate(-50%, -50%);
+  left: var(--mini-x, 20%);
+  top: var(--mini-y, 70%);
+}
+
+.live-world-action {
+  left: 50%;
+  bottom: 94px;
+  width: min(460px, calc(100vw - 36px));
+  min-height: 86px;
+  padding: 12px 14px;
+  transform: translateX(-50%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.live-world-action.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(-6px);
+}
+
+.live-world-action strong {
+  display: block;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1.25;
+}
+
+.live-world-action p {
+  margin: 5px 0 10px;
+  color: #ead499;
+  font-weight: 850;
+}
+
+.live-world-action button,
+.live-world-radio button,
+.live-world-help button,
+.vibe-lens-modal button {
+  border: 4px solid #1a100a;
+  background: #72bd49;
+  color: #12100c;
+  box-shadow: inset -5px -5px 0 #3c7c2c, 4px 4px 0 #120a05;
+  padding: 8px 14px;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.live-world-action button:active,
+.live-world-radio button:active,
+.live-world-help button:active,
+.vibe-lens-modal button:active {
+  transform: translate(3px, 3px);
+  box-shadow: inset -3px -3px 0 #3c7c2c, 1px 1px 0 #120a05;
+}
+
+.live-world-radio {
+  right: 18px;
+  bottom: 174px;
+  width: min(360px, 34vw);
+  min-height: 110px;
+  padding: 12px;
+}
+
+.live-world-radio p {
+  margin: 0 0 10px;
+  color: #fff7d6;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.live-world-inventory {
+  left: 50%;
+  right: auto;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px;
+  transform: translateX(-50%);
+}
+
+.live-world-slot {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 4px solid #100905;
+  background: #7b5538;
+  box-shadow: inset -6px -6px 0 #422516, inset 4px 4px 0 rgba(255, 255, 255, .18);
+  color: #fff7d6;
+  font-size: 11px;
+  font-weight: 950;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.live-world-slot.is-active {
+  outline: 4px solid #f4d54c;
+}
+
+.live-world-help {
+  right: 18px;
+  bottom: 18px;
+  width: min(340px, 32vw);
+  padding: 12px;
+  color: #fff7d6;
+}
+
+.live-world-help p {
+  margin: 0 0 8px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.live-world-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    linear-gradient(90deg, rgba(38, 24, 15, .1) 2px, transparent 2px),
+    linear-gradient(rgba(38, 24, 15, .1) 2px, transparent 2px),
+    linear-gradient(180deg, #72c9f5, #62b84d 68%, #8b5a35 69%);
+  background-size: 42px 42px, 42px 42px, auto;
+  transition: opacity 220ms ease;
+}
+
+.live-world-loading strong {
+  border: 5px solid #1a100a;
+  background: #fff2c8;
+  box-shadow: 8px 8px 0 #3a2618;
+  padding: 18px 22px;
+  font-size: clamp(24px, 5vw, 58px);
+  text-align: center;
+}
+
+.vibe-lens-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: none;
+  place-items: center;
+  padding: 20px;
+  background: rgba(9, 10, 12, .76);
+}
+
+.vibe-lens-modal.is-open {
+  display: grid;
+}
+
+.vibe-lens-card {
+  width: min(860px, 100%);
+  max-height: min(760px, calc(100vh - 40px));
+  overflow: auto;
+  border: 5px solid #1a100a;
+  background: #fff2c8;
+  box-shadow: 10px 10px 0 #120a05;
+  padding: 18px;
+}
+
+.vibe-lens-card h3 {
+  margin: 0 0 8px;
+  font-size: clamp(24px, 4vw, 44px);
+}
+
+.vibe-lens-card p {
+  margin: 0 0 14px;
+  color: #56331f;
+  font-weight: 850;
+}
+
+.vibe-lens-view {
+  position: relative;
+  min-height: 280px;
+  border: 4px solid #1a100a;
+  background:
+    linear-gradient(90deg, rgba(18, 10, 5, .08) 2px, transparent 2px),
+    linear-gradient(rgba(18, 10, 5, .08) 2px, transparent 2px),
+    #2b2e35;
+  background-size: 28px 28px;
+  overflow: hidden;
+}
+
+.vibe-lens-view video {
+  display: block;
+  width: 100%;
+  max-height: 420px;
+  object-fit: cover;
+}
+
+.vibe-lens-reticle {
+  position: absolute;
+  inset: 18%;
+  border: 4px solid #8dff77;
+  box-shadow: 0 0 0 999px rgba(0, 0, 0, .25);
+  pointer-events: none;
+}
+
+.vibe-lens-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.vibe-lens-result {
+  margin-top: 14px;
+  border: 4px solid #1a100a;
+  background: #fff9e7;
+  box-shadow: inset -5px -5px 0 rgba(138, 91, 48, .18);
+  padding: 12px;
+  font-weight: 900;
+}
+
+@media (max-width: 900px) {
+  .live-world-panel {
+    min-height: 760px;
+  }
+
+  .live-world-toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .live-world-title,
+  .live-world-quest,
+  .live-world-radio,
+  .live-world-help {
+    width: auto;
+    max-width: none;
+  }
+
+  .live-world-title {
+    padding: 10px 12px;
+  }
+
+  .live-world-title h2 {
+    font-size: clamp(24px, 9vw, 36px);
+    line-height: 1.02;
+  }
+
+  .live-world-title p,
+  .live-world-radio,
+  .live-world-help,
+  .live-world-minimap {
+    display: none;
+  }
+
+  .live-world-quest {
+    justify-self: stretch;
+    padding: 10px 12px;
+  }
+
+  .live-world-quest small {
+    font-size: 12px;
+  }
+
+  .live-world-hud {
+    left: 10px;
+    bottom: 92px;
+    min-width: 190px;
+  }
+
+  .live-world-action {
+    bottom: 92px;
+  }
+
+  .live-world-inventory {
+    left: 10px;
+    right: 10px;
+    width: calc(100% - 20px);
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    justify-content: stretch;
+    gap: 5px;
+    transform: none;
+    overflow: hidden;
+  }
+
+  .live-world-slot {
+    width: auto;
+    height: 44px;
+    min-width: 0;
+    font-size: 8px;
+    overflow-wrap: anywhere;
+  }
+}
