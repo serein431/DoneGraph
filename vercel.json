@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "outputDirectory": "docs/vibecraft",
+  "cleanUrls": true
+}
