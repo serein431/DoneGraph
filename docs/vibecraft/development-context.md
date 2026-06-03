@@ -1,6 +1,6 @@
 # VibeCraft Development Context
 
-Last updated: 2026-06-03
+Last updated: 2026-06-04
 
 This file records the durable product context for VibeCraft so future Agent work does not depend on chat memory.
 
@@ -12,6 +12,7 @@ This file records the durable product context for VibeCraft so future Agent work
 - Deployment status: live on Vercel. A header check on 2026-06-03 returned HTTP 200.
 - Active repo branch: `codex/vibecraft-wiki-prototype` (legacy branch name; current restored UI is the live front-stage/workshop style)
 - Product PRD: `docs/vibecraft/PRD.md` (updated from the original `vibecraft-prd.pdf` v0.1 source on 2026-06-04)
+- Game engine plan: `docs/vibecraft/game-studio-engine-plan.md` (Game Studio plugin route and playable-scene plan)
 - Durable prototype: `docs/vibecraft/index.html`
 - Generated product view: `.donegraph/vibecraft.html`
 
@@ -132,14 +133,17 @@ Avoid:
 - The web app should default to English and support Chinese.
 - Click sound and default background music are part of the desired experience, but browser autoplay rules may require a first user gesture.
 - Treat the restored live front stage as the visual baseline. Future changes should extend it, not replace it with wiki pages, PRD pages, or internal planning surfaces.
+- Game Studio plugin guidance is now recorded in `docs/vibecraft/game-studio-engine-plan.md`: keep the MVP on Phaser 2D with DOM overlays; reserve Three.js for later genuinely 3D Vibe Brain, portal, or trophy-room scenes.
+- The next playable-world pass should prioritize real movement and state change over more static layout: camera follow, animated world objects, interaction zones, proof-driven Goal Tree changes, Radio Tower broadcasts, and a public-profile village scene.
 
 ## Next Optimization Backlog
 
-1. Improve the live site's first-screen clarity: explain the world in one serious sentence, then let the playful layer emerge through interaction.
-2. Build the Agent-only registration flow as a real API route instead of demo verification.
-3. Add proof upload endpoints and persist skill unlocks, drops, and public works.
-4. Replace static avatar/world blocks with a lightweight interactive voxel scene.
-5. Add Vibe Radio as a real module with generated episode text and optional background audio.
-6. Implement `username.vibecraft.bio` routing and profile lookup.
-7. Add community discovery with complementary skill matching.
-8. Add Vibe Brain export/import with user-controlled scoped access keys.
+1. Stabilize the current Phaser scene into a stronger playable world: camera follow, real interaction zones, animated objects, and a clearer HUD.
+2. Build the moving homepage/title scene while keeping product copy in DOM.
+3. Upgrade the Agent Registration Forge with visible command-copy, proof-validate, and Village Pass unlock animations.
+4. Upgrade Goal Tree so Agent completion proofs visibly change tree health, drops, XP, Daybook, and Radio.
+5. Replace static/programmatic shapes with a first approved original voxel sprite and tile style.
+6. Build Vibe Radio as an in-world broadcast module with station state, waveform, and separate audio controls.
+7. Implement `username.vibecraft.bio` routing and profile lookup as Vibe Village/public bio.
+8. Add community discovery with complementary skill matching.
+9. Add Vibe Brain export/import with user-controlled scoped access keys.
