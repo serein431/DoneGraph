@@ -5324,6 +5324,17 @@
       const handle = registrationHandle();
       const issuedAt = profile.registration_issued_at || registrationIssuedAt;
       const role = selectedRole();
+      const bridgeProof = agentBridge()?.createRegistrationProof?.({
+        handle,
+        builderName: playerName(),
+        role: roleText(role, "label") || "Knowledge Explorer",
+        intro: (profile.intro || "").trim() || "I turn strange build traces into useful little knowledge blocks.",
+        sourceAgent: "codex",
+        authorizedScopes: registrationScopes,
+        issuedAt,
+        skill_seeds: registrationSkillSeeds()
+      });
+      if (bridgeProof) return bridgeProof;
       return {
         schema_version: "vibecraft.registration.v1",
         profile_handle: handle,
@@ -5369,6 +5380,8 @@
     }
     function validateRegistrationProof(proof) {
       if (!proof || typeof proof !== "object") return { ok: false, reason: "agentProofInvalidJson" };
+      const bridgeValidation = agentBridge()?.validateRegistrationProof?.(proof, registrationHandle());
+      if (bridgeValidation) return bridgeValidation;
       if (proof.schema_version !== "vibecraft.registration.v1") return { ok: false, reason: "agentProofInvalidSchema" };
       const handle = registrationHandle();
       if (normalizeHandle(proof.profile_handle || "") !== handle) return { ok: false, reason: "agentProofHandleMismatch" };
@@ -5978,6 +5991,7 @@
       profile.registered = true;
       profile.starter_confirmed = true;
       profile.unlocked_packs = Array.from(new Set(["pack_identity_seed", ...profile.unlocked_packs]));
+      agentBridge()?.writeRegistrationProof?.(proof, handle);
       if (proofInput) proofInput.value = proofText;
       setRegistrationProofFeedback("agentProofVerified");
       playSfx("register");

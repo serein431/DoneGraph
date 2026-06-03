@@ -118,6 +118,8 @@ Avoid:
 - Agent-only registration now has a durable MVP contract: `vibecraft.registration.v1`, deterministic `VC-AUTH-*` codes, authorized scopes, initial skill seeds, and proof validation helpers in `packages/core/src/vibecraft.ts`.
 - `docs/vibecraft/index.html` and `docs/vibecraft/vibecraft-demo.html` were restored from the live site and should be treated as the current product experience.
 - `docs/vibecraft/vibecraft-demo.html` now mirrors the Agent-only registration loop in the workshop: copy an Agent command, paste the returned `vibecraft.registration.v1` proof, verify the deterministic authorization code, then unlock the initial Village Pass and identity seed pack.
+- `docs/vibecraft/vibecraft-agent-bridge.js` now exposes the same Agent registration contract for browser/plugin integration: `createRegistrationProof`, `createRegistrationCommand`, `validateRegistrationProof`, `writeRegistrationProof`, and `readRegistrationProof`.
+- `docs/vibecraft/agent-registration.example.json` is the static registration proof example for Agent/plugin implementers.
 - `.donegraph/vibecraft.html` is generated from DoneGraph artifacts and remains a compact artifact view; it does not define the public front-stage style.
 - The web app should default to English and support Chinese.
 - Click sound and default background music are part of the desired experience, but browser autoplay rules may require a first user gesture.

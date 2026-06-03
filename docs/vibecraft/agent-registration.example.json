@@ -1,0 +1,34 @@
+{
+  "schema_version": "vibecraft.registration.v1",
+  "profile_handle": "mina-lab",
+  "builder_name": "Mina",
+  "role": "Knowledge Explorer",
+  "public_intro": "I build with Agents.",
+  "source_agent": "codex",
+  "authorization_code": "VC-AUTH-MINALAB-U32J6L",
+  "authorized_scopes": [
+    "local.skills.read",
+    "donegraph.read",
+    "public_profile.write",
+    "completion_proof.write"
+  ],
+  "initial_level": "Village Pass L1",
+  "skill_seeds": [
+    {
+      "id": "plain-language-translation",
+      "label": "Plain-language translation",
+      "level": 2
+    },
+    {
+      "id": "agent-direction",
+      "label": "Agent direction",
+      "level": 1
+    },
+    {
+      "id": "knowledge-crafting",
+      "label": "Knowledge crafting",
+      "level": 2
+    }
+  ],
+  "issued_at": "2026-06-03T00:00:00.000Z"
+}

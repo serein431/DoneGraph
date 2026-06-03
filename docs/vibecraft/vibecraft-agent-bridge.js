@@ -17,6 +17,7 @@
   "install_surface": "web_local_first",
   "storage_keys": {
     "profile": "vibecraft:onboarding",
+    "registration_proof": "vibecraft:registration-proof",
     "plugin_installation": "vibecraft:plugin-installation",
     "agent_receipt": "vibecraft:agent-receipt"
   },
@@ -60,8 +61,27 @@
   "agent_entrypoints": {
     "local_receipt_file": ".donegraph/vibecraft.json",
     "browser_bridge": "/vibecraft-agent-bridge.js",
+    "static_registration_example": "/agent-registration.example.json",
     "static_receipt_example": "/agent-receipt.example.json",
     "future_http_target": "POST /api/vibecraft/receipts"
+  },
+  "registration_contract": {
+    "schema_version": "vibecraft.registration.v1",
+    "default_issued_at": "2026-06-03T00:00:00.000Z",
+    "required_fields": [
+      "schema_version",
+      "profile_handle",
+      "builder_name",
+      "role",
+      "public_intro",
+      "source_agent",
+      "authorization_code",
+      "authorized_scopes",
+      "initial_level",
+      "skill_seeds",
+      "issued_at"
+    ],
+    "required_scope": "donegraph.read"
   },
   "receipt_contract": {
     "schema_version": "vibecraft.receipt.v1",
@@ -168,6 +188,13 @@
   }
 };
   const storageKeys = manifest.storage_keys;
+  const registrationContract = manifest.registration_contract;
+  const registrationScopes = [
+    "local.skills.read",
+    "donegraph.read",
+    "public_profile.write",
+    "completion_proof.write"
+  ];
 
   function clone(value) {
     return JSON.parse(JSON.stringify(value));
@@ -190,6 +217,114 @@
     } catch {
       return false;
     }
+  }
+
+  function checksum(value) {
+    let hash = 2166136261;
+    for (let index = 0; index < value.length; index += 1) {
+      hash ^= value.charCodeAt(index);
+      hash = Math.imul(hash, 16777619);
+    }
+    return (hash >>> 0).toString(36).toUpperCase().padStart(6, "0").slice(0, 6);
+  }
+
+  function normalizeHandle(value) {
+    return (
+      (value || "")
+        .toLowerCase()
+        .replace(/[^a-z0-9-]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 32) || "happy-builder"
+    );
+  }
+
+  function buildAuthCode(handle, issuedAt) {
+    const safeHandle = normalizeHandle(handle);
+    const safeIssuedAt = issuedAt || registrationContract.default_issued_at;
+    return "VC-AUTH-" + safeHandle.toUpperCase().replace(/-/g, "") + "-" + checksum(safeHandle + ":" + safeIssuedAt);
+  }
+
+  function registrationSkillSeeds() {
+    return [
+      { id: "plain-language-translation", label: "Plain-language translation", level: 2 },
+      { id: "agent-direction", label: "Agent direction", level: 1 },
+      { id: "knowledge-crafting", label: "Knowledge crafting", level: 2 }
+    ];
+  }
+
+  function createRegistrationProof(input) {
+    const patch = input || {};
+    const issuedAt = patch.issued_at || patch.issuedAt || registrationContract.default_issued_at;
+    const handle = normalizeHandle(patch.profile_handle || patch.handle);
+    const scopes = Array.isArray(patch.authorized_scopes)
+      ? patch.authorized_scopes
+      : Array.isArray(patch.authorizedScopes)
+        ? patch.authorizedScopes
+        : registrationScopes;
+    const skillSeeds = Array.isArray(patch.skill_seeds) && patch.skill_seeds.length
+      ? patch.skill_seeds
+      : registrationSkillSeeds();
+    return {
+      schema_version: registrationContract.schema_version,
+      profile_handle: handle,
+      builder_name: (patch.builder_name || patch.builderName || "").trim() || "Happy Builder",
+      role: (patch.role || "").trim() || "Knowledge Explorer",
+      public_intro: (patch.public_intro || patch.intro || "").trim() || "I turn strange build traces into useful little knowledge blocks.",
+      source_agent: String(patch.source_agent || patch.sourceAgent || "codex").trim(),
+      authorization_code: buildAuthCode(handle, issuedAt),
+      authorized_scopes: scopes,
+      initial_level: "Village Pass L1",
+      skill_seeds: skillSeeds,
+      issued_at: issuedAt
+    };
+  }
+
+  function createRegistrationCommand(input) {
+    const proof = createRegistrationProof(input);
+    return [
+      "You are registering my VibeCraft profile.",
+      "Only read local skills and project traces I explicitly authorize.",
+      "Builder name: " + proof.builder_name,
+      "Village ID: " + proof.profile_handle,
+      "Role: " + proof.role,
+      "Public intro: " + proof.public_intro,
+      "Authorized scopes: " + proof.authorized_scopes.join(", "),
+      "Return authorization code: " + proof.authorization_code,
+      "Then return a vibecraft.registration.v1 JSON proof with this shape:",
+      JSON.stringify(proof, null, 2)
+    ].join("\n");
+  }
+
+  function validateRegistrationProof(proof, expectedHandle) {
+    if (!proof || typeof proof !== "object") return { ok: false, reason: "agentProofInvalidJson" };
+    if (proof.schema_version !== registrationContract.schema_version) return { ok: false, reason: "agentProofInvalidSchema" };
+    const missing = registrationContract.required_fields.filter((field) => {
+      const value = proof[field];
+      return value == null || value === "" || (Array.isArray(value) && value.length === 0);
+    });
+    if (missing.length) return { ok: false, reason: "agentProofInvalidSchema", missing };
+    const handle = normalizeHandle(proof.profile_handle || "");
+    if (expectedHandle && handle !== normalizeHandle(expectedHandle)) return { ok: false, reason: "agentProofHandleMismatch" };
+    const issuedAt = typeof proof.issued_at === "string" && proof.issued_at ? proof.issued_at : registrationContract.default_issued_at;
+    if (proof.authorization_code !== buildAuthCode(handle, issuedAt)) return { ok: false, reason: "agentProofAuthMismatch" };
+    if (!Array.isArray(proof.authorized_scopes) || !proof.authorized_scopes.includes(registrationContract.required_scope)) {
+      return { ok: false, reason: "agentProofScopeMissing" };
+    }
+    if (!Array.isArray(proof.skill_seeds) || proof.skill_seeds.length < 1) return { ok: false, reason: "agentProofSeedsMissing" };
+    return { ok: true, proof: { ...proof, profile_handle: handle, issued_at: issuedAt } };
+  }
+
+  function writeRegistrationProof(proof, expectedHandle) {
+    const checked = validateRegistrationProof(proof, expectedHandle);
+    if (!checked.ok) return checked;
+    return {
+      ok: writeJson(storageKeys.registration_proof, checked.proof),
+      proof: checked.proof
+    };
+  }
+
+  function readRegistrationProof() {
+    return readJson(storageKeys.registration_proof, null);
   }
 
   function validateReceipt(receipt) {
@@ -298,6 +433,13 @@
   global.VibeCraftAgentBridge = {
     manifest,
     storageKeys,
+    normalizeHandle,
+    buildAuthCode,
+    createRegistrationProof,
+    createRegistrationCommand,
+    validateRegistrationProof,
+    writeRegistrationProof,
+    readRegistrationProof,
     createReceipt,
     validateReceipt,
     installPlugin,

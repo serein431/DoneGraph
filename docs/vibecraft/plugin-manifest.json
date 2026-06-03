@@ -10,6 +10,7 @@
   "install_surface": "web_local_first",
   "storage_keys": {
     "profile": "vibecraft:onboarding",
+    "registration_proof": "vibecraft:registration-proof",
     "plugin_installation": "vibecraft:plugin-installation",
     "agent_receipt": "vibecraft:agent-receipt"
   },
@@ -53,8 +54,27 @@
   "agent_entrypoints": {
     "local_receipt_file": ".donegraph/vibecraft.json",
     "browser_bridge": "/vibecraft-agent-bridge.js",
+    "static_registration_example": "/agent-registration.example.json",
     "static_receipt_example": "/agent-receipt.example.json",
     "future_http_target": "POST /api/vibecraft/receipts"
+  },
+  "registration_contract": {
+    "schema_version": "vibecraft.registration.v1",
+    "default_issued_at": "2026-06-03T00:00:00.000Z",
+    "required_fields": [
+      "schema_version",
+      "profile_handle",
+      "builder_name",
+      "role",
+      "public_intro",
+      "source_agent",
+      "authorization_code",
+      "authorized_scopes",
+      "initial_level",
+      "skill_seeds",
+      "issued_at"
+    ],
+    "required_scope": "donegraph.read"
   },
   "receipt_contract": {
     "schema_version": "vibecraft.receipt.v1",
