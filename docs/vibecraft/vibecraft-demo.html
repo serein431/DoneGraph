@@ -865,6 +865,28 @@
       font-weight: 780;
       text-transform: none;
     }
+    .agent-registration-box {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 4px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.18) 25%, transparent 25%) 0 0 / 18px 18px,
+        #d8c0a0;
+      box-shadow: inset 0 0 0 4px rgba(255,255,255,.18);
+    }
+    .agent-registration-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+    .agent-proof-feedback {
+      color: #4f3b29;
+      font-size: 11px;
+      line-height: 1.35;
+      font-weight: 850;
+      text-transform: none;
+    }
     .registration-status-row {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
@@ -2896,6 +2918,7 @@
       .bio-actions,
       .demo-path,
       .mvp-steps,
+      .agent-registration-actions,
       .registration-actions,
       .sync-stats,
       .stats {
@@ -3162,8 +3185,25 @@
             <input data-register-invite maxlength="24" placeholder="e.g. HAPPYBUILD" data-i18n-placeholder="invitePlaceholder" />
             <small data-i18n="inviteHint">Optional; for hackathons, communities, or special skill packs.</small>
           </label>
+          <div class="agent-registration-box">
+            <label class="name-field">
+              <span data-i18n="agentCommandLabel">Agent registration command</span>
+              <textarea data-agent-registration-command readonly aria-label="Agent registration command"></textarea>
+              <small data-i18n="agentCommandHint">Copy this instruction into your Agent. The Agent returns a scoped authorization proof for this Village ID.</small>
+            </label>
+            <div class="agent-registration-actions">
+              <button class="join-action secondary" type="button" data-copy-registration-command data-i18n="copyAgentCommand">Copy Agent Command</button>
+              <button class="join-action secondary" type="button" data-simulate-registration-proof data-i18n="simulateAgentProof">Simulate Agent Proof</button>
+            </div>
+            <label class="name-field">
+              <span data-i18n="agentProofLabel">Agent authorization proof</span>
+              <textarea data-agent-registration-proof spellcheck="false" placeholder="Paste vibecraft.registration.v1 JSON proof here." data-i18n-placeholder="agentProofPlaceholder"></textarea>
+              <small data-i18n="agentProofHint">Registration only activates after the proof matches your Village ID and required scopes.</small>
+            </label>
+            <small class="agent-proof-feedback" data-registration-proof-feedback data-i18n="agentProofWaiting">Waiting for Agent authorization proof.</small>
+          </div>
           <div class="registration-actions">
-            <button class="join-action secondary" type="button" data-register-submit>Register Pass</button>
+            <button class="join-action secondary" type="button" data-register-submit>Verify Agent Proof</button>
             <button class="join-action" type="button" data-start-world data-i18n="startWorld">Enter Village</button>
           </div>
           <small class="join-feedback" data-onboard-feedback data-i18n="privacyLine">This demo only writes to browser localStorage. It does not upload real emails or raw files.</small>
@@ -4524,7 +4564,7 @@
         mvpActive: "Swing",
         mvpQueued: "Queued",
         mvpIdentityTitle: "Create identity",
-        mvpIdentityCopy: "Register a Village Pass with your role, avatar, and public intro.",
+        mvpIdentityCopy: "Verify an Agent-issued Village Pass with your role, avatar, and public intro.",
         mvpReceiptTitle: "Sync Agent drop",
         mvpReceiptCopy: "Apply the completion proof so the world changes from real work.",
         mvpExploreTitle: "Open a knowledge block",
@@ -4567,10 +4607,29 @@
         inviteLabel: "Invite code (optional)",
         invitePlaceholder: "e.g. HAPPYBUILD",
         inviteHint: "Optional; for hackathons, communities, or special skill packs.",
-        registerPass: "Register Pass",
-        updatePass: "Update Pass",
+        agentCommandLabel: "Agent registration command",
+        agentCommandHint: "Copy this instruction into your Agent. The Agent returns a scoped authorization proof for this Village ID.",
+        copyAgentCommand: "Copy Agent Command",
+        simulateAgentProof: "Simulate Agent Proof",
+        agentProofLabel: "Agent authorization proof",
+        agentProofPlaceholder: "Paste vibecraft.registration.v1 JSON proof here.",
+        agentProofHint: "Registration only activates after the proof matches your Village ID and required scopes.",
+        agentProofWaiting: "Waiting for Agent authorization proof.",
+        agentProofCopied: "Agent command copied. Paste it into Codex or another Agent to register this Village ID.",
+        agentProofCopyFailed: "Clipboard is unavailable. Select the Agent command manually.",
+        agentProofSimulated: "Demo Agent returned a scoped registration proof. Verify it to activate your pass.",
+        agentProofMissing: "Paste the Agent registration proof before verifying.",
+        agentProofInvalidJson: "Registration proof is not valid JSON.",
+        agentProofInvalidSchema: "Registration proof must use vibecraft.registration.v1.",
+        agentProofHandleMismatch: "Proof does not match this Village ID.",
+        agentProofAuthMismatch: "Authorization code does not match this registration challenge.",
+        agentProofScopeMissing: "Proof must include donegraph.read scope.",
+        agentProofSeedsMissing: "Proof must include at least one starter skill seed.",
+        agentProofVerified: "Agent proof verified. Village Pass is active.",
+        registerPass: "Verify Agent Proof",
+        updatePass: "Re-verify Proof",
         startWorld: "Enter Village",
-        privacyLine: "This demo only writes to browser localStorage. It does not upload real emails or raw files.",
+        privacyLine: "Registration is Agent-only. This demo stores the verified pass in browser localStorage and does not upload raw files.",
         chooseRole: "Choose Role",
         chooseAvatar: "Choose Avatar",
         localSkillPlugin: "Local Skill Plugin",
@@ -4581,8 +4640,8 @@
         pluginManifestLink: "Plugin Pass",
         agentBridgeLink: "Agent Bridge",
         receiptExampleLink: "Drop Receipt",
-        pluginInstallWaiting: "Plugin not installed yet. Register a Village Pass, then install it locally.",
-        pluginNeedsRegistration: "Register your Vibe Village pass before installing the local plugin.",
+        pluginInstallWaiting: "Plugin not installed yet. Verify an Agent-issued Village Pass, then install it locally.",
+        pluginNeedsRegistration: "Verify your Agent-issued Village Pass before installing the local plugin.",
         pluginInstalledSaved: "Local plugin installed. Starter attributes are confirmed; Agent drops can unlock growth packs next.",
         pluginInstalledPrefix: "Installed: ",
         pluginConfirmationBody: "The plugin distills your existing Skills and project traces into your first identity attribute sheet. Every future build keeps leveling it up.",
@@ -4721,10 +4780,10 @@
         packLockedStamp: "LOCKED",
         registerHandleError: "Village ID needs at least 3 letters, numbers, or hyphens.",
         registerEmailError: "That email format looks off. You can also leave it blank for now.",
-        registerSaved: "Pass registered: ",
-        registerSavedSuffix: ". You can sync Agent status now.",
-        syncNeedsRegistration: "Register your Vibe Village pass before syncing Agent status.",
-        syncBlockedMissingPass: "Sync blocked: local Village Pass is missing.",
+        registerSaved: "Agent pass verified: ",
+        registerSavedSuffix: ". Starter level is confirmed; sync Agent drops next.",
+        syncNeedsRegistration: "Verify Agent registration proof before syncing Agent status.",
+        syncBlockedMissingPass: "Sync blocked: verified Agent pass is missing.",
         syncSaved: "Agent completion state synced. Growth packs unlocked: ",
         identitySaved: "Identity saved locally.",
         identitySavedNoStorage: "Identity updated, but this browser did not allow local storage.",
@@ -4732,7 +4791,7 @@
         avatarSelectedPrefix: "Avatar selected: ",
         avatarSelectedSuffix: ". Unlock state waits for Agent drop sync.",
         pluginGoSync: "Apply the Agent completion drop in the sync tower.",
-        startNeedsRegistration: "Register your Vibe Village pass before entering the village.",
+        startNeedsRegistration: "Verify your Agent-issued Village Pass before entering the village.",
         startNeedsSync: "Public profile saved. Growth state needs Agent drop sync first.",
         enteredPrefix: "Entered: ",
         registeredProfileLinePrefix: "Village ID @",
@@ -4815,7 +4874,7 @@
         mvpActive: "挥斧",
         mvpQueued: "排队中",
         mvpIdentityTitle: "创建身份",
-        mvpIdentityCopy: "用角色、人物形象和公开介绍注册灵感村通行证。",
+        mvpIdentityCopy: "用 Agent 授权证明激活你的角色、人物形象和公开介绍。",
         mvpReceiptTitle: "同步 Agent 掉落",
         mvpReceiptCopy: "应用完成凭证，让真实工作改变这个世界。",
         mvpExploreTitle: "打开知识方块",
@@ -4858,10 +4917,29 @@
         inviteLabel: "邀请码（可选）",
         invitePlaceholder: "例如：HAPPYBUILD",
         inviteHint: "可选；黑客松、社群或技能包的邀请码。",
-        registerPass: "注册通行证",
-        updatePass: "更新通行证",
+        agentCommandLabel: "Agent 注册指令",
+        agentCommandHint: "复制这段指令给你的 Agent。Agent 会为这个灵感村 ID 返回一个带权限范围的授权证明。",
+        copyAgentCommand: "复制 Agent 指令",
+        simulateAgentProof: "模拟 Agent 证明",
+        agentProofLabel: "Agent 授权证明",
+        agentProofPlaceholder: "把 vibecraft.registration.v1 JSON 证明粘贴到这里。",
+        agentProofHint: "只有证明匹配当前灵感村 ID 和必要权限时，注册才会激活。",
+        agentProofWaiting: "等待 Agent 授权证明。",
+        agentProofCopied: "Agent 指令已复制。把它粘贴给 Codex 或其他 Agent 来注册这个灵感村 ID。",
+        agentProofCopyFailed: "当前剪贴板不可用；可以手动选中 Agent 指令复制。",
+        agentProofSimulated: "示例 Agent 已返回注册证明。验证后即可激活通行证。",
+        agentProofMissing: "请先粘贴 Agent 注册证明，再进行验证。",
+        agentProofInvalidJson: "注册证明不是有效 JSON。",
+        agentProofInvalidSchema: "注册证明必须使用 vibecraft.registration.v1。",
+        agentProofHandleMismatch: "证明中的灵感村 ID 与当前填写不一致。",
+        agentProofAuthMismatch: "授权码与本次注册挑战不匹配。",
+        agentProofScopeMissing: "证明必须包含 donegraph.read 授权范围。",
+        agentProofSeedsMissing: "证明必须包含至少一个初始技能种子。",
+        agentProofVerified: "Agent 证明已验证，灵感村通行证已激活。",
+        registerPass: "验证 Agent 证明",
+        updatePass: "重新验证证明",
         startWorld: "进入灵感村",
-        privacyLine: "当前 demo 只写入浏览器 localStorage，不会上传真实邮箱或原始文件。",
+        privacyLine: "注册仅允许 Agent 完成。当前 demo 只把验证后的通行证写入浏览器 localStorage，不上传原始文件。",
         chooseRole: "选择角色",
         chooseAvatar: "人物形象",
         localSkillPlugin: "本地 Skill 插件",
@@ -4872,8 +4950,8 @@
         pluginManifestLink: "插件通行证",
         agentBridgeLink: "Agent 接入桥",
         receiptExampleLink: "完成凭证",
-        pluginInstallWaiting: "插件尚未安装。先注册灵感村通行证，再在本机安装。",
-        pluginNeedsRegistration: "先注册灵感村通行证，再安装本地插件。",
+        pluginInstallWaiting: "插件尚未安装。先验证 Agent 授权的灵感村通行证，再在本机安装。",
+        pluginNeedsRegistration: "先验证 Agent 授权的灵感村通行证，再安装本地插件。",
         pluginInstalledSaved: "本地插件已安装。初始属性已确认，下一步由 Agent 掉落解锁成长包。",
         pluginInstalledPrefix: "已安装：",
         pluginConfirmationBody: "插件会把你已有的 Skill 和项目痕迹炼成第一张身份属性表。之后每次 build 都会继续升级。",
@@ -5012,10 +5090,10 @@
         packLockedStamp: "未解锁",
         registerHandleError: "灵感村 ID 至少需要 3 位字母、数字或连字符。",
         registerEmailError: "邮箱格式看起来不对；也可以先留空。",
-        registerSaved: "通行证已注册：",
-        registerSavedSuffix: "，现在可以同步 Agent 状态。",
-        syncNeedsRegistration: "先注册灵感村通行证，再同步 Agent 状态。",
-        syncBlockedMissingPass: "同步被挡下：缺少本地注册通行证。",
+        registerSaved: "Agent 通行证已验证：",
+        registerSavedSuffix: "，初始等级已确认，下一步同步 Agent 掉落。",
+        syncNeedsRegistration: "先验证 Agent 注册证明，再同步 Agent 状态。",
+        syncBlockedMissingPass: "同步被挡下：缺少已验证的 Agent 通行证。",
         syncSaved: "已同步 Agent 完成状态，解锁 ",
         identitySaved: "身份已保存到本机。",
         identitySavedNoStorage: "身份已更新；当前浏览器没有开放本地保存。",
@@ -5023,7 +5101,7 @@
         avatarSelectedPrefix: "已选择人物形象：",
         avatarSelectedSuffix: "。解锁状态等待 Agent 掉落同步。",
         pluginGoSync: "请在同步塔应用 Agent 完成凭证。",
-        startNeedsRegistration: "先注册灵感村通行证，再进入灵感村。",
+        startNeedsRegistration: "先验证 Agent 授权的灵感村通行证，再进入灵感村。",
         startNeedsSync: "公开资料已保存；成长状态需要先同步 Agent 掉落。",
         enteredPrefix: "已入驻：",
         registeredProfileLinePrefix: "灵感村 ID @",
@@ -5074,6 +5152,10 @@
       registered: false,
       registration_id: "",
       registered_at: "",
+      registration_authorized: false,
+      registration_proof: "",
+      authorization_code: "",
+      registration_issued_at: "",
       role_id: onboarding.default_role_id || roles[0]?.id || "",
       avatar_id: onboarding.default_avatar_id || avatars[0]?.id || "",
       plugin_installed: false,
@@ -5213,6 +5295,94 @@
         hash = (hash * 31 + value.charCodeAt(index)) >>> 0;
       }
       return hash.toString(36).slice(0, 8) || "0";
+    }
+    const registrationIssuedAt = "2026-06-03T00:00:00.000Z";
+    const registrationScopes = ["local.skills.read", "donegraph.read", "public_profile.write", "completion_proof.write"];
+    function registrationChecksum(value) {
+      let hash = 2166136261;
+      for (let index = 0; index < value.length; index += 1) {
+        hash ^= value.charCodeAt(index);
+        hash = Math.imul(hash, 16777619);
+      }
+      return (hash >>> 0).toString(36).toUpperCase().padStart(6, "0").slice(0, 6);
+    }
+    function registrationHandle() {
+      return normalizeHandle(profile.handle || profile.name) || "happy-builder";
+    }
+    function registrationAuthCode(handle = registrationHandle(), issuedAt = profile.registration_issued_at || registrationIssuedAt) {
+      const safeHandle = normalizeHandle(handle) || "happy-builder";
+      return "VC-AUTH-" + safeHandle.toUpperCase().replace(/-/g, "") + "-" + registrationChecksum(safeHandle + ":" + issuedAt);
+    }
+    function registrationSkillSeeds() {
+      return [
+        { id: "plain-language-translation", label: "Plain-language translation", level: 2 },
+        { id: "agent-direction", label: "Agent direction", level: 1 },
+        { id: "knowledge-crafting", label: "Knowledge crafting", level: 2 }
+      ];
+    }
+    function buildRegistrationProof() {
+      const handle = registrationHandle();
+      const issuedAt = profile.registration_issued_at || registrationIssuedAt;
+      const role = selectedRole();
+      return {
+        schema_version: "vibecraft.registration.v1",
+        profile_handle: handle,
+        builder_name: playerName(),
+        role: roleText(role, "label") || "Knowledge Explorer",
+        public_intro: (profile.intro || "").trim() || "I turn strange build traces into useful little knowledge blocks.",
+        source_agent: "codex",
+        authorization_code: registrationAuthCode(handle, issuedAt),
+        authorized_scopes: registrationScopes,
+        initial_level: "Village Pass L1",
+        skill_seeds: registrationSkillSeeds(),
+        issued_at: issuedAt
+      };
+    }
+    function buildRegistrationCommand() {
+      const proof = buildRegistrationProof();
+      return [
+        "You are registering my VibeCraft profile.",
+        "Only read local Skills and project traces I explicitly authorize.",
+        "Builder name: " + proof.builder_name,
+        "Village ID: " + proof.profile_handle,
+        "Role: " + proof.role,
+        "Public intro: " + proof.public_intro,
+        "Authorized scopes: " + proof.authorized_scopes.join(", "),
+        "Return authorization code: " + proof.authorization_code,
+        "Then return a vibecraft.registration.v1 JSON proof with this shape:",
+        JSON.stringify(proof, null, 2)
+      ].join("\n");
+    }
+    function parseRegistrationProof(value) {
+      const trimmed = (value || "").trim();
+      if (!trimmed) return { ok: false, reason: "agentProofMissing" };
+      if (!trimmed.startsWith("{")) {
+        const proof = buildRegistrationProof();
+        proof.authorization_code = trimmed;
+        return { ok: true, proof };
+      }
+      try {
+        return { ok: true, proof: JSON.parse(trimmed) };
+      } catch {
+        return { ok: false, reason: "agentProofInvalidJson" };
+      }
+    }
+    function validateRegistrationProof(proof) {
+      if (!proof || typeof proof !== "object") return { ok: false, reason: "agentProofInvalidJson" };
+      if (proof.schema_version !== "vibecraft.registration.v1") return { ok: false, reason: "agentProofInvalidSchema" };
+      const handle = registrationHandle();
+      if (normalizeHandle(proof.profile_handle || "") !== handle) return { ok: false, reason: "agentProofHandleMismatch" };
+      const issuedAt = typeof proof.issued_at === "string" && proof.issued_at ? proof.issued_at : registrationIssuedAt;
+      if (proof.authorization_code !== registrationAuthCode(handle, issuedAt)) return { ok: false, reason: "agentProofAuthMismatch" };
+      if (!Array.isArray(proof.authorized_scopes) || !proof.authorized_scopes.includes("donegraph.read")) {
+        return { ok: false, reason: "agentProofScopeMissing" };
+      }
+      if (!Array.isArray(proof.skill_seeds) || proof.skill_seeds.length < 1) return { ok: false, reason: "agentProofSeedsMissing" };
+      return { ok: true, proof: { ...proof, profile_handle: handle, issued_at: issuedAt } };
+    }
+    function setRegistrationProofFeedback(keyOrText) {
+      const feedback = document.querySelector("[data-registration-proof-feedback]");
+      if (feedback) feedback.textContent = t(keyOrText) || keyOrText;
     }
     function loadSoundPreference() {
       try {
@@ -5358,6 +5528,8 @@
       const handledSelector = [
         "[data-role-id]",
         "[data-avatar-id]",
+        "[data-copy-registration-command]",
+        "[data-simulate-registration-proof]",
         "[data-register-submit]",
         "[data-install-skill-plugin]",
         "[data-start-world]",
@@ -5477,7 +5649,7 @@
       return !value || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
     }
     function registrationLabel() {
-      return profile.registered
+      return profile.registered && profile.registration_authorized
         ? t("passRegistered")
         : t("waitingPass");
     }
@@ -5537,8 +5709,12 @@
         if (typeof saved.email === "string") profile.email = saved.email.slice(0, 64);
         if (typeof saved.invite_code === "string") profile.invite_code = saved.invite_code.slice(0, 24);
         profile.registered = Boolean(saved.registered);
-        if (typeof saved.registration_id === "string") profile.registration_id = saved.registration_id.slice(0, 24);
+        if (typeof saved.registration_id === "string") profile.registration_id = saved.registration_id.slice(0, 80);
         if (typeof saved.registered_at === "string") profile.registered_at = saved.registered_at;
+        profile.registration_authorized = Boolean(saved.registration_authorized);
+        if (typeof saved.registration_proof === "string") profile.registration_proof = saved.registration_proof.slice(0, 6000);
+        if (typeof saved.authorization_code === "string") profile.authorization_code = saved.authorization_code.slice(0, 80);
+        if (typeof saved.registration_issued_at === "string") profile.registration_issued_at = saved.registration_issued_at;
         if (roles.some((role) => role.id === saved.role_id)) profile.role_id = saved.role_id;
         if (avatars.some((avatar) => avatar.id === saved.avatar_id)) profile.avatar_id = saved.avatar_id;
         profile.plugin_installed = Boolean(saved.plugin_installed);
@@ -5575,6 +5751,10 @@
             registered: profile.registered,
             registration_id: profile.registration_id,
             registered_at: profile.registered_at,
+            registration_authorized: profile.registration_authorized,
+            registration_proof: profile.registration_proof,
+            authorization_code: profile.authorization_code,
+            registration_issued_at: profile.registration_issued_at,
             role_id: profile.role_id,
             avatar_id: profile.avatar_id,
             plugin_installed: profile.plugin_installed,
@@ -5595,6 +5775,7 @@
               handle: profile.handle,
               public_url: publicBioUrl(normalizeHandle(profile.handle || profile.name) || displayHandle()),
               registration_id: profile.registration_id,
+              authorization_code: profile.authorization_code,
               role: roleText(selectedRole(), "label"),
               avatar: avatarText(selectedAvatar(), "label"),
               level: profile.starter_confirmed ? starterLevel() : null
@@ -5635,7 +5816,7 @@
     }
     function mvpSteps() {
       return [
-        { id: "identity", done: Boolean(profile.registered) },
+        { id: "identity", done: Boolean(profile.registered && profile.registration_authorized) },
         { id: "receipt", done: hasAgentReceiptApplied() },
         { id: "explore", done: Boolean(profile.explored_block_id) },
         { id: "packs", done: currentUnlockedPackIds().length > 0 },
@@ -5726,17 +5907,25 @@
       if (inviteInput && document.activeElement !== inviteInput) inviteInput.value = profile.invite_code;
       const status = document.querySelector("[data-registration-status]");
       if (status) {
-        status.classList.toggle("registered", profile.registered);
+        status.classList.toggle("registered", profile.registered && profile.registration_authorized);
         status.textContent = registrationLabel();
       }
       const idLine = document.querySelector("[data-registration-id]");
       if (idLine) {
-        idLine.textContent = profile.registration_id
-          ? (currentLanguage === "zh" ? "通行证 " : "Pass ") + profile.registration_id + " / @" + visibleRegistrationHandle
+        const passId = profile.authorization_code || profile.registration_id;
+        idLine.textContent = passId
+          ? (currentLanguage === "zh" ? "通行证 " : "Pass ") + passId + " / @" + visibleRegistrationHandle
           : t("passPending");
       }
       const submit = document.querySelector("[data-register-submit]");
-      if (submit) submit.textContent = profile.registered ? t("updatePass") : t("registerPass");
+      if (submit) submit.textContent = profile.registered && profile.registration_authorized ? t("updatePass") : t("registerPass");
+      const commandInput = document.querySelector("[data-agent-registration-command]");
+      if (commandInput && document.activeElement !== commandInput) commandInput.value = buildRegistrationCommand();
+      const proofInput = document.querySelector("[data-agent-registration-proof]");
+      if (proofInput && document.activeElement !== proofInput) proofInput.value = profile.registration_proof;
+      const proofFeedback = document.querySelector("[data-registration-proof-feedback]");
+      if (proofFeedback && !(profile.registered && profile.registration_authorized)) proofFeedback.textContent = t("agentProofWaiting");
+      if (proofFeedback && profile.registered && profile.registration_authorized) proofFeedback.textContent = t("agentProofVerified");
       const urlPreview = document.querySelector("[data-public-url-preview]");
       if (urlPreview) {
         urlPreview.textContent = registrationHandle.length >= 3 ? publicBioUrl(registrationHandle) : t("publicEmptyHandle");
@@ -5763,19 +5952,66 @@
       profile.email = email;
       profile.invite_code = (profile.invite_code || "").trim().slice(0, 24);
       if (!profile.name.trim()) profile.name = handle;
-      if (!profile.registration_id) {
-        profile.registration_id = "VC-" + shortHash(handle + "|" + Date.now()).toUpperCase().padStart(6, "0").slice(0, 6);
+      const proofInput = document.querySelector("[data-agent-registration-proof]");
+      const parsed = parseRegistrationProof(proofInput?.value || profile.registration_proof);
+      if (!parsed.ok) {
+        playSfx("blocked");
+        setRegistrationProofFeedback(parsed.reason);
+        proofInput?.focus();
+        return false;
       }
-      if (!profile.registered_at) profile.registered_at = new Date().toISOString();
+      const validation = validateRegistrationProof(parsed.proof);
+      if (!validation.ok) {
+        playSfx("blocked");
+        setRegistrationProofFeedback(validation.reason);
+        proofInput?.focus();
+        return false;
+      }
+      const proof = validation.proof;
+      const proofText = JSON.stringify(proof, null, 2);
+      profile.registration_authorized = true;
+      profile.registration_proof = proofText;
+      profile.authorization_code = proof.authorization_code;
+      profile.registration_id = proof.authorization_code;
+      profile.registration_issued_at = proof.issued_at || registrationIssuedAt;
+      profile.registered_at = proof.issued_at || new Date().toISOString();
       profile.registered = true;
+      profile.starter_confirmed = true;
+      profile.unlocked_packs = Array.from(new Set(["pack_identity_seed", ...profile.unlocked_packs]));
+      if (proofInput) proofInput.value = proofText;
+      setRegistrationProofFeedback("agentProofVerified");
       playSfx("register");
       pulseSound(button);
       renderOnboardingProfile();
       saveProfile(t("registerSaved") + profile.registration_id + t("registerSavedSuffix"));
       return true;
     }
+    async function copyRegistrationCommand(button) {
+      const command = buildRegistrationCommand();
+      const commandInput = document.querySelector("[data-agent-registration-command]");
+      if (commandInput) commandInput.value = command;
+      try {
+        await navigator.clipboard.writeText(command);
+        playSfx("invite");
+        pulseSound(button);
+        setRegistrationProofFeedback("agentProofCopied");
+      } catch {
+        playSfx("blocked");
+        setRegistrationProofFeedback("agentProofCopyFailed");
+      }
+    }
+    function simulateRegistrationProof(button) {
+      profile.registration_issued_at = profile.registration_issued_at || registrationIssuedAt;
+      const proofText = JSON.stringify(buildRegistrationProof(), null, 2);
+      profile.registration_proof = proofText;
+      const proofInput = document.querySelector("[data-agent-registration-proof]");
+      if (proofInput) proofInput.value = proofText;
+      playSfx("open");
+      pulseSound(button);
+      setRegistrationProofFeedback("agentProofSimulated");
+    }
     function installSkillPlugin(button) {
-      if (!profile.registered) {
+      if (!(profile.registered && profile.registration_authorized)) {
         playSfx("blocked");
         const feedback = document.querySelector("[data-onboard-feedback]");
         if (feedback) feedback.textContent = t("pluginNeedsRegistration");
@@ -5820,7 +6056,7 @@
       }
     }
     function applyAgentReceipt() {
-      if (!profile.registered) {
+      if (!(profile.registered && profile.registration_authorized)) {
         playSfx("blocked");
         const feedback = document.querySelector("[data-onboard-feedback]");
         if (feedback) feedback.textContent = t("syncNeedsRegistration");
@@ -6026,7 +6262,7 @@
       const profileTitle = document.querySelector("[data-profile-title]");
       if (profileTitle) profileTitle.textContent = roleText(role, "title");
       const profileLine = document.querySelector("[data-profile-line]");
-      if (profileLine) profileLine.textContent = profile.registered ? t("registeredProfileLinePrefix") + profile.handle + " · " + profile.registration_id : roleText(role, "community_signal");
+      if (profileLine) profileLine.textContent = profile.registered && profile.registration_authorized ? t("registeredProfileLinePrefix") + profile.handle + " · " + (profile.authorization_code || profile.registration_id) : roleText(role, "community_signal");
       applyAvatarStyle(document.querySelector("[data-avatar-preview]"), avatar);
       const villageIdentity = document.querySelector("[data-village-identity]");
       if (villageIdentity) villageIdentity.textContent = t("villageIdentityPrefix") + name + " / " + roleText(role, "label");
@@ -6131,6 +6367,16 @@
       profile.invite_code = event.target.value.slice(0, 24);
       renderRegistration();
     });
+    document.querySelector("[data-agent-registration-proof]")?.addEventListener("input", (event) => {
+      profile.registration_proof = event.target.value.slice(0, 6000);
+      if (!(profile.registered && profile.registration_authorized)) setRegistrationProofFeedback("agentProofWaiting");
+    });
+    document.querySelector("[data-copy-registration-command]")?.addEventListener("click", (event) => {
+      void copyRegistrationCommand(event.currentTarget);
+    });
+    document.querySelector("[data-simulate-registration-proof]")?.addEventListener("click", (event) => {
+      simulateRegistrationProof(event.currentTarget);
+    });
     document.querySelector("[data-register-submit]")?.addEventListener("click", (event) => {
       registerProfile(event.currentTarget);
     });
@@ -6139,7 +6385,7 @@
     });
     document.querySelector("[data-start-world]")?.addEventListener("click", (event) => {
       pulseSound(event.currentTarget);
-      if (!profile.registered) {
+      if (!(profile.registered && profile.registration_authorized)) {
         playSfx("blocked");
         const feedback = document.querySelector("[data-onboard-feedback]");
         if (feedback) feedback.textContent = t("startNeedsRegistration");

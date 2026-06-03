@@ -117,9 +117,11 @@ Avoid:
 - `docs/vibecraft/index.html` is a standalone prototype that demonstrates Agent-only registration, public handle updates, proof sync, Vibe Radio, and Vibe Brain.
 - Agent-only registration now has a durable MVP contract: `vibecraft.registration.v1`, deterministic `VC-AUTH-*` codes, authorized scopes, initial skill seeds, and proof validation helpers in `packages/core/src/vibecraft.ts`.
 - `docs/vibecraft/index.html` and `docs/vibecraft/vibecraft-demo.html` were restored from the live site and should be treated as the current product experience.
+- `docs/vibecraft/vibecraft-demo.html` now mirrors the Agent-only registration loop in the workshop: copy an Agent command, paste the returned `vibecraft.registration.v1` proof, verify the deterministic authorization code, then unlock the initial Village Pass and identity seed pack.
 - `.donegraph/vibecraft.html` is generated from DoneGraph artifacts and remains a compact artifact view; it does not define the public front-stage style.
 - The web app should default to English and support Chinese.
 - Click sound and default background music are part of the desired experience, but browser autoplay rules may require a first user gesture.
+- Treat the restored live front stage as the visual baseline. Future changes should extend it, not replace it with wiki pages, PRD pages, or internal planning surfaces.
 
 ## Next Optimization Backlog
 
