@@ -3612,10 +3612,24 @@
         <p data-live-action-copy>Walk near a world object to interact.</p>
         <button type="button" data-live-action-button>Interact</button>
       </article>
-      <article class="live-world-radio">
-        <span>Vibe Radio</span>
-        <p data-live-radio-copy>Radio Tower is quiet. Visit it or press Play Broadcast.</p>
-        <button type="button" data-live-radio-button>Play Broadcast</button>
+      <article class="live-world-radio" data-live-radio-panel>
+        <i class="live-radio-antenna" aria-hidden="true"></i>
+        <div class="live-radio-face">
+          <span data-live-radio-station>VIBE 91.7 FM</span>
+          <strong data-live-radio-title>Morning Build Recap</strong>
+          <p data-live-radio-copy>Radio Tower is standing by. Play an episode to turn build progress into a tiny broadcast.</p>
+          <div class="live-radio-wave" data-live-radio-wave aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <ul class="live-radio-log" data-live-radio-log aria-label="Broadcast queue">
+            <li>Queue: Village status</li>
+            <li>Queue: Latest drops</li>
+          </ul>
+          <div class="live-radio-actions">
+            <button type="button" data-live-radio-button>Play Episode</button>
+            <button type="button" data-live-radio-next>Next Station</button>
+          </div>
+        </div>
       </article>
       <article class="live-world-daybook" data-live-daybook>
         <span>Daybook</span>
@@ -6040,6 +6054,30 @@
       const safeHandle = normalizeHandle(handle) || "happy-builder";
       return "VC-AUTH-" + safeHandle.toUpperCase().replace(/-/g, "") + "-" + registrationChecksum(safeHandle + ":" + issuedAt);
     }
+    function authHandleToken(handle) {
+      return (normalizeHandle(handle) || "happy-builder").toUpperCase().replace(/-/g, "");
+    }
+    function parseAuthCode(value) {
+      const compact = String(value || "").toUpperCase().replace(/\s+/g, "");
+      const match = compact.match(/VC-AUTH-([A-Z0-9]+)-([A-Z0-9]{6})/);
+      if (!match) return null;
+      return {
+        code: "VC-AUTH-" + match[1] + "-" + match[2],
+        handleToken: match[1],
+        checksum: match[2]
+      };
+    }
+    function authCodeMismatchMessage(auth, handle) {
+      const current = authHandleToken(handle);
+      if (auth && auth.handleToken !== current) {
+        return currentLanguage === "zh"
+          ? "这个授权码属于 " + auth.handleToken.toLowerCase() + "，当前 Village ID 是 @" + handle + "。请复制最新 Agent 指令，或把 Village ID 改回对应 ID。"
+          : "This authorization code belongs to " + auth.handleToken.toLowerCase() + ", but the current Village ID is @" + handle + ". Copy the latest Agent command or switch back to the matching ID.";
+      }
+      return currentLanguage === "zh"
+        ? "授权码已识别，但不是当前挑战生成的。请重新复制 Agent 指令并让 Agent 返回新的 VC-AUTH 码。"
+        : "The authorization code was recognized, but it was not generated for the current challenge. Copy the latest Agent command and ask the Agent for a new VC-AUTH code.";
+    }
     function registrationSkillSeeds() {
       return [
         { id: "plain-language-translation", label: "Plain-language translation", level: 2 },
@@ -6126,10 +6164,11 @@
       if (trimmed.includes("BEGIN VIBECRAFT_AGENT_REGISTER") || trimmed.includes("Player request JSON:")) {
         return { ok: false, reason: "agentProofLooksLikeCommand" };
       }
-      const authMatch = trimmed.match(/VC-AUTH-[A-Z0-9]+-[A-Z0-9]{6}/i);
-      if (authMatch && !trimmed.startsWith("{") && !trimmed.includes("```")) {
+      const auth = parseAuthCode(trimmed);
+      if (auth && !trimmed.startsWith("{") && !trimmed.includes("```")) {
         const proof = buildRegistrationProof();
-        proof.authorization_code = authMatch[0].toUpperCase();
+        proof.authorization_code = auth.code;
+        proof.issued_at = registrationIssuedAt;
         return { ok: true, proof };
       }
       const fenced = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/i);
@@ -6140,17 +6179,22 @@
           : trimmed.includes("{") && trimmed.includes("}")
             ? trimmed.slice(trimmed.indexOf("{"), trimmed.lastIndexOf("}") + 1)
             : "";
-      if (!jsonCandidate && authMatch) {
+      if (!jsonCandidate && auth) {
         const proof = buildRegistrationProof();
-        proof.authorization_code = authMatch[0].toUpperCase();
+        proof.authorization_code = auth.code;
+        proof.issued_at = registrationIssuedAt;
         return { ok: true, proof };
       }
       try {
-        return { ok: true, proof: JSON.parse(jsonCandidate || trimmed) };
+        const proof = JSON.parse(jsonCandidate || trimmed);
+        const proofAuth = parseAuthCode(proof.authorization_code);
+        if (proofAuth) proof.authorization_code = proofAuth.code;
+        return { ok: true, proof };
       } catch {
-        if (authMatch) {
+        if (auth) {
           const proof = buildRegistrationProof();
-          proof.authorization_code = authMatch[0].toUpperCase();
+          proof.authorization_code = auth.code;
+          proof.issued_at = registrationIssuedAt;
           return { ok: true, proof };
         }
         return { ok: false, reason: "agentProofInvalidJson" };
@@ -6159,12 +6203,20 @@
     function validateRegistrationProof(proof) {
       if (!proof || typeof proof !== "object") return { ok: false, reason: "agentProofInvalidJson" };
       const bridgeValidation = agentBridge()?.validateRegistrationProof?.(proof, registrationHandle());
-      if (bridgeValidation) return bridgeValidation;
+      if (bridgeValidation?.ok) return bridgeValidation;
       if (proof.schema_version !== "vibecraft.registration.v1") return { ok: false, reason: "agentProofInvalidSchema" };
       const handle = registrationHandle();
       if (normalizeHandle(proof.profile_handle || "") !== handle) return { ok: false, reason: "agentProofHandleMismatch" };
-      const issuedAt = typeof proof.issued_at === "string" && proof.issued_at ? proof.issued_at : registrationIssuedAt;
-      if (proof.authorization_code !== registrationAuthCode(handle, issuedAt)) return { ok: false, reason: "agentProofAuthMismatch" };
+      const auth = parseAuthCode(proof.authorization_code);
+      if (!auth) return { ok: false, reason: "agentProofAuthMismatch" };
+      const issuedAtCandidates = Array.from(new Set([
+        typeof proof.issued_at === "string" && proof.issued_at ? proof.issued_at : "",
+        profile.registration_issued_at || "",
+        registrationIssuedAt
+      ].filter(Boolean)));
+      const issuedAt = issuedAtCandidates.find((candidate) => auth.code === registrationAuthCode(handle, candidate));
+      if (!issuedAt) return { ok: false, reason: authCodeMismatchMessage(auth, handle) };
+      proof.authorization_code = auth.code;
       if (!Array.isArray(proof.authorized_scopes) || !proof.authorized_scopes.includes("donegraph.read")) {
         return { ok: false, reason: "agentProofScopeMissing" };
       }

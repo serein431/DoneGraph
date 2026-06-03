@@ -11,8 +11,14 @@
     actionButton: shell.querySelector("[data-live-action-button]"),
     health: shell.querySelector("[data-live-tree-health]"),
     healthMeter: shell.querySelector("[data-live-tree-meter]"),
+    radioPanel: shell.querySelector("[data-live-radio-panel]"),
     radio: shell.querySelector("[data-live-radio-copy]"),
     radioButton: shell.querySelector("[data-live-radio-button]"),
+    radioNext: shell.querySelector("[data-live-radio-next]"),
+    radioStation: shell.querySelector("[data-live-radio-station]"),
+    radioTitle: shell.querySelector("[data-live-radio-title]"),
+    radioLog: shell.querySelector("[data-live-radio-log]"),
+    radioWave: shell.querySelector("[data-live-radio-wave]"),
     minimapDot: shell.querySelector("[data-live-minimap-dot]"),
     xp: shell.querySelector("[data-live-xp]"),
     playerName: shell.querySelector("[data-live-player-name]"),
@@ -49,7 +55,10 @@
     activeAction: null,
     stream: null,
     audioContext: null,
-    radioIndex: 0
+    radioIndex: 0,
+    radioStationIndex: 0,
+    radioLine: null,
+    radioPlaying: false
   };
 
   const locations = {
@@ -127,10 +136,25 @@
     }
   };
 
-  const radioLines = [
-    "Radio Tower: Today your Agent turned a fuzzy goal into visible progress. The Goal Tree is ready for another hit.",
-    "Radio Tower: Knowledge Mine detected API, Deploy, Prompt, and Error blocks. Bring one to the Crafting Table.",
-    "Radio Tower: Village signal is open. Your public Vibe Bio now explains what you can build with others."
+  const radioStations = [
+    {
+      id: "recap",
+      frequency: "VIBE 91.7 FM",
+      title: "Morning Build Recap",
+      standby: "Standby: project status, Village Pass, Goal Tree progress, and today's next move."
+    },
+    {
+      id: "radar",
+      frequency: "BLOCK 104.2",
+      title: "Knowledge Block Radar",
+      standby: "Standby: confusing terms, fresh drops, and what should be mined into plain language."
+    },
+    {
+      id: "village",
+      frequency: "CO-OP 88.4",
+      title: "Village Signal",
+      standby: "Standby: public identity, collaboration signal, and who could build with you next."
+    }
   ];
 
   const profileStorageKey = "vibecraft:onboarding";
@@ -182,6 +206,55 @@
     }
   };
 
+  const currentRadioStation = () => radioStations[state.radioStationIndex % radioStations.length] || radioStations[0];
+
+  const visibleDrops = () => state.inventory.filter((item) => !["AXE", "MAP", "RADIO", "LENS", "PASS"].includes(item));
+
+  const buildRadioEpisode = () => {
+    const station = currentRadioStation();
+    const handle = profileHandle(state.profile);
+    const name = state.registered ? String(state.profile?.name || handle || "Happy Builder").slice(0, 24) : "Guest Builder";
+    const passLine = state.registered ? `Village Pass verified for @${handle}` : "Village Pass is still pending";
+    const drops = visibleDrops();
+    const dropLine = drops.length ? `Latest drops: ${drops.join(", ")}` : "No drops yet; the first one is waiting in the world.";
+    const treeLine = `Goal Tree is at ${state.treeHealth}%.`;
+    if (station.id === "radar") {
+      return {
+        line: `Knowledge Block Radar: ${dropLine} ${treeLine} Mine one unclear term, then craft it into a plain-language card.`,
+        recap: `${dropLine} Mine one unclear term next.`,
+        queue: ["Scan: terms and errors", `Drops: ${drops.length || 0}`, "Next: Crafting Table"]
+      };
+    }
+    if (station.id === "village") {
+      return {
+        line: `Village Signal: ${name} is broadcasting. ${passLine}. Share one public build story so complementary builders know where to join.`,
+        recap: `${name} broadcast a collaboration signal from the village.`,
+        queue: ["Signal: public identity", state.registered ? "Pass: verified" : "Pass: pending", "Next: invite builder"]
+      };
+    }
+    return {
+      line: `Morning Build Recap: ${name}, ${passLine}. ${treeLine} ${dropLine} Today's tiny quest is one visible Agent-powered step.`,
+      recap: `${treeLine} ${dropLine}`,
+      queue: ["Status: build recap", `Tree: ${state.treeHealth}%`, state.registered ? "Gate: open" : "Gate: register"]
+    };
+  };
+
+  const renderRadio = () => {
+    const station = currentRadioStation();
+    if (hud.radioStation) hud.radioStation.textContent = station.frequency;
+    if (hud.radioTitle) hud.radioTitle.textContent = station.title;
+    if (hud.radio) hud.radio.textContent = state.radioLine || station.standby;
+    hud.radioPanel?.classList.toggle("is-playing", state.radioPlaying);
+    if (hud.radioLog) {
+      const episode = buildRadioEpisode();
+      hud.radioLog.replaceChildren(...episode.queue.map((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        return li;
+      }));
+    }
+  };
+
   const requirePass = (action) => {
     if (state.registered) return true;
     if (["spawn", "radio", "lens"].includes(action)) return true;
@@ -204,6 +277,7 @@
       slot.classList.toggle("is-active", index === 0);
     });
     renderDaybook();
+    renderRadio();
   };
 
   const setHint = (text) => {
@@ -337,14 +411,31 @@
   };
 
   const playRadio = () => {
-    const line = radioLines[state.radioIndex % radioLines.length];
+    const episode = buildRadioEpisode();
+    const line = episode.line;
     state.radioIndex += 1;
-    if (hud.radio) hud.radio.textContent = line;
+    state.radioLine = line;
+    state.radioPlaying = true;
+    renderRadio();
     setHint("Vibe Radio broadcast played.");
-    renderDaybook("Radio recap: " + line.replace(/^Radio Tower:\s*/, ""));
+    renderDaybook("Radio recap: " + episode.recap);
     beep(330, 0.08, 0.07);
     window.setTimeout(() => beep(440, 0.08, 0.06), 90);
-    dispatchWorldEvent("radio", { line });
+    window.setTimeout(() => {
+      state.radioPlaying = false;
+      renderRadio();
+    }, 1800);
+    dispatchWorldEvent("radio", { station: currentRadioStation().id, line });
+  };
+
+  const nextRadioStation = () => {
+    state.radioStationIndex = (state.radioStationIndex + 1) % radioStations.length;
+    state.radioLine = null;
+    state.radioPlaying = false;
+    renderRadio();
+    setHint(`Tuned to ${currentRadioStation().frequency}.`);
+    beep(260, 0.06, 0.05);
+    window.setTimeout(() => beep(520, 0.06, 0.04), 80);
   };
 
   const openLens = () => {
@@ -399,6 +490,7 @@
   });
   hud.actionButton?.addEventListener("click", runAction);
   hud.radioButton?.addEventListener("click", playRadio);
+  hud.radioNext?.addEventListener("click", nextRadioStation);
   hud.daybookToggle?.addEventListener("click", () => {
     hud.daybook?.classList.toggle("is-open");
     beep(520, 0.06, 0.05);
