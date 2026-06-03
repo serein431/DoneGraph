@@ -1,0 +1,83 @@
+{
+  "schema_version": "vibecraft.plugin.v1",
+  "id": "vibecraft.local-skill-seed",
+  "name": "Local Skill Seed",
+  "version": "0.1.0",
+  "display_name": {
+    "en": "Local Skill Seed",
+    "zh": "本地技能种子"
+  },
+  "install_surface": "web_local_first",
+  "storage_keys": {
+    "profile": "vibecraft:onboarding",
+    "plugin_installation": "vibecraft:plugin-installation",
+    "agent_receipt": "vibecraft:agent-receipt"
+  },
+  "permissions": [
+    {
+      "id": "skills.read_index",
+      "label": "Read local Skill index",
+      "scope": "local_read",
+      "required": true,
+      "plain": "只读取 Skill 名称、描述和入口，不读取原始隐私内容。"
+    },
+    {
+      "id": "donegraph.read_receipt",
+      "label": "Read DoneGraph completion drop",
+      "scope": "local_read",
+      "required": true,
+      "plain": "读取 .donegraph/vibecraft.json 里的完成小票，用来生成成长状态。"
+    },
+    {
+      "id": "profile.write_snapshot",
+      "label": "Write public profile snapshot",
+      "scope": "local_write",
+      "required": true,
+      "plain": "只写入浏览器本地身份卡、初始等级和可展示标签。"
+    },
+    {
+      "id": "agent.write_receipt",
+      "label": "Let Agent write completion drop",
+      "scope": "agent_write",
+      "required": true,
+      "plain": "Agent 做完任务后写入标准完成凭证，Web 端再同步解锁。"
+    },
+    {
+      "id": "brain.user_grant_key",
+      "label": "User-granted Vibe Brain key",
+      "scope": "user_grant",
+      "required": false,
+      "plain": "未来由用户生成 key，决定哪个 Agent 可以下载哪部分 Vibe Brain。"
+    }
+  ],
+  "agent_entrypoints": {
+    "local_receipt_file": ".donegraph/vibecraft.json",
+    "browser_bridge": "/vibecraft-agent-bridge.js",
+    "static_receipt_example": "/agent-receipt.example.json",
+    "future_http_target": "POST /api/vibecraft/receipts"
+  },
+  "receipt_contract": {
+    "schema_version": "vibecraft.receipt.v1",
+    "required_fields": [
+      "schema_version",
+      "id",
+      "source_agent",
+      "generated_at",
+      "unlocked_pack_ids",
+      "payload_counts",
+      "starter_attributes"
+    ],
+    "accepted_event_types": [
+      "goal",
+      "action",
+      "artifact",
+      "verification",
+      "completion"
+    ]
+  },
+  "safety": {
+    "raw_files_uploaded": false,
+    "user_can_revoke": true,
+    "note": "Local-first by default. Generated for codex; raw files stay in the user's workspace until the user grants a future cloud or Agent key."
+  }
+}

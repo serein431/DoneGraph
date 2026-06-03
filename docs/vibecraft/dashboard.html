@@ -1,0 +1,1337 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vibe Sticker</title>
+  <style>
+    :root {
+      --ink: #332d27;
+      --paper: #fff6df;
+      --paper-deep: #f4e7c4;
+      --surface: #fffdf8;
+      --line: #4a3d32;
+      --muted: #7b6d60;
+      --mint: #dff3dd;
+      --teal: #2f8b8b;
+      --coral: #ef7d63;
+      --berry: #a75b89;
+      --amber: #e8b84e;
+      --sky: #d8edf8;
+      --lilac: #eadcf6;
+      --rose: #ffd9df;
+      --risk: #cf584d;
+      --tape: rgba(255, 246, 197, .86);
+      --shadow: rgba(96, 68, 48, .16);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background:
+        linear-gradient(90deg, rgba(74, 61, 50, .07) 1px, transparent 1px),
+        linear-gradient(rgba(74, 61, 50, .07) 1px, transparent 1px),
+        radial-gradient(circle at 1px 1px, rgba(239, 125, 99, .16) 1px, transparent 1.5px),
+        var(--paper);
+      background-size: 30px 30px, 30px 30px, 18px 18px, auto;
+      font-family: "Avenir Next", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      text-rendering: geometricPrecision;
+    }
+    button {
+      font: inherit;
+    }
+    .app-shell {
+      width: min(1480px, 100%);
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .topbar {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(170px, 260px);
+      gap: 18px;
+      align-items: end;
+      padding: 18px 18px 22px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: rgba(255, 253, 248, .76);
+      box-shadow: 10px 10px 0 var(--shadow);
+      overflow: hidden;
+    }
+    .topbar::before {
+      content: "";
+      position: absolute;
+      inset: 10px auto auto 24px;
+      width: 128px;
+      height: 28px;
+      background: var(--tape);
+      border: 1px dashed rgba(74, 61, 50, .24);
+      transform: rotate(-3deg);
+    }
+    .topbar > * {
+      position: relative;
+      z-index: 1;
+    }
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--berry);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    h1 {
+      margin: 0;
+      max-width: 760px;
+      font-size: clamp(40px, 7vw, 82px);
+      line-height: 1;
+      letter-spacing: 0;
+      overflow-wrap: anywhere;
+    }
+    .subtitle {
+      max-width: 860px;
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+    .charm-line {
+      width: fit-content;
+      max-width: 100%;
+      margin: 12px 0 0;
+      padding: 8px 11px;
+      border: 1px dashed rgba(74, 61, 50, .28);
+      border-radius: 8px;
+      background: rgba(255, 231, 236, .68);
+      color: var(--berry);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+    .day-pill {
+      min-height: 140px;
+      display: grid;
+      align-content: space-between;
+      padding: 16px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .56), transparent 42%),
+        var(--sky);
+      box-shadow: 7px 7px 0 var(--shadow);
+      transform: rotate(1deg);
+    }
+    .day-pill span {
+      color: var(--berry);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .day-pill strong {
+      font-size: 28px;
+      line-height: 1;
+      overflow-wrap: anywhere;
+    }
+    .scan-strip {
+      display: grid;
+      grid-template-columns: 220px repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 22px 0;
+    }
+    .scan-button,
+    .stat {
+      min-height: 96px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      box-shadow: 6px 6px 0 var(--shadow);
+    }
+    .scan-button {
+      display: grid;
+      place-items: center;
+      gap: 4px;
+      color: var(--surface);
+      background:
+        repeating-linear-gradient(45deg, rgba(255, 255, 255, .08) 0 8px, transparent 8px 16px),
+        var(--ink);
+      cursor: default;
+    }
+    .scan-button span {
+      color: #9fd7c6;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .1em;
+    }
+    .stat {
+      display: grid;
+      align-content: space-between;
+      padding: 13px;
+      position: relative;
+      overflow: hidden;
+    }
+    .stat::after {
+      content: "";
+      position: absolute;
+      right: -18px;
+      bottom: -18px;
+      width: 62px;
+      height: 62px;
+      border: 2px dashed rgba(74, 61, 50, .2);
+      border-radius: 50%;
+    }
+    .stat span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .stat strong {
+      font-size: 36px;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .stat:nth-child(3) strong { color: var(--teal); }
+    .stat:nth-child(4) strong { color: var(--amber); }
+    .stat:nth-child(5) strong { color: var(--risk); }
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 390px;
+      gap: 18px;
+      align-items: start;
+    }
+    .stickerbook,
+    .panel {
+      border: 2px solid var(--line);
+      background: rgba(255, 253, 248, .94);
+      border-radius: 8px;
+      box-shadow: 9px 9px 0 var(--shadow);
+    }
+    .stickerbook {
+      position: relative;
+      min-width: 0;
+      padding: 22px;
+      background:
+        linear-gradient(90deg, rgba(74, 61, 50, .06) 1px, transparent 1px),
+        linear-gradient(rgba(74, 61, 50, .05) 1px, transparent 1px),
+        rgba(255, 253, 248, .96);
+      background-size: 26px 26px;
+    }
+    .stickerbook::before {
+      content: "";
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      width: 136px;
+      height: 30px;
+      background: var(--tape);
+      border: 1px dashed rgba(74, 61, 50, .22);
+      transform: translateX(-50%) rotate(2deg);
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .section-head span {
+      color: var(--coral);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    h2 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+    .sticker-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px 14px;
+      padding-top: 8px;
+    }
+    .sticker-card {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+      min-height: 194px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      padding: 24px 14px 14px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      color: var(--ink);
+      text-align: left;
+      background: var(--surface);
+      cursor: pointer;
+      transform: rotate(var(--tilt));
+      box-shadow: 6px 8px 0 rgba(96, 68, 48, .12), inset 0 0 0 1px rgba(255, 255, 255, .65);
+      transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+      overflow: visible;
+    }
+    .sticker-card::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border: 1px dashed rgba(74, 61, 50, .28);
+      border-radius: 7px;
+      pointer-events: none;
+    }
+    .sticker-card::after {
+      content: "";
+      position: absolute;
+      right: 12px;
+      bottom: 12px;
+      width: 42px;
+      height: 42px;
+      border: 2px solid rgba(74, 61, 50, .18);
+      border-radius: 50%;
+      transform: rotate(-12deg);
+      pointer-events: none;
+    }
+    .sticker-card:hover,
+    .sticker-card[aria-pressed="true"] {
+      transform: translate(-2px, -3px) rotate(var(--tilt));
+      box-shadow: 10px 12px 0 rgba(96, 68, 48, .16), inset 0 0 0 1px rgba(255, 255, 255, .75);
+      filter: saturate(1.05);
+    }
+    .sticker-card.goal { background: linear-gradient(160deg, #fff3b8, #ffd9a3); }
+    .sticker-card.done { background: linear-gradient(160deg, #eff9da, var(--mint)); }
+    .sticker-card.proof { background: linear-gradient(160deg, #ecfbff, #cfeef1); }
+    .sticker-card.fog { background: linear-gradient(160deg, #fff0b8, #f5d97b); }
+    .sticker-card.risk,
+    .sticker-card.blocked { background: linear-gradient(160deg, #ffe0d9, #f4b6ac); }
+    .sticker-card.next { background: linear-gradient(160deg, #f5eaff, var(--lilac)); }
+    .sticker-card.decision { background: linear-gradient(160deg, #ffe9ef, var(--rose)); }
+    .sticker-card.progress { background: linear-gradient(160deg, #f7f2df, #e8ece4); }
+    .sticker-tape {
+      position: absolute;
+      top: -11px;
+      left: 16px;
+      min-width: 82px;
+      padding: 5px 9px;
+      border: 1px dashed rgba(74, 61, 50, .24);
+      border-radius: 3px;
+      background: var(--tape);
+      color: rgba(74, 61, 50, .72);
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      transform: rotate(-3deg);
+      box-shadow: 0 2px 0 rgba(96, 68, 48, .08);
+    }
+    .sticker-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .sticker-topline b {
+      padding: 5px 8px;
+      border: 1px solid rgba(74, 61, 50, .22);
+      border-radius: 999px;
+      background: rgba(255, 253, 248, .64);
+      font-size: 13px;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
+    }
+    .sticker-topline small {
+      flex: 0 0 auto;
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border: 2px solid currentColor;
+      border-radius: 50%;
+      color: var(--teal);
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1;
+      transform: rotate(9deg);
+      background: rgba(255, 253, 248, .54);
+    }
+    .sticker-card.failed .sticker-topline small,
+    .sticker-card.blocked .sticker-topline small { color: var(--risk); }
+    .sticker-card.unknown .sticker-topline small { color: var(--amber); }
+    .sticker-title {
+      align-self: center;
+      position: relative;
+      z-index: 1;
+      font-size: 23px;
+      font-weight: 850;
+      line-height: 1.08;
+      overflow-wrap: anywhere;
+    }
+    .sticker-memory {
+      position: relative;
+      z-index: 1;
+      color: rgba(24, 33, 27, .72);
+      font-size: 14px;
+      line-height: 1.35;
+      overflow-wrap: anywhere;
+    }
+    .detail-rail {
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+    }
+    .panel {
+      position: relative;
+      padding: 18px;
+      overflow: hidden;
+    }
+    .panel::before {
+      content: "";
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      width: 74px;
+      height: 22px;
+      border: 1px dashed rgba(74, 61, 50, .2);
+      border-radius: 3px;
+      background: rgba(255, 246, 197, .7);
+      transform: rotate(4deg);
+    }
+    .panel > * {
+      position: relative;
+      z-index: 1;
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .panel-kicker {
+      margin: 0;
+      color: var(--teal);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .detail-badge {
+      padding: 5px 7px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      color: var(--berry);
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .detail-title {
+      margin: -2px 0 14px;
+      font-size: 31px;
+      line-height: 1.03;
+      overflow-wrap: anywhere;
+    }
+    .detail-list,
+    .language-list,
+    .insight-list,
+    .mini-list,
+    .next-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .detail-list li {
+      display: grid;
+      gap: 4px;
+      padding: 10px;
+      border: 1px solid rgba(74, 61, 50, .16);
+      border-radius: 8px;
+      background: rgba(255, 246, 223, .58);
+    }
+    .detail-list span,
+    .mini-list span,
+    .next-list span {
+      color: var(--coral);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .detail-list p,
+    .recap-text,
+    .footer-note {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    .recap-panel {
+      color: var(--surface);
+      background:
+        repeating-linear-gradient(0deg, rgba(255, 255, 255, .06) 0 2px, transparent 2px 8px),
+        #2c443f;
+    }
+    .recap-panel h2,
+    .recap-panel .panel-kicker,
+    .recap-text {
+      color: inherit;
+    }
+    .play-button {
+      width: 100%;
+      min-height: 46px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 253, 248, .7);
+      border-radius: 8px;
+      color: var(--ink);
+      background: linear-gradient(135deg, #aee4d0, #ffe0a8);
+      font-weight: 900;
+      text-align: center;
+      box-shadow: 0 4px 0 rgba(0, 0, 0, .16);
+    }
+    .language-list li,
+    .insight-list li,
+    .mini-list li,
+    .next-list li {
+      display: grid;
+      gap: 4px;
+      padding: 10px;
+      border: 1px solid rgba(74, 61, 50, .15);
+      border-radius: 8px;
+      background: rgba(255, 253, 248, .64);
+      line-height: 1.35;
+    }
+    .language-list li:nth-child(2n) { background: rgba(223, 243, 221, .62); }
+    .language-list li:nth-child(3n) { background: rgba(234, 220, 246, .62); }
+    .insight-list li {
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, .62), transparent 48%),
+        #e9f7f5;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .68);
+    }
+    .insight-list li:nth-child(2) { background-color: #fff0c9; }
+    .insight-list li:nth-child(3) { background-color: #efe3fa; }
+    .insight-list li:nth-child(4) { background-color: #ffe1e6; }
+    .language-list strong {
+      color: var(--berry);
+      font-size: 18px;
+      overflow-wrap: anywhere;
+    }
+    .insight-list strong {
+      color: var(--teal);
+      font-size: 18px;
+      line-height: 1.2;
+      overflow-wrap: anywhere;
+    }
+    .language-list small,
+    .insight-list small,
+    .mini-list small {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+    .next-list li {
+      grid-template-columns: 24px minmax(0, 1fr);
+      align-items: baseline;
+    }
+    .next-list span {
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+      border: 1px solid currentColor;
+      color: var(--teal);
+      font-variant-numeric: tabular-nums;
+    }
+    .footer-note {
+      margin-top: 14px;
+      font-size: 12px;
+    }
+    @media (max-width: 1180px) {
+      .workspace,
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+      .scan-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .scan-button {
+        grid-column: span 2;
+      }
+      .sticker-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 640px) {
+      .app-shell {
+        padding: 14px;
+      }
+      h1 {
+        font-size: 42px;
+      }
+      .subtitle {
+        font-size: 16px;
+      }
+      .scan-strip,
+      .sticker-grid {
+        grid-template-columns: 1fr;
+      }
+      .scan-button {
+        grid-column: auto;
+      }
+      .section-head,
+      .panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Vibe Sticker / Vibe 贴贴</p>
+        <h1>让 AI 工作变成贴贴</h1>
+        <p class="subtitle">这轮一共留下 63 个完成信号，9 条证据已确认。下次先做：补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。</p>
+        <p class="charm-line">知识以一种可爱的形式进入脑袋，进度以一种可信的方式留给明天。</p>
+      </div>
+      <div class="day-pill">
+        <span>codex session</span>
+        <strong>夏日 2</strong>
+      </div>
+    </header>
+
+    <section class="scan-strip" aria-label="Scan Session">
+      <button class="scan-button" type="button"><span>SCAN</span>Scan Session</button>
+      <div class="stat"><span>贴纸</span><strong>73</strong></div>
+      <div class="stat"><span>已验证</span><strong>63</strong></div>
+      <div class="stat"><span>待验证</span><strong>10</strong></div>
+      <div class="stat"><span>风险</span><strong>0</strong></div>
+    </section>
+
+    <section class="workspace">
+      <section class="stickerbook" aria-label="Vibe Sticker stickerbook">
+        <div class="section-head"><span>贴纸本</span><h2>今日贴纸墙</h2></div>
+        <div class="sticker-grid">
+
+        <button class="sticker-card goal passed" style="--tilt: -2deg" type="button" data-sticker-id="sticker_1_node_1_goal" aria-pressed="true">
+          <span class="sticker-tape">Vibe 01</span>
+          <span class="sticker-topline"><b>目标种子</b><small>PASS</small></span>
+          <span class="sticker-title">任务目标</span>
+          <span class="sticker-memory">先种目标，再开干</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.5deg" type="button" data-sticker-id="sticker_2_node_2_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 02</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1deg" type="button" data-sticker-id="sticker_3_node_3_artifact" aria-pressed="false">
+          <span class="sticker-tape">Vibe 03</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">产物确认</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card fog unknown" style="--tilt: 2deg" type="button" data-sticker-id="sticker_4_node_4_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 04</span>
+          <span class="sticker-topline"><b>雾里小路</b><small>WAIT</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">看不清，别跑太快</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1.5deg" type="button" data-sticker-id="sticker_5_node_5_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 05</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">执行：npm test</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1deg" type="button" data-sticker-id="sticker_6_node_6_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 06</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card proof passed" style="--tilt: -2.5deg" type="button" data-sticker-id="sticker_7_node_7_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 07</span>
+          <span class="sticker-topline"><b>作业本盖章</b><small>PASS</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">别听口嗨，先看作业本</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.8deg" type="button" data-sticker-id="sticker_8_node_8_completion" aria-pressed="false">
+          <span class="sticker-tape">Vibe 08</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">阶段完成</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card goal passed" style="--tilt: -2deg" type="button" data-sticker-id="sticker_9_node_9_goal" aria-pressed="false">
+          <span class="sticker-tape">Vibe 09</span>
+          <span class="sticker-topline"><b>目标种子</b><small>PASS</small></span>
+          <span class="sticker-title">任务目标</span>
+          <span class="sticker-memory">先种目标，再开干</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.5deg" type="button" data-sticker-id="sticker_10_node_10_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 10</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1deg" type="button" data-sticker-id="sticker_11_node_11_artifact" aria-pressed="false">
+          <span class="sticker-tape">Vibe 11</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">产物确认</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card fog unknown" style="--tilt: 2deg" type="button" data-sticker-id="sticker_12_node_12_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 12</span>
+          <span class="sticker-topline"><b>雾里小路</b><small>WAIT</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">看不清，别跑太快</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1.5deg" type="button" data-sticker-id="sticker_13_node_13_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 13</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">执行：npm test</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1deg" type="button" data-sticker-id="sticker_14_node_14_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 14</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card proof passed" style="--tilt: -2.5deg" type="button" data-sticker-id="sticker_15_node_15_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 15</span>
+          <span class="sticker-topline"><b>作业本盖章</b><small>PASS</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">别听口嗨，先看作业本</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.8deg" type="button" data-sticker-id="sticker_16_node_16_completion" aria-pressed="false">
+          <span class="sticker-tape">Vibe 16</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">阶段完成</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card goal passed" style="--tilt: -2deg" type="button" data-sticker-id="sticker_17_node_17_goal" aria-pressed="false">
+          <span class="sticker-tape">Vibe 17</span>
+          <span class="sticker-topline"><b>目标种子</b><small>PASS</small></span>
+          <span class="sticker-title">任务目标</span>
+          <span class="sticker-memory">先种目标，再开干</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.5deg" type="button" data-sticker-id="sticker_18_node_18_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 18</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1deg" type="button" data-sticker-id="sticker_19_node_19_artifact" aria-pressed="false">
+          <span class="sticker-tape">Vibe 19</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">产物确认</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card fog unknown" style="--tilt: 2deg" type="button" data-sticker-id="sticker_20_node_20_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 20</span>
+          <span class="sticker-topline"><b>雾里小路</b><small>WAIT</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">看不清，别跑太快</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1.5deg" type="button" data-sticker-id="sticker_21_node_21_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 21</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">执行：npm test</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1deg" type="button" data-sticker-id="sticker_22_node_22_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 22</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card proof passed" style="--tilt: -2.5deg" type="button" data-sticker-id="sticker_23_node_23_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 23</span>
+          <span class="sticker-topline"><b>作业本盖章</b><small>PASS</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">别听口嗨，先看作业本</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.8deg" type="button" data-sticker-id="sticker_24_node_24_completion" aria-pressed="false">
+          <span class="sticker-tape">Vibe 24</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">阶段完成</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card goal passed" style="--tilt: -2deg" type="button" data-sticker-id="sticker_25_node_25_goal" aria-pressed="false">
+          <span class="sticker-tape">Vibe 25</span>
+          <span class="sticker-topline"><b>目标种子</b><small>PASS</small></span>
+          <span class="sticker-title">任务目标</span>
+          <span class="sticker-memory">先种目标，再开干</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.5deg" type="button" data-sticker-id="sticker_26_node_26_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 26</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1deg" type="button" data-sticker-id="sticker_27_node_27_artifact" aria-pressed="false">
+          <span class="sticker-tape">Vibe 27</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">产物确认</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card fog unknown" style="--tilt: 2deg" type="button" data-sticker-id="sticker_28_node_28_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 28</span>
+          <span class="sticker-topline"><b>雾里小路</b><small>WAIT</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">看不清，别跑太快</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1.5deg" type="button" data-sticker-id="sticker_29_node_29_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 29</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">执行：npm test</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1deg" type="button" data-sticker-id="sticker_30_node_30_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 30</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card proof passed" style="--tilt: -2.5deg" type="button" data-sticker-id="sticker_31_node_31_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 31</span>
+          <span class="sticker-topline"><b>作业本盖章</b><small>PASS</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">别听口嗨，先看作业本</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.8deg" type="button" data-sticker-id="sticker_32_node_32_completion" aria-pressed="false">
+          <span class="sticker-tape">Vibe 32</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">阶段完成</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card goal passed" style="--tilt: -2deg" type="button" data-sticker-id="sticker_33_node_33_goal" aria-pressed="false">
+          <span class="sticker-tape">Vibe 33</span>
+          <span class="sticker-topline"><b>目标种子</b><small>PASS</small></span>
+          <span class="sticker-title">任务目标</span>
+          <span class="sticker-memory">先种目标，再开干</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.5deg" type="button" data-sticker-id="sticker_34_node_34_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 34</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1deg" type="button" data-sticker-id="sticker_35_node_35_artifact" aria-pressed="false">
+          <span class="sticker-tape">Vibe 35</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">产物确认</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card fog unknown" style="--tilt: 2deg" type="button" data-sticker-id="sticker_36_node_36_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 36</span>
+          <span class="sticker-topline"><b>雾里小路</b><small>WAIT</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">看不清，别跑太快</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1.5deg" type="button" data-sticker-id="sticker_37_node_37_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 37</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">执行：npm test</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1deg" type="button" data-sticker-id="sticker_38_node_38_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 38</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card proof passed" style="--tilt: -2.5deg" type="button" data-sticker-id="sticker_39_node_39_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 39</span>
+          <span class="sticker-topline"><b>作业本盖章</b><small>PASS</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">别听口嗨，先看作业本</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.8deg" type="button" data-sticker-id="sticker_40_node_40_completion" aria-pressed="false">
+          <span class="sticker-tape">Vibe 40</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">阶段完成</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card goal passed" style="--tilt: -2deg" type="button" data-sticker-id="sticker_41_node_41_goal" aria-pressed="false">
+          <span class="sticker-tape">Vibe 41</span>
+          <span class="sticker-topline"><b>目标种子</b><small>PASS</small></span>
+          <span class="sticker-title">任务目标</span>
+          <span class="sticker-memory">先种目标，再开干</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.5deg" type="button" data-sticker-id="sticker_42_node_42_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 42</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1deg" type="button" data-sticker-id="sticker_43_node_43_artifact" aria-pressed="false">
+          <span class="sticker-tape">Vibe 43</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">产物确认</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card fog unknown" style="--tilt: 2deg" type="button" data-sticker-id="sticker_44_node_44_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 44</span>
+          <span class="sticker-topline"><b>雾里小路</b><small>WAIT</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">看不清，别跑太快</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1.5deg" type="button" data-sticker-id="sticker_45_node_45_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 45</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">执行：npm test</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1deg" type="button" data-sticker-id="sticker_46_node_46_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 46</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card proof passed" style="--tilt: -2.5deg" type="button" data-sticker-id="sticker_47_node_47_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 47</span>
+          <span class="sticker-topline"><b>作业本盖章</b><small>PASS</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">别听口嗨，先看作业本</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.8deg" type="button" data-sticker-id="sticker_48_node_48_completion" aria-pressed="false">
+          <span class="sticker-tape">Vibe 48</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">阶段完成</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card goal passed" style="--tilt: -2deg" type="button" data-sticker-id="sticker_49_node_49_goal" aria-pressed="false">
+          <span class="sticker-tape">Vibe 49</span>
+          <span class="sticker-topline"><b>目标种子</b><small>PASS</small></span>
+          <span class="sticker-title">任务目标</span>
+          <span class="sticker-memory">先种目标，再开干</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.5deg" type="button" data-sticker-id="sticker_50_node_50_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 50</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1deg" type="button" data-sticker-id="sticker_51_node_51_artifact" aria-pressed="false">
+          <span class="sticker-tape">Vibe 51</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">产物确认</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card fog unknown" style="--tilt: 2deg" type="button" data-sticker-id="sticker_52_node_52_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 52</span>
+          <span class="sticker-topline"><b>雾里小路</b><small>WAIT</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">看不清，别跑太快</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1.5deg" type="button" data-sticker-id="sticker_53_node_53_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 53</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">执行：npm test</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1deg" type="button" data-sticker-id="sticker_54_node_54_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 54</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card proof passed" style="--tilt: -2.5deg" type="button" data-sticker-id="sticker_55_node_55_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 55</span>
+          <span class="sticker-topline"><b>作业本盖章</b><small>PASS</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">别听口嗨，先看作业本</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.8deg" type="button" data-sticker-id="sticker_56_node_56_completion" aria-pressed="false">
+          <span class="sticker-tape">Vibe 56</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">阶段完成</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card goal passed" style="--tilt: -2deg" type="button" data-sticker-id="sticker_57_node_57_goal" aria-pressed="false">
+          <span class="sticker-tape">Vibe 57</span>
+          <span class="sticker-topline"><b>目标种子</b><small>PASS</small></span>
+          <span class="sticker-title">任务目标</span>
+          <span class="sticker-memory">先种目标，再开干</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.5deg" type="button" data-sticker-id="sticker_58_node_58_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 58</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1deg" type="button" data-sticker-id="sticker_59_node_59_artifact" aria-pressed="false">
+          <span class="sticker-tape">Vibe 59</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">产物确认</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card fog unknown" style="--tilt: 2deg" type="button" data-sticker-id="sticker_60_node_60_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 60</span>
+          <span class="sticker-topline"><b>雾里小路</b><small>WAIT</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">看不清，别跑太快</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1.5deg" type="button" data-sticker-id="sticker_61_node_61_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 61</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">执行：npm test</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1deg" type="button" data-sticker-id="sticker_62_node_62_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 62</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card proof passed" style="--tilt: -2.5deg" type="button" data-sticker-id="sticker_63_node_63_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 63</span>
+          <span class="sticker-topline"><b>作业本盖章</b><small>PASS</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">别听口嗨，先看作业本</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.8deg" type="button" data-sticker-id="sticker_64_node_64_completion" aria-pressed="false">
+          <span class="sticker-tape">Vibe 64</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">阶段完成</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card goal passed" style="--tilt: -2deg" type="button" data-sticker-id="sticker_65_node_65_goal" aria-pressed="false">
+          <span class="sticker-tape">Vibe 65</span>
+          <span class="sticker-topline"><b>目标种子</b><small>PASS</small></span>
+          <span class="sticker-title">任务目标</span>
+          <span class="sticker-memory">先种目标，再开干</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.5deg" type="button" data-sticker-id="sticker_66_node_66_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 66</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1deg" type="button" data-sticker-id="sticker_67_node_67_artifact" aria-pressed="false">
+          <span class="sticker-tape">Vibe 67</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">产物确认</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card fog unknown" style="--tilt: 2deg" type="button" data-sticker-id="sticker_68_node_68_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 68</span>
+          <span class="sticker-topline"><b>雾里小路</b><small>WAIT</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">看不清，别跑太快</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: -1.5deg" type="button" data-sticker-id="sticker_69_node_69_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 69</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">执行：npm test</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1deg" type="button" data-sticker-id="sticker_70_node_70_action" aria-pressed="false">
+          <span class="sticker-tape">Vibe 70</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">推进动作</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card proof passed" style="--tilt: -2.5deg" type="button" data-sticker-id="sticker_71_node_71_verification" aria-pressed="false">
+          <span class="sticker-tape">Vibe 71</span>
+          <span class="sticker-topline"><b>作业本盖章</b><small>PASS</small></span>
+          <span class="sticker-title">验证：npm test</span>
+          <span class="sticker-memory">别听口嗨，先看作业本</span>
+        </button>
+
+        <button class="sticker-card done passed" style="--tilt: 1.8deg" type="button" data-sticker-id="sticker_72_node_72_completion" aria-pressed="false">
+          <span class="sticker-tape">Vibe 72</span>
+          <span class="sticker-topline"><b>菜端上桌</b><small>PASS</small></span>
+          <span class="sticker-title">阶段完成</span>
+          <span class="sticker-memory">不是说炒了，是能端上桌</span>
+        </button>
+
+        <button class="sticker-card next unknown" style="--tilt: -2deg" type="button" data-sticker-id="sticker_73_node_next_1" aria-pressed="false">
+          <span class="sticker-tape">Vibe 73</span>
+          <span class="sticker-topline"><b>冰箱便签</b><small>WAIT</small></span>
+          <span class="sticker-title">下一步</span>
+          <span class="sticker-memory">明天回来先看它</span>
+        </button>
+        </div>
+      </section>
+
+      <aside class="detail-rail">
+        <section class="panel">
+          <div class="panel-header">
+            <p class="panel-kicker">贴纸详情</p>
+            <span class="detail-badge" data-detail-status>PASS</span>
+          </div>
+          <h2 class="detail-title" data-detail-title>任务目标</h2>
+          <ul class="detail-list">
+            <li><span>这是什么</span><p data-detail-meaning>这张贴纸说明本轮到底想完成什么。</p></li>
+            <li><span>为什么这么判断</span><p data-detail-why>Ship a Vibe Sticker hackathon demo that makes AI progress feel cute and inspectable</p></li>
+            <li><span>我该不该信</span><p data-detail-trust>可以先信：它留下了明确完成或通过验证的信号。</p></li>
+            <li><span>下次怎么用</span><p data-detail-next>之后所有贴纸都要贴回这个目标，避免越做越偏。</p></li>
+          </ul>
+        </section>
+
+        <section class="panel recap-panel">
+          <div class="panel-header">
+            <p class="panel-kicker">Vibe FM</p>
+            <span class="detail-badge">还有没验证的地方</span>
+          </div>
+          <button class="play-button" type="button">播放今日总结</button>
+          <p class="recap-text">这里是 Vibe Sticker FM，夏日 2 的工作播报。 今天的目标：Ship a Vibe Sticker hackathon demo that makes AI progress feel cute and inspectable。 本轮贴出 73 张项目贴纸，留下 63 个完成信号，9 条证据已确认，可信分 2790。 下次先做：补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。</p>
+          <p class="footer-note">状态心情：有进展，但还没完全验收</p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <p class="panel-kicker">共同语言贴贴</p>
+            <span class="detail-badge">邪修项目词典</span>
+          </div>
+          <ul class="language-list">
+        <li>
+          <span>完成</span>
+          <strong>菜端上桌</strong>
+          <small>不是说“我忙过”，而是成果已经能被别人接住。</small>
+        </li>
+
+        <li>
+          <span>证据</span>
+          <strong>作业本盖章</strong>
+          <small>测试、命令或人工检查留下了可以回看的证明。</small>
+        </li>
+
+        <li>
+          <span>风险</span>
+          <strong>雾里别跑</strong>
+          <small>这里还没看清，先放慢，不要假装已经靠谱。</small>
+        </li>
+
+        <li>
+          <span>下次继续</span>
+          <strong>冰箱便签</strong>
+          <small>明天回来不用重翻聊天记录，先看这张便签。</small>
+        </li></ul>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <p class="panel-kicker">Vibe Insight</p>
+            <span class="detail-badge">灵感小镜子</span>
+          </div>
+          <ul class="insight-list">
+        <li>
+          <span>创作气质</span>
+          <strong>你在把抽象工作变成可感知的小物件</strong>
+          <small>你对“形式”很敏感，会在工具之外追问：这个东西有没有让人愿意靠近。</small>
+        </li>
+
+        <li>
+          <span>判断方式</span>
+          <strong>你喜欢把灵感落到可验证的东西上</strong>
+          <small>你不是只追求灵感，也会问“有没有证据”。当前记录里，9 条证据已确认。</small>
+        </li>
+
+        <li>
+          <span>协作习惯</span>
+          <strong>你天然在为明天的自己留路标</strong>
+          <small>你会为明天的自己、队友或 AI 留路标，这样下次回来不用重翻聊天记录。</small>
+        </li>
+
+        <li>
+          <span>当前优势</span>
+          <strong>你知道作品要先被记住，才有机会被理解</strong>
+          <small>你有很强的 Demo 直觉：会关心第一眼、可展示路径和别人能不能马上记住。</small>
+        </li></ul>
+          <p class="footer-note">这些不是人格诊断，只是基于本轮项目记录的正向创作观察。</p>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <p class="panel-kicker">冰箱便签</p>
+            <span class="detail-badge">9 条证据已确认</span>
+          </div>
+          <ul class="next-list"><li><span>1</span>补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。</li></ul>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <p class="panel-kicker">底层信号</p>
+            <span class="detail-badge">DoneGraph</span>
+          </div>
+          <ul class="mini-list">
+            <li><span>belongs_to_goal</span><small>01 -> 02</small></li>
+<li><span>belongs_to_goal</span><small>01 -> 03</small></li>
+<li><span>belongs_to_goal</span><small>01 -> 04</small></li>
+<li><span>belongs_to_goal</span><small>01 -> 05</small></li>
+<li><span>belongs_to_goal</span><small>01 -> 06</small></li>
+<li><span>belongs_to_goal</span><small>01 -> 07</small></li>
+<li><span>belongs_to_goal</span><small>01 -> 08</small></li>
+<li><span>belongs_to_goal</span><small>01 -> 09</small></li>
+<li><span>belongs_to_goal</span><small>01 -> 10</small></li>
+<li><span>belongs_to_goal</span><small>01 -> 11</small></li>
+            <li><span>事件 dg_evt_6d08820e-acdc-4340-a397-37b33bb35123</span>1 张贴纸</li>
+<li><span>自动扫描</span>27 张贴纸</li>
+<li><span>事件 dg_evt_a30f9dc1-5384-4406-b901-02439792dc5e</span>1 张贴纸</li>
+<li><span>事件 dg_evt_df9c070c-b9e7-4efc-8d3c-57b8e78ea180</span>1 张贴纸</li>
+<li><span>事件 dg_evt_ce3da693-c1e2-4f76-8958-6acadf67b1e8</span>1 张贴纸</li>
+<li><span>事件 dg_evt_62b1ce70-637f-40e1-9406-88a1e97b750f</span>1 张贴纸</li>
+<li><span>事件 dg_evt_e46ec7ae-8527-42c4-842b-dac15c6b3c3c</span>1 张贴纸</li>
+<li><span>事件 dg_evt_54ebb45c-c158-4423-8b1f-aa6de44e6b23</span>1 张贴纸</li>
+<li><span>事件 dg_evt_96242510-7d34-4929-80ee-70b249a3a04d</span>1 张贴纸</li>
+<li><span>事件 dg_evt_95b78ec9-07cf-47f6-b410-2df2c4f6141c</span>1 张贴纸</li>
+<li><span>事件 dg_evt_4a8f303f-2cf1-4d47-bdae-a89b200c0b44</span>1 张贴纸</li>
+<li><span>事件 dg_evt_8d727c00-7d8d-4e44-8b61-3e40c2e44ffe</span>1 张贴纸</li>
+<li><span>事件 dg_evt_57e07554-2ba4-4da9-8a07-02d5612bcb3c</span>1 张贴纸</li>
+<li><span>事件 dg_evt_e80d215d-20da-4a6d-a97b-ec7510d1eb79</span>1 张贴纸</li>
+<li><span>事件 dg_evt_4c708344-6bc3-4aad-b906-c7c4e57f75ff</span>1 张贴纸</li>
+<li><span>事件 dg_evt_f65a515e-cf96-45d1-a324-57c5549c4ef9</span>1 张贴纸</li>
+<li><span>事件 dg_evt_b3576f6c-d42b-4008-bcce-b0d1c135d122</span>1 张贴纸</li>
+<li><span>事件 dg_evt_8c8fcf6a-7c69-486f-8a08-68848010cd5d</span>1 张贴纸</li>
+<li><span>事件 dg_evt_bc975fbd-d047-412f-9bd7-a686ad773154</span>1 张贴纸</li>
+<li><span>事件 dg_evt_94219441-cd0e-4e5b-8473-6eea7b2f5834</span>1 张贴纸</li>
+<li><span>事件 dg_evt_f8037e1c-1d55-4b25-b6ef-8ac20081ad8c</span>1 张贴纸</li>
+<li><span>事件 dg_evt_e2412303-63b7-4f59-913d-a0662d010f7a</span>1 张贴纸</li>
+<li><span>事件 dg_evt_7d907b4e-8852-4607-979b-4b22240b6f6e</span>1 张贴纸</li>
+<li><span>事件 dg_evt_71f353df-5e68-4298-b089-9d5d635e93f9</span>1 张贴纸</li>
+<li><span>事件 dg_evt_7eafb1b8-975f-455e-8fcc-d3f613de30bb</span>1 张贴纸</li>
+<li><span>事件 dg_evt_6dbf5eca-5558-4df3-9fb3-efd1be344f02</span>1 张贴纸</li>
+<li><span>事件 dg_evt_4b965054-5df7-4dd1-9b01-d870e3827bbf</span>1 张贴纸</li>
+<li><span>事件 dg_evt_8ef004e2-68e6-4d78-99a4-f63f6636d3f4</span>1 张贴纸</li>
+<li><span>事件 dg_evt_c0d2bec0-92b0-4955-b4ad-9951e98a4737</span>1 张贴纸</li>
+<li><span>事件 dg_evt_ac19bf51-7f64-4e24-b1ff-8bfb52392a85</span>1 张贴纸</li>
+<li><span>事件 dg_evt_99527636-8c6e-4059-92cb-3580dd912cd3</span>1 张贴纸</li>
+<li><span>事件 dg_evt_5fc00acc-1063-4022-9481-045b63f52fbc</span>1 张贴纸</li>
+<li><span>事件 dg_evt_4bf8f89e-eebd-4113-beb7-556207786cdd</span>1 张贴纸</li>
+<li><span>事件 dg_evt_c7a2285f-ab3d-4e6e-8764-cb3799b47429</span>1 张贴纸</li>
+<li><span>事件 dg_evt_c1b1314a-a866-411e-a839-a144923c8eb7</span>1 张贴纸</li>
+<li><span>事件 dg_evt_e4ae80d5-c81e-4cf9-97b4-e6b6917b2990</span>1 张贴纸</li>
+<li><span>事件 dg_evt_01dbd47c-5588-4aa1-a1ed-66e9ebd6ed5d</span>1 张贴纸</li>
+<li><span>事件 dg_evt_bbe4cde8-1cb5-4492-bb81-c91f12b723ba</span>1 张贴纸</li>
+<li><span>事件 dg_evt_56faa1bf-a979-4016-8a34-da46d9fb80f2</span>1 张贴纸</li>
+<li><span>事件 dg_evt_9fe9fb5c-bc63-4ddb-854f-afaa890eb95c</span>1 张贴纸</li>
+<li><span>事件 dg_evt_a39fea82-efa6-4df3-82d5-23d5080db84b</span>1 张贴纸</li>
+<li><span>事件 dg_evt_ed6c9ac2-ae85-4fd2-aebc-801c7e68adf1</span>1 张贴纸</li>
+<li><span>事件 dg_evt_7e270fd7-3b79-4fa4-9243-92f5e333e455</span>1 张贴纸</li>
+<li><span>事件 dg_evt_629ee466-8092-4e9a-8a6e-0da040e73501</span>1 张贴纸</li>
+<li><span>事件 dg_evt_9a04acbd-3b9e-432b-affa-a223da0f1b69</span>1 张贴纸</li>
+<li><span>事件 dg_evt_079247fe-517f-4300-a1bd-cd9ee4816500</span>1 张贴纸</li>
+<li><span>手动记录</span>1 张贴纸</li>
+          </ul>
+          <p class="footer-note">Generated at 2026-06-02T08:13:16.516Z from .donegraph/session.jsonl.</p>
+        </section>
+      </aside>
+    </section>
+  </main>
+  <script>
+    const stickers = [{"id":"sticker_1_node_1_goal","kind":"goal","label":"目标种子","memory":"先种目标，再开干","meaning":"这张贴纸说明本轮到底想完成什么。","title":"任务目标","why":"Ship a Vibe Sticker hackathon demo that makes AI progress feel cute and inspectable","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"之后所有贴纸都要贴回这个目标，避免越做越偏。","source":"事件 dg_evt_6d08820e-acdc-4340-a397-37b33bb35123","status":"pass"},{"id":"sticker_2_node_2_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_3_node_3_artifact","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"产物确认","why":"检测到 19 个本地改动文件：.claude-plugin/marketplace.json, .claude-plugin/plugin.json, .copilot-plugin/plugin.json, .cursor-plugin/plugin.json ...；文件：.claude-plugin/marketplace.json","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_4_node_4_verification","kind":"fog","label":"雾里小路","memory":"看不清，别跑太快","meaning":"这件事还没完全验证，不能当成已经可靠。","title":"验证：npm test","why":"发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test","trust":"半信半疑：现在还缺一条能让人放心的证据。","next":"补一条测试、命令或人工验收，让它从雾里走出来。","source":"自动扫描","status":"unknown"},{"id":"sticker_5_node_5_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"执行：npm test","why":"Implemented the command-first DoneGraph CLI；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_a30f9dc1-5384-4406-b901-02439792dc5e","status":"pass"},{"id":"sticker_6_node_6_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"Generated a clickable Vibe Sticker dashboard path=.donegraph/dashboard.html；文件：.donegraph/dashboard.html","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_df9c070c-b9e7-4efc-8d3c-57b8e78ea180","status":"pass"},{"id":"sticker_7_node_7_verification","kind":"proof","label":"作业本盖章","memory":"别听口嗨，先看作业本","meaning":"这件事已经有测试、命令或人工检查支撑。","title":"验证：npm test","why":"Tests passed；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_ce3da693-c1e2-4f76-8958-6acadf67b1e8","status":"pass"},{"id":"sticker_8_node_8_completion","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"阶段完成","why":"The demo can now show project stickers, evidence, recap, and what to do next","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_62b1ce70-637f-40e1-9406-88a1e97b750f","status":"pass"},{"id":"sticker_9_node_9_goal","kind":"goal","label":"目标种子","memory":"先种目标，再开干","meaning":"这张贴纸说明本轮到底想完成什么。","title":"任务目标","why":"Ship a Vibe Sticker hackathon demo that makes AI progress feel cute and inspectable","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"之后所有贴纸都要贴回这个目标，避免越做越偏。","source":"事件 dg_evt_e46ec7ae-8527-42c4-842b-dac15c6b3c3c","status":"pass"},{"id":"sticker_10_node_10_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_11_node_11_artifact","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"产物确认","why":"检测到 7 个本地改动文件：README.md, READMEs/README.zh-CN.md, apps/cli/src/cli.ts, apps/cli/src/donegraphCli.test.ts ...；文件：README.md","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_12_node_12_verification","kind":"fog","label":"雾里小路","memory":"看不清，别跑太快","meaning":"这件事还没完全验证，不能当成已经可靠。","title":"验证：npm test","why":"发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test","trust":"半信半疑：现在还缺一条能让人放心的证据。","next":"补一条测试、命令或人工验收，让它从雾里走出来。","source":"自动扫描","status":"unknown"},{"id":"sticker_13_node_13_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"执行：npm test","why":"Implemented the command-first DoneGraph CLI；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_54ebb45c-c158-4423-8b1f-aa6de44e6b23","status":"pass"},{"id":"sticker_14_node_14_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"Generated a clickable Vibe Sticker dashboard path=.donegraph/dashboard.html；文件：.donegraph/dashboard.html","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_96242510-7d34-4929-80ee-70b249a3a04d","status":"pass"},{"id":"sticker_15_node_15_verification","kind":"proof","label":"作业本盖章","memory":"别听口嗨，先看作业本","meaning":"这件事已经有测试、命令或人工检查支撑。","title":"验证：npm test","why":"Tests passed；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_95b78ec9-07cf-47f6-b410-2df2c4f6141c","status":"pass"},{"id":"sticker_16_node_16_completion","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"阶段完成","why":"The demo can now show project stickers, evidence, recap, and what to do next","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_4a8f303f-2cf1-4d47-bdae-a89b200c0b44","status":"pass"},{"id":"sticker_17_node_17_goal","kind":"goal","label":"目标种子","memory":"先种目标，再开干","meaning":"这张贴纸说明本轮到底想完成什么。","title":"任务目标","why":"Ship a Vibe Sticker hackathon demo that makes AI progress feel cute and inspectable","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"之后所有贴纸都要贴回这个目标，避免越做越偏。","source":"事件 dg_evt_8d727c00-7d8d-4e44-8b61-3e40c2e44ffe","status":"pass"},{"id":"sticker_18_node_18_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_19_node_19_artifact","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"产物确认","why":"检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_20_node_20_verification","kind":"fog","label":"雾里小路","memory":"看不清，别跑太快","meaning":"这件事还没完全验证，不能当成已经可靠。","title":"验证：npm test","why":"发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test","trust":"半信半疑：现在还缺一条能让人放心的证据。","next":"补一条测试、命令或人工验收，让它从雾里走出来。","source":"自动扫描","status":"unknown"},{"id":"sticker_21_node_21_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"执行：npm test","why":"Implemented the command-first DoneGraph CLI；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_57e07554-2ba4-4da9-8a07-02d5612bcb3c","status":"pass"},{"id":"sticker_22_node_22_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_e80d215d-20da-4a6d-a97b-ec7510d1eb79","status":"pass"},{"id":"sticker_23_node_23_verification","kind":"proof","label":"作业本盖章","memory":"别听口嗨，先看作业本","meaning":"这件事已经有测试、命令或人工检查支撑。","title":"验证：npm test","why":"Tests passed；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_4c708344-6bc3-4aad-b906-c7c4e57f75ff","status":"pass"},{"id":"sticker_24_node_24_completion","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"阶段完成","why":"The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_f65a515e-cf96-45d1-a324-57c5549c4ef9","status":"pass"},{"id":"sticker_25_node_25_goal","kind":"goal","label":"目标种子","memory":"先种目标，再开干","meaning":"这张贴纸说明本轮到底想完成什么。","title":"任务目标","why":"Ship a Vibe Sticker hackathon demo that makes AI progress feel cute and inspectable","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"之后所有贴纸都要贴回这个目标，避免越做越偏。","source":"事件 dg_evt_b3576f6c-d42b-4008-bcce-b0d1c135d122","status":"pass"},{"id":"sticker_26_node_26_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_27_node_27_artifact","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"产物确认","why":"检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_28_node_28_verification","kind":"fog","label":"雾里小路","memory":"看不清，别跑太快","meaning":"这件事还没完全验证，不能当成已经可靠。","title":"验证：npm test","why":"发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test","trust":"半信半疑：现在还缺一条能让人放心的证据。","next":"补一条测试、命令或人工验收，让它从雾里走出来。","source":"自动扫描","status":"unknown"},{"id":"sticker_29_node_29_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"执行：npm test","why":"Implemented the command-first DoneGraph CLI；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_8c8fcf6a-7c69-486f-8a08-68848010cd5d","status":"pass"},{"id":"sticker_30_node_30_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_bc975fbd-d047-412f-9bd7-a686ad773154","status":"pass"},{"id":"sticker_31_node_31_verification","kind":"proof","label":"作业本盖章","memory":"别听口嗨，先看作业本","meaning":"这件事已经有测试、命令或人工检查支撑。","title":"验证：npm test","why":"Tests passed；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_94219441-cd0e-4e5b-8473-6eea7b2f5834","status":"pass"},{"id":"sticker_32_node_32_completion","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"阶段完成","why":"The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_f8037e1c-1d55-4b25-b6ef-8ac20081ad8c","status":"pass"},{"id":"sticker_33_node_33_goal","kind":"goal","label":"目标种子","memory":"先种目标，再开干","meaning":"这张贴纸说明本轮到底想完成什么。","title":"任务目标","why":"Ship a Vibe Sticker hackathon demo that makes AI progress feel cute and inspectable","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"之后所有贴纸都要贴回这个目标，避免越做越偏。","source":"事件 dg_evt_e2412303-63b7-4f59-913d-a0662d010f7a","status":"pass"},{"id":"sticker_34_node_34_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_35_node_35_artifact","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"产物确认","why":"检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_36_node_36_verification","kind":"fog","label":"雾里小路","memory":"看不清，别跑太快","meaning":"这件事还没完全验证，不能当成已经可靠。","title":"验证：npm test","why":"发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test","trust":"半信半疑：现在还缺一条能让人放心的证据。","next":"补一条测试、命令或人工验收，让它从雾里走出来。","source":"自动扫描","status":"unknown"},{"id":"sticker_37_node_37_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"执行：npm test","why":"Implemented the command-first DoneGraph CLI；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_7d907b4e-8852-4607-979b-4b22240b6f6e","status":"pass"},{"id":"sticker_38_node_38_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_71f353df-5e68-4298-b089-9d5d635e93f9","status":"pass"},{"id":"sticker_39_node_39_verification","kind":"proof","label":"作业本盖章","memory":"别听口嗨，先看作业本","meaning":"这件事已经有测试、命令或人工检查支撑。","title":"验证：npm test","why":"Tests passed；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_7eafb1b8-975f-455e-8fcc-d3f613de30bb","status":"pass"},{"id":"sticker_40_node_40_completion","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"阶段完成","why":"The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_6dbf5eca-5558-4df3-9fb3-efd1be344f02","status":"pass"},{"id":"sticker_41_node_41_goal","kind":"goal","label":"目标种子","memory":"先种目标，再开干","meaning":"这张贴纸说明本轮到底想完成什么。","title":"任务目标","why":"Ship a Vibe Sticker hackathon demo that makes AI progress feel cute and inspectable","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"之后所有贴纸都要贴回这个目标，避免越做越偏。","source":"事件 dg_evt_4b965054-5df7-4dd1-9b01-d870e3827bbf","status":"pass"},{"id":"sticker_42_node_42_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_43_node_43_artifact","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"产物确认","why":"检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_44_node_44_verification","kind":"fog","label":"雾里小路","memory":"看不清，别跑太快","meaning":"这件事还没完全验证，不能当成已经可靠。","title":"验证：npm test","why":"发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test","trust":"半信半疑：现在还缺一条能让人放心的证据。","next":"补一条测试、命令或人工验收，让它从雾里走出来。","source":"自动扫描","status":"unknown"},{"id":"sticker_45_node_45_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"执行：npm test","why":"Implemented the command-first DoneGraph CLI；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_8ef004e2-68e6-4d78-99a4-f63f6636d3f4","status":"pass"},{"id":"sticker_46_node_46_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_c0d2bec0-92b0-4955-b4ad-9951e98a4737","status":"pass"},{"id":"sticker_47_node_47_verification","kind":"proof","label":"作业本盖章","memory":"别听口嗨，先看作业本","meaning":"这件事已经有测试、命令或人工检查支撑。","title":"验证：npm test","why":"Tests passed；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_ac19bf51-7f64-4e24-b1ff-8bfb52392a85","status":"pass"},{"id":"sticker_48_node_48_completion","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"阶段完成","why":"The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_99527636-8c6e-4059-92cb-3580dd912cd3","status":"pass"},{"id":"sticker_49_node_49_goal","kind":"goal","label":"目标种子","memory":"先种目标，再开干","meaning":"这张贴纸说明本轮到底想完成什么。","title":"任务目标","why":"Ship a Vibe Sticker hackathon demo that makes AI progress feel cute and inspectable","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"之后所有贴纸都要贴回这个目标，避免越做越偏。","source":"事件 dg_evt_5fc00acc-1063-4022-9481-045b63f52fbc","status":"pass"},{"id":"sticker_50_node_50_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_51_node_51_artifact","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"产物确认","why":"检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_52_node_52_verification","kind":"fog","label":"雾里小路","memory":"看不清，别跑太快","meaning":"这件事还没完全验证，不能当成已经可靠。","title":"验证：npm test","why":"发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test","trust":"半信半疑：现在还缺一条能让人放心的证据。","next":"补一条测试、命令或人工验收，让它从雾里走出来。","source":"自动扫描","status":"unknown"},{"id":"sticker_53_node_53_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"执行：npm test","why":"Implemented the command-first DoneGraph CLI；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_4bf8f89e-eebd-4113-beb7-556207786cdd","status":"pass"},{"id":"sticker_54_node_54_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_c7a2285f-ab3d-4e6e-8764-cb3799b47429","status":"pass"},{"id":"sticker_55_node_55_verification","kind":"proof","label":"作业本盖章","memory":"别听口嗨，先看作业本","meaning":"这件事已经有测试、命令或人工检查支撑。","title":"验证：npm test","why":"Tests passed；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_c1b1314a-a866-411e-a839-a144923c8eb7","status":"pass"},{"id":"sticker_56_node_56_completion","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"阶段完成","why":"The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_e4ae80d5-c81e-4cf9-97b4-e6b6917b2990","status":"pass"},{"id":"sticker_57_node_57_goal","kind":"goal","label":"目标种子","memory":"先种目标，再开干","meaning":"这张贴纸说明本轮到底想完成什么。","title":"任务目标","why":"Ship a Vibe Sticker hackathon demo that makes AI progress feel cute and inspectable","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"之后所有贴纸都要贴回这个目标，避免越做越偏。","source":"事件 dg_evt_01dbd47c-5588-4aa1-a1ed-66e9ebd6ed5d","status":"pass"},{"id":"sticker_58_node_58_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_59_node_59_artifact","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"产物确认","why":"检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_60_node_60_verification","kind":"fog","label":"雾里小路","memory":"看不清，别跑太快","meaning":"这件事还没完全验证，不能当成已经可靠。","title":"验证：npm test","why":"发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test","trust":"半信半疑：现在还缺一条能让人放心的证据。","next":"补一条测试、命令或人工验收，让它从雾里走出来。","source":"自动扫描","status":"unknown"},{"id":"sticker_61_node_61_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"执行：npm test","why":"Implemented the command-first DoneGraph CLI；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_bbe4cde8-1cb5-4492-bb81-c91f12b723ba","status":"pass"},{"id":"sticker_62_node_62_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_56faa1bf-a979-4016-8a34-da46d9fb80f2","status":"pass"},{"id":"sticker_63_node_63_verification","kind":"proof","label":"作业本盖章","memory":"别听口嗨，先看作业本","meaning":"这件事已经有测试、命令或人工检查支撑。","title":"验证：npm test","why":"Tests passed；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_9fe9fb5c-bc63-4ddb-854f-afaa890eb95c","status":"pass"},{"id":"sticker_64_node_64_completion","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"阶段完成","why":"The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_a39fea82-efa6-4df3-82d5-23d5080db84b","status":"pass"},{"id":"sticker_65_node_65_goal","kind":"goal","label":"目标种子","memory":"先种目标，再开干","meaning":"这张贴纸说明本轮到底想完成什么。","title":"任务目标","why":"Ship a Vibe Sticker hackathon demo that makes AI progress feel cute and inspectable","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"之后所有贴纸都要贴回这个目标，避免越做越偏。","source":"事件 dg_evt_ed6c9ac2-ae85-4fd2-aebc-801c7e68adf1","status":"pass"},{"id":"sticker_66_node_66_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_67_node_67_artifact","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"产物确认","why":"检测到 5 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts ...；文件：README.md","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"自动扫描","status":"pass"},{"id":"sticker_68_node_68_verification","kind":"fog","label":"雾里小路","memory":"看不清，别跑太快","meaning":"这件事还没完全验证，不能当成已经可靠。","title":"验证：npm test","why":"发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test","trust":"半信半疑：现在还缺一条能让人放心的证据。","next":"补一条测试、命令或人工验收，让它从雾里走出来。","source":"自动扫描","status":"unknown"},{"id":"sticker_69_node_69_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"执行：npm test","why":"Implemented the command-first DoneGraph CLI；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_7e270fd7-3b79-4fa4-9243-92f5e333e455","status":"pass"},{"id":"sticker_70_node_70_action","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"推进动作","why":"Generated a VibeCraft voxel game lobby with Agent Receipt sync path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_629ee466-8092-4e9a-8a6e-0da040e73501","status":"pass"},{"id":"sticker_71_node_71_verification","kind":"proof","label":"作业本盖章","memory":"别听口嗨，先看作业本","meaning":"这件事已经有测试、命令或人工检查支撑。","title":"验证：npm test","why":"Tests passed；命令：npm test","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_9a04acbd-3b9e-432b-affa-a223da0f1b69","status":"pass"},{"id":"sticker_72_node_72_completion","kind":"done","label":"菜端上桌","memory":"不是说炒了，是能端上桌","meaning":"这件事已经明确留下成果，可以被看到或继续使用。","title":"阶段完成","why":"The demo can now show Today Drop, project stickers, Agent-synced drops, read-only growth packs, skill tree, and Vibe Brain","trust":"可以先信：它留下了明确完成或通过验证的信号。","next":"下次回来时，可以把它当作已经看过的内容继续往前做。","source":"事件 dg_evt_079247fe-517f-4300-a1bd-cd9ee4816500","status":"pass"},{"id":"sticker_73_node_next_1","kind":"next","label":"冰箱便签","memory":"明天回来先看它","meaning":"这是下次回来最应该先处理的事情。","title":"下一步","why":"补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。","trust":"半信半疑：现在还缺一条能让人放心的证据。","next":"补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。","source":"手动记录","status":"unknown"}];
+    const statusBadge = (status) => {
+      if (status === "pass") return "PASS";
+      if (status === "fail") return "RISK";
+      if (status === "blocked") return "LOCK";
+      return "WAIT";
+    };
+    const setText = (selector, value) => {
+      const element = document.querySelector(selector);
+      if (element) element.textContent = value;
+    };
+    const setActiveSticker = (id) => {
+      const sticker = stickers.find((item) => item.id === id);
+      if (!sticker) return;
+      document.querySelectorAll("[data-sticker-id]").forEach((button) => {
+        button.setAttribute("aria-pressed", button.getAttribute("data-sticker-id") === id ? "true" : "false");
+      });
+      setText("[data-detail-status]", statusBadge(sticker.status));
+      setText("[data-detail-title]", sticker.title);
+      setText("[data-detail-meaning]", sticker.meaning);
+      setText("[data-detail-why]", sticker.why);
+      setText("[data-detail-trust]", sticker.trust);
+      setText("[data-detail-next]", sticker.next);
+    };
+    document.querySelectorAll("[data-sticker-id]").forEach((button) => {
+      button.addEventListener("click", () => setActiveSticker(button.getAttribute("data-sticker-id")));
+    });
+  </script>
+</body>
+</html>

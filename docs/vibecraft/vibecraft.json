@@ -1,0 +1,3216 @@
+{
+  "version": "0.1",
+  "project": {
+    "name": "VibeCraft",
+    "zh_name": "灵感工坊",
+    "tagline": "Build for Fun · Create for Happy · Grow Your Vibe Brain",
+    "goal": "Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+    "mood": "有进展，但还没完全验收",
+    "trust_points": 2790
+  },
+  "build_session": {
+    "id": "session_2026_06_02T13_45_13_767Z",
+    "platform": "codex",
+    "generated_at": "2026-06-02T13:45:13.767Z",
+    "title": "Today Drop / 今日掉落",
+    "summary": "这轮一共留下 63 个完成信号，9 条证据已确认。下次先做：补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。",
+    "next_signpost": "补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。",
+    "stats": {
+      "drops": 73,
+      "knowledge_blocks": 73,
+      "verified": 63,
+      "pending": 10,
+      "risk": 0
+    }
+  },
+  "onboarding": {
+    "title": "入驻灵感村",
+    "subtitle": "先选你今天用什么身份 build，再选一个方块小人形象。随后安装一次本地 Skill 插件，生成初始技能属性。",
+    "welcome_line": "欢迎入驻。这里不是让你先学会技术，而是先让你的本地能力、项目痕迹和创作偏好有一个可见的起点。",
+    "storage_key": "vibecraft:onboarding",
+    "default_role_id": "role_happy_builder",
+    "default_avatar_id": "avatar_grass_cap",
+    "roles": [
+      {
+        "id": "role_happy_builder",
+        "label": "快乐建造师",
+        "title": "把一个模糊想法先搭成能玩的第一版。",
+        "plain": "适合想边玩边做、不想先被技术名词劝退的人。",
+        "starter_skill": "Happy Build",
+        "starter_block": "result",
+        "community_signal": "我擅长把脑洞变成一个可以点开的 demo。"
+      },
+      {
+        "id": "role_plain_translator",
+        "label": "人话翻译师",
+        "title": "把术语、报错和黑话翻译成普通人能懂的话。",
+        "plain": "适合喜欢问“这到底是什么意思”的用户。",
+        "starter_skill": "人话解释",
+        "starter_block": "concept",
+        "community_signal": "我擅长把复杂东西讲清楚，让队友更快跟上。"
+      },
+      {
+        "id": "role_mine_explorer",
+        "label": "知识探索员",
+        "title": "主动挖开一个不懂的部分，拿到能用的知识方块。",
+        "plain": "适合看到陌生概念就想点进去试试的人。",
+        "starter_skill": "主动探索",
+        "starter_block": "concept",
+        "community_signal": "我擅长发现问题下面真正值得挖的知识点。"
+      },
+      {
+        "id": "role_agent_director",
+        "label": "Agent 指挥官",
+        "title": "把目标、证据和下一步整理成 Agent 能接住的简报。",
+        "plain": "适合想让 AI 更懂自己、少重复解释的人。",
+        "starter_skill": "Agent 指挥",
+        "starter_block": "next",
+        "community_signal": "我擅长给 Agent 清晰授权，让协作更顺。"
+      },
+      {
+        "id": "role_vibe_farmer",
+        "label": "灵感种植员",
+        "title": "把日常 build 记录慢慢养成自己的 Vibe Brain。",
+        "plain": "适合喜欢积累、复盘和看见成长轨迹的人。",
+        "starter_skill": "长期积累",
+        "starter_block": "proof",
+        "community_signal": "我擅长把零散记录养成可复用的项目记忆。"
+      },
+      {
+        "id": "role_radio_host",
+        "label": "项目电台主播",
+        "title": "把今天发生了什么播报成明天也听得懂的故事。",
+        "plain": "适合喜欢叙事、总结和给项目增加情绪价值的人。",
+        "starter_skill": "Demo 记忆点",
+        "starter_block": "next",
+        "community_signal": "我擅长把进展讲得有画面，让协作更有现场感。"
+      }
+    ],
+    "avatar_presets": [
+      {
+        "id": "avatar_grass_cap",
+        "label": "草地方块帽",
+        "vibe_line": "清爽、开局、第一块地基。",
+        "head_color": "#f2d0aa",
+        "body_color": "#55b33f",
+        "accent_color": "#f3c84d",
+        "item": "草帽"
+      },
+      {
+        "id": "avatar_redstone_scarf",
+        "label": "红石围巾",
+        "vibe_line": "行动快，喜欢把灵感接上电。",
+        "head_color": "#f0c2a0",
+        "body_color": "#cf3d33",
+        "accent_color": "#fff2c8",
+        "item": "围巾"
+      },
+      {
+        "id": "avatar_blue_goggles",
+        "label": "蓝晶护目镜",
+        "vibe_line": "适合探索术语、接口和看不懂的地方。",
+        "head_color": "#efc9a6",
+        "body_color": "#36a6dc",
+        "accent_color": "#f7fdff",
+        "item": "护目镜"
+      },
+      {
+        "id": "avatar_gold_pack",
+        "label": "金矿背包",
+        "vibe_line": "喜欢把成果、证据和灵感都收进包里。",
+        "head_color": "#f1c6a2",
+        "body_color": "#ad7442",
+        "accent_color": "#f3c84d",
+        "item": "背包"
+      },
+      {
+        "id": "avatar_cloud_headset",
+        "label": "云朵耳机",
+        "vibe_line": "适合电台播报、故事化总结和温柔复盘。",
+        "head_color": "#f3d0ad",
+        "body_color": "#75c8f2",
+        "accent_color": "#fff9e7",
+        "item": "耳机"
+      },
+      {
+        "id": "avatar_wood_cape",
+        "label": "木牌斗篷",
+        "vibe_line": "适合写清楚规则、下一步和合作说明。",
+        "head_color": "#edc39f",
+        "body_color": "#8b5a35",
+        "accent_color": "#cde9b9",
+        "item": "斗篷"
+      }
+    ],
+    "registration": {
+      "title": "注册灵感村通行证",
+      "subtitle": "先生成一个本地通行证，再同步 Agent 完成凭证。Web 端只保存公开资料和可展示身份。",
+      "handle_hint": "3-24 位字母、数字或连字符，用来生成社区可见 ID 和公开子域名。",
+      "email_hint": "可选；用于未来接收合作邀请或导出提醒。",
+      "invite_hint": "可选；黑客松、社群或技能包的邀请码。",
+      "privacy_line": "当前 demo 只写入浏览器 localStorage，不会上传真实邮箱或原始文件。",
+      "registered_label": "通行证已注册",
+      "empty_label": "等待注册通行证"
+    },
+    "skill_plugin": {
+      "id": "plugin_local_skill_seed",
+      "name": "Local Skill Seed / 本地技能种子",
+      "install_label": "安装本地 Skill 插件",
+      "permission_line": "只读本地 Skill 名称、描述和当前 DoneGraph 项目痕迹。",
+      "privacy_line": "不上传原始文件；只生成可撤销的初始技能快照。",
+      "detected_sources": [
+        "本地 Skill 索引",
+        "DoneGraph 项目记录",
+        "入驻角色选择",
+        "人物形象偏好"
+      ],
+      "scan_steps": [
+        "读取 Skill 索引",
+        "匹配项目痕迹",
+        "生成初始属性",
+        "确认当前等级"
+      ],
+      "confirmation_title": "初始等级确认",
+      "confirmation_body": "插件会把你已有的 Skill 和项目痕迹炼成第一张身份属性表。之后每次 build 都会继续升级。"
+    },
+    "starter_attributes": [
+      {
+        "id": "attr_happy_build",
+        "label": "Happy Build",
+        "level": 5,
+        "max_level": 5,
+        "evidence": "完成信号：63",
+        "source_skill_id": "skill_happy_build"
+      },
+      {
+        "id": "attr_trust_check",
+        "label": "证据判断",
+        "level": 5,
+        "max_level": 5,
+        "evidence": "验证记录：18",
+        "source_skill_id": "skill_trust_check"
+      },
+      {
+        "id": "attr_demo_memory",
+        "label": "Demo 记忆点",
+        "level": 4,
+        "max_level": 5,
+        "evidence": "记录中出现可爱/游戏/展示信号",
+        "source_skill_id": "skill_demo_memory"
+      },
+      {
+        "id": "attr_agent_command",
+        "label": "Agent 指挥",
+        "level": 3,
+        "max_level": 5,
+        "evidence": "记录中出现 Agent 或编码工具信号",
+        "source_skill_id": "skill_agent_command"
+      }
+    ]
+  },
+  "today_drop": [
+    {
+      "id": "drop_1_node_1_goal",
+      "kind": "concept",
+      "label": "目标种子",
+      "title": "任务目标",
+      "short": "先种目标，再开干",
+      "status": "pass",
+      "source": "事件 dg_evt_6d08820e-acdc-4340-a397-37b33bb35123"
+    },
+    {
+      "id": "drop_2_node_2_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_3_node_3_artifact",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "产物确认",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_4_node_4_verification",
+      "kind": "concept",
+      "label": "雾里小路",
+      "title": "验证：npm test",
+      "short": "看不清，别跑太快",
+      "status": "unknown",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_5_node_5_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "执行：npm test",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_a30f9dc1-5384-4406-b901-02439792dc5e"
+    },
+    {
+      "id": "drop_6_node_6_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_df9c070c-b9e7-4efc-8d3c-57b8e78ea180"
+    },
+    {
+      "id": "drop_7_node_7_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "title": "验证：npm test",
+      "short": "别听口嗨，先看作业本",
+      "status": "pass",
+      "source": "事件 dg_evt_ce3da693-c1e2-4f76-8958-6acadf67b1e8"
+    },
+    {
+      "id": "drop_8_node_8_completion",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "阶段完成",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_62b1ce70-637f-40e1-9406-88a1e97b750f"
+    },
+    {
+      "id": "drop_9_node_9_goal",
+      "kind": "concept",
+      "label": "目标种子",
+      "title": "任务目标",
+      "short": "先种目标，再开干",
+      "status": "pass",
+      "source": "事件 dg_evt_e46ec7ae-8527-42c4-842b-dac15c6b3c3c"
+    },
+    {
+      "id": "drop_10_node_10_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_11_node_11_artifact",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "产物确认",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_12_node_12_verification",
+      "kind": "concept",
+      "label": "雾里小路",
+      "title": "验证：npm test",
+      "short": "看不清，别跑太快",
+      "status": "unknown",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_13_node_13_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "执行：npm test",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_54ebb45c-c158-4423-8b1f-aa6de44e6b23"
+    },
+    {
+      "id": "drop_14_node_14_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_96242510-7d34-4929-80ee-70b249a3a04d"
+    },
+    {
+      "id": "drop_15_node_15_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "title": "验证：npm test",
+      "short": "别听口嗨，先看作业本",
+      "status": "pass",
+      "source": "事件 dg_evt_95b78ec9-07cf-47f6-b410-2df2c4f6141c"
+    },
+    {
+      "id": "drop_16_node_16_completion",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "阶段完成",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_4a8f303f-2cf1-4d47-bdae-a89b200c0b44"
+    },
+    {
+      "id": "drop_17_node_17_goal",
+      "kind": "concept",
+      "label": "目标种子",
+      "title": "任务目标",
+      "short": "先种目标，再开干",
+      "status": "pass",
+      "source": "事件 dg_evt_8d727c00-7d8d-4e44-8b61-3e40c2e44ffe"
+    },
+    {
+      "id": "drop_18_node_18_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_19_node_19_artifact",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "产物确认",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_20_node_20_verification",
+      "kind": "concept",
+      "label": "雾里小路",
+      "title": "验证：npm test",
+      "short": "看不清，别跑太快",
+      "status": "unknown",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_21_node_21_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "执行：npm test",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_57e07554-2ba4-4da9-8a07-02d5612bcb3c"
+    },
+    {
+      "id": "drop_22_node_22_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_e80d215d-20da-4a6d-a97b-ec7510d1eb79"
+    },
+    {
+      "id": "drop_23_node_23_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "title": "验证：npm test",
+      "short": "别听口嗨，先看作业本",
+      "status": "pass",
+      "source": "事件 dg_evt_4c708344-6bc3-4aad-b906-c7c4e57f75ff"
+    },
+    {
+      "id": "drop_24_node_24_completion",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "阶段完成",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_f65a515e-cf96-45d1-a324-57c5549c4ef9"
+    },
+    {
+      "id": "drop_25_node_25_goal",
+      "kind": "concept",
+      "label": "目标种子",
+      "title": "任务目标",
+      "short": "先种目标，再开干",
+      "status": "pass",
+      "source": "事件 dg_evt_b3576f6c-d42b-4008-bcce-b0d1c135d122"
+    },
+    {
+      "id": "drop_26_node_26_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_27_node_27_artifact",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "产物确认",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_28_node_28_verification",
+      "kind": "concept",
+      "label": "雾里小路",
+      "title": "验证：npm test",
+      "short": "看不清，别跑太快",
+      "status": "unknown",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_29_node_29_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "执行：npm test",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_8c8fcf6a-7c69-486f-8a08-68848010cd5d"
+    },
+    {
+      "id": "drop_30_node_30_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_bc975fbd-d047-412f-9bd7-a686ad773154"
+    },
+    {
+      "id": "drop_31_node_31_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "title": "验证：npm test",
+      "short": "别听口嗨，先看作业本",
+      "status": "pass",
+      "source": "事件 dg_evt_94219441-cd0e-4e5b-8473-6eea7b2f5834"
+    },
+    {
+      "id": "drop_32_node_32_completion",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "阶段完成",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_f8037e1c-1d55-4b25-b6ef-8ac20081ad8c"
+    },
+    {
+      "id": "drop_33_node_33_goal",
+      "kind": "concept",
+      "label": "目标种子",
+      "title": "任务目标",
+      "short": "先种目标，再开干",
+      "status": "pass",
+      "source": "事件 dg_evt_e2412303-63b7-4f59-913d-a0662d010f7a"
+    },
+    {
+      "id": "drop_34_node_34_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_35_node_35_artifact",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "产物确认",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_36_node_36_verification",
+      "kind": "concept",
+      "label": "雾里小路",
+      "title": "验证：npm test",
+      "short": "看不清，别跑太快",
+      "status": "unknown",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_37_node_37_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "执行：npm test",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_7d907b4e-8852-4607-979b-4b22240b6f6e"
+    },
+    {
+      "id": "drop_38_node_38_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_71f353df-5e68-4298-b089-9d5d635e93f9"
+    },
+    {
+      "id": "drop_39_node_39_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "title": "验证：npm test",
+      "short": "别听口嗨，先看作业本",
+      "status": "pass",
+      "source": "事件 dg_evt_7eafb1b8-975f-455e-8fcc-d3f613de30bb"
+    },
+    {
+      "id": "drop_40_node_40_completion",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "阶段完成",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_6dbf5eca-5558-4df3-9fb3-efd1be344f02"
+    },
+    {
+      "id": "drop_41_node_41_goal",
+      "kind": "concept",
+      "label": "目标种子",
+      "title": "任务目标",
+      "short": "先种目标，再开干",
+      "status": "pass",
+      "source": "事件 dg_evt_4b965054-5df7-4dd1-9b01-d870e3827bbf"
+    },
+    {
+      "id": "drop_42_node_42_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_43_node_43_artifact",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "产物确认",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_44_node_44_verification",
+      "kind": "concept",
+      "label": "雾里小路",
+      "title": "验证：npm test",
+      "short": "看不清，别跑太快",
+      "status": "unknown",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_45_node_45_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "执行：npm test",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_8ef004e2-68e6-4d78-99a4-f63f6636d3f4"
+    },
+    {
+      "id": "drop_46_node_46_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_c0d2bec0-92b0-4955-b4ad-9951e98a4737"
+    },
+    {
+      "id": "drop_47_node_47_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "title": "验证：npm test",
+      "short": "别听口嗨，先看作业本",
+      "status": "pass",
+      "source": "事件 dg_evt_ac19bf51-7f64-4e24-b1ff-8bfb52392a85"
+    },
+    {
+      "id": "drop_48_node_48_completion",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "阶段完成",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_99527636-8c6e-4059-92cb-3580dd912cd3"
+    },
+    {
+      "id": "drop_49_node_49_goal",
+      "kind": "concept",
+      "label": "目标种子",
+      "title": "任务目标",
+      "short": "先种目标，再开干",
+      "status": "pass",
+      "source": "事件 dg_evt_5fc00acc-1063-4022-9481-045b63f52fbc"
+    },
+    {
+      "id": "drop_50_node_50_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_51_node_51_artifact",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "产物确认",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_52_node_52_verification",
+      "kind": "concept",
+      "label": "雾里小路",
+      "title": "验证：npm test",
+      "short": "看不清，别跑太快",
+      "status": "unknown",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_53_node_53_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "执行：npm test",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_4bf8f89e-eebd-4113-beb7-556207786cdd"
+    },
+    {
+      "id": "drop_54_node_54_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_c7a2285f-ab3d-4e6e-8764-cb3799b47429"
+    },
+    {
+      "id": "drop_55_node_55_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "title": "验证：npm test",
+      "short": "别听口嗨，先看作业本",
+      "status": "pass",
+      "source": "事件 dg_evt_c1b1314a-a866-411e-a839-a144923c8eb7"
+    },
+    {
+      "id": "drop_56_node_56_completion",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "阶段完成",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_e4ae80d5-c81e-4cf9-97b4-e6b6917b2990"
+    },
+    {
+      "id": "drop_57_node_57_goal",
+      "kind": "concept",
+      "label": "目标种子",
+      "title": "任务目标",
+      "short": "先种目标，再开干",
+      "status": "pass",
+      "source": "事件 dg_evt_01dbd47c-5588-4aa1-a1ed-66e9ebd6ed5d"
+    },
+    {
+      "id": "drop_58_node_58_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_59_node_59_artifact",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "产物确认",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_60_node_60_verification",
+      "kind": "concept",
+      "label": "雾里小路",
+      "title": "验证：npm test",
+      "short": "看不清，别跑太快",
+      "status": "unknown",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_61_node_61_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "执行：npm test",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_bbe4cde8-1cb5-4492-bb81-c91f12b723ba"
+    },
+    {
+      "id": "drop_62_node_62_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_56faa1bf-a979-4016-8a34-da46d9fb80f2"
+    },
+    {
+      "id": "drop_63_node_63_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "title": "验证：npm test",
+      "short": "别听口嗨，先看作业本",
+      "status": "pass",
+      "source": "事件 dg_evt_9fe9fb5c-bc63-4ddb-854f-afaa890eb95c"
+    },
+    {
+      "id": "drop_64_node_64_completion",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "阶段完成",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_a39fea82-efa6-4df3-82d5-23d5080db84b"
+    },
+    {
+      "id": "drop_65_node_65_goal",
+      "kind": "concept",
+      "label": "目标种子",
+      "title": "任务目标",
+      "short": "先种目标，再开干",
+      "status": "pass",
+      "source": "事件 dg_evt_ed6c9ac2-ae85-4fd2-aebc-801c7e68adf1"
+    },
+    {
+      "id": "drop_66_node_66_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_67_node_67_artifact",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "产物确认",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_68_node_68_verification",
+      "kind": "concept",
+      "label": "雾里小路",
+      "title": "验证：npm test",
+      "short": "看不清，别跑太快",
+      "status": "unknown",
+      "source": "自动扫描"
+    },
+    {
+      "id": "drop_69_node_69_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "执行：npm test",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_7e270fd7-3b79-4fa4-9243-92f5e333e455"
+    },
+    {
+      "id": "drop_70_node_70_action",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "推进动作",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_629ee466-8092-4e9a-8a6e-0da040e73501"
+    },
+    {
+      "id": "drop_71_node_71_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "title": "验证：npm test",
+      "short": "别听口嗨，先看作业本",
+      "status": "pass",
+      "source": "事件 dg_evt_9a04acbd-3b9e-432b-affa-a223da0f1b69"
+    },
+    {
+      "id": "drop_72_node_72_completion",
+      "kind": "result",
+      "label": "菜端上桌",
+      "title": "阶段完成",
+      "short": "不是说炒了，是能端上桌",
+      "status": "pass",
+      "source": "事件 dg_evt_079247fe-517f-4300-a1bd-cd9ee4816500"
+    },
+    {
+      "id": "drop_73_node_next_1",
+      "kind": "next",
+      "label": "冰箱便签",
+      "title": "下一步",
+      "short": "明天回来先看它",
+      "status": "unknown",
+      "source": "手动记录"
+    }
+  ],
+  "knowledge_blocks": [
+    {
+      "id": "block_1_node_1_goal",
+      "name": "目标种子方块",
+      "kind": "concept",
+      "rarity": "common",
+      "source_node_id": "node_1_goal",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明你到底想造什么。先有它，后面的方块才不会乱堆。",
+        "analogy": "像在沙盒世界里插下第一面旗子：这里就是今天要建的地方。",
+        "professional_note": "专业备注：这是 product goal / build objective。",
+        "project_use": "在这个项目里，它对应：Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+        "next_action": "继续把后面的成果、证据和风险都贴回这个目标。"
+      }
+    },
+    {
+      "id": "block_2_node_2_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_2_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_3_node_3_artifact",
+      "name": "成果宝箱方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_3_artifact",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表已经有东西被做出来了，不只是脑子里想过。",
+        "analogy": "像宝箱已经打开，里面真的有东西可以拿走。",
+        "professional_note": "专业备注：这是 artifact，表示可检查的产物。",
+        "project_use": "在这个项目里，它对应：.claude-plugin/marketplace.json",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_4_node_4_verification",
+      "name": "待验证矿石方块",
+      "kind": "concept",
+      "rarity": "rare",
+      "source_node_id": "node_4_verification",
+      "status": "unknown",
+      "explainer": {
+        "plain": "这块提醒你：这里还需要验证，不能只凭感觉说完成。",
+        "analogy": "像矿洞里看见发光点，但还没挖出来确认。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 unknown。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "补一条证据，把它从“看起来可以”变成“真的可以”。"
+      }
+    },
+    {
+      "id": "block_5_node_5_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_5_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_6_node_6_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_6_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：.donegraph/dashboard.html",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_7_node_7_verification",
+      "name": "证据矿石方块",
+      "kind": "proof",
+      "rarity": "rare",
+      "source_node_id": "node_7_verification",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明某件事被检查过，可以暂时放心。",
+        "analogy": "像矿石被敲开确认过，不是普通石头冒充钻石。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 passed。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_8_node_8_completion",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_8_completion",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：The demo can now show project stickers, evidence, recap, and what to do next",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_9_node_9_goal",
+      "name": "目标种子方块",
+      "kind": "concept",
+      "rarity": "common",
+      "source_node_id": "node_9_goal",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明你到底想造什么。先有它，后面的方块才不会乱堆。",
+        "analogy": "像在沙盒世界里插下第一面旗子：这里就是今天要建的地方。",
+        "professional_note": "专业备注：这是 product goal / build objective。",
+        "project_use": "在这个项目里，它对应：Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+        "next_action": "继续把后面的成果、证据和风险都贴回这个目标。"
+      }
+    },
+    {
+      "id": "block_10_node_10_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_10_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_11_node_11_artifact",
+      "name": "成果宝箱方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_11_artifact",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表已经有东西被做出来了，不只是脑子里想过。",
+        "analogy": "像宝箱已经打开，里面真的有东西可以拿走。",
+        "professional_note": "专业备注：这是 artifact，表示可检查的产物。",
+        "project_use": "在这个项目里，它对应：README.md",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_12_node_12_verification",
+      "name": "待验证矿石方块",
+      "kind": "concept",
+      "rarity": "rare",
+      "source_node_id": "node_12_verification",
+      "status": "unknown",
+      "explainer": {
+        "plain": "这块提醒你：这里还需要验证，不能只凭感觉说完成。",
+        "analogy": "像矿洞里看见发光点，但还没挖出来确认。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 unknown。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "补一条证据，把它从“看起来可以”变成“真的可以”。"
+      }
+    },
+    {
+      "id": "block_13_node_13_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_13_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_14_node_14_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_14_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：.donegraph/dashboard.html",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_15_node_15_verification",
+      "name": "证据矿石方块",
+      "kind": "proof",
+      "rarity": "rare",
+      "source_node_id": "node_15_verification",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明某件事被检查过，可以暂时放心。",
+        "analogy": "像矿石被敲开确认过，不是普通石头冒充钻石。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 passed。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_16_node_16_completion",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_16_completion",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：The demo can now show project stickers, evidence, recap, and what to do next",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_17_node_17_goal",
+      "name": "目标种子方块",
+      "kind": "concept",
+      "rarity": "common",
+      "source_node_id": "node_17_goal",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明你到底想造什么。先有它，后面的方块才不会乱堆。",
+        "analogy": "像在沙盒世界里插下第一面旗子：这里就是今天要建的地方。",
+        "professional_note": "专业备注：这是 product goal / build objective。",
+        "project_use": "在这个项目里，它对应：Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+        "next_action": "继续把后面的成果、证据和风险都贴回这个目标。"
+      }
+    },
+    {
+      "id": "block_18_node_18_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_18_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_19_node_19_artifact",
+      "name": "成果宝箱方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_19_artifact",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表已经有东西被做出来了，不只是脑子里想过。",
+        "analogy": "像宝箱已经打开，里面真的有东西可以拿走。",
+        "professional_note": "专业备注：这是 artifact，表示可检查的产物。",
+        "project_use": "在这个项目里，它对应：README.md",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_20_node_20_verification",
+      "name": "待验证矿石方块",
+      "kind": "concept",
+      "rarity": "rare",
+      "source_node_id": "node_20_verification",
+      "status": "unknown",
+      "explainer": {
+        "plain": "这块提醒你：这里还需要验证，不能只凭感觉说完成。",
+        "analogy": "像矿洞里看见发光点，但还没挖出来确认。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 unknown。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "补一条证据，把它从“看起来可以”变成“真的可以”。"
+      }
+    },
+    {
+      "id": "block_21_node_21_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_21_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_22_node_22_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_22_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：.donegraph/vibecraft-demo.html",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_23_node_23_verification",
+      "name": "证据矿石方块",
+      "kind": "proof",
+      "rarity": "rare",
+      "source_node_id": "node_23_verification",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明某件事被检查过，可以暂时放心。",
+        "analogy": "像矿石被敲开确认过，不是普通石头冒充钻石。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 passed。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_24_node_24_completion",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_24_completion",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_25_node_25_goal",
+      "name": "目标种子方块",
+      "kind": "concept",
+      "rarity": "common",
+      "source_node_id": "node_25_goal",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明你到底想造什么。先有它，后面的方块才不会乱堆。",
+        "analogy": "像在沙盒世界里插下第一面旗子：这里就是今天要建的地方。",
+        "professional_note": "专业备注：这是 product goal / build objective。",
+        "project_use": "在这个项目里，它对应：Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+        "next_action": "继续把后面的成果、证据和风险都贴回这个目标。"
+      }
+    },
+    {
+      "id": "block_26_node_26_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_26_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_27_node_27_artifact",
+      "name": "成果宝箱方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_27_artifact",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表已经有东西被做出来了，不只是脑子里想过。",
+        "analogy": "像宝箱已经打开，里面真的有东西可以拿走。",
+        "professional_note": "专业备注：这是 artifact，表示可检查的产物。",
+        "project_use": "在这个项目里，它对应：README.md",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_28_node_28_verification",
+      "name": "待验证矿石方块",
+      "kind": "concept",
+      "rarity": "rare",
+      "source_node_id": "node_28_verification",
+      "status": "unknown",
+      "explainer": {
+        "plain": "这块提醒你：这里还需要验证，不能只凭感觉说完成。",
+        "analogy": "像矿洞里看见发光点，但还没挖出来确认。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 unknown。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "补一条证据，把它从“看起来可以”变成“真的可以”。"
+      }
+    },
+    {
+      "id": "block_29_node_29_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_29_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_30_node_30_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_30_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：.donegraph/vibecraft-demo.html",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_31_node_31_verification",
+      "name": "证据矿石方块",
+      "kind": "proof",
+      "rarity": "rare",
+      "source_node_id": "node_31_verification",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明某件事被检查过，可以暂时放心。",
+        "analogy": "像矿石被敲开确认过，不是普通石头冒充钻石。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 passed。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_32_node_32_completion",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_32_completion",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_33_node_33_goal",
+      "name": "目标种子方块",
+      "kind": "concept",
+      "rarity": "common",
+      "source_node_id": "node_33_goal",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明你到底想造什么。先有它，后面的方块才不会乱堆。",
+        "analogy": "像在沙盒世界里插下第一面旗子：这里就是今天要建的地方。",
+        "professional_note": "专业备注：这是 product goal / build objective。",
+        "project_use": "在这个项目里，它对应：Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+        "next_action": "继续把后面的成果、证据和风险都贴回这个目标。"
+      }
+    },
+    {
+      "id": "block_34_node_34_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_34_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_35_node_35_artifact",
+      "name": "成果宝箱方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_35_artifact",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表已经有东西被做出来了，不只是脑子里想过。",
+        "analogy": "像宝箱已经打开，里面真的有东西可以拿走。",
+        "professional_note": "专业备注：这是 artifact，表示可检查的产物。",
+        "project_use": "在这个项目里，它对应：README.md",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_36_node_36_verification",
+      "name": "待验证矿石方块",
+      "kind": "concept",
+      "rarity": "rare",
+      "source_node_id": "node_36_verification",
+      "status": "unknown",
+      "explainer": {
+        "plain": "这块提醒你：这里还需要验证，不能只凭感觉说完成。",
+        "analogy": "像矿洞里看见发光点，但还没挖出来确认。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 unknown。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "补一条证据，把它从“看起来可以”变成“真的可以”。"
+      }
+    },
+    {
+      "id": "block_37_node_37_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_37_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_38_node_38_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_38_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：.donegraph/vibecraft-demo.html",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_39_node_39_verification",
+      "name": "证据矿石方块",
+      "kind": "proof",
+      "rarity": "rare",
+      "source_node_id": "node_39_verification",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明某件事被检查过，可以暂时放心。",
+        "analogy": "像矿石被敲开确认过，不是普通石头冒充钻石。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 passed。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_40_node_40_completion",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_40_completion",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_41_node_41_goal",
+      "name": "目标种子方块",
+      "kind": "concept",
+      "rarity": "common",
+      "source_node_id": "node_41_goal",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明你到底想造什么。先有它，后面的方块才不会乱堆。",
+        "analogy": "像在沙盒世界里插下第一面旗子：这里就是今天要建的地方。",
+        "professional_note": "专业备注：这是 product goal / build objective。",
+        "project_use": "在这个项目里，它对应：Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+        "next_action": "继续把后面的成果、证据和风险都贴回这个目标。"
+      }
+    },
+    {
+      "id": "block_42_node_42_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_42_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_43_node_43_artifact",
+      "name": "成果宝箱方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_43_artifact",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表已经有东西被做出来了，不只是脑子里想过。",
+        "analogy": "像宝箱已经打开，里面真的有东西可以拿走。",
+        "professional_note": "专业备注：这是 artifact，表示可检查的产物。",
+        "project_use": "在这个项目里，它对应：README.md",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_44_node_44_verification",
+      "name": "待验证矿石方块",
+      "kind": "concept",
+      "rarity": "rare",
+      "source_node_id": "node_44_verification",
+      "status": "unknown",
+      "explainer": {
+        "plain": "这块提醒你：这里还需要验证，不能只凭感觉说完成。",
+        "analogy": "像矿洞里看见发光点，但还没挖出来确认。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 unknown。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "补一条证据，把它从“看起来可以”变成“真的可以”。"
+      }
+    },
+    {
+      "id": "block_45_node_45_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_45_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_46_node_46_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_46_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：.donegraph/vibecraft-demo.html",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_47_node_47_verification",
+      "name": "证据矿石方块",
+      "kind": "proof",
+      "rarity": "rare",
+      "source_node_id": "node_47_verification",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明某件事被检查过，可以暂时放心。",
+        "analogy": "像矿石被敲开确认过，不是普通石头冒充钻石。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 passed。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_48_node_48_completion",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_48_completion",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_49_node_49_goal",
+      "name": "目标种子方块",
+      "kind": "concept",
+      "rarity": "common",
+      "source_node_id": "node_49_goal",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明你到底想造什么。先有它，后面的方块才不会乱堆。",
+        "analogy": "像在沙盒世界里插下第一面旗子：这里就是今天要建的地方。",
+        "professional_note": "专业备注：这是 product goal / build objective。",
+        "project_use": "在这个项目里，它对应：Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+        "next_action": "继续把后面的成果、证据和风险都贴回这个目标。"
+      }
+    },
+    {
+      "id": "block_50_node_50_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_50_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_51_node_51_artifact",
+      "name": "成果宝箱方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_51_artifact",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表已经有东西被做出来了，不只是脑子里想过。",
+        "analogy": "像宝箱已经打开，里面真的有东西可以拿走。",
+        "professional_note": "专业备注：这是 artifact，表示可检查的产物。",
+        "project_use": "在这个项目里，它对应：README.md",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_52_node_52_verification",
+      "name": "待验证矿石方块",
+      "kind": "concept",
+      "rarity": "rare",
+      "source_node_id": "node_52_verification",
+      "status": "unknown",
+      "explainer": {
+        "plain": "这块提醒你：这里还需要验证，不能只凭感觉说完成。",
+        "analogy": "像矿洞里看见发光点，但还没挖出来确认。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 unknown。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "补一条证据，把它从“看起来可以”变成“真的可以”。"
+      }
+    },
+    {
+      "id": "block_53_node_53_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_53_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_54_node_54_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_54_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：.donegraph/vibecraft-demo.html",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_55_node_55_verification",
+      "name": "证据矿石方块",
+      "kind": "proof",
+      "rarity": "rare",
+      "source_node_id": "node_55_verification",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明某件事被检查过，可以暂时放心。",
+        "analogy": "像矿石被敲开确认过，不是普通石头冒充钻石。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 passed。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_56_node_56_completion",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_56_completion",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_57_node_57_goal",
+      "name": "目标种子方块",
+      "kind": "concept",
+      "rarity": "common",
+      "source_node_id": "node_57_goal",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明你到底想造什么。先有它，后面的方块才不会乱堆。",
+        "analogy": "像在沙盒世界里插下第一面旗子：这里就是今天要建的地方。",
+        "professional_note": "专业备注：这是 product goal / build objective。",
+        "project_use": "在这个项目里，它对应：Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+        "next_action": "继续把后面的成果、证据和风险都贴回这个目标。"
+      }
+    },
+    {
+      "id": "block_58_node_58_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_58_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_59_node_59_artifact",
+      "name": "成果宝箱方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_59_artifact",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表已经有东西被做出来了，不只是脑子里想过。",
+        "analogy": "像宝箱已经打开，里面真的有东西可以拿走。",
+        "professional_note": "专业备注：这是 artifact，表示可检查的产物。",
+        "project_use": "在这个项目里，它对应：README.md",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_60_node_60_verification",
+      "name": "待验证矿石方块",
+      "kind": "concept",
+      "rarity": "rare",
+      "source_node_id": "node_60_verification",
+      "status": "unknown",
+      "explainer": {
+        "plain": "这块提醒你：这里还需要验证，不能只凭感觉说完成。",
+        "analogy": "像矿洞里看见发光点，但还没挖出来确认。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 unknown。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "补一条证据，把它从“看起来可以”变成“真的可以”。"
+      }
+    },
+    {
+      "id": "block_61_node_61_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_61_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_62_node_62_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_62_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：.donegraph/vibecraft-demo.html",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_63_node_63_verification",
+      "name": "证据矿石方块",
+      "kind": "proof",
+      "rarity": "rare",
+      "source_node_id": "node_63_verification",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明某件事被检查过，可以暂时放心。",
+        "analogy": "像矿石被敲开确认过，不是普通石头冒充钻石。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 passed。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_64_node_64_completion",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_64_completion",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_65_node_65_goal",
+      "name": "目标种子方块",
+      "kind": "concept",
+      "rarity": "common",
+      "source_node_id": "node_65_goal",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明你到底想造什么。先有它，后面的方块才不会乱堆。",
+        "analogy": "像在沙盒世界里插下第一面旗子：这里就是今天要建的地方。",
+        "professional_note": "专业备注：这是 product goal / build objective。",
+        "project_use": "在这个项目里，它对应：Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+        "next_action": "继续把后面的成果、证据和风险都贴回这个目标。"
+      }
+    },
+    {
+      "id": "block_66_node_66_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_66_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_67_node_67_artifact",
+      "name": "成果宝箱方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_67_artifact",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表已经有东西被做出来了，不只是脑子里想过。",
+        "analogy": "像宝箱已经打开，里面真的有东西可以拿走。",
+        "professional_note": "专业备注：这是 artifact，表示可检查的产物。",
+        "project_use": "在这个项目里，它对应：README.md",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_68_node_68_verification",
+      "name": "待验证矿石方块",
+      "kind": "concept",
+      "rarity": "rare",
+      "source_node_id": "node_68_verification",
+      "status": "unknown",
+      "explainer": {
+        "plain": "这块提醒你：这里还需要验证，不能只凭感觉说完成。",
+        "analogy": "像矿洞里看见发光点，但还没挖出来确认。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 unknown。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "补一条证据，把它从“看起来可以”变成“真的可以”。"
+      }
+    },
+    {
+      "id": "block_69_node_69_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_69_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_70_node_70_action",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_70_action",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：.donegraph/vibecraft-demo.html",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_71_node_71_verification",
+      "name": "证据矿石方块",
+      "kind": "proof",
+      "rarity": "rare",
+      "source_node_id": "node_71_verification",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块说明某件事被检查过，可以暂时放心。",
+        "analogy": "像矿石被敲开确认过，不是普通石头冒充钻石。",
+        "professional_note": "专业备注：这是 verification evidence，当前状态是 passed。",
+        "project_use": "在这个项目里，它对应：npm test",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_72_node_72_completion",
+      "name": "建造动作方块",
+      "kind": "result",
+      "rarity": "common",
+      "source_node_id": "node_72_completion",
+      "status": "pass",
+      "explainer": {
+        "plain": "这块代表一次推进动作：项目往前挪了一小格。",
+        "analogy": "像往建筑上放下一块砖，虽然小，但它改变了世界。",
+        "professional_note": "专业备注：这是 execution step，表示一次执行或实现动作。",
+        "project_use": "在这个项目里，它对应：The demo can now show Today Drop, project stickers, Agent-synced drops, read-only growth packs, skill tree, and Vibe Brain",
+        "next_action": "把这块收进背包，后面合成“我懂了”卡。"
+      }
+    },
+    {
+      "id": "block_73_node_next_1",
+      "name": "明日告示牌方块",
+      "kind": "next",
+      "rarity": "epic",
+      "source_node_id": "node_next_1",
+      "status": "unknown",
+      "explainer": {
+        "plain": "这块是明天回来看的告示牌，避免重新翻聊天记录。",
+        "analogy": "像家门口的告示牌：下次上线先读它。",
+        "professional_note": "专业备注：这是 next action，用来降低下次恢复成本。",
+        "project_use": "在这个项目里，它对应：补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。",
+        "next_action": "补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。"
+      }
+    }
+  ],
+  "crafting_cards": [
+    {
+      "id": "craft_i_get_it",
+      "title": "我懂了卡",
+      "recipe": [
+        "目标种子方块",
+        "建造动作方块",
+        "证据矿石方块"
+      ],
+      "output": "把“AI 做了什么”翻译成“我知道它为什么有用”。",
+      "next_use": "下次遇到类似模块，先找目标、成果和证据三块。"
+    },
+    {
+      "id": "craft_tomorrow_plan",
+      "title": "明天回来卡",
+      "recipe": [
+        "证据矿石方块",
+        "小坑方块",
+        "明日告示牌方块"
+      ],
+      "output": "补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。",
+      "next_use": "把这张卡复制给下次的自己、队友或 Agent。"
+    },
+    {
+      "id": "craft_agent_brief",
+      "title": "Agent 简报卡",
+      "recipe": [
+        "目标种子方块",
+        "建造动作方块",
+        "成果宝箱方块"
+      ],
+      "output": "把项目目标、当前证据和下一步压缩成 Agent 能接住的说明。",
+      "next_use": "授权给 Agent 前，先确认哪些内容可以共享。"
+    }
+  ],
+  "skill_tree": [
+    {
+      "id": "skill_prompt_expression",
+      "label": "表达需求",
+      "level": 2,
+      "max_level": 5,
+      "unlocked": true,
+      "evidence": "Ship a VibeCraft demo that makes AI progress feel cute and inspectable"
+    },
+    {
+      "id": "skill_happy_build",
+      "label": "Happy Build",
+      "level": 5,
+      "max_level": 5,
+      "unlocked": true,
+      "evidence": "完成信号：63"
+    },
+    {
+      "id": "skill_trust_check",
+      "label": "证据判断",
+      "level": 5,
+      "max_level": 5,
+      "unlocked": true,
+      "evidence": "验证记录：18"
+    },
+    {
+      "id": "skill_plain_explain",
+      "label": "人话解释",
+      "level": 1,
+      "max_level": 5,
+      "unlocked": false,
+      "evidence": "等待主动探索"
+    },
+    {
+      "id": "skill_demo_memory",
+      "label": "Demo 记忆点",
+      "level": 4,
+      "max_level": 5,
+      "unlocked": true,
+      "evidence": "记录中出现可爱/游戏/展示信号"
+    },
+    {
+      "id": "skill_agent_command",
+      "label": "Agent 指挥",
+      "level": 3,
+      "max_level": 5,
+      "unlocked": true,
+      "evidence": "记录中出现 Agent 或编码工具信号"
+    }
+  ],
+  "growth_packs": [
+    {
+      "id": "pack_identity_seed",
+      "kind": "starter",
+      "label": "初始技能包",
+      "title": "身份种子包",
+      "description": "完成入驻并由 Agent 上传本地 Skill 初始快照后，确认第一组技能属性。",
+      "unlocked": false,
+      "progress": 0,
+      "max_progress": 1,
+      "condition": "同步 Agent 完成凭证并确认初始等级",
+      "reward": "社区身份卡 + 初始技能属性",
+      "community_badge": "身份种子包",
+      "next_hint": "完成入驻后同步 Agent 完成凭证。"
+    },
+    {
+      "id": "pack_first_build",
+      "kind": "task",
+      "label": "任务完成包",
+      "title": "首个 Build 包",
+      "description": "Codex/Agent 真正完成一次任务后，系统把它变成可展示的成长记录。",
+      "unlocked": true,
+      "progress": 1,
+      "max_progress": 1,
+      "condition": "Agent 上传 1 个完成事件",
+      "reward": "Happy Build 能力标签",
+      "community_badge": "首个 Build 包",
+      "next_hint": "让 Agent 完成一个小任务并同步掉落凭证。"
+    },
+    {
+      "id": "pack_proof_miner",
+      "kind": "proof",
+      "label": "验证矿石包",
+      "title": "可信证据包",
+      "description": "当 Agent 不只是做完，还上传测试、截图或人工确认，就会解锁。",
+      "unlocked": true,
+      "progress": 1,
+      "max_progress": 1,
+      "condition": "Agent 上传 1 条通过验证的证据",
+      "reward": "证据判断能力标签",
+      "community_badge": "可信证据包",
+      "next_hint": "让 Agent 补一条通过验证的证据。"
+    },
+    {
+      "id": "pack_exploration_mine",
+      "kind": "exploration",
+      "label": "主动探索包",
+      "title": "知识矿洞包",
+      "description": "Agent 把术语、报错或截图描述挖成知识方块后解锁。",
+      "unlocked": true,
+      "progress": 3,
+      "max_progress": 3,
+      "condition": "Agent 上传 3 个知识方块",
+      "reward": "主动探索能力标签",
+      "community_badge": "知识矿洞包",
+      "next_hint": "让 Agent 继续挖开 3 个不懂的点。"
+    },
+    {
+      "id": "pack_crafting_table",
+      "kind": "craft",
+      "label": "理解合成包",
+      "title": "我懂了卡包",
+      "description": "当 Agent 把知识方块合成为可复用理解卡，用户就拿到这个包。",
+      "unlocked": true,
+      "progress": 3,
+      "max_progress": 3,
+      "condition": "Agent 上传 3 张理解卡",
+      "reward": "理解合成能力标签",
+      "community_badge": "我懂了卡包",
+      "next_hint": "让 Agent 把知识方块合成理解卡。"
+    },
+    {
+      "id": "pack_brain_growth",
+      "kind": "brain",
+      "label": "大脑进化包",
+      "title": "Vibe Brain 包",
+      "description": "随着 Agent 上传成果、洞察和下一步，用户的大脑包会升级。",
+      "unlocked": true,
+      "progress": 5,
+      "max_progress": 5,
+      "condition": "Agent 上传 5 条项目成果",
+      "reward": "Vibe Brain 记忆标签",
+      "community_badge": "Vibe Brain 包",
+      "next_hint": "继续让 Agent 完成项目成果。"
+    },
+    {
+      "id": "pack_village_match",
+      "kind": "collaboration",
+      "label": "社区协作包",
+      "title": "互补邀请包",
+      "description": "当 Agent 持续同步技能树，别人就能根据你的卡片发起互补合作。",
+      "unlocked": true,
+      "progress": 3,
+      "max_progress": 3,
+      "condition": "Agent 点亮 3 个技能节点",
+      "reward": "互补协作邀请入口",
+      "community_badge": "互补邀请包",
+      "next_hint": "继续完成任务、验证或探索并同步。"
+    }
+  ],
+  "agent_sync": {
+    "id": "receipt_2026_06_02T13_45_13_767Z",
+    "title": "Agent 完成状态上传",
+    "source_agent": "codex",
+    "status": "ready_to_sync",
+    "receipt_path": ".donegraph/vibecraft.json",
+    "upload_target": "POST /api/vibecraft/receipts 或本地文件同步",
+    "generated_at": "2026-06-02T13:45:13.767Z",
+    "summary": "Agent 已完成本轮 Web build，准备同步 6 个成长包、73 个知识方块和 3 张合成卡。",
+    "sync_steps": [
+      "Codex/Agent 完成任务并写入 DoneGraph 事件",
+      "DoneGraph 生成 vibecraft.json 完成凭证",
+      "Agent 上传完成凭证到 VibeCraft Sync API 或本地同步目录",
+      "Web 端拉取完成凭证并刷新掉落、成长包、社区卡",
+      "用户只在 Web 端查看状态或修改公开介绍"
+    ],
+    "accepted_event_types": [
+      "goal",
+      "action",
+      "artifact",
+      "verification",
+      "completion"
+    ],
+    "unlocked_pack_ids": [
+      "pack_first_build",
+      "pack_proof_miner",
+      "pack_exploration_mine",
+      "pack_crafting_table",
+      "pack_brain_growth",
+      "pack_village_match"
+    ],
+    "payload_counts": {
+      "drops": 73,
+      "knowledge_blocks": 73,
+      "craft_cards": 3,
+      "verified": 9,
+      "achievements": 63
+    },
+    "web_policy": "Web 端不手动刷解锁；只保存公开资料，并通过 Agent 完成凭证同步成长状态。"
+  },
+  "vibe_brain": {
+    "id": "brain_2026_06_02T13_45_13_767Z",
+    "owner_key_hint": "用户持有下载 key；Agent 只能读取用户授权范围。",
+    "contains": [
+      "73 个知识方块",
+      "4 条正向创作洞察",
+      "1 条下次告示牌",
+      "63 条项目成果"
+    ],
+    "agent_grant_preview": "把目标「Ship a VibeCraft demo that makes AI progress feel cute and inspectable」和下一步「补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。」授权给 Agent。",
+    "safety_note": "不把原始隐私数据直接写到链上；链上只记录哈希、授权凭证、版本证明和访问审计。"
+  },
+  "village_profile": {
+    "identity": "灵感村身份：你在把抽象工作变成可感知的小物件",
+    "visible_traits": [
+      "Happy Build",
+      "证据判断",
+      "Demo 记忆点"
+    ],
+    "collaboration_invites": [
+      "我有产品脑洞，想找视觉/前端伙伴一起做可玩 demo。",
+      "我会把复杂东西翻译成人话，想找懂技术实现的人互补。",
+      "我正在积累 Vibe Brain，可以授权 Agent 更懂我的创作方式。"
+    ],
+    "community_card": {
+      "id": "community_card_starter",
+      "title": "社区身份卡",
+      "empty_level_label": "等待初始等级确认",
+      "confirmed_level_label": "初始等级已确认",
+      "proof_line": "由入驻角色、人物形象、本地 Skill 插件和 DoneGraph 项目痕迹生成。",
+      "public_note": "这张卡是别人看到你的第一眼：你是谁、会什么、适合怎样合作。",
+      "badge_labels": [
+        "Happy Build",
+        "证据判断",
+        "Demo 记忆点"
+      ],
+      "invite_cta": "发起互补合作邀请"
+    }
+  },
+  "stickers": [
+    {
+      "id": "sticker_1_node_1_goal",
+      "kind": "goal",
+      "label": "目标种子",
+      "memory": "先种目标，再开干",
+      "meaning": "这张贴纸说明本轮到底想完成什么。",
+      "title": "任务目标",
+      "why": "Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "之后所有贴纸都要贴回这个目标，避免越做越偏。",
+      "source": "事件 dg_evt_6d08820e-acdc-4340-a397-37b33bb35123",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_2_node_2_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_3_node_3_artifact",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "产物确认",
+      "why": "检测到 19 个本地改动文件：.claude-plugin/marketplace.json, .claude-plugin/plugin.json, .copilot-plugin/plugin.json, .cursor-plugin/plugin.json ...；文件：.claude-plugin/marketplace.json",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_4_node_4_verification",
+      "kind": "fog",
+      "label": "雾里小路",
+      "memory": "看不清，别跑太快",
+      "meaning": "这件事还没完全验证，不能当成已经可靠。",
+      "title": "验证：npm test",
+      "why": "发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test",
+      "trust": "半信半疑：现在还缺一条能让人放心的证据。",
+      "next": "补一条测试、命令或人工验收，让它从雾里走出来。",
+      "source": "自动扫描",
+      "status": "unknown"
+    },
+    {
+      "id": "sticker_5_node_5_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "执行：npm test",
+      "why": "Implemented the command-first DoneGraph CLI；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_a30f9dc1-5384-4406-b901-02439792dc5e",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_6_node_6_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "Generated a clickable Vibe Sticker dashboard path=.donegraph/dashboard.html；文件：.donegraph/dashboard.html",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_df9c070c-b9e7-4efc-8d3c-57b8e78ea180",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_7_node_7_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "memory": "别听口嗨，先看作业本",
+      "meaning": "这件事已经有测试、命令或人工检查支撑。",
+      "title": "验证：npm test",
+      "why": "Tests passed；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_ce3da693-c1e2-4f76-8958-6acadf67b1e8",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_8_node_8_completion",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "阶段完成",
+      "why": "The demo can now show project stickers, evidence, recap, and what to do next",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_62b1ce70-637f-40e1-9406-88a1e97b750f",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_9_node_9_goal",
+      "kind": "goal",
+      "label": "目标种子",
+      "memory": "先种目标，再开干",
+      "meaning": "这张贴纸说明本轮到底想完成什么。",
+      "title": "任务目标",
+      "why": "Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "之后所有贴纸都要贴回这个目标，避免越做越偏。",
+      "source": "事件 dg_evt_e46ec7ae-8527-42c4-842b-dac15c6b3c3c",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_10_node_10_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_11_node_11_artifact",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "产物确认",
+      "why": "检测到 7 个本地改动文件：README.md, READMEs/README.zh-CN.md, apps/cli/src/cli.ts, apps/cli/src/donegraphCli.test.ts ...；文件：README.md",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_12_node_12_verification",
+      "kind": "fog",
+      "label": "雾里小路",
+      "memory": "看不清，别跑太快",
+      "meaning": "这件事还没完全验证，不能当成已经可靠。",
+      "title": "验证：npm test",
+      "why": "发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test",
+      "trust": "半信半疑：现在还缺一条能让人放心的证据。",
+      "next": "补一条测试、命令或人工验收，让它从雾里走出来。",
+      "source": "自动扫描",
+      "status": "unknown"
+    },
+    {
+      "id": "sticker_13_node_13_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "执行：npm test",
+      "why": "Implemented the command-first DoneGraph CLI；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_54ebb45c-c158-4423-8b1f-aa6de44e6b23",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_14_node_14_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "Generated a clickable Vibe Sticker dashboard path=.donegraph/dashboard.html；文件：.donegraph/dashboard.html",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_96242510-7d34-4929-80ee-70b249a3a04d",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_15_node_15_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "memory": "别听口嗨，先看作业本",
+      "meaning": "这件事已经有测试、命令或人工检查支撑。",
+      "title": "验证：npm test",
+      "why": "Tests passed；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_95b78ec9-07cf-47f6-b410-2df2c4f6141c",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_16_node_16_completion",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "阶段完成",
+      "why": "The demo can now show project stickers, evidence, recap, and what to do next",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_4a8f303f-2cf1-4d47-bdae-a89b200c0b44",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_17_node_17_goal",
+      "kind": "goal",
+      "label": "目标种子",
+      "memory": "先种目标，再开干",
+      "meaning": "这张贴纸说明本轮到底想完成什么。",
+      "title": "任务目标",
+      "why": "Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "之后所有贴纸都要贴回这个目标，避免越做越偏。",
+      "source": "事件 dg_evt_8d727c00-7d8d-4e44-8b61-3e40c2e44ffe",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_18_node_18_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_19_node_19_artifact",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "产物确认",
+      "why": "检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_20_node_20_verification",
+      "kind": "fog",
+      "label": "雾里小路",
+      "memory": "看不清，别跑太快",
+      "meaning": "这件事还没完全验证，不能当成已经可靠。",
+      "title": "验证：npm test",
+      "why": "发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test",
+      "trust": "半信半疑：现在还缺一条能让人放心的证据。",
+      "next": "补一条测试、命令或人工验收，让它从雾里走出来。",
+      "source": "自动扫描",
+      "status": "unknown"
+    },
+    {
+      "id": "sticker_21_node_21_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "执行：npm test",
+      "why": "Implemented the command-first DoneGraph CLI；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_57e07554-2ba4-4da9-8a07-02d5612bcb3c",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_22_node_22_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_e80d215d-20da-4a6d-a97b-ec7510d1eb79",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_23_node_23_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "memory": "别听口嗨，先看作业本",
+      "meaning": "这件事已经有测试、命令或人工检查支撑。",
+      "title": "验证：npm test",
+      "why": "Tests passed；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_4c708344-6bc3-4aad-b906-c7c4e57f75ff",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_24_node_24_completion",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "阶段完成",
+      "why": "The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_f65a515e-cf96-45d1-a324-57c5549c4ef9",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_25_node_25_goal",
+      "kind": "goal",
+      "label": "目标种子",
+      "memory": "先种目标，再开干",
+      "meaning": "这张贴纸说明本轮到底想完成什么。",
+      "title": "任务目标",
+      "why": "Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "之后所有贴纸都要贴回这个目标，避免越做越偏。",
+      "source": "事件 dg_evt_b3576f6c-d42b-4008-bcce-b0d1c135d122",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_26_node_26_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_27_node_27_artifact",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "产物确认",
+      "why": "检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_28_node_28_verification",
+      "kind": "fog",
+      "label": "雾里小路",
+      "memory": "看不清，别跑太快",
+      "meaning": "这件事还没完全验证，不能当成已经可靠。",
+      "title": "验证：npm test",
+      "why": "发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test",
+      "trust": "半信半疑：现在还缺一条能让人放心的证据。",
+      "next": "补一条测试、命令或人工验收，让它从雾里走出来。",
+      "source": "自动扫描",
+      "status": "unknown"
+    },
+    {
+      "id": "sticker_29_node_29_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "执行：npm test",
+      "why": "Implemented the command-first DoneGraph CLI；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_8c8fcf6a-7c69-486f-8a08-68848010cd5d",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_30_node_30_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_bc975fbd-d047-412f-9bd7-a686ad773154",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_31_node_31_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "memory": "别听口嗨，先看作业本",
+      "meaning": "这件事已经有测试、命令或人工检查支撑。",
+      "title": "验证：npm test",
+      "why": "Tests passed；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_94219441-cd0e-4e5b-8473-6eea7b2f5834",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_32_node_32_completion",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "阶段完成",
+      "why": "The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_f8037e1c-1d55-4b25-b6ef-8ac20081ad8c",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_33_node_33_goal",
+      "kind": "goal",
+      "label": "目标种子",
+      "memory": "先种目标，再开干",
+      "meaning": "这张贴纸说明本轮到底想完成什么。",
+      "title": "任务目标",
+      "why": "Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "之后所有贴纸都要贴回这个目标，避免越做越偏。",
+      "source": "事件 dg_evt_e2412303-63b7-4f59-913d-a0662d010f7a",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_34_node_34_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_35_node_35_artifact",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "产物确认",
+      "why": "检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_36_node_36_verification",
+      "kind": "fog",
+      "label": "雾里小路",
+      "memory": "看不清，别跑太快",
+      "meaning": "这件事还没完全验证，不能当成已经可靠。",
+      "title": "验证：npm test",
+      "why": "发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test",
+      "trust": "半信半疑：现在还缺一条能让人放心的证据。",
+      "next": "补一条测试、命令或人工验收，让它从雾里走出来。",
+      "source": "自动扫描",
+      "status": "unknown"
+    },
+    {
+      "id": "sticker_37_node_37_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "执行：npm test",
+      "why": "Implemented the command-first DoneGraph CLI；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_7d907b4e-8852-4607-979b-4b22240b6f6e",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_38_node_38_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_71f353df-5e68-4298-b089-9d5d635e93f9",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_39_node_39_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "memory": "别听口嗨，先看作业本",
+      "meaning": "这件事已经有测试、命令或人工检查支撑。",
+      "title": "验证：npm test",
+      "why": "Tests passed；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_7eafb1b8-975f-455e-8fcc-d3f613de30bb",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_40_node_40_completion",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "阶段完成",
+      "why": "The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_6dbf5eca-5558-4df3-9fb3-efd1be344f02",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_41_node_41_goal",
+      "kind": "goal",
+      "label": "目标种子",
+      "memory": "先种目标，再开干",
+      "meaning": "这张贴纸说明本轮到底想完成什么。",
+      "title": "任务目标",
+      "why": "Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "之后所有贴纸都要贴回这个目标，避免越做越偏。",
+      "source": "事件 dg_evt_4b965054-5df7-4dd1-9b01-d870e3827bbf",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_42_node_42_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_43_node_43_artifact",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "产物确认",
+      "why": "检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_44_node_44_verification",
+      "kind": "fog",
+      "label": "雾里小路",
+      "memory": "看不清，别跑太快",
+      "meaning": "这件事还没完全验证，不能当成已经可靠。",
+      "title": "验证：npm test",
+      "why": "发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test",
+      "trust": "半信半疑：现在还缺一条能让人放心的证据。",
+      "next": "补一条测试、命令或人工验收，让它从雾里走出来。",
+      "source": "自动扫描",
+      "status": "unknown"
+    },
+    {
+      "id": "sticker_45_node_45_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "执行：npm test",
+      "why": "Implemented the command-first DoneGraph CLI；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_8ef004e2-68e6-4d78-99a4-f63f6636d3f4",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_46_node_46_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_c0d2bec0-92b0-4955-b4ad-9951e98a4737",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_47_node_47_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "memory": "别听口嗨，先看作业本",
+      "meaning": "这件事已经有测试、命令或人工检查支撑。",
+      "title": "验证：npm test",
+      "why": "Tests passed；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_ac19bf51-7f64-4e24-b1ff-8bfb52392a85",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_48_node_48_completion",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "阶段完成",
+      "why": "The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_99527636-8c6e-4059-92cb-3580dd912cd3",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_49_node_49_goal",
+      "kind": "goal",
+      "label": "目标种子",
+      "memory": "先种目标，再开干",
+      "meaning": "这张贴纸说明本轮到底想完成什么。",
+      "title": "任务目标",
+      "why": "Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "之后所有贴纸都要贴回这个目标，避免越做越偏。",
+      "source": "事件 dg_evt_5fc00acc-1063-4022-9481-045b63f52fbc",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_50_node_50_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_51_node_51_artifact",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "产物确认",
+      "why": "检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_52_node_52_verification",
+      "kind": "fog",
+      "label": "雾里小路",
+      "memory": "看不清，别跑太快",
+      "meaning": "这件事还没完全验证，不能当成已经可靠。",
+      "title": "验证：npm test",
+      "why": "发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test",
+      "trust": "半信半疑：现在还缺一条能让人放心的证据。",
+      "next": "补一条测试、命令或人工验收，让它从雾里走出来。",
+      "source": "自动扫描",
+      "status": "unknown"
+    },
+    {
+      "id": "sticker_53_node_53_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "执行：npm test",
+      "why": "Implemented the command-first DoneGraph CLI；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_4bf8f89e-eebd-4113-beb7-556207786cdd",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_54_node_54_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_c7a2285f-ab3d-4e6e-8764-cb3799b47429",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_55_node_55_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "memory": "别听口嗨，先看作业本",
+      "meaning": "这件事已经有测试、命令或人工检查支撑。",
+      "title": "验证：npm test",
+      "why": "Tests passed；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_c1b1314a-a866-411e-a839-a144923c8eb7",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_56_node_56_completion",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "阶段完成",
+      "why": "The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_e4ae80d5-c81e-4cf9-97b4-e6b6917b2990",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_57_node_57_goal",
+      "kind": "goal",
+      "label": "目标种子",
+      "memory": "先种目标，再开干",
+      "meaning": "这张贴纸说明本轮到底想完成什么。",
+      "title": "任务目标",
+      "why": "Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "之后所有贴纸都要贴回这个目标，避免越做越偏。",
+      "source": "事件 dg_evt_01dbd47c-5588-4aa1-a1ed-66e9ebd6ed5d",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_58_node_58_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_59_node_59_artifact",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "产物确认",
+      "why": "检测到 4 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts；文件：README.md",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_60_node_60_verification",
+      "kind": "fog",
+      "label": "雾里小路",
+      "memory": "看不清，别跑太快",
+      "meaning": "这件事还没完全验证，不能当成已经可靠。",
+      "title": "验证：npm test",
+      "why": "发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test",
+      "trust": "半信半疑：现在还缺一条能让人放心的证据。",
+      "next": "补一条测试、命令或人工验收，让它从雾里走出来。",
+      "source": "自动扫描",
+      "status": "unknown"
+    },
+    {
+      "id": "sticker_61_node_61_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "执行：npm test",
+      "why": "Implemented the command-first DoneGraph CLI；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_bbe4cde8-1cb5-4492-bb81-c91f12b723ba",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_62_node_62_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "Generated a clickable VibeCraft voxel demo path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_56faa1bf-a979-4016-8a34-da46d9fb80f2",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_63_node_63_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "memory": "别听口嗨，先看作业本",
+      "meaning": "这件事已经有测试、命令或人工检查支撑。",
+      "title": "验证：npm test",
+      "why": "Tests passed；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_9fe9fb5c-bc63-4ddb-854f-afaa890eb95c",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_64_node_64_completion",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "阶段完成",
+      "why": "The demo can now show Today Drop, project stickers, active exploration, crafting, skill tree, and Vibe Brain",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_a39fea82-efa6-4df3-82d5-23d5080db84b",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_65_node_65_goal",
+      "kind": "goal",
+      "label": "目标种子",
+      "memory": "先种目标，再开干",
+      "meaning": "这张贴纸说明本轮到底想完成什么。",
+      "title": "任务目标",
+      "why": "Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "之后所有贴纸都要贴回这个目标，避免越做越偏。",
+      "source": "事件 dg_evt_ed6c9ac2-ae85-4fd2-aebc-801c7e68adf1",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_66_node_66_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_67_node_67_artifact",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "产物确认",
+      "why": "检测到 5 个本地改动文件：README.md, READMEs/README.zh-CN.md, packages/core/src/donegraph.test.ts, packages/core/src/donegraph.ts ...；文件：README.md",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "自动扫描",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_68_node_68_verification",
+      "kind": "fog",
+      "label": "雾里小路",
+      "memory": "看不清，别跑太快",
+      "meaning": "这件事还没完全验证，不能当成已经可靠。",
+      "title": "验证：npm test",
+      "why": "发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。；命令：npm test",
+      "trust": "半信半疑：现在还缺一条能让人放心的证据。",
+      "next": "补一条测试、命令或人工验收，让它从雾里走出来。",
+      "source": "自动扫描",
+      "status": "unknown"
+    },
+    {
+      "id": "sticker_69_node_69_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "执行：npm test",
+      "why": "Implemented the command-first DoneGraph CLI；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_7e270fd7-3b79-4fa4-9243-92f5e333e455",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_70_node_70_action",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "推进动作",
+      "why": "Generated a VibeCraft voxel game lobby with Agent drop sync path=.donegraph/vibecraft-demo.html；文件：.donegraph/vibecraft-demo.html",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_629ee466-8092-4e9a-8a6e-0da040e73501",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_71_node_71_verification",
+      "kind": "proof",
+      "label": "作业本盖章",
+      "memory": "别听口嗨，先看作业本",
+      "meaning": "这件事已经有测试、命令或人工检查支撑。",
+      "title": "验证：npm test",
+      "why": "Tests passed；命令：npm test",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_9a04acbd-3b9e-432b-affa-a223da0f1b69",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_72_node_72_completion",
+      "kind": "done",
+      "label": "菜端上桌",
+      "memory": "不是说炒了，是能端上桌",
+      "meaning": "这件事已经明确留下成果，可以被看到或继续使用。",
+      "title": "阶段完成",
+      "why": "The demo can now show Today Drop, project stickers, Agent-synced drops, read-only growth packs, skill tree, and Vibe Brain",
+      "trust": "可以先信：它留下了明确完成或通过验证的信号。",
+      "next": "下次回来时，可以把它当作已经看过的内容继续往前做。",
+      "source": "事件 dg_evt_079247fe-517f-4300-a1bd-cd9ee4816500",
+      "status": "pass"
+    },
+    {
+      "id": "sticker_73_node_next_1",
+      "kind": "next",
+      "label": "冰箱便签",
+      "memory": "明天回来先看它",
+      "meaning": "这是下次回来最应该先处理的事情。",
+      "title": "下一步",
+      "why": "补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。",
+      "trust": "半信半疑：现在还缺一条能让人放心的证据。",
+      "next": "补充可判断证据：发现可用于证明进展的验证入口：npm test, npm run typecheck, npm run build。",
+      "source": "手动记录",
+      "status": "unknown"
+    }
+  ],
+  "insights": [
+    {
+      "id": "insight_creative_style",
+      "label": "创作气质",
+      "title": "你在把抽象工作变成可感知的小物件",
+      "signal": "来自目标和记录里的表达：Ship a VibeCraft demo that makes AI progress feel cute and inspectable",
+      "reading": "你对“形式”很敏感，会在工具之外追问：这个东西有没有让人愿意靠近。",
+      "encouragement": "继续保留这种感觉判断，它会让工具不只是能用，而是有人想用。"
+    },
+    {
+      "id": "insight_trust_style",
+      "label": "判断方式",
+      "title": "你喜欢把灵感落到可验证的东西上",
+      "signal": "证据状态：已通过 9，待确认 9，失败 0。",
+      "reading": "你不是只追求灵感，也会问“有没有证据”。当前记录里，9 条证据已确认。",
+      "encouragement": "把“我觉得”旁边补上“我怎么知道”，Vibe Sticker 的可信感就会出来。"
+    },
+    {
+      "id": "insight_collaboration_style",
+      "label": "协作习惯",
+      "title": "你天然在为明天的自己留路标",
+      "signal": "下一步数量：1。",
+      "reading": "你会为明天的自己、队友或 AI 留路标，这样下次回来不用重翻聊天记录。",
+      "encouragement": "继续把下一步写成别人能立刻执行的一句话，这会让下次打开项目时轻很多。"
+    },
+    {
+      "id": "insight_current_edge",
+      "label": "当前优势",
+      "title": "你知道作品要先被记住，才有机会被理解",
+      "signal": "当前状态：有进展，但还没完全验收，还有没验证的地方。",
+      "reading": "你有很强的 Demo 直觉：会关心第一眼、可展示路径和别人能不能马上记住。",
+      "encouragement": "下一步把这个优势压成一个 10 秒演示：扫描、贴纸、点开证据、明天继续。"
+    }
+  ]
+}

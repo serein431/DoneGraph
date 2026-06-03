@@ -20,7 +20,7 @@ DoneGraph is a clean-room AI collaboration plugin that records goals, actions, d
 
 ### Explore The VibeCraft Prototype
 
-Open `docs/vibecraft/index.html` for a wiki-style product prototype that turns DoneGraph progress into Agent registration, completion proofs, growth packs, Vibe Radio, a public bio, and a portable Vibe Brain.
+Open `docs/vibecraft/index.html` for the VibeCraft front stage: a voxel-style product prototype that turns DoneGraph progress into Agent receipts, growth packs, Vibe Radio, a public bio, and a portable Vibe Brain.
 
 The durable product context is tracked in `docs/vibecraft/development-context.md`.
 

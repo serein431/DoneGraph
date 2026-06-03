@@ -1,0 +1,79 @@
+{
+  "schema_version": "vibecraft.receipt.v1",
+  "id": "receipt_2026_06_02T13_45_13_767Z",
+  "source_agent": "codex",
+  "generated_at": "2026-06-02T13:45:13.767Z",
+  "workspace_hint": ".donegraph/vibecraft.json",
+  "profile_handle": null,
+  "event_types": [
+    "goal",
+    "action",
+    "artifact",
+    "verification",
+    "completion"
+  ],
+  "unlocked_pack_ids": [
+    "pack_first_build",
+    "pack_proof_miner",
+    "pack_exploration_mine",
+    "pack_crafting_table",
+    "pack_brain_growth",
+    "pack_village_match"
+  ],
+  "payload_counts": {
+    "drops": 73,
+    "knowledge_blocks": 73,
+    "craft_cards": 3,
+    "verified": 9,
+    "achievements": 63
+  },
+  "starter_attributes": [
+    {
+      "id": "attr_happy_build",
+      "label": "Happy Build",
+      "level": 5,
+      "max_level": 5,
+      "evidence": "完成信号：63",
+      "source_skill_id": "skill_happy_build"
+    },
+    {
+      "id": "attr_trust_check",
+      "label": "证据判断",
+      "level": 5,
+      "max_level": 5,
+      "evidence": "验证记录：18",
+      "source_skill_id": "skill_trust_check"
+    },
+    {
+      "id": "attr_demo_memory",
+      "label": "Demo 记忆点",
+      "level": 4,
+      "max_level": 5,
+      "evidence": "记录中出现可爱/游戏/展示信号",
+      "source_skill_id": "skill_demo_memory"
+    },
+    {
+      "id": "attr_agent_command",
+      "label": "Agent 指挥",
+      "level": 3,
+      "max_level": 5,
+      "evidence": "记录中出现 Agent 或编码工具信号",
+      "source_skill_id": "skill_agent_command"
+    }
+  ],
+  "community_patch": {
+    "starter_level": 5,
+    "badges": [
+      "首个 Build 包",
+      "可信证据包",
+      "知识矿洞包",
+      "我懂了卡包",
+      "Vibe Brain 包",
+      "互补邀请包"
+    ]
+  },
+  "proof": {
+    "receipt_path": ".donegraph/vibecraft.json",
+    "signature_hint": "Local demo uses unsigned completion drops; production should sign receipt.id + generated_at + payload hash."
+  }
+}

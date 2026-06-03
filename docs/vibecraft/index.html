@@ -1,1320 +1,1078 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>VibeCraft Wiki / 灵感工坊百科</title>
-    <meta
-      name="description"
-      content="VibeCraft is a wiki-style Happy Build learning engine for non-technical vibe builders and their AI Agents."
-    />
-    <style>
-      :root {
-        --page: #f6f6f2;
-        --paper: #fff;
-        --panel: rgba(252, 252, 252, 0.88);
-        --border: #a2a9b1;
-        --border-strong: #72777d;
-        --green: #3a971e;
-        --green-dark: #2f6f16;
-        --green-soft: #eef6e9;
-        --link: #0645ad;
-        --visited: #0b0080;
-        --text: #202122;
-        --muted: #54595d;
-        --head: #f8f9fa;
-        --gold: #f0c64d;
-        --red: #b73b2b;
-        --blue: #4f9ed8;
-        --wood: #8b5a35;
-      }
-
-      * {
-        box-sizing: border-box;
-      }
-
-      html {
-        scroll-behavior: smooth;
-      }
-
-      body {
-        margin: 0;
-        color: var(--text);
-        background:
-          linear-gradient(90deg, rgba(0, 0, 0, 0.025) 0 1px, transparent 1px 64px),
-          linear-gradient(rgba(0, 0, 0, 0.018) 0 1px, transparent 1px 64px),
-          var(--page);
-        background-size: 64px 64px, 64px 64px, auto;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
-      }
-
-      a {
-        color: var(--link);
-        text-decoration: none;
-      }
-
-      a:visited {
-        color: var(--visited);
-      }
-
-      a:hover {
-        text-decoration: underline;
-      }
-
-      button,
-      input,
-      textarea {
-        font: inherit;
-      }
-
-      .site {
-        width: min(1280px, calc(100% - 28px));
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: 188px minmax(0, 1fr);
-        gap: 0 18px;
-        padding-bottom: 40px;
-      }
-
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VibeCraft / 灵感工坊</title>
+  <meta
+    name="description"
+    content="VibeCraft is a Happy Build visual learning engine for non-technical vibe coders. Build for fun, create for happy, and grow your Vibe Brain."
+  />
+  <style>
+    :root {
+      --ink: #26180f;
+      --paper: #fff4cf;
+      --cream: #fff8dc;
+      --grass: #4cae36;
+      --grass-soft: #cde9b9;
+      --sky: #6cc4ef;
+      --sky-soft: #c6eafa;
+      --gold: #f3c84d;
+      --red: #cf3d33;
+      --wood: #8b5a35;
+      --stone: #6d6257;
+      --line: #26180f;
+      --shadow: rgba(38, 24, 15, .34);
+      color: var(--ink);
+      font-family: ui-rounded, "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+      background: var(--paper);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background:
+        linear-gradient(90deg, rgba(38,24,15,.06) 0 2px, transparent 2px 54px),
+        linear-gradient(rgba(38,24,15,.05) 0 2px, transparent 2px 54px),
+        linear-gradient(180deg, #fff8dc 0, #f8e8b6 54%, #cde9b9 100%);
+      background-size: 54px 54px, 54px 54px, auto;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .shell {
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .topbar {
+      position: fixed;
+      z-index: 10;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1160px, calc(100% - 28px));
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      padding: 10px;
+      border: 5px solid var(--line);
+      background: rgba(255, 248, 220, .92);
+      box-shadow: 9px 9px 0 var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+    .brand {
+      display: inline-flex;
+      gap: 10px;
+      align-items: center;
+      font-weight: 950;
+      min-width: 0;
+    }
+    .mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 4px solid var(--line);
+      background: var(--grass);
+      color: #fff8dc;
+      box-shadow: inset -7px -7px 0 rgba(38,24,15,.22);
+      flex: 0 0 auto;
+    }
+    .brand span {
+      overflow-wrap: anywhere;
+      line-height: 1.05;
+    }
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+    .nav a,
+    .nav button,
+    .cta {
+      min-height: 42px;
+      display: inline-grid;
+      place-items: center;
+      padding: 9px 12px;
+      border: 4px solid var(--line);
+      border-radius: 0;
+      background: var(--cream);
+      box-shadow: 5px 5px 0 var(--shadow);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 950;
+      cursor: pointer;
+    }
+    .nav a.primary,
+    .cta.primary {
+      background: var(--red);
+      color: #fff8dc;
+    }
+    .language-toggle,
+    .sound-toggle {
+      background: var(--sky);
+    }
+    .sound-toggle {
+      background: var(--gold);
+    }
+    .sound-toggle[aria-pressed="false"] {
+      background: var(--stone);
+      color: #fff8dc;
+    }
+    .hero {
+      min-height: 86vh;
+      position: relative;
+      display: grid;
+      align-items: end;
+      padding: 122px 18px 44px;
+      background:
+        linear-gradient(90deg, rgba(255,248,220,.96) 0 8%, rgba(255,248,220,.82) 36%, rgba(255,248,220,.24) 72%, rgba(255,248,220,.1) 100%),
+        linear-gradient(180deg, rgba(38,24,15,.08), rgba(38,24,15,.2)),
+        url("assets/vibecraft-ui-design-board.png");
+      background-position: center;
+      background-size: cover;
+      border-bottom: 6px solid var(--line);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 72px;
+      background:
+        linear-gradient(90deg, transparent 0 48px, rgba(38,24,15,.08) 48px 54px),
+        linear-gradient(transparent 0 48px, rgba(38,24,15,.08) 48px 54px),
+        #62bd49;
+      background-size: 54px 54px, 54px 54px, auto;
+      border-top: 5px solid var(--line);
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      width: min(1160px, 100%);
+      margin: 0 auto;
+      display: grid;
+      gap: 22px;
+      padding-bottom: 54px;
+    }
+    .eyebrow {
+      width: fit-content;
+      max-width: 100%;
+      padding: 7px 9px;
+      border: 4px solid var(--line);
+      background: var(--gold);
+      box-shadow: 6px 6px 0 var(--shadow);
+      font-size: 13px;
+      font-weight: 950;
+      text-transform: uppercase;
+      overflow-wrap: anywhere;
+    }
+    h1 {
+      max-width: 760px;
+      margin: 0;
+      font-size: clamp(60px, 12vw, 154px);
+      line-height: .86;
+      letter-spacing: 0;
+      text-shadow: 6px 6px 0 rgba(38,24,15,.16);
+    }
+    .hero-copy {
+      max-width: 680px;
+      margin: 0;
+      color: #3b2a1b;
+      font-size: clamp(20px, 2.6vw, 30px);
+      line-height: 1.2;
+      font-weight: 850;
+    }
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .cta {
+      min-height: 54px;
+      padding: 12px 16px;
+      font-size: 15px;
+    }
+    .cta.secondary {
+      background: var(--sky);
+    }
+    .section {
+      width: min(1160px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 56px 0;
+    }
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, .58fr);
+      gap: 22px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(34px, 5vw, 72px);
+      line-height: .92;
+    }
+    .section-head p {
+      margin: 0;
+      color: #4f3b29;
+      font-size: 18px;
+      line-height: 1.38;
+      font-weight: 780;
+    }
+    .promise-grid,
+    .role-showcase,
+    .step-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .promise-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .promise,
+    .role-card,
+    .profile-card,
+    .step,
+    .pack-card {
+      border: 5px solid var(--line);
+      border-radius: 0;
+      background: var(--cream);
+      box-shadow: 10px 10px 0 var(--shadow);
+    }
+    .promise {
+      min-height: 228px;
+      display: grid;
+      align-content: space-between;
+      gap: 14px;
+      padding: 16px;
+    }
+    .promise:nth-child(1) { background: var(--grass-soft); }
+    .promise:nth-child(2) { background: var(--sky-soft); }
+    .promise:nth-child(3) { background: #fff2c8; }
+    .pixel-icon {
+      position: relative;
+      width: 58px;
+      height: 58px;
+      border: 4px solid var(--line);
+      background: var(--gold);
+      box-shadow: inset -9px -9px 0 rgba(38,24,15,.18), 5px 5px 0 var(--shadow);
+    }
+    .pixel-icon::before,
+    .pixel-icon::after {
+      content: "";
+      position: absolute;
+      border: 4px solid var(--line);
+      background: #fff8dc;
+    }
+    .pixel-icon::before {
+      width: 24px;
+      height: 24px;
+      right: -12px;
+      top: 8px;
+    }
+    .pixel-icon::after {
+      width: 18px;
+      height: 18px;
+      left: 8px;
+      bottom: -10px;
+      background: var(--grass);
+    }
+    .promise h3,
+    .role-card h3,
+    .profile-card h3,
+    .step h3,
+    .pack-card h3 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.05;
+    }
+    .promise p,
+    .role-card p,
+    .profile-card p,
+    .step p,
+    .pack-card p {
+      margin: 0;
+      color: #4f3b29;
+      font-size: 15px;
+      line-height: 1.42;
+      font-weight: 760;
+    }
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+    .profile-card {
+      min-height: 520px;
+      position: relative;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+      padding: 22px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.18) 0 18px, transparent 18px),
+        var(--grass-soft);
+      background-size: 54px 54px, auto;
+      overflow: hidden;
+    }
+    .profile-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 16px;
+      border-bottom: 5px solid var(--line);
+      background: linear-gradient(90deg, var(--grass), var(--gold) 50%, var(--sky));
+    }
+    .village {
+      display: grid;
+      grid-template-columns: 170px minmax(0, 1fr);
+      gap: 18px;
+      align-items: center;
+      margin-top: 14px;
+    }
+    .avatar {
+      position: relative;
+      width: 154px;
+      height: 178px;
+      border: 5px solid var(--line);
+      background: #fff8dc;
+      box-shadow: inset -10px -10px 0 rgba(38,24,15,.12), 8px 8px 0 var(--shadow);
+    }
+    .avatar i,
+    .avatar b,
+    .avatar em,
+    .avatar strong {
+      position: absolute;
+      display: block;
+      border: 5px solid var(--line);
+      box-shadow: inset -7px -7px 0 rgba(38,24,15,.18);
+    }
+    .avatar i {
+      left: 42px;
+      top: 24px;
+      width: 70px;
+      height: 58px;
+      background: #f2d0aa;
+    }
+    .avatar b {
+      left: 26px;
+      top: 84px;
+      width: 98px;
+      height: 70px;
+      background: var(--grass);
+    }
+    .avatar em {
+      right: 14px;
+      top: 58px;
+      width: 38px;
+      height: 38px;
+      background: var(--gold);
+    }
+    .avatar strong {
+      left: 57px;
+      top: 42px;
+      width: 10px;
+      height: 10px;
+      background: var(--ink);
+      border-width: 2px;
+      box-shadow: 20px 0 0 var(--ink);
+    }
+    .badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .badge-list li {
+      padding: 7px 9px;
+      border: 3px solid var(--line);
+      background: var(--cream);
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .role-showcase {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .role-card {
+      min-height: 158px;
+      position: relative;
+      display: grid;
+      grid-template-columns: 64px minmax(0, 1fr);
+      gap: 12px;
+      align-content: start;
+      padding: 14px;
+      overflow: hidden;
+    }
+    .role-card:nth-child(1) { background: #fff2c8; }
+    .role-card:nth-child(2) { background: var(--sky-soft); }
+    .role-card:nth-child(3) { background: var(--grass-soft); }
+    .role-card:nth-child(4) { background: #e8c28e; }
+    .role-card .cube {
+      grid-row: 1 / span 3;
+      width: 54px;
+      height: 54px;
+      border: 4px solid var(--line);
+      background: var(--gold);
+      box-shadow: inset -8px -8px 0 rgba(38,24,15,.2), 5px 5px 0 var(--shadow);
+      margin-top: 4px;
+    }
+    .role-card:nth-child(2) .cube { background: var(--sky); }
+    .role-card:nth-child(3) .cube { background: var(--grass); }
+    .role-card:nth-child(4) .cube { background: var(--red); }
+    .pack-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .pack-card {
+      min-height: 236px;
+      position: relative;
+      display: grid;
+      gap: 12px;
+      align-content: space-between;
+      padding: 16px;
+      background: #d8d0c4;
+      overflow: hidden;
+    }
+    .pack-card.unlocked {
+      background: #fff2c8;
+      outline: 5px solid var(--gold);
+      outline-offset: -9px;
+    }
+    .pack-card .stamp {
+      width: fit-content;
+      max-width: 100%;
+      padding: 6px 8px;
+      border: 3px solid var(--line);
+      background: var(--stone);
+      color: #fff8dc;
+      font-size: 11px;
+      font-weight: 950;
+      transform: rotate(-3deg);
+    }
+    .pack-card.unlocked .stamp {
+      background: var(--grass);
+    }
+    .progress {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 4px;
+    }
+    .progress i {
+      height: 20px;
+      border: 3px solid var(--line);
+      background: #fff8dc;
+    }
+    .progress i.on {
+      background: var(--gold);
+      box-shadow: inset -4px -4px 0 #b78119;
+    }
+    .step-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      counter-reset: steps;
+    }
+    .step {
+      min-height: 250px;
+      position: relative;
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+      padding: 16px;
+      background: var(--cream);
+      counter-increment: steps;
+    }
+    .step::before {
+      content: counter(steps);
+      width: 44px;
+      height: 44px;
+      display: grid;
+      place-items: center;
+      border: 4px solid var(--line);
+      background: var(--gold);
+      box-shadow: 5px 5px 0 var(--shadow);
+      font-size: 20px;
+      font-weight: 950;
+    }
+    .final-cta {
+      margin: 16px auto 70px;
+      padding: 32px;
+      border: 6px solid var(--line);
+      background:
+        linear-gradient(90deg, transparent 0 48px, rgba(38,24,15,.08) 48px 54px),
+        linear-gradient(transparent 0 48px, rgba(38,24,15,.08) 48px 54px),
+        #8b5a35;
+      background-size: 54px 54px, 54px 54px, auto;
+      color: #fff8dc;
+      box-shadow: 12px 12px 0 var(--shadow);
+    }
+    .final-cta h2 {
+      max-width: 760px;
+      margin: 0 0 16px;
+      font-size: clamp(34px, 6vw, 78px);
+      line-height: .92;
+    }
+    .final-cta p {
+      max-width: 740px;
+      margin: 0 0 20px;
+      color: #fff8dc;
+      font-size: 18px;
+      line-height: 1.35;
+      font-weight: 780;
+    }
+    .footer {
+      padding: 24px 18px 36px;
+      text-align: center;
+      color: #4f3b29;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    :focus-visible {
+      outline: 5px solid var(--red);
+      outline-offset: 4px;
+    }
+    @media (max-width: 920px) {
       .topbar {
-        grid-column: 1 / -1;
-        display: grid;
-        grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1fr);
-        border: 1px solid var(--border);
-        border-top: 5px solid var(--green);
-        background: var(--head);
-      }
-
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        min-width: 0;
-        padding: 12px;
-      }
-
-      .mark,
-      .sidebar-mark {
-        width: 46px;
-        height: 46px;
-        display: grid;
-        place-items: center;
-        border: 1px solid var(--green-dark);
-        background: var(--green);
-        color: #fff;
-        font-weight: 800;
-        box-shadow: inset -3px -3px rgba(0, 0, 0, 0.18);
-      }
-
-      .brand h1 {
-        margin: 0;
-        font-size: clamp(26px, 4vw, 38px);
-        line-height: 1.05;
-        letter-spacing: 0;
-      }
-
-      .brand p {
-        margin: 5px 0 0;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.35;
-        font-weight: 600;
-      }
-
-      .top-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        justify-content: flex-end;
-        align-content: center;
-        align-items: center;
-        padding: 12px;
-        border-left: 1px solid var(--border);
-      }
-
-      .tab,
-      .wiki-button,
-      .top-actions button,
-      .top-actions a {
-        min-height: 32px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 6px 10px;
-        border: 1px solid var(--border);
-        background: #fff;
-        color: var(--link);
-        font-size: 13px;
-        font-weight: 700;
-        cursor: pointer;
-      }
-
-      .wiki-button.primary,
-      .tab.active {
-        border-color: var(--green-dark);
-        background: var(--green);
-        color: #fff;
-      }
-
-      .top-actions .profile-pill {
-        flex-basis: 100%;
-        justify-content: flex-start;
-        background: var(--green-soft);
-        color: var(--text);
-      }
-
-      .sidebar {
-        grid-column: 1;
-        position: sticky;
-        top: 12px;
-        align-self: start;
-        display: grid;
-        gap: 10px;
-        padding-top: 16px;
-        font-size: 13px;
-      }
-
-      .sidebar-card {
-        display: grid;
-        gap: 5px;
-        padding: 10px;
-        border: 1px solid var(--border);
-        background: var(--paper);
-      }
-
-      .sidebar-card strong {
-        font-size: 14px;
-      }
-
-      .sidebar-card small,
-      .portlet h2 {
-        color: var(--muted);
-      }
-
-      .portlet {
-        border-top: 1px solid var(--border);
-        padding-top: 8px;
-      }
-
-      .portlet h2 {
-        margin: 0 0 5px;
-        font-size: 12px;
-        line-height: 1.2;
-      }
-
-      .portlet ul {
-        display: grid;
-        gap: 4px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .article {
-        grid-column: 2;
-        min-width: 0;
-        padding-top: 16px;
-      }
-
-      .page-tabs {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .page-tabs .tab {
-        border-bottom: 0;
-      }
-
-      .page-heading {
-        padding: 8px 0 12px;
-        border-bottom: 1px solid var(--border);
-      }
-
-      .page-heading h2 {
-        margin: 0;
-        font-family: Georgia, "Times New Roman", "Noto Serif SC", serif;
-        font-size: clamp(34px, 6vw, 50px);
-        line-height: 1.08;
-        font-weight: 400;
-        letter-spacing: 0;
-      }
-
-      .page-heading p {
-        margin: 6px 0 0;
-        color: var(--muted);
-        font-size: 14px;
-        line-height: 1.45;
-      }
-
-      .article-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) 292px;
-        gap: 10px;
-        margin-top: 12px;
-      }
-
-      .article-main,
-      .right-rail {
-        min-width: 0;
-      }
-
-      .mp-section,
-      .infobox,
-      .message-box,
-      .wiki-table,
-      .process-card,
-      .proof-console,
-      .radio-panel,
-      .community-card {
-        border: 2px solid #bbb;
-        background: var(--panel);
-        box-shadow: inset -2px -2px rgba(0, 0, 0, 0.055), inset 2px 2px rgba(255, 255, 255, 0.45);
-      }
-
-      .mp-section {
-        margin-bottom: 10px;
-        padding: 12px;
-      }
-
-      .mp-section h3,
-      .infobox h3 {
-        margin: -12px -12px 10px;
-        padding: 8px 10px;
-        border-bottom: 2px solid var(--green-dark);
-        background: var(--green);
-        color: #fff;
-        font-size: 18px;
-        line-height: 1.2;
-      }
-
-      .mp-section h4 {
-        margin: 12px 0 6px;
-        padding-bottom: 4px;
-        border-bottom: 1px solid var(--border);
-        font-size: 17px;
-      }
-
-      .mp-section p,
-      .mp-section li,
-      .infobox td,
-      .infobox th {
-        font-size: 14px;
-        line-height: 1.55;
-      }
-
-      .mp-section p {
-        margin: 0 0 10px;
-      }
-
-      .message-box {
-        display: grid;
-        gap: 4px;
-        margin: 0 0 10px;
-        padding: 10px;
-        border-left: 8px solid var(--green);
-        background: var(--green-soft);
-      }
-
-      .message-box strong {
-        font-size: 15px;
-      }
-
-      .message-box p {
-        margin: 0;
-        color: var(--muted);
-      }
-
-      .infobox {
-        margin-bottom: 10px;
-        background: #fff;
-      }
-
-      .infobox h3 {
-        margin: 0;
-        text-align: center;
-      }
-
-      .infobox table,
-      .wiki-table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-
-      .infobox th,
-      .infobox td,
-      .wiki-table th,
-      .wiki-table td {
-        padding: 8px;
-        border: 1px solid var(--border);
-        vertical-align: top;
-      }
-
-      .infobox th,
-      .wiki-table th {
-        width: 34%;
-        background: #eaecf0;
-        text-align: left;
-      }
-
-      .vibe-avatar {
-        height: 180px;
-        display: grid;
-        place-items: center;
-        border: 1px solid var(--border);
-        background:
-          linear-gradient(90deg, rgba(0, 0, 0, 0.035) 0 1px, transparent 1px 32px),
-          linear-gradient(rgba(0, 0, 0, 0.03) 0 1px, transparent 1px 32px),
-          #eef6e9;
-        background-size: 32px 32px, 32px 32px, auto;
-      }
-
-      .avatar-sprite {
-        position: relative;
-        width: 86px;
-        height: 118px;
-      }
-
-      .avatar-sprite i,
-      .avatar-sprite b,
-      .avatar-sprite em,
-      .avatar-sprite strong {
         position: absolute;
-        display: block;
-        border: 4px solid #2a1b10;
-        box-shadow: inset -6px -6px rgba(0, 0, 0, 0.18);
+        align-items: flex-start;
+        flex-direction: column;
       }
-
-      .avatar-sprite i {
-        left: 22px;
-        top: 0;
-        width: 42px;
-        height: 38px;
-        background: #efc9a6;
+      .nav { justify-content: flex-start; }
+      .hero {
+        min-height: 92vh;
+        background:
+          linear-gradient(180deg, rgba(255,248,220,.96) 0 36%, rgba(255,248,220,.76) 72%, rgba(255,248,220,.36) 100%),
+          url("assets/vibecraft-ui-design-board.png");
+        background-position: center top;
+        background-size: cover;
       }
-
-      .avatar-sprite b {
-        left: 12px;
-        top: 42px;
-        width: 62px;
-        height: 56px;
-        background: var(--green);
+      .section-head,
+      .stage,
+      .promise-grid,
+      .pack-row,
+      .step-grid {
+        grid-template-columns: 1fr;
       }
-
-      .avatar-sprite em {
-        right: 3px;
-        top: 26px;
-        width: 26px;
-        height: 26px;
-        background: var(--gold);
+      .role-showcase {
+        grid-template-columns: 1fr;
       }
-
-      .avatar-sprite strong {
-        left: 34px;
-        top: 15px;
-        width: 7px;
-        height: 7px;
-        border-width: 2px;
-        background: #111;
-        box-shadow: 14px 0 #111;
+      .village {
+        grid-template-columns: 1fr;
       }
-
-      .overview-grid,
-      .process-grid,
-      .pack-grid,
-      .radio-grid {
-        display: grid;
-        gap: 8px;
+      .avatar {
+        width: 146px;
       }
-
-      .overview-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    @media (max-width: 560px) {
+      .hero {
+        padding-top: 188px;
       }
-
-      .process-grid {
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+      .topbar {
+        width: calc(100% - 18px);
+        top: 9px;
       }
-
-      .pack-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-
-      .process-card,
-      .pack-card {
-        padding: 10px;
-        background: #fff;
-      }
-
-      .process-card span,
-      .pack-card span,
-      .tag {
-        display: inline-flex;
-        width: fit-content;
-        max-width: 100%;
-        margin-bottom: 7px;
-        padding: 4px 7px;
-        border: 1px solid var(--border);
-        background: var(--green-soft);
-        font-size: 12px;
-        font-weight: 700;
-      }
-
-      .process-card strong,
-      .pack-card strong {
-        display: block;
-        font-size: 16px;
-        line-height: 1.2;
-      }
-
-      .process-card p,
-      .pack-card p {
-        margin: 6px 0 0;
-        color: var(--muted);
-        font-size: 13px;
-        line-height: 1.45;
-      }
-
-      .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-      }
-
-      label {
-        display: grid;
-        gap: 5px;
-        color: var(--muted);
-        font-size: 12px;
-        font-weight: 700;
-      }
-
-      input,
-      textarea {
-        width: 100%;
+      .nav a,
+      .nav button {
         min-height: 38px;
-        padding: 8px;
-        border: 1px solid var(--border);
-        background: #fff;
-        color: var(--text);
-        font-size: 14px;
+        padding: 7px 9px;
+        font-size: 12px;
       }
-
-      textarea {
-        min-height: 92px;
-        resize: vertical;
-        line-height: 1.45;
+      .section {
+        width: min(100% - 18px, 1160px);
+        padding: 42px 0;
       }
-
-      .agent-command,
-      .proof-console {
-        display: grid;
-        gap: 8px;
-        margin-top: 10px;
-        padding: 10px;
+      .profile-card,
+      .final-cta {
+        padding: 18px;
       }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="VibeCraft home">
+        <span class="mark">VC</span>
+        <span>VibeCraft / 灵感工坊</span>
+      </a>
+      <nav class="nav" aria-label="Site navigation">
+        <a href="#world" data-i18n="navWorld">World</a>
+        <a href="#how" data-i18n="navHow">How It Works</a>
+        <a href="vibecraft-demo.html" class="primary" data-i18n="navWorkshop">Enter Workshop</a>
+        <button type="button" class="sound-toggle" data-sound-toggle aria-pressed="true" aria-label="Turn sound and music off" data-i18n="soundButton">Sound On</button>
+        <button type="button" class="language-toggle" data-language-toggle aria-label="Switch to Chinese">中文</button>
+      </nav>
+    </header>
 
-      .agent-command pre,
-      .proof-console pre {
-        max-height: 180px;
-        margin: 0;
-        overflow: auto;
-        padding: 9px;
-        border: 1px solid var(--border);
-        background: #f8f9fa;
-        color: var(--text);
-        font: 12px/1.5 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        white-space: pre-wrap;
-      }
-
-      .action-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        align-items: center;
-      }
-
-      .feedback {
-        min-height: 20px;
-        color: var(--muted);
-        font-size: 13px;
-        font-weight: 600;
-      }
-
-      .status-list {
-        display: grid;
-        gap: 6px;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-      }
-
-      .status-list li {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 8px;
-        padding: 8px;
-        border: 1px solid var(--border);
-        background: #fff;
-      }
-
-      .meter {
-        height: 18px;
-        border: 1px solid var(--border);
-        background: #fff;
-        overflow: hidden;
-      }
-
-      .meter i {
-        display: block;
-        width: var(--value, 40%);
-        height: 100%;
-        background: var(--green);
-      }
-
-      .public-card {
-        display: grid;
-        grid-template-columns: 76px minmax(0, 1fr);
-        gap: 12px;
-        align-items: center;
-        padding: 12px;
-        border: 1px solid var(--border);
-        background: #fff;
-      }
-
-      .public-card .avatar-sprite {
-        transform: scale(0.62);
-        transform-origin: top left;
-      }
-
-      .public-card h4 {
-        margin: 0;
-        font-size: 22px;
-      }
-
-      .public-card p {
-        margin: 4px 0 0;
-        color: var(--muted);
-      }
-
-      .radio-grid {
-        grid-template-columns: 160px minmax(0, 1fr);
-      }
-
-      .radio-tower {
-        min-height: 220px;
-        position: relative;
-        border: 1px solid var(--border);
-        background:
-          linear-gradient(#dff4ff 0 52%, #d9efd1 52% 100%);
-        overflow: hidden;
-      }
-
-      .radio-tower i,
-      .radio-tower b,
-      .radio-tower em {
-        position: absolute;
-        display: block;
-        border: 4px solid #2a1b10;
-      }
-
-      .radio-tower i {
-        left: 62px;
-        bottom: 28px;
-        width: 34px;
-        height: 118px;
-        background: var(--wood);
-      }
-
-      .radio-tower b {
-        left: 38px;
-        bottom: 138px;
-        width: 82px;
-        height: 34px;
-        background: var(--gold);
-      }
-
-      .radio-tower em {
-        left: 68px;
-        bottom: 172px;
-        width: 22px;
-        height: 38px;
-        background: var(--red);
-      }
-
-      .radio-script {
-        display: grid;
-        gap: 8px;
-      }
-
-      .radio-script p {
-        margin: 0;
-        padding: 9px;
-        border-left: 5px solid var(--blue);
-        background: #fff;
-      }
-
-      .footer {
-        grid-column: 2;
-        margin-top: 12px;
-        padding: 12px;
-        border: 1px solid var(--border);
-        background: var(--head);
-        color: var(--muted);
-        font-size: 13px;
-      }
-
-      @media (max-width: 980px) {
-        .site {
-          width: min(100% - 16px, 1280px);
-          grid-template-columns: 1fr;
-        }
-
-        .topbar,
-        .sidebar,
-        .article,
-        .footer {
-          grid-column: 1;
-        }
-
-        .topbar,
-        .article-grid,
-        .form-grid,
-        .overview-grid,
-        .process-grid,
-        .pack-grid,
-        .radio-grid {
-          grid-template-columns: 1fr;
-        }
-
-        .top-actions {
-          justify-content: flex-start;
-          border-left: 0;
-          border-top: 1px solid var(--border);
-        }
-
-        .sidebar {
-          position: relative;
-          top: auto;
-          padding-top: 10px;
-        }
-
-        .sidebar nav {
-          display: grid;
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-          gap: 10px;
-        }
-      }
-
-      @media (max-width: 560px) {
-        .brand {
-          align-items: flex-start;
-        }
-
-        .brand h1 {
-          font-size: 25px;
-        }
-
-        .page-tabs {
-          justify-content: flex-start;
-        }
-
-        .sidebar nav {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="site">
-      <header class="topbar">
-        <div class="brand">
-          <span class="mark">VC</span>
-          <div>
-            <h1>VibeCraft / 灵感工坊</h1>
-            <p>Build for Fun · Create for Happy · A wiki-style learning world for AI-era builders.</p>
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-inner">
+          <span class="eyebrow" data-i18n="heroEyebrow">Build for Fun · Create for Happy</span>
+          <h1 id="hero-title">VibeCraft</h1>
+          <p class="hero-copy" data-i18n="heroCopy">
+            A Happy Build visual learning engine for non-technical vibe coders. Let knowledge enter your brain in cute, weird, game-like forms.
+          </p>
+          <div class="cta-row">
+            <a class="cta primary" href="vibecraft-demo.html" data-i18n="ctaPrimary">Enter the Workshop</a>
+            <a class="cta secondary" href="#identity" data-i18n="ctaSecondary">See Your Vibe Bio</a>
           </div>
         </div>
-        <nav class="top-actions" aria-label="Top actions">
-          <a href="#bio">Vibe Bio</a>
-          <a href="#register">Agent Pass</a>
-          <a href="#sync">Proof Sync</a>
-          <a href="#radio">Radio</a>
-          <button type="button" data-lang-toggle>中文</button>
-          <button type="button" data-sound-toggle aria-pressed="true">SFX + MUSIC ON</button>
-          <span class="profile-pill" data-profile-pill>Unnamed Builder · Happy Builder</span>
-        </nav>
-      </header>
+      </section>
 
-      <aside class="sidebar" aria-label="VibeCraft navigation">
-        <div class="sidebar-card">
-          <span class="sidebar-mark">VC</span>
-          <strong>VibeCraft Wiki</strong>
-          <small>灵感工坊百科</small>
+      <section class="section" id="world">
+        <div class="section-head">
+          <h2 data-i18n="promiseTitle">From AI work logs to a playable identity.</h2>
+          <p data-i18n="promiseCopy">
+            VibeCraft turns confusing build traces, terms, screenshots, receipts, and progress into visible blocks, cards, packs, and a public identity.
+          </p>
         </div>
-        <nav>
-          <section class="portlet">
-            <h2>Navigation / 导览</h2>
-            <ul>
-              <li><a href="#overview">Overview</a></li>
-              <li><a href="#register">Agent Registration</a></li>
-              <li><a href="#sync">Completion Proof</a></li>
-              <li><a href="#bio">Public Bio</a></li>
-            </ul>
-          </section>
-          <section class="portlet">
-            <h2>Gameplay / 玩法</h2>
-            <ul>
-              <li><a href="#loop">Gameplay Loop</a></li>
-              <li><a href="#packs">Growth Packs</a></li>
-              <li><a href="#radio">Vibe Radio</a></li>
-              <li><a href="#community">Community</a></li>
-            </ul>
-          </section>
-          <section class="portlet">
-            <h2>Tools / 工具</h2>
-            <ul>
-              <li><a href="#agent-command">Copy Agent Prompt</a></li>
-              <li><a href="#auth-code">Verify Auth Code</a></li>
-              <li><a href="#brain">Vibe Brain</a></li>
-            </ul>
-          </section>
-        </nav>
-      </aside>
-
-      <main class="article">
-        <div class="page-tabs" aria-label="Page tabs">
-          <a class="tab active" href="#overview">Article</a>
-          <a class="tab" href="#loop">Gameplay</a>
-          <a class="tab" href="#sync">Sync</a>
-          <a class="tab" href="#bio">Public page</a>
+        <div class="promise-grid">
+          <article class="promise">
+            <span class="pixel-icon" aria-hidden="true"></span>
+            <h3 data-i18n="promiseOneTitle">Cute Knowledge</h3>
+            <p data-i18n="promiseOneCopy">Terms and errors stop being walls of jargon. They become blocks you can click, compare, and remember.</p>
+          </article>
+          <article class="promise">
+            <span class="pixel-icon" aria-hidden="true"></span>
+            <h3 data-i18n="promiseTwoTitle">Game-Like Growth</h3>
+            <p data-i18n="promiseTwoCopy">Roles, avatars, starter levels, skill trees, and growth packs unlock through real Agent work.</p>
+          </article>
+          <article class="promise">
+            <span class="pixel-icon" aria-hidden="true"></span>
+            <h3 data-i18n="promiseThreeTitle">Portable Vibe Brain</h3>
+            <p data-i18n="promiseThreeCopy">Your accumulated project memory can be granted to Agents with keys, not repeated in every chat.</p>
+          </article>
         </div>
+      </section>
 
-        <section class="page-heading" id="overview">
-          <h2>VibeCraft</h2>
-          <p>From VibeCraft Wiki · A Happy Build visual learning engine where Agent completion proofs become identity, skills, drops, and collaboration signals.</p>
-        </section>
-
-        <div class="article-grid">
-          <div class="article-main">
-            <div class="message-box">
-              <strong>Current design direction</strong>
-              <p>VibeCraft uses a wiki-style information architecture: dense navigation, readable article sections, compact tables, and game-like evidence hidden inside clear encyclopedia structure.</p>
+      <section class="section" id="identity">
+        <div class="section-head">
+          <h2 data-i18n="identityTitle">Your public Vibe Bio is the front stage.</h2>
+          <p data-i18n="identityCopy">
+            The workshop is private. The front stage is what others see: who you are becoming, what skills are visible, and where collaboration fits.
+          </p>
+        </div>
+        <div class="stage">
+          <article class="profile-card">
+            <span class="eyebrow" data-i18n="profileKicker">Community Identity Card</span>
+            <div class="village">
+              <span class="avatar" aria-hidden="true"><i></i><b></b><em></em><strong></strong></span>
+              <div>
+                <h3 data-i18n="profileName">Happy Builder · Grass Block Hat</h3>
+                <p data-i18n="profileBio">Turns raw ideas into playful demos people can click, inspect, and remember.</p>
+              </div>
             </div>
-
-            <section class="mp-section">
-              <h3>Summary</h3>
-              <p>
-                VibeCraft turns AI-assisted creation into a personal growth wiki. A non-technical builder does not need to understand every tool log; their Agent finishes work, submits a completion proof, and the Web side updates identity, skill packs, public works, and collaboration signals.
-              </p>
-              <div class="overview-grid">
-                <article class="process-card">
-                  <span>User</span>
-                  <strong>Non-technical vibe builders</strong>
-                  <p>People who build with Codex, Claude Code, Cursor, or other Agents and want progress to feel understandable.</p>
-                </article>
-                <article class="process-card">
-                  <span>Aha</span>
-                  <strong>Work becomes a profile</strong>
-                  <p>After Agent completes a task, the user sees skills, drops, and identity update like an encyclopedia entry.</p>
-                </article>
-                <article class="process-card">
-                  <span>Value</span>
-                  <strong>Knowledge enters gently</strong>
-                  <p>Technical progress is translated into plain-language blocks, radio notes, packs, and collaboration cues.</p>
-                </article>
-              </div>
-            </section>
-
-            <section class="mp-section" id="register">
-              <h3>Agent Registration</h3>
-              <p>
-                Registration is intentionally Agent-only. The front stage asks the user to copy one instruction into their Agent. The Agent reads only authorized local context, creates a Village Pass, and returns an authorization code.
-              </p>
-              <div class="form-grid">
-                <label>
-                  Builder name
-                  <input data-name-input value="Happy Builder" autocomplete="name" />
-                </label>
-                <label>
-                  Village ID
-                  <input data-handle-input value="happy-builder" autocomplete="username" />
-                </label>
-                <label>
-                  Role
-                  <input data-role-input value="Knowledge Explorer" />
-                </label>
-                <label>
-                  Public intro
-                  <input data-intro-input value="I turn strange build traces into useful little knowledge blocks." />
-                </label>
-              </div>
-              <div class="agent-command" id="agent-command">
-                <strong>Agent instruction</strong>
-                <pre data-agent-command></pre>
-                <div class="action-row">
-                  <button class="wiki-button primary" type="button" data-copy-agent>Copy Agent Prompt</button>
-                  <button class="wiki-button" type="button" data-simulate-agent>Simulate Agent Proof</button>
-                  <span class="feedback" data-register-feedback></span>
-                </div>
-              </div>
-              <table class="wiki-table" aria-label="Registration contract">
-                <tbody>
-                  <tr>
-                    <th>Registration schema</th>
-                    <td><code>vibecraft.registration.v1</code></td>
-                  </tr>
-                  <tr>
-                    <th>Authorized scopes</th>
-                    <td><code>local.skills.read</code>, <code>donegraph.read</code>, <code>public_profile.write</code>, <code>completion_proof.write</code></td>
-                  </tr>
-                  <tr>
-                    <th>Initial level</th>
-                    <td data-initial-level>Waiting for Agent proof</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="proof-console">
-                <strong>Registration proof preview</strong>
-                <pre data-registration-preview></pre>
-              </div>
-              <label id="auth-code">
-                Agent authorization code or registration proof
-                <textarea data-auth-input placeholder="Paste VC-AUTH-... or a vibecraft.registration.v1 proof."></textarea>
-              </label>
-              <div class="action-row">
-                <button class="wiki-button primary" type="button" data-verify-agent>Verify Agent Registration</button>
-                <span class="feedback" data-auth-feedback>Waiting for Agent authorization.</span>
-              </div>
-            </section>
-
-            <section class="mp-section" id="loop">
-              <h3>Gameplay Loop</h3>
-              <div class="process-grid">
-                <article class="process-card">
-                  <span>01</span>
-                  <strong>Create identity</strong>
-                  <p>Pick a public name, role, intro, and avatar seed.</p>
-                </article>
-                <article class="process-card">
-                  <span>02</span>
-                  <strong>Sync real work</strong>
-                  <p>Agent submits completion proof after a build task.</p>
-                </article>
-                <article class="process-card">
-                  <span>03</span>
-                  <strong>Craft knowledge</strong>
-                  <p>Logs, terms, and screenshots become plain-language blocks.</p>
-                </article>
-                <article class="process-card">
-                  <span>04</span>
-                  <strong>Meet collaborators</strong>
-                  <p>Skill identity helps other users invite complementary builders.</p>
-                </article>
-              </div>
-            </section>
-
-            <section class="mp-section" id="sync">
-              <h3>Completion Proof Sync</h3>
-              <p>
-                The Web side is mostly read-only. It stores public profile edits, while the Agent is responsible for uploading completion proofs that unlock progress.
-              </p>
-              <table class="wiki-table">
-                <tbody>
-                  <tr>
-                    <th>Local route</th>
-                    <td><code>vibecraft/inbox/*.json</code></td>
-                  </tr>
-                  <tr>
-                    <th>Future API</th>
-                    <td><code>POST /api/vibecraft/proofs</code></td>
-                  </tr>
-                  <tr>
-                    <th>Unlock policy</th>
-                    <td>Only verified Agent proofs update skill packs, drops, Vibe Brain, and community signals.</td>
-                  </tr>
-                </tbody>
-              </table>
-              <div class="proof-console">
-                <strong>Latest proof preview</strong>
-                <pre data-proof-preview>{
-  "schema_version": "vibecraft.proof.v1",
-  "source_agent": "codex",
-  "status": "ready_to_sync"
-}</pre>
-                <div class="action-row">
-                  <button class="wiki-button primary" type="button" data-sync-proof>Sync Demo Proof</button>
-                  <span class="feedback" data-sync-feedback>Proof not synced yet.</span>
-                </div>
-              </div>
-            </section>
-
-            <section class="mp-section" id="packs">
-              <h3>Growth Packs</h3>
-              <div class="pack-grid">
-                <article class="pack-card">
-                  <span>Starter</span>
-                  <strong>Identity Seed Pack</strong>
-                  <p>Unlocked after Agent registration confirms the user's starting level.</p>
-                </article>
-                <article class="pack-card">
-                  <span>Proof</span>
-                  <strong>Verified Build Pack</strong>
-                  <p>Unlocked when completion proofs show real shipped progress.</p>
-                </article>
-                <article class="pack-card">
-                  <span>Community</span>
-                  <strong>Complementary Invite Pack</strong>
-                  <p>Unlocked when skill identity becomes clear enough for collaboration matching.</p>
-                </article>
-              </div>
-            </section>
-
-            <section class="mp-section" id="radio">
-              <h3>Vibe Radio</h3>
-              <div class="radio-grid">
-                <div class="radio-tower" aria-hidden="true"><i></i><b></b><em></em></div>
-                <div class="radio-script">
-                  <p><strong>Opening signal:</strong> Your Agent finished a build. The village has a new proof to read.</p>
-                  <p><strong>Knowledge mine:</strong> Three confusing terms were translated into plain-language blocks.</p>
-                  <p><strong>Next quest:</strong> Verify the proof, update your public bio, and invite one complementary builder.</p>
-                </div>
-              </div>
-            </section>
-
-            <section class="mp-section" id="brain">
-              <h3>Vibe Brain</h3>
-              <p>
-                Vibe Brain is the user's portable, positive memory layer. It stores distilled project traces, learned skills, collaboration preferences, and public works. The user controls the download key and can grant scoped access to Agents.
-              </p>
-              <ul class="status-list">
-                <li><span>Knowledge blocks</span><strong data-block-count>0</strong></li>
-                <li><span>Skill signals</span><strong data-skill-count>0</strong></li>
-                <li><span>Public works</span><strong data-work-count>0</strong></li>
-              </ul>
-            </section>
-
-            <section class="mp-section" id="community">
-              <h3>Community Card</h3>
-              <div class="community-card">
-                <div class="public-card" id="bio">
-                  <div class="avatar-sprite"><i></i><b></b><em></em><strong></strong></div>
-                  <div>
-                    <h4 data-public-name>Happy Builder</h4>
-                    <p><a data-public-url href="#">happy-builder.vibecraft.bio</a></p>
-                    <p data-public-intro>I turn strange build traces into useful little knowledge blocks.</p>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <ul class="badge-list" aria-label="Visible skill tags">
+              <li>Happy Build Lv.5</li>
+              <li data-i18n="badgeProof">Trust Check</li>
+              <li data-i18n="badgeBrain">Vibe Brain</li>
+              <li data-i18n="badgeInvite">Open to Collab</li>
+            </ul>
+          </article>
+          <div class="role-showcase" aria-label="VibeCraft roles">
+            <article class="role-card">
+              <span class="cube" aria-hidden="true"></span>
+              <h3 data-i18n="roleOneTitle">Happy Builder</h3>
+              <p data-i18n="roleOneCopy">Ships the first playable version before the idea gets too heavy.</p>
+            </article>
+            <article class="role-card">
+              <span class="cube" aria-hidden="true"></span>
+              <h3 data-i18n="roleTwoTitle">Knowledge Explorer</h3>
+              <p data-i18n="roleTwoCopy">Digs into confusing concepts and turns them into useful blocks.</p>
+            </article>
+            <article class="role-card">
+              <span class="cube" aria-hidden="true"></span>
+              <h3 data-i18n="roleThreeTitle">Vibe Farmer</h3>
+              <p data-i18n="roleThreeCopy">Grows daily build traces into long-term personal memory.</p>
+            </article>
+            <article class="role-card">
+              <span class="cube" aria-hidden="true"></span>
+              <h3 data-i18n="roleFourTitle">Agent Director</h3>
+              <p data-i18n="roleFourCopy">Gives Agents clean context, permission, and next steps.</p>
+            </article>
           </div>
-
-          <aside class="right-rail">
-            <section class="infobox">
-              <h3>VibeCraft</h3>
-              <div class="vibe-avatar">
-                <div class="avatar-sprite"><i></i><b></b><em></em><strong></strong></div>
-              </div>
-              <table>
-                <tbody>
-                  <tr>
-                    <th>Chinese name</th>
-                    <td>灵感工坊</td>
-                  </tr>
-                  <tr>
-                    <th>Category</th>
-                    <td>Happy Build learning engine</td>
-                  </tr>
-                  <tr>
-                    <th>Primary user</th>
-                    <td>Non-technical vibe builders</td>
-                  </tr>
-                  <tr>
-                    <th>Registration</th>
-                    <td data-registration-state>Agent authorization required</td>
-                  </tr>
-                  <tr>
-                    <th>Sound</th>
-                    <td data-sound-state>On by default</td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-
-            <section class="infobox">
-              <h3>Skill Attributes</h3>
-              <table>
-                <tbody>
-                  <tr>
-                    <th>Plain-language translation</th>
-                    <td><div class="meter" style="--value: 70%"><i></i></div></td>
-                  </tr>
-                  <tr>
-                    <th>Agent direction</th>
-                    <td><div class="meter" style="--value: 58%"><i></i></div></td>
-                  </tr>
-                  <tr>
-                    <th>Knowledge crafting</th>
-                    <td><div class="meter" style="--value: 64%"><i></i></div></td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
-          </aside>
         </div>
-      </main>
+      </section>
 
-      <footer class="footer">
-        VibeCraft prototype · Wiki-style product surface for DoneGraph-powered Agent collaboration.
-      </footer>
-    </div>
+      <section class="section">
+        <div class="section-head">
+          <h2 data-i18n="packTitle">Growth packs make progress feel collectible.</h2>
+          <p data-i18n="packCopy">
+            The Web front stage does not fake achievements. Packs unlock only when Agent receipts prove the work happened.
+          </p>
+        </div>
+        <div class="pack-row">
+          <article class="pack-card unlocked">
+            <span class="stamp" data-i18n="stampUnlocked">UNLOCKED</span>
+            <h3 data-i18n="packOneTitle">First Build Pack</h3>
+            <p data-i18n="packOneCopy">A real task became a visible milestone.</p>
+            <span class="progress" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></span>
+          </article>
+          <article class="pack-card unlocked">
+            <span class="stamp" data-i18n="stampUnlocked">UNLOCKED</span>
+            <h3 data-i18n="packTwoTitle">Knowledge Mine Pack</h3>
+            <p data-i18n="packTwoCopy">Confusing parts were mined into knowledge blocks.</p>
+            <span class="progress" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i></span>
+          </article>
+          <article class="pack-card">
+            <span class="stamp" data-i18n="stampLocked">LOCKED</span>
+            <h3 data-i18n="packThreeTitle">Collab Invite Pack</h3>
+            <p data-i18n="packThreeCopy">Unlocks when your skill tree is clear enough for matching.</p>
+            <span class="progress" aria-hidden="true"><i class="on"></i><i class="on"></i><i></i><i></i><i></i></span>
+          </article>
+          <article class="pack-card">
+            <span class="stamp" data-i18n="stampLocked">LOCKED</span>
+            <h3 data-i18n="packFourTitle">Vibe Brain Pack</h3>
+            <p data-i18n="packFourCopy">Your portable memory grows through repeated builds.</p>
+            <span class="progress" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></span>
+          </article>
+        </div>
+      </section>
 
-    <script>
-      const state = {
-        sound: true,
-        registered: false,
-        synced: false,
+      <section class="section" id="how">
+        <div class="section-head">
+          <h2 data-i18n="howTitle">The loop is simple.</h2>
+          <p data-i18n="howCopy">
+            Users do less manual operating on the Web. Codex or another Agent completes work, uploads receipts, and the front stage updates.
+          </p>
+        </div>
+        <div class="step-grid">
+          <article class="step">
+            <h3 data-i18n="stepOneTitle">Choose a role</h3>
+            <p data-i18n="stepOneCopy">Start with a playful identity and avatar instead of a blank technical profile.</p>
+          </article>
+          <article class="step">
+            <h3 data-i18n="stepTwoTitle">Let Agent build</h3>
+            <p data-i18n="stepTwoCopy">The real work happens in Codex or your Agent workflow, not by manually grinding buttons.</p>
+          </article>
+          <article class="step">
+            <h3 data-i18n="stepThreeTitle">Sync receipts</h3>
+            <p data-i18n="stepThreeCopy">DoneGraph receipts prove what happened and unlock visible growth.</p>
+          </article>
+          <article class="step">
+            <h3 data-i18n="stepFourTitle">Show your Vibe Bio</h3>
+            <p data-i18n="stepFourCopy">Others can see your strengths and invite complementary collaboration.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section final-cta">
+        <h2 data-i18n="finalTitle">Open the workshop and start growing your VibeCraft identity.</h2>
+        <p data-i18n="finalCopy">The front stage explains the world. The workshop is where your avatar, skills, drops, and Agent receipts come alive.</p>
+        <div class="cta-row">
+          <a class="cta primary" href="vibecraft-demo.html" data-i18n="finalCta">Enter Workshop</a>
+          <a class="cta secondary" href="vibecraft-demo.html#vibe-bio" data-i18n="finalBio">See Vibe Bio</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span data-i18n="footer">Build for Fun · Create for Happy.</span>
+    </footer>
+  </div>
+
+  <script>
+    const copy = {
+      en: {
+        navWorld: "World",
+        navHow: "How It Works",
+        navWorkshop: "Enter Workshop",
+        heroEyebrow: "Build for Fun · Create for Happy",
+        heroCopy: "A Happy Build visual learning engine for non-technical vibe coders. Let knowledge enter your brain in cute, weird, game-like forms.",
+        ctaPrimary: "Enter the Workshop",
+        ctaSecondary: "See Your Vibe Bio",
+        promiseTitle: "From AI work logs to a playable identity.",
+        promiseCopy: "VibeCraft turns confusing build traces, terms, screenshots, receipts, and progress into visible blocks, cards, packs, and a public identity.",
+        promiseOneTitle: "Cute Knowledge",
+        promiseOneCopy: "Terms and errors stop being walls of jargon. They become blocks you can click, compare, and remember.",
+        promiseTwoTitle: "Game-Like Growth",
+        promiseTwoCopy: "Roles, avatars, starter levels, skill trees, and growth packs unlock through real Agent work.",
+        promiseThreeTitle: "Portable Vibe Brain",
+        promiseThreeCopy: "Your accumulated project memory can be granted to Agents with keys, not repeated in every chat.",
+        identityTitle: "Your public Vibe Bio is the front stage.",
+        identityCopy: "The workshop is private. The front stage is what others see: who you are becoming, what skills are visible, and where collaboration fits.",
+        profileKicker: "Community Identity Card",
+        profileName: "Happy Builder · Grass Block Hat",
+        profileBio: "Turns raw ideas into playful demos people can click, inspect, and remember.",
+        badgeProof: "Trust Check",
+        badgeBrain: "Vibe Brain",
+        badgeInvite: "Open to Collab",
+        roleOneTitle: "Happy Builder",
+        roleOneCopy: "Ships the first playable version before the idea gets too heavy.",
+        roleTwoTitle: "Knowledge Explorer",
+        roleTwoCopy: "Digs into confusing concepts and turns them into useful blocks.",
+        roleThreeTitle: "Vibe Farmer",
+        roleThreeCopy: "Grows daily build traces into long-term personal memory.",
+        roleFourTitle: "Agent Director",
+        roleFourCopy: "Gives Agents clean context, permission, and next steps.",
+        packTitle: "Growth packs make progress feel collectible.",
+        packCopy: "The Web front stage does not fake achievements. Packs unlock only when Agent receipts prove the work happened.",
+        stampUnlocked: "UNLOCKED",
+        stampLocked: "LOCKED",
+        packOneTitle: "First Build Pack",
+        packOneCopy: "A real task became a visible milestone.",
+        packTwoTitle: "Knowledge Mine Pack",
+        packTwoCopy: "Confusing parts were mined into knowledge blocks.",
+        packThreeTitle: "Collab Invite Pack",
+        packThreeCopy: "Unlocks when your skill tree is clear enough for matching.",
+        packFourTitle: "Vibe Brain Pack",
+        packFourCopy: "Your portable memory grows through repeated builds.",
+        howTitle: "The loop is simple.",
+        howCopy: "Users do less manual operating on the Web. Codex or another Agent completes work, uploads receipts, and the front stage updates.",
+        stepOneTitle: "Choose a role",
+        stepOneCopy: "Start with a playful identity and avatar instead of a blank technical profile.",
+        stepTwoTitle: "Let Agent build",
+        stepTwoCopy: "The real work happens in Codex or your Agent workflow, not by manually grinding buttons.",
+        stepThreeTitle: "Sync receipts",
+        stepThreeCopy: "DoneGraph receipts prove what happened and unlock visible growth.",
+        stepFourTitle: "Show your Vibe Bio",
+        stepFourCopy: "Others can see your strengths and invite complementary collaboration.",
+        finalTitle: "Open the workshop and start growing your VibeCraft identity.",
+        finalCopy: "The front stage explains the world. The workshop is where your avatar, skills, drops, and Agent receipts come alive.",
+        finalCta: "Enter Workshop",
+        finalBio: "See Vibe Bio",
+        footer: "Build for Fun · Create for Happy.",
+        soundButton: "Sound On",
+        soundButtonOff: "Sound Off",
+        soundLabelOn: "Turn sound and music off",
+        soundLabelOff: "Turn sound and music on",
+        languageButton: "中文",
+        languageLabel: "Switch to Chinese"
+      },
+      zh: {
+        navWorld: "世界观",
+        navHow: "如何运转",
+        navWorkshop: "进入工坊",
+        heroEyebrow: "Build for Fun · Create for Happy",
+        heroCopy: "面向非技术 vibe coding 人群的 Happy Build 可视化学习引擎。让知识以可爱、奇怪、游戏化的形式进入脑袋。",
+        ctaPrimary: "进入工坊",
+        ctaSecondary: "看看 Vibe Bio",
+        promiseTitle: "把 AI 工作记录，变成可以展示的身份。",
+        promiseCopy: "VibeCraft 把难懂的 build 痕迹、术语、截图、receipt 和进度，变成可见的方块、卡片、成长包和公开身份。",
+        promiseOneTitle: "可爱知识",
+        promiseOneCopy: "术语和报错不再是一堵黑话墙，而是可以点击、比较、记住的知识方块。",
+        promiseTwoTitle: "游戏化成长",
+        promiseTwoCopy: "角色、形象、初始等级、技能树和成长包，都通过真实 Agent 工作解锁。",
+        promiseThreeTitle: "可携带大脑",
+        promiseThreeCopy: "你的项目记忆可以通过 key 授权给 Agent，不用每次聊天都重新解释。",
+        identityTitle: "你的公开 Vibe Bio，就是前台展示。",
+        identityCopy: "工坊是后台。前台是别人看到的你：你正在成为什么、技能是否清晰、适合怎样合作。",
+        profileKicker: "社区身份卡",
+        profileName: "快乐建造师 · 草地方块帽",
+        profileBio: "把原始想法变成可以点击、检查、记住的可玩 demo。",
+        badgeProof: "证据判断",
+        badgeBrain: "Vibe Brain",
+        badgeInvite: "开放协作",
+        roleOneTitle: "快乐建造师",
+        roleOneCopy: "在想法变得太重之前，先搭出能玩的第一版。",
+        roleTwoTitle: "知识探索员",
+        roleTwoCopy: "挖开难懂概念，把它变成能用的知识方块。",
+        roleThreeTitle: "灵感种植员",
+        roleThreeCopy: "把日常 build 痕迹养成长期个人记忆。",
+        roleFourTitle: "Agent 指挥官",
+        roleFourCopy: "给 Agent 清晰上下文、授权和下一步。",
+        packTitle: "成长包让进度变得值得收集。",
+        packCopy: "前台不会伪造成就。只有 Agent receipt 证明工作发生后，成长包才会解锁。",
+        stampUnlocked: "已解锁",
+        stampLocked: "未解锁",
+        packOneTitle: "首个 Build 包",
+        packOneCopy: "一次真实任务变成了可见里程碑。",
+        packTwoTitle: "知识矿洞包",
+        packTwoCopy: "难懂部分被挖成了知识方块。",
+        packThreeTitle: "协作邀请包",
+        packThreeCopy: "当技能树足够清晰，就能用于匹配协作。",
+        packFourTitle: "Vibe Brain 包",
+        packFourCopy: "你的可携带记忆会随着 build 逐渐成长。",
+        howTitle: "循环很简单。",
+        howCopy: "用户在 Web 上少做手工操作。Codex 或其他 Agent 完成工作、上传 receipt，前台自动更新。",
+        stepOneTitle: "选择角色",
+        stepOneCopy: "先用一个可爱的身份和形象开局，而不是空白技术档案。",
+        stepTwoTitle: "让 Agent 工作",
+        stepTwoCopy: "真实工作发生在 Codex 或 Agent 流程里，不靠用户手动刷按钮。",
+        stepThreeTitle: "同步凭证",
+        stepThreeCopy: "DoneGraph receipt 证明发生了什么，并解锁可见成长。",
+        stepFourTitle: "展示 Vibe Bio",
+        stepFourCopy: "别人能看到你的优势，并发起互补协作。",
+        finalTitle: "打开工坊，开始养成你的 VibeCraft 身份。",
+        finalCopy: "前台负责讲清楚世界。工坊负责让你的形象、技能、掉落和 Agent receipt 活起来。",
+        finalCta: "进入工坊",
+        finalBio: "查看 Vibe Bio",
+        footer: "Build for Fun · Create for Happy.",
+        soundButton: "声音开",
+        soundButtonOff: "声音关",
+        soundLabelOn: "关闭音效和音乐",
+        soundLabelOff: "开启音效和音乐",
+        languageButton: "EN",
+        languageLabel: "Switch to English"
+      }
+    };
+    let language = "en";
+    let soundEnabled = true;
+    let audioContext = null;
+    let music = {
+      started: false,
+      timer: null,
+      master: null,
+      step: 0
+    };
+    try {
+      language = localStorage.getItem("vibecraft:front-language") === "zh" ? "zh" : "en";
+    } catch {
+      language = "en";
+    }
+    try {
+      soundEnabled = localStorage.getItem("vibecraft:front-sound") !== "off";
+    } catch {
+      soundEnabled = true;
+    }
+    function activeCopy() {
+      return copy[language] || copy.en;
+    }
+    function applyLanguage() {
+      const dict = activeCopy();
+      document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
+      document.querySelectorAll("[data-i18n]").forEach((node) => {
+        const value = dict[node.dataset.i18n];
+        if (value) node.textContent = value;
+      });
+      const toggle = document.querySelector("[data-language-toggle]");
+      if (toggle) {
+        toggle.textContent = dict.languageButton;
+        toggle.setAttribute("aria-label", dict.languageLabel);
+      }
+      renderSoundToggle();
+    }
+    function saveSoundPreference() {
+      try {
+        localStorage.setItem("vibecraft:front-sound", soundEnabled ? "on" : "off");
+      } catch {
+        // Sound still works for the current page.
+      }
+    }
+    function renderSoundToggle() {
+      const dict = activeCopy();
+      const toggle = document.querySelector("[data-sound-toggle]");
+      if (!toggle) return;
+      toggle.textContent = soundEnabled ? dict.soundButton : dict.soundButtonOff;
+      toggle.setAttribute("aria-pressed", String(soundEnabled));
+      toggle.setAttribute("aria-label", soundEnabled ? dict.soundLabelOn : dict.soundLabelOff);
+    }
+    function getAudioContext() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return null;
+      if (!audioContext) audioContext = new AudioContextClass();
+      if (audioContext.state === "suspended") audioContext.resume().catch(() => {});
+      return audioContext;
+    }
+    function playTone(context, output, frequency, start, duration, type, gainValue) {
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = type;
+      oscillator.frequency.setValueAtTime(frequency, start);
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(gainValue, start + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+      oscillator.connect(gain).connect(output);
+      oscillator.start(start);
+      oscillator.stop(start + duration + 0.04);
+    }
+    function playSfx(name, force = false) {
+      if (!soundEnabled && !force) return;
+      const context = getAudioContext();
+      if (!context) return;
+      const now = context.currentTime + 0.01;
+      const patterns = {
+        tap: [[360, 0, .035, "square", .018], [540, .035, .045, "triangle", .018]],
+        open: [[392, 0, .05, "square", .026], [659, .055, .08, "triangle", .022]],
+        toggleOn: [[440, 0, .05, "square", .024], [880, .05, .08, "sine", .022]],
+        toggleOff: [[660, 0, .05, "triangle", .022], [330, .05, .08, "square", .02]]
       };
-
-      const elements = {
-        name: document.querySelector("[data-name-input]"),
-        handle: document.querySelector("[data-handle-input]"),
-        role: document.querySelector("[data-role-input]"),
-        intro: document.querySelector("[data-intro-input]"),
-        command: document.querySelector("[data-agent-command]"),
-        auth: document.querySelector("[data-auth-input]"),
-        registerFeedback: document.querySelector("[data-register-feedback]"),
-        authFeedback: document.querySelector("[data-auth-feedback]"),
-        syncFeedback: document.querySelector("[data-sync-feedback]"),
-        profilePill: document.querySelector("[data-profile-pill]"),
-        publicName: document.querySelector("[data-public-name]"),
-        publicUrl: document.querySelector("[data-public-url]"),
-        publicIntro: document.querySelector("[data-public-intro]"),
-        registrationState: document.querySelector("[data-registration-state]"),
-        soundState: document.querySelector("[data-sound-state]"),
-        initialLevel: document.querySelector("[data-initial-level]"),
-        registrationPreview: document.querySelector("[data-registration-preview]"),
-        proofPreview: document.querySelector("[data-proof-preview]"),
-      };
-
-      const registrationIssuedAt = "2026-06-03T00:00:00.000Z";
-      const authorizedScopes = ["local.skills.read", "donegraph.read", "public_profile.write", "completion_proof.write"];
-
-      let audioContext;
-      let drone;
-
-      function normalizedHandle() {
-        return (elements.handle.value || "happy-builder")
-          .toLowerCase()
-          .replace(/[^a-z0-9-]+/g, "-")
-          .replace(/^-+|-+$/g, "")
-          .slice(0, 32) || "happy-builder";
-      }
-
-      function checksum(value) {
-        let hash = 2166136261;
-        for (let index = 0; index < value.length; index += 1) {
-          hash ^= value.charCodeAt(index);
-          hash = Math.imul(hash, 16777619);
-        }
-        return (hash >>> 0).toString(36).toUpperCase().padStart(6, "0").slice(0, 6);
-      }
-
-      function authCode() {
-        const handle = normalizedHandle();
-        return "VC-AUTH-" + handle.toUpperCase().replace(/-/g, "") + "-" + checksum(handle + ":" + registrationIssuedAt);
-      }
-
-      function registrationProof() {
-        return {
-          schema_version: "vibecraft.registration.v1",
-          profile_handle: normalizedHandle(),
-          builder_name: elements.name.value || "Happy Builder",
-          role: elements.role.value || "Knowledge Explorer",
-          public_intro: elements.intro.value || "I turn strange build traces into useful little knowledge blocks.",
-          source_agent: "codex",
-          authorization_code: authCode(),
-          authorized_scopes: authorizedScopes,
-          initial_level: "Village Pass L1",
-          skill_seeds: [
-            { id: "plain-language-translation", label: "Plain-language translation", level: 2 },
-            { id: "agent-direction", label: "Agent direction", level: 1 },
-            { id: "knowledge-crafting", label: "Knowledge crafting", level: 2 },
-          ],
-          issued_at: registrationIssuedAt,
-        };
-      }
-
-      function agentPrompt() {
-        const proof = registrationProof();
-        return [
-          "You are registering my VibeCraft profile.",
-          "Only read local skills and project traces I explicitly authorize.",
-          "Builder name: " + proof.builder_name,
-          "Village ID: " + proof.profile_handle,
-          "Role: " + proof.role,
-          "Public intro: " + proof.public_intro,
-          "Authorized scopes: " + proof.authorized_scopes.join(", "),
-          "Return authorization code: " + proof.authorization_code,
-          "Then return a vibecraft.registration.v1 JSON proof with this shape:",
-          JSON.stringify(proof, null, 2),
-        ].join("\n");
-      }
-
-      function updateProfile() {
-        const handle = normalizedHandle();
-        const name = elements.name.value || "Happy Builder";
-        const role = elements.role.value || "Knowledge Explorer";
-        const intro = elements.intro.value || "I turn strange build traces into useful little knowledge blocks.";
-        elements.handle.value = handle;
-        elements.command.textContent = agentPrompt();
-        elements.profilePill.textContent = name + " · " + role;
-        elements.publicName.textContent = name;
-        elements.publicIntro.textContent = intro;
-        elements.publicUrl.textContent = handle + ".vibecraft.bio";
-        elements.publicUrl.href = "https://" + handle + ".vibecraft.bio";
-        elements.registrationPreview.textContent = JSON.stringify(registrationProof(), null, 2);
-      }
-
-      async function copyText(text, feedback) {
+      (patterns[name] || patterns.tap).forEach((note) => {
+        playTone(context, context.destination, note[0], now + note[1], note[2], note[3], note[4]);
+      });
+    }
+    function scheduleMusic(context, output) {
+      const roots = [196, 246.94, 220, 261.63];
+      const root = roots[music.step % roots.length] || 196;
+      const now = context.currentTime + 0.04;
+      music.step += 1;
+      playTone(context, output, root, now, 1.25, "sine", 0.013);
+      playTone(context, output, root * 1.5, now + 0.4, .72, "triangle", 0.005);
+      playTone(context, output, root * 2, now + 0.78, .86, "sine", 0.004);
+    }
+    function startMusic() {
+      if (!soundEnabled || music.started) return;
+      const context = getAudioContext();
+      if (!context) return;
+      const master = context.createGain();
+      master.gain.setValueAtTime(0.0001, context.currentTime);
+      master.gain.exponentialRampToValueAtTime(0.32, context.currentTime + 0.8);
+      master.connect(context.destination);
+      music = { ...music, started: true, master };
+      scheduleMusic(context, master);
+      music.timer = window.setInterval(() => {
+        if (soundEnabled && music.master) scheduleMusic(context, music.master);
+      }, 1600);
+    }
+    function stopMusic() {
+      if (music.timer) window.clearInterval(music.timer);
+      if (music.master && audioContext) {
+        const master = music.master;
         try {
-          await navigator.clipboard.writeText(text);
-          feedback.textContent = "Copied.";
+          master.gain.exponentialRampToValueAtTime(0.0001, audioContext.currentTime + 0.18);
+          window.setTimeout(() => master.disconnect(), 240);
         } catch {
-          feedback.textContent = "Copy failed. Select the text manually.";
-        }
-      }
-
-      function playClick() {
-        if (!state.sound) return;
-        try {
-          audioContext ||= new AudioContext();
-          const osc = audioContext.createOscillator();
-          const gain = audioContext.createGain();
-          osc.type = "square";
-          osc.frequency.value = 420;
-          gain.gain.setValueAtTime(0.025, audioContext.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.08);
-          osc.connect(gain).connect(audioContext.destination);
-          osc.start();
-          osc.stop(audioContext.currentTime + 0.08);
-        } catch {}
-      }
-
-      function startMusic() {
-        if (!state.sound || drone) return;
-        try {
-          audioContext ||= new AudioContext();
-          drone = audioContext.createOscillator();
-          const gain = audioContext.createGain();
-          drone.type = "triangle";
-          drone.frequency.value = 110;
-          gain.gain.value = 0.008;
-          drone.connect(gain).connect(audioContext.destination);
-          drone.start();
-        } catch {}
-      }
-
-      function stopMusic() {
-        if (!drone) return;
-        try {
-          drone.stop();
-        } catch {}
-        drone = null;
-      }
-
-      function verifyAgent() {
-        const value = elements.auth.value.trim();
-        if (!value) {
-          elements.authFeedback.textContent = "Paste the Agent authorization code first.";
-          return;
-        }
-        let proof;
-        if (value.startsWith("{")) {
           try {
-            proof = JSON.parse(value);
+            master.disconnect();
           } catch {
-            elements.authFeedback.textContent = "Registration proof is not valid JSON.";
-            return;
+            // Already disconnected.
           }
         }
-        const proofMatches =
-          proof?.schema_version === "vibecraft.registration.v1" &&
-          proof.profile_handle === normalizedHandle() &&
-          proof.authorization_code === authCode() &&
-          Array.isArray(proof.authorized_scopes) &&
-          proof.authorized_scopes.includes("donegraph.read") &&
-          Array.isArray(proof.skill_seeds) &&
-          proof.skill_seeds.length > 0;
-        if (value.includes(authCode()) || value === authCode() || proofMatches) {
-          state.registered = true;
-          const activeProof = proofMatches ? proof : registrationProof();
-          elements.authFeedback.textContent = "Agent registration verified. Village Pass active.";
-          elements.registrationState.textContent = "Registered by Agent";
-          elements.initialLevel.textContent = activeProof.initial_level || "Village Pass L1";
-          document.querySelector("[data-skill-count]").textContent = String(activeProof.skill_seeds?.length || 3);
-        } else {
-          elements.authFeedback.textContent = "Authorization proof did not match this Village ID and scope.";
-        }
       }
-
-      function syncProof() {
-        if (!state.registered) {
-          elements.syncFeedback.textContent = "Verify Agent registration before syncing proof.";
-          return;
-        }
-        state.synced = true;
-        const proof = {
-          schema_version: "vibecraft.proof.v1",
-          source_agent: "codex",
-          profile_handle: normalizedHandle(),
-          status: "synced",
-          unlocked: ["Identity Seed Pack", "Verified Build Pack", "Knowledge Crafting"],
-          counts: { knowledge_blocks: 12, skill_signals: 6, public_works: 3 },
-        };
-        elements.proofPreview.textContent = JSON.stringify(proof, null, 2);
-        document.querySelector("[data-block-count]").textContent = proof.counts.knowledge_blocks;
-        document.querySelector("[data-skill-count]").textContent = proof.counts.skill_signals;
-        document.querySelector("[data-work-count]").textContent = proof.counts.public_works;
-        elements.syncFeedback.textContent = "Demo proof synced. Packs and Vibe Brain updated.";
+      music = { started: false, timer: null, master: null, step: music.step };
+    }
+    document.querySelector("[data-language-toggle]")?.addEventListener("click", () => {
+      language = language === "en" ? "zh" : "en";
+      try {
+        localStorage.setItem("vibecraft:front-language", language);
+      } catch {
+        // Language still switches for this page.
       }
-
-      document.querySelectorAll("button, a, input, textarea").forEach((node) => {
-        node.addEventListener("pointerdown", playClick);
-      });
-
-      document.querySelector("[data-copy-agent]").addEventListener("click", () => {
-        updateProfile();
-        copyText(agentPrompt(), elements.registerFeedback);
-      });
-
-      document.querySelector("[data-simulate-agent]").addEventListener("click", () => {
-        updateProfile();
-        elements.auth.value = JSON.stringify(registrationProof(), null, 2);
-        elements.registerFeedback.textContent = "Demo Agent returned a registration proof.";
-      });
-
-      document.querySelector("[data-verify-agent]").addEventListener("click", verifyAgent);
-      document.querySelector("[data-sync-proof]").addEventListener("click", syncProof);
-
-      document.querySelector("[data-sound-toggle]").addEventListener("click", (event) => {
-        state.sound = !state.sound;
-        event.currentTarget.setAttribute("aria-pressed", String(state.sound));
-        event.currentTarget.textContent = state.sound ? "SFX + MUSIC ON" : "SFX + MUSIC OFF";
-        elements.soundState.textContent = state.sound ? "On by default" : "Off";
-        if (state.sound) startMusic();
-        else stopMusic();
-      });
-
-      [elements.name, elements.handle, elements.role, elements.intro].forEach((input) => {
-        input.addEventListener("input", updateProfile);
-        input.addEventListener("change", updateProfile);
-      });
-
-      window.addEventListener("pointerdown", startMusic, { once: true });
-      window.addEventListener("keydown", startMusic, { once: true });
-      setTimeout(startMusic, 300);
-      updateProfile();
-    </script>
-  </body>
+      playSfx("tap");
+      applyLanguage();
+    });
+    document.querySelector("[data-sound-toggle]")?.addEventListener("click", () => {
+      const wasEnabled = soundEnabled;
+      if (wasEnabled) playSfx("toggleOff", true);
+      soundEnabled = !soundEnabled;
+      saveSoundPreference();
+      renderSoundToggle();
+      if (soundEnabled) {
+        startMusic();
+        playSfx("toggleOn", true);
+      } else {
+        stopMusic();
+      }
+    });
+    document.addEventListener("click", (event) => {
+      const target = event.target.closest("a, button");
+      if (!target) return;
+      startMusic();
+      if (target.matches("[data-language-toggle], [data-sound-toggle]")) return;
+      playSfx(target.matches("a[href$='vibecraft-demo.html'], a[href*='vibecraft-demo.html']") ? "open" : "tap");
+    });
+    document.addEventListener("pointerdown", () => startMusic(), { passive: true });
+    document.addEventListener("keydown", () => startMusic());
+    applyLanguage();
+    window.setTimeout(() => startMusic(), 320);
+  </script>
+</body>
 </html>

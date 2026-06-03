@@ -10,15 +10,16 @@ This file records the durable product context for VibeCraft so future Agent work
 - Chinese name: 灵感工坊
 - Domain: https://vibecraft.bio
 - Deployment status: live on Vercel. A header check on 2026-06-03 returned HTTP 200.
-- Active repo branch: `codex/vibecraft-wiki-prototype`
+- Active repo branch: `codex/vibecraft-wiki-prototype` (legacy branch name; current restored UI is the live front-stage/workshop style)
 - Durable prototype: `docs/vibecraft/index.html`
 - Generated product view: `.donegraph/vibecraft.html`
 
 ## Records Found
 
 - Git commit `9e598b4 Add VibeCraft wiki prototype` added the first durable VibeCraft prototype to the original DoneGraph repo.
+- The production site at `https://vibecraft.bio/` preserved a stronger front-stage and workshop version. On 2026-06-03, those live static artifacts were restored into `docs/vibecraft/` as the current design baseline.
 - `README.md` and `READMEs/README.zh-CN.md` now point to the VibeCraft prototype.
-- A temporary earlier prototype workspace under `/tmp` is no longer present, so the stable source of truth is this repository plus this context file.
+- A temporary earlier prototype workspace under `/tmp` is no longer present, so the stable source of truth is this repository, the restored production artifacts, and this context file.
 - A local recovery copy also exists at `/Users/k/Documents/清客送/vibecraft/index.html`, but the original repo should be treated as the product repo.
 
 ## Product Positioning
@@ -65,15 +66,16 @@ The user does not need to read raw logs to feel progress.
 
 ## Interaction Direction
 
-The main visual and interaction reference is a voxel sandbox world with a Minecraft Wiki-like information surface.
+The main visual and interaction reference is a cute voxel sandbox front stage plus an exploratory workshop. The live site is the design baseline.
 
 Use these cues:
 
-- left navigation,
-- article-style sections,
-- compact tables,
-- green section headers,
-- readable encyclopedia density,
+- bright voxel blocks,
+- chunky borders and hard shadows,
+- playful but legible hero copy,
+- avatar and role selection,
+- growth packs and receipt-driven unlocks,
+- Vibe Bio as the public identity surface,
 - voxel-like characters and world objects,
 - progress as world activity, for example a task becomes a tree and the avatar chops it as development progresses.
 
@@ -105,7 +107,7 @@ Use:
 
 Avoid:
 
-- rough internal phrases like "hackathon skill logic"
+- rough internal phrases from planning notes
 - exposing PRD or internal documents on the product page
 - explaining too much implementation detail to normal users
 - putting disclaimers about Minecraft or official assets in visible marketing UI
@@ -114,7 +116,8 @@ Avoid:
 
 - `docs/vibecraft/index.html` is a standalone prototype that demonstrates Agent-only registration, public handle updates, proof sync, Vibe Radio, and Vibe Brain.
 - Agent-only registration now has a durable MVP contract: `vibecraft.registration.v1`, deterministic `VC-AUTH-*` codes, authorized scopes, initial skill seeds, and proof validation helpers in `packages/core/src/vibecraft.ts`.
-- `.donegraph/vibecraft.html` is generated from DoneGraph artifacts and turns recorded Agent work into a wiki-style VibeCraft view.
+- `docs/vibecraft/index.html` and `docs/vibecraft/vibecraft-demo.html` were restored from the live site and should be treated as the current product experience.
+- `.donegraph/vibecraft.html` is generated from DoneGraph artifacts and remains a compact artifact view; it does not define the public front-stage style.
 - The web app should default to English and support Chinese.
 - Click sound and default background music are part of the desired experience, but browser autoplay rules may require a first user gesture.
 
