@@ -1578,7 +1578,7 @@
         toggleOff: [[660, 0, .05, "triangle", .022], [330, .05, .08, "square", .02]]
       };
       (patterns[name] || patterns.tap).forEach((note) => {
-        playTone(context, context.destination, note[0], now + note[1], note[2], note[3], note[4]);
+        playTone(context, context.destination, note[0], now + note[1], note[2], note[3], note[4] * 1.45);
       });
     }
     function scheduleMusic(context, output) {
@@ -1586,9 +1586,9 @@
       const root = roots[music.step % roots.length] || 196;
       const now = context.currentTime + 0.04;
       music.step += 1;
-      playTone(context, output, root, now, 1.25, "sine", 0.013);
-      playTone(context, output, root * 1.5, now + 0.4, .72, "triangle", 0.005);
-      playTone(context, output, root * 2, now + 0.78, .86, "sine", 0.004);
+      playTone(context, output, root, now, 1.25, "sine", 0.018);
+      playTone(context, output, root * 1.5, now + 0.4, .72, "triangle", 0.007);
+      playTone(context, output, root * 2, now + 0.78, .86, "sine", 0.006);
     }
     function startMusic() {
       if (!soundEnabled || music.started) return;
@@ -1596,7 +1596,7 @@
       if (!context) return;
       const master = context.createGain();
       master.gain.setValueAtTime(0.0001, context.currentTime);
-      master.gain.exponentialRampToValueAtTime(0.32, context.currentTime + 0.8);
+      master.gain.exponentialRampToValueAtTime(0.46, context.currentTime + 0.8);
       master.connect(context.destination);
       music = { ...music, started: true, master };
       scheduleMusic(context, master);

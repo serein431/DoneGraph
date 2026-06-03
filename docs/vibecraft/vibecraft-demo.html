@@ -5635,9 +5635,9 @@
       const roots = [196, 246.94, 220, 261.63];
       const root = roots[backgroundMusic.step % roots.length] || 196;
       backgroundMusic.step += 1;
-      playBackgroundNote(context, output, root, now, 1.28, "sine", 0.014);
-      playBackgroundNote(context, output, root * 1.5, now + 0.38, 0.72, "triangle", 0.006);
-      playBackgroundNote(context, output, root * 2, now + 0.76, 0.86, "sine", 0.005);
+      playBackgroundNote(context, output, root, now, 1.28, "sine", 0.019);
+      playBackgroundNote(context, output, root * 1.5, now + 0.38, 0.72, "triangle", 0.008);
+      playBackgroundNote(context, output, root * 2, now + 0.76, 0.86, "sine", 0.0065);
     }
     function startBackgroundMusic() {
       if (!soundEnabled || backgroundMusic.started) return;
@@ -5645,7 +5645,7 @@
       if (!context) return;
       const master = context.createGain();
       master.gain.setValueAtTime(0.0001, context.currentTime);
-      master.gain.exponentialRampToValueAtTime(0.32, context.currentTime + 0.8);
+      master.gain.exponentialRampToValueAtTime(0.46, context.currentTime + 0.8);
       master.connect(context.destination);
       backgroundMusic = {
         ...backgroundMusic,
@@ -5702,7 +5702,7 @@
         toggleOff: [[660, 0, .05, "triangle", .022], [330, .05, .08, "square", .02]]
       };
       (patterns[name] || patterns.open).forEach((note) => {
-        playNote(context, note[0], now + note[1], note[2], note[3], note[4]);
+        playNote(context, note[0], now + note[1], note[2], note[3], note[4] * 1.45);
       });
     }
     function pulseSound(element) {
