@@ -1243,22 +1243,38 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       letter-spacing: .13em;
       text-transform: uppercase;
     }
+    .home-progress-row {
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      border: 1px solid rgba(121, 79, 39, .13);
+      border-radius: 24px;
+      background: rgba(255, 249, 233, .72);
+      box-shadow: 0 7px 0 rgba(213, 169, 110, .18);
+    }
+    .home-progress-row .progress-caption {
+      max-width: none;
+      margin: 0;
+      text-align: left;
+    }
     .home-map .progress-orb {
       z-index: 2;
-      width: min(58%, 238px);
-      margin: 250px auto 0;
+      width: clamp(92px, 12vw, 136px);
+      margin: 0;
       background:
         radial-gradient(circle at center, var(--paper) 0 50%, transparent 51%),
         conic-gradient(var(--teal) 0 ${graph.summary.progress_percent * 3.6}deg, rgba(255, 255, 255, .42) 0deg);
-      box-shadow: inset 0 0 0 12px rgba(255, 249, 233, .72), 0 14px 0 rgba(213, 169, 110, .30), 0 24px 34px rgba(91, 63, 32, .14);
+      box-shadow: inset 0 0 0 8px rgba(255, 249, 233, .72), 0 8px 0 rgba(213, 169, 110, .24), 0 16px 24px rgba(91, 63, 32, .12);
     }
     .home-map .progress-orb strong {
-      font-size: clamp(48px, 7vw, 78px);
-      letter-spacing: -3px;
+      font-size: clamp(30px, 4vw, 48px);
+      letter-spacing: -2px;
     }
     .home-map .progress-orb span {
-      bottom: 25%;
-      font-size: 11px;
+      bottom: 21%;
+      font-size: 9px;
     }
     .home-stat-strip {
       display: grid;
@@ -1707,9 +1723,12 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         width: 34px;
         height: 56px;
       }
+      .home-progress-row {
+        gap: 10px;
+        padding: 10px;
+      }
       .home-map .progress-orb {
-        width: min(52%, 154px);
-        margin-top: 152px;
+        width: 78px;
       }
       .home-stat-strip {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1732,7 +1751,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       h1 { font-size: 48px; }
       .progress-orb { width: min(100%, 280px); }
       .island-scene { min-height: 360px; }
-      .home-map .progress-orb { margin-top: 210px; }
+      .home-map .progress-orb { width: 88px; }
     }
     @media (min-width: 760px) and (max-width: 980px) {
       .home-spread,
@@ -1757,8 +1776,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         min-height: 330px;
       }
       .home-map .progress-orb {
-        width: min(54%, 190px);
-        margin-top: 194px;
+        width: 104px;
       }
       .home-stat-strip {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1814,9 +1832,11 @@ export function renderDashboardHtml(graph: DoneGraph): string {
               <div class="path-dot dot-three">03</div>
               <div class="path-dot dot-four">${String(Math.max(1, Math.min(99, graph.summary.milestones_completed))).padStart(2, "0")}</div>
             </div>
-            <div class="progress-orb" aria-label="完成进度 ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>已完成</span></div>
           </div>
-          <p class="progress-caption">首页先给一个安定的答案：已经走完 ${milestoneProgress} 个里程碑，当前阶段是「${escapeHtml(graph.summary.current_stage)}」。</p>
+          <div class="home-progress-row">
+            <div class="progress-orb" aria-label="完成进度 ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>已完成</span></div>
+            <p class="progress-caption">首页先给一个安定的答案：已经走完 ${milestoneProgress} 个里程碑，当前阶段是「${escapeHtml(graph.summary.current_stage)}」。</p>
+          </div>
           <div class="home-stat-strip">
             <div class="home-stat"><span>里程碑</span><strong>${milestoneProgress}</strong></div>
             <div class="home-stat"><span>已验证</span><strong>${graph.summary.evidence_passed}</strong></div>

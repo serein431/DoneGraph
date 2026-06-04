@@ -94,6 +94,8 @@ describe("DoneGraph core", () => {
     expect(renderDashboardHtml(graph)).toContain("<div class=\"book-spine\" aria-hidden=\"true\"></div>");
     expect(renderDashboardHtml(graph)).toContain("<div class=\"turn-page\" aria-hidden=\"true\"></div>");
     expect(renderDashboardHtml(graph)).toContain("window.setTimeout(() => setActiveSpread(target), 220);");
+    expect(renderDashboardHtml(graph)).toContain("<div class=\"home-progress-row\">");
+    expect(renderDashboardHtml(graph)).not.toContain("</div>\n            <div class=\"progress-orb\" aria-label=\"完成进度");
     expect(renderDashboardHtml(graph)).toContain("4 / 6 个里程碑");
     expect(renderDashboardHtml(graph)).toContain("演示还差收尾");
     expect(renderDashboardHtml(graph)).toContain("收集到的进展");
