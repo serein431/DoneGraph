@@ -1,8 +1,8 @@
-# Design System: DoneGraph Island Board
+# Design System: DoneGraph Progress Journal
 
 ## 1. Visual Theme & Atmosphere
 
-DoneGraph should feel like a calm island notice board for serious AI work: soft, tactile, organized, and lightly playful. The dashboard is a progress map, not a corporate analytics cockpit. Density is daily-app balanced, variance is offset and handcrafted, and motion is gentle CSS-only micro-motion.
+DoneGraph should feel like a calm progress journal for serious AI work: soft, tactile, organized, and restorative. The dashboard is a handoff diary that celebrates completed progress first, not a technical report. Density is relaxed on the first page and progressively denser on later pages. Motion is gentle CSS-only page turning.
 
 ## 2. Color Palette & Roles
 
@@ -24,20 +24,21 @@ DoneGraph should feel like a calm island notice board for serious AI work: soft,
 
 ## 4. Component Stylings
 
-- **Hero:** Asymmetric notice-board composition with a small inline map tile near the headline. No centered landing-page hero.
-- **Node Cards:** Rounded cork-board notes with soft paper fills, status stamps, and subtle transform-only float motion.
+- **Journal Shell:** A two-page book spread with a warm spine, softly curled pages, and bottom page controls.
+- **Progress Page:** The first view prioritizes one large completion number, a tactile progress track, completed count, evidence count, and blockers.
+- **Completed Cards:** Finished work appears like collected journal entries with small status stamps.
 - **Evidence Badges:** Small tactile stamps. Passed evidence is moss, blocked or failed evidence is clay, unknown evidence is pollen.
-- **Side Panels:** Ledger sheets with dashed inner rules, compact lists, and map-route labels.
+- **Technical Details:** Clean-room schema and relationship trace live on later pages, never as the first emotional impression.
 - **Code Chips:** Small shell-paper strips with mono text and quiet borders.
 
 ## 5. Layout Principles
 
-Use a grid-first layout with a wide progress board and a narrower handoff ledger. Collapse to one column below 980px. Every element occupies its own spatial zone; no overlapping text. Avoid generic three-equal-card feature rows.
+Use a grid-first journal spread with two pages on desktop and a single stacked page flow on mobile. Collapse below 860px. Every element occupies its own spatial zone; no overlapping text. The first viewport must emphasize progress and completion, not schema or relationship metadata.
 
 ## 6. Motion & Interaction
 
-Use CSS-only transform and opacity animations. Cards float subtly with staggered delays. No layout-affecting animation, no custom cursor, no scroll prompts.
+Use CSS-only transform and opacity animations. Page changes use rotateY and opacity only. Cards settle softly with staggered delays. No layout-affecting animation, no custom cursor, no scroll prompts.
 
 ## 7. Anti-Patterns
 
-Never use emoji, Inter, pure black, neon purple or blue gradients, heavy corporate dashboard chrome, centered generic heroes, fake stock imagery, or official Nintendo/Animal Crossing assets. The style is inspired by a cozy island interface mood, but all shapes, copy, layout, and implementation remain DoneGraph-owned.
+Never use emoji, Inter, pure black, neon purple or blue gradients, heavy corporate dashboard chrome, centered generic heroes, fake stock imagery, or official game assets. The style is inspired by cozy farming-journal pacing, but all shapes, copy, layout, and implementation remain DoneGraph-owned.

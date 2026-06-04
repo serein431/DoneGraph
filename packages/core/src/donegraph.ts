@@ -505,11 +505,11 @@ function statusText(status: EvidenceStatus): string {
 
 function renderNode(node: DoneGraphNode, index: number): string {
   return [
-    `<article class="node-card ${escapeHtml(node.type)} ${escapeHtml(statusLabel(node.status))}" style="--delay: ${index * 80}ms">`,
-    `<div class="node-cap"><span class="node-number">${String(index + 1).padStart(2, "0")}</span><span class="node-kind">${escapeHtml(node.type)}</span></div>`,
-    `<div class="stamp ${escapeHtml(statusLabel(node.status))}">${escapeHtml(statusText(node.status))}</div>`,
+    `<article class="journal-card ${escapeHtml(node.type)} ${escapeHtml(statusLabel(node.status))}" style="--delay: ${index * 70}ms">`,
+    `<div class="card-cap"><span class="card-number">${String(index + 1).padStart(2, "0")}</span><span class="card-kind">${escapeHtml(node.type)}</span></div>`,
     `<h3>${escapeHtml(node.title)}</h3>`,
     `<p>${escapeHtml(node.detail)}</p>`,
+    `<div class="stamp ${escapeHtml(statusLabel(node.status))}">${escapeHtml(statusText(node.status))}</div>`,
     node.metadata.path ? `<code>${escapeHtml(node.metadata.path)}</code>` : "",
     node.metadata.command ? `<code>${escapeHtml(node.metadata.command)}</code>` : "",
     node.metadata.source ? `<small class="source">${escapeHtml(node.metadata.source)}</small>` : "",
@@ -520,8 +520,22 @@ function renderNode(node: DoneGraphNode, index: number): string {
 export function renderDashboardHtml(graph: DoneGraph): string {
   const nodes = graph.nodes.map(renderNode).join("\n");
   const nodeIndex = new Map(graph.nodes.map((node, index) => [node.id, index + 1]));
+  const completedCards = graph.achievements
+    .slice(0, 8)
+    .map(
+      (item, index) =>
+        `<article class="achievement-card" style="--delay: ${index * 80}ms"><span>${escapeHtml(statusText(item.status))}</span><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.detail)}</p></article>`
+    )
+    .join("\n");
   const achievements = graph.achievements
     .map((item) => `<li><span>${escapeHtml(statusLabel(item.status))}</span>${escapeHtml(item.title)}</li>`)
+    .join("\n");
+  const evidenceCards = graph.nodes
+    .filter((node) => node.type === "evidence")
+    .map(
+      (node, index) =>
+        `<article class="proof-card ${escapeHtml(statusLabel(node.status))}" style="--delay: ${index * 80}ms"><span>${escapeHtml(statusText(node.status))}</span><strong>${escapeHtml(node.title)}</strong><p>${escapeHtml(node.detail)}</p>${node.metadata.command ? `<code>${escapeHtml(node.metadata.command)}</code>` : ""}</article>`
+    )
     .join("\n");
   const nextSteps = graph.next_steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("\n");
   const schemaLabels = graph.schema.edge_labels
@@ -543,6 +557,8 @@ export function renderDashboardHtml(graph: DoneGraph): string {
   const sources = Array.from(sourceCounts.entries())
     .map(([source, count]) => `<li><span>${escapeHtml(source)}</span>${count} captured nodes</li>`)
     .join("\n");
+  const blockerText =
+    graph.summary.blockers === 0 ? "No blockers are holding this session back." : `${graph.summary.blockers} blocker${graph.summary.blockers === 1 ? "" : "s"} need attention.`;
 
   return `<!doctype html>
 <html lang="zh-CN">
@@ -552,19 +568,18 @@ export function renderDashboardHtml(graph: DoneGraph): string {
   <title>DoneGraph Dashboard</title>
   <style>
     :root {
-      --mist: #ddeee5;
-      --sky: #cfe7df;
-      --paper: #fff8e6;
-      --paper-deep: #f6e6bd;
-      --ink: #24322b;
-      --muted: #687c72;
-      --moss: #527a5a;
-      --clay: #c8784a;
-      --lagoon: #8fb7ba;
-      --pollen: #f5d889;
-      --rose: #e8b7a1;
-      --line: rgba(36, 50, 43, .18);
-      --shadow: rgba(63, 91, 71, .16);
+      --meadow: #dcebd7;
+      --field: #eef4dc;
+      --paper: #fff8e4;
+      --page: #fff3cc;
+      --page-deep: #f0dca4;
+      --ink: #2a3528;
+      --muted: #73806d;
+      --moss: #5e865f;
+      --clay: #c9784b;
+      --amber: #e9bd66;
+      --cream-line: rgba(78, 92, 64, .18);
+      --shadow: rgba(84, 98, 66, .18);
     }
     * { box-sizing: border-box; }
     html, body { overflow-x: hidden; }
@@ -573,8 +588,9 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       min-width: 320px;
       color: var(--ink);
       background:
-        radial-gradient(ellipse at 20% 10%, rgba(255, 248, 230, .78), transparent 34rem),
-        linear-gradient(180deg, var(--mist) 0%, #edf5e7 46%, #f7edcf 100%);
+        radial-gradient(ellipse at 20% 8%, rgba(255, 248, 228, .82), transparent 34rem),
+        radial-gradient(ellipse at 78% 18%, rgba(233, 189, 102, .18), transparent 30rem),
+        linear-gradient(180deg, var(--meadow) 0%, var(--field) 58%, #f5e8bd 100%);
       font-family: "Outfit", "Avenir Next", "Nunito Sans", "PingFang SC", "Hiragino Sans GB", sans-serif;
       text-rendering: geometricPrecision;
     }
@@ -585,72 +601,115 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       pointer-events: none;
       opacity: .34;
       background-image:
-        linear-gradient(120deg, rgba(82, 122, 90, .08) 0 1px, transparent 1px 24px),
-        linear-gradient(60deg, rgba(36, 50, 43, .055) 0 1px, transparent 1px 28px);
+        linear-gradient(120deg, rgba(94, 134, 95, .07) 0 1px, transparent 1px 28px),
+        linear-gradient(60deg, rgba(42, 53, 40, .045) 0 1px, transparent 1px 34px);
       mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
     }
-    .island-shell {
-      width: min(1480px, calc(100vw - 32px));
+    .journal-shell {
+      width: min(1380px, calc(100vw - 32px));
       min-height: 100vh;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(320px, 390px);
-      gap: clamp(18px, 2.5vw, 34px);
+      align-content: center;
+      gap: 18px;
       margin: 0 auto;
       padding: clamp(18px, 3vw, 42px) 0;
     }
-    .stage, .side { min-width: 0; }
-    .hero {
-      position: relative;
-      min-height: 330px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(180px, 280px);
-      gap: clamp(18px, 4vw, 48px);
-      align-items: end;
-      padding: clamp(24px, 4vw, 48px);
-      border: 1px solid rgba(82, 122, 90, .24);
-      border-radius: 38px;
-      background:
-        linear-gradient(135deg, rgba(255, 248, 230, .96), rgba(255, 248, 230, .72)),
-        linear-gradient(120deg, rgba(143, 183, 186, .34), rgba(245, 216, 137, .28));
-      box-shadow: 0 28px 70px var(--shadow);
-      overflow: hidden;
-    }
-    .hero::after {
-      content: "";
-      position: absolute;
-      right: -28px;
-      bottom: -38px;
-      width: 62%;
-      height: 120px;
-      border-radius: 999px 999px 0 0;
-      background: linear-gradient(90deg, rgba(82, 122, 90, .20), rgba(143, 183, 186, .26));
-      transform: rotate(-2deg);
-    }
-    .topline {
+    .journal-top {
       display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+      justify-content: space-between;
       align-items: center;
-      margin-bottom: 22px;
+      gap: 16px;
       color: var(--muted);
       font-size: 12px;
       letter-spacing: .12em;
       text-transform: uppercase;
     }
-    .topline span {
+    .journal-top span {
+      min-height: 34px;
+      display: inline-grid;
+      place-items: center;
+      padding: 8px 13px;
+      border: 1px solid var(--cream-line);
+      border-radius: 999px;
+      background: rgba(255, 248, 228, .66);
+    }
+    .journal-stage {
+      position: relative;
+      display: grid;
+      min-height: 760px;
+      perspective: 1800px;
+    }
+    .spread {
+      grid-area: 1 / 1;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 18px;
+      opacity: 0;
+      pointer-events: none;
+      transform: rotateY(8deg) translateX(16px);
+      transform-origin: center right;
+      transition: opacity .42s ease, transform .62s cubic-bezier(.2, .8, .2, 1);
+    }
+    .spread.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: rotateY(0) translateX(0);
+    }
+    .page {
+      position: relative;
+      min-width: 0;
+      min-height: 740px;
+      padding: clamp(24px, 3.2vw, 44px);
+      border: 1px solid rgba(78, 92, 64, .2);
+      background:
+        linear-gradient(90deg, rgba(160, 118, 69, .10), transparent 26px),
+        linear-gradient(180deg, rgba(255, 248, 228, .98), rgba(255, 243, 204, .96));
+      border-radius: 34px;
+      box-shadow: 0 28px 72px var(--shadow);
+      overflow: hidden;
+    }
+    .page.left::after,
+    .page.right::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 42px;
+      pointer-events: none;
+    }
+    .page.left::after {
+      right: -1px;
+      background: linear-gradient(90deg, transparent, rgba(98, 74, 42, .12));
+    }
+    .page.right::before {
+      left: -1px;
+      background: linear-gradient(270deg, transparent, rgba(98, 74, 42, .10));
+    }
+    .page-kicker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 18px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .page-kicker span {
       min-height: 30px;
       display: inline-grid;
       place-items: center;
       padding: 7px 12px;
-      border: 1px solid rgba(82, 122, 90, .24);
+      border: 1px solid rgba(94, 134, 95, .22);
       border-radius: 999px;
-      background: rgba(255, 248, 230, .72);
+      background: rgba(255, 248, 228, .74);
     }
     h1 {
       margin: 0 0 18px;
       color: var(--ink);
-      font-size: clamp(54px, 8vw, 118px);
-      line-height: .9;
+      font-size: clamp(50px, 6.2vw, 94px);
+      line-height: .92;
       font-weight: 820;
       letter-spacing: 0;
       overflow-wrap: normal;
@@ -661,64 +720,75 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       white-space: nowrap;
     }
     .story {
-      max-width: 65ch;
+      max-width: 58ch;
       margin: 0;
-      color: #395146;
-      font-size: clamp(18px, 2.2vw, 27px);
-      line-height: 1.34;
+      color: #455844;
+      font-size: clamp(17px, 1.8vw, 23px);
+      line-height: 1.42;
       overflow-wrap: anywhere;
     }
-    .map-tile {
+    .progress-orb {
       position: relative;
-      z-index: 1;
-      min-height: 225px;
-      align-self: stretch;
-      border: 1px solid rgba(82, 122, 90, .22);
-      border-radius: 34px;
-      background:
-        linear-gradient(150deg, rgba(143, 183, 186, .72), rgba(221, 238, 229, .88) 48%, rgba(245, 216, 137, .68)),
-        var(--paper);
-      box-shadow: inset 0 0 0 10px rgba(255, 248, 230, .45);
-      overflow: hidden;
-    }
-    .map-tile::before,
-    .map-tile::after {
-      content: "";
-      position: absolute;
-      border-radius: 999px;
-      background: rgba(82, 122, 90, .34);
-      transform: rotate(-14deg);
-    }
-    .map-tile::before { width: 132px; height: 74px; left: 26px; top: 48px; }
-    .map-tile::after { width: 96px; height: 56px; right: 30px; bottom: 42px; background: rgba(200, 120, 74, .26); }
-    .map-pin {
-      position: absolute;
-      left: 50%;
-      top: 48%;
-      width: 54px;
-      height: 54px;
+      width: min(100%, 360px);
+      aspect-ratio: 1;
       display: grid;
       place-items: center;
-      border-radius: 18px 18px 18px 4px;
-      background: var(--clay);
-      color: var(--paper);
-      font: 800 14px "SFMono-Regular", Menlo, monospace;
-      transform: rotate(-10deg);
-      box-shadow: 0 12px 28px rgba(159, 84, 49, .22);
+      margin: 30px auto 16px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, var(--paper) 0 48%, transparent 49%),
+        conic-gradient(var(--moss) 0 ${graph.summary.progress_percent * 3.6}deg, rgba(94, 134, 95, .16) 0deg);
+      box-shadow: inset 0 0 0 16px rgba(255, 248, 228, .72), 0 24px 46px rgba(94, 134, 95, .16);
     }
-    .metrics {
+    .progress-orb::after {
+      content: "";
+      position: absolute;
+      inset: 30px;
+      border: 1px dashed rgba(94, 134, 95, .28);
+      border-radius: 50%;
+    }
+    .progress-orb strong {
+      color: var(--moss);
+      font: 900 clamp(70px, 10vw, 124px)/.85 "SFMono-Regular", Menlo, monospace;
+      letter-spacing: -4px;
+      z-index: 1;
+    }
+    .progress-orb span {
+      position: absolute;
+      bottom: 28%;
+      z-index: 1;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
+    .soft-note {
+      padding: 16px;
+      border: 1px dashed rgba(94, 134, 95, .24);
+      border-radius: 22px;
+      background: rgba(255, 248, 228, .7);
+      color: #4a5d48;
+      line-height: 1.48;
+    }
+    .metric-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 12px;
-      margin: 18px 0;
+      margin-top: 20px;
+    }
+    .progress-caption {
+      max-width: 46ch;
+      margin: 0 auto 20px;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.45;
     }
     .metric {
-      min-height: 118px;
-      padding: 16px;
-      border: 1px solid rgba(82, 122, 90, .2);
-      border-radius: 28px;
-      background: rgba(255, 248, 230, .74);
-      box-shadow: 0 18px 40px rgba(82, 122, 90, .09);
+      min-height: 132px;
+      padding: 18px;
+      border: 1px solid rgba(94, 134, 95, .2);
+      border-radius: 26px;
+      background: rgba(255, 248, 228, .72);
     }
     .metric span {
       color: var(--muted);
@@ -728,83 +798,76 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     }
     .metric strong {
       display: block;
-      margin-top: 22px;
+      margin-top: 24px;
       color: var(--moss);
-      font: 850 42px/1 "SFMono-Regular", Menlo, monospace;
+      font: 850 48px/1 "SFMono-Regular", Menlo, monospace;
     }
-    .board {
-      padding: clamp(16px, 2.3vw, 28px);
-      border: 1px solid rgba(82, 122, 90, .22);
-      border-radius: 38px;
-      background:
-        linear-gradient(180deg, rgba(255, 248, 230, .82), rgba(246, 230, 189, .55)),
-        var(--paper);
-      box-shadow: 0 30px 70px rgba(82, 122, 90, .12);
+    .achievement-list,
+    .proof-grid,
+    .node-grid {
+      display: grid;
+      gap: 12px;
     }
-    .board-head {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 18px;
+    .achievement-card,
+    .proof-card,
+    .journal-card {
+      min-width: 0;
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border: 1px solid rgba(78, 92, 64, .16);
+      border-radius: 24px;
+      background: rgba(255, 248, 228, .82);
+      box-shadow: 0 14px 26px rgba(84, 98, 66, .08);
+      animation: page-settle .56s ease both;
+      animation-delay: var(--delay);
     }
-    .board-head h2 {
-      margin: 0;
-      font-size: clamp(28px, 4vw, 48px);
-      line-height: 1;
-      letter-spacing: 0;
+    .achievement-card span,
+    .proof-card span {
+      width: max-content;
+      max-width: 100%;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: rgba(94, 134, 95, .12);
+      color: var(--moss);
+      font-size: 11px;
+      font-weight: 850;
+      letter-spacing: .08em;
+      text-transform: uppercase;
     }
-    .board-head p {
-      max-width: 42ch;
+    .achievement-card strong,
+    .proof-card strong {
+      font-size: 18px;
+      line-height: 1.15;
+    }
+    .achievement-card p,
+    .proof-card p,
+    .journal-card p {
       margin: 0;
       color: var(--muted);
-      line-height: 1.45;
+      line-height: 1.48;
+      overflow-wrap: anywhere;
     }
-    .graph {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      align-items: stretch;
-    }
-    .node-card {
-      min-width: 0;
-      min-height: 232px;
-      display: grid;
-      align-content: start;
-      gap: 12px;
-      padding: 18px;
-      border: 1px solid rgba(36, 50, 43, .14);
-      border-radius: 30px;
-      background: rgba(255, 248, 230, .94);
-      box-shadow: 0 18px 34px rgba(82, 122, 90, .12);
-      overflow: hidden;
-      animation: card-float 5.8s ease-in-out infinite;
-      animation-delay: var(--delay);
-      transform: translate3d(0, 0, 0);
-    }
-    .node-card:nth-child(2n) { transform: rotate(.35deg); }
-    .node-card:nth-child(3n) { transform: rotate(-.45deg); }
-    .node-card.goal { background: #fff2c7; }
-    .node-card.evidence.passed, .node-card.task.passed, .node-card.artifact.passed { background: #eef6de; }
-    .node-card.failed, .node-card.blocked { background: #f8ddd2; }
-    .node-card.unknown { background: #fff0bc; }
-    .node-cap {
+    .proof-card.unknown span { color: #80631a; background: rgba(233, 189, 102, .24); }
+    .proof-card.failed span,
+    .proof-card.blocked span { color: #9e4f35; background: rgba(201, 120, 75, .16); }
+    .card-cap {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
     }
-    .node-number {
-      width: 42px;
-      height: 42px;
+    .card-number {
+      width: 38px;
+      height: 38px;
       display: grid;
       place-items: center;
-      border-radius: 15px;
+      border-radius: 14px;
       background: var(--ink);
       color: var(--paper);
-      font: 800 13px "SFMono-Regular", Menlo, monospace;
+      font: 800 12px "SFMono-Regular", Menlo, monospace;
     }
-    .node-kind {
+    .card-kind {
       color: var(--moss);
       font-size: 11px;
       font-weight: 850;
@@ -814,36 +877,37 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     .stamp {
       width: max-content;
       max-width: 100%;
-      padding: 7px 10px;
+      padding: 6px 9px;
       border: 1px solid currentColor;
       border-radius: 999px;
+      color: var(--moss);
+      background: rgba(94, 134, 95, .10);
       font-size: 11px;
       font-weight: 850;
       letter-spacing: .08em;
       text-transform: uppercase;
     }
-    .stamp.passed { color: var(--moss); background: rgba(82, 122, 90, .10); }
-    .stamp.failed, .stamp.blocked { color: #9e4f35; background: rgba(200, 120, 74, .12); }
-    .stamp.unknown { color: #8b6f24; background: rgba(245, 216, 137, .36); }
+    .stamp.failed, .stamp.blocked { color: #9e4f35; background: rgba(201, 120, 75, .14); }
+    .stamp.unknown { color: #80631a; background: rgba(233, 189, 102, .26); }
+    h2 {
+      margin: 0 0 18px;
+      font-size: clamp(30px, 4vw, 50px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
     h3 {
       margin: 0;
-      font-size: 22px;
-      line-height: 1.08;
+      font-size: 20px;
+      line-height: 1.1;
       letter-spacing: 0;
-      overflow-wrap: anywhere;
-    }
-    p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.5;
       overflow-wrap: anywhere;
     }
     code {
       display: block;
       padding: 9px 10px;
-      border: 1px dashed rgba(82, 122, 90, .26);
+      border: 1px dashed rgba(94, 134, 95, .26);
       border-radius: 14px;
-      background: rgba(255, 248, 230, .72);
+      background: rgba(255, 248, 228, .72);
       color: #435b50;
       font: 12px "SFMono-Regular", Menlo, monospace;
       overflow-wrap: anywhere;
@@ -853,50 +917,29 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       max-width: 100%;
       padding: 6px 9px;
       border-radius: 999px;
-      background: rgba(143, 183, 186, .24);
-      color: #41696c;
+      background: rgba(94, 134, 95, .10);
+      color: #416147;
       font-size: 11px;
       font-weight: 800;
       letter-spacing: .08em;
       text-transform: uppercase;
       overflow-wrap: anywhere;
     }
-    .side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .panel {
-      padding: 18px;
-      border: 1px solid rgba(82, 122, 90, .22);
-      border-radius: 30px;
-      background:
-        linear-gradient(180deg, rgba(255, 248, 230, .94), rgba(255, 248, 230, .76)),
-        var(--paper);
-      box-shadow: 0 18px 42px rgba(82, 122, 90, .10);
-    }
-    .panel.route { background: linear-gradient(180deg, rgba(221, 238, 229, .86), rgba(255, 248, 230, .82)); }
-    .panel h2 {
-      margin: 0 0 14px;
-      font-size: 23px;
-      line-height: 1;
-      letter-spacing: 0;
-    }
-    .panel ul {
+    .ledger-list {
       display: grid;
       gap: 10px;
       margin: 0;
       padding: 0;
       list-style: none;
     }
-    .panel li {
+    .ledger-list li {
       padding: 0 0 10px;
-      border-bottom: 1px dashed rgba(82, 122, 90, .23);
+      border-bottom: 1px dashed rgba(94, 134, 95, .24);
       color: #3d5349;
       line-height: 1.45;
     }
-    .panel li:last-child { padding-bottom: 0; border-bottom: 0; }
-    .panel li span {
+    .ledger-list li:last-child { padding-bottom: 0; border-bottom: 0; }
+    .ledger-list li span {
       display: inline-block;
       margin-right: 8px;
       color: var(--clay);
@@ -904,12 +947,6 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       font-weight: 850;
       letter-spacing: .08em;
       text-transform: uppercase;
-    }
-    .schema-line {
-      margin: 0 0 12px;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
     }
     .badge-list {
       display: flex;
@@ -919,9 +956,9 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     .badge {
       max-width: 100%;
       padding: 7px 9px;
-      border: 1px solid rgba(82, 122, 90, .20);
+      border: 1px solid rgba(94, 134, 95, .20);
       border-radius: 999px;
-      background: rgba(255, 248, 230, .76);
+      background: rgba(255, 248, 228, .76);
       color: #416147;
       font-size: 11px;
       font-weight: 800;
@@ -941,90 +978,165 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       white-space: nowrap;
     }
     .footer-note {
-      margin: 2px 6px 0;
+      margin: 0;
       color: var(--muted);
       font-size: 12px;
       line-height: 1.5;
     }
-    @keyframes card-float {
-      0%, 100% { translate: 0 0; }
-      50% { translate: 0 -4px; }
+    .page-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+    .page-controls button {
+      min-height: 44px;
+      padding: 10px 16px;
+      border: 1px solid rgba(94, 134, 95, .26);
+      border-radius: 999px;
+      background: rgba(255, 248, 228, .72);
+      color: var(--ink);
+      font: inherit;
+      font-size: 13px;
+      font-weight: 760;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transform .18s ease, background .18s ease;
+    }
+    .page-controls button:active { transform: translateY(1px); }
+    .page-controls button.active {
+      background: var(--ink);
+      color: var(--paper);
+    }
+    @keyframes page-settle {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     @media (prefers-reduced-motion: reduce) {
-      .node-card { animation: none; }
+      .spread, .achievement-card, .proof-card, .journal-card { animation: none; transition: none; }
     }
-    @media (max-width: 1180px) {
-      .island-shell { grid-template-columns: 1fr; }
-      .side { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .footer-note { grid-column: 1 / -1; }
+    @media (max-width: 980px) {
+      .journal-stage { min-height: auto; }
+      .spread, .spread.active {
+        position: static;
+        display: none;
+        grid-template-columns: 1fr;
+        transform: none;
+      }
+      .spread.active { display: grid; }
+      .page { min-height: auto; }
+      .page.left::after, .page.right::before { display: none; }
     }
     @media (max-width: 820px) {
-      .hero { grid-template-columns: 1fr; }
-      .map-tile { min-height: 170px; }
-      .metrics, .graph, .side { grid-template-columns: 1fr; }
-      .board-head { display: grid; }
+      .metric-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 48px; }
+      .progress-orb { width: min(100%, 280px); }
     }
     @media (max-width: 560px) {
-      .island-shell { width: min(100vw - 20px, 1480px); padding-block: 10px; }
-      .hero, .board, .panel { border-radius: 24px; padding: 16px; }
-      h1 { font-size: 48px; }
-      .story { font-size: 17px; }
-      .metric { min-height: 96px; }
+      .journal-shell { width: min(100vw - 20px, 1380px); padding-block: 10px; }
+      .journal-top { display: grid; }
+      .page { border-radius: 24px; padding: 18px; }
+      h1 { font-size: 42px; }
     }
   </style>
 </head>
 <body>
-  <main class="island-shell">
-    <section class="stage">
-      <section class="hero">
-        <div>
-          <div class="topline"><span>Done Task Map</span><span>${escapeHtml(graph.platform)}</span><span>Clean-room</span></div>
-          <h1><span>DoneGraph</span><span>Island</span><span>Board</span></h1>
+  <main class="journal-shell">
+    <header class="journal-top">
+      <span>Done Task Map</span>
+      <span>${escapeHtml(graph.platform)}</span>
+      <span>Generated ${escapeHtml(graph.generated_at)}</span>
+    </header>
+    <section class="journal-stage" aria-live="polite">
+      <section class="spread active" data-spread="0">
+        <article class="page left">
+          <div class="page-kicker"><span>Progress Journal</span><span>Clean-room</span></div>
+          <h1><span>DoneGraph</span><span>Progress</span><span>Journal</span></h1>
           <p class="story">${escapeHtml(graph.narrative)}</p>
-        </div>
-        <div class="map-tile" aria-hidden="true"><div class="map-pin">${graph.summary.progress_percent}%</div></div>
+          <div class="soft-note">${escapeHtml(blockerText)}</div>
+        </article>
+        <article class="page right">
+          <div class="progress-orb" aria-label="Progress ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>complete</span></div>
+          <p class="progress-caption">The first page only answers one question: how much real progress has this collaboration earned?</p>
+          <div class="metric-grid">
+            <div class="metric"><span>Completed</span><strong>${graph.summary.completed_count}</strong></div>
+            <div class="metric"><span>Evidence Pass</span><strong>${graph.summary.evidence_passed}</strong></div>
+            <div class="metric"><span>Unknown Proof</span><strong>${graph.summary.evidence_unknown}</strong></div>
+            <div class="metric"><span>Blockers</span><strong>${graph.summary.blockers}</strong></div>
+          </div>
+        </article>
       </section>
-      <div class="metrics">
-        <div class="metric"><span>Progress</span><strong>${graph.summary.progress_percent}%</strong></div>
-        <div class="metric"><span>Completed</span><strong>${graph.summary.completed_count}</strong></div>
-        <div class="metric"><span>Evidence Pass</span><strong>${graph.summary.evidence_passed}</strong></div>
-        <div class="metric"><span>Blockers</span><strong>${graph.summary.blockers}</strong></div>
-      </div>
-      <section class="board">
-        <div class="board-head">
-          <h2>Progress Notes</h2>
-          <p>Each note is a collaboration fact: a goal, action, artifact, proof, blocker, or handoff step.</p>
-        </div>
-        <section class="graph" aria-label="DoneGraph task graph">
-          ${nodes}
-        </section>
+
+      <section class="spread" data-spread="1">
+        <article class="page left">
+          <div class="page-kicker"><span>Finished Work</span><span>${graph.achievements.length} entries</span></div>
+          <h2>Collected Progress</h2>
+          <section class="achievement-list">${completedCards || "<p class=\"soft-note\">No completed work has been recorded yet.</p>"}</section>
+        </article>
+        <article class="page right">
+          <div class="page-kicker"><span>All Notes</span><span>task memory</span></div>
+          <h2>Work Pages</h2>
+          <section class="node-grid">${nodes}</section>
+        </article>
+      </section>
+
+      <section class="spread" data-spread="2">
+        <article class="page left">
+          <div class="page-kicker"><span>Proof</span><span>evidence state</span></div>
+          <h2>Evidence Stamps</h2>
+          <section class="proof-grid">${evidenceCards || "<p class=\"soft-note\">No verification evidence has been recorded yet.</p>"}</section>
+        </article>
+        <article class="page right">
+          <div class="page-kicker"><span>Next Page</span><span>handoff</span></div>
+          <h2>Continue Here</h2>
+          <ul class="ledger-list">${nextSteps}</ul>
+          <p class="footer-note">This page is what the next AI session should read before it continues the work.</p>
+        </article>
+      </section>
+
+      <section class="spread" data-spread="3">
+        <article class="page left">
+          <div class="page-kicker"><span>Clean-room Schema</span><span>details</span></div>
+          <h2>Clean-room Schema</h2>
+          <p class="soft-note">${escapeHtml(graph.schema.purpose)}</p>
+          <div class="badge-list">${schemaLabels}</div>
+          <h3>Captured Sources</h3>
+          <ul class="ledger-list">${sources || "<li>Current records came from manual events.</li>"}</ul>
+        </article>
+        <article class="page right">
+          <div class="page-kicker"><span>Relationship Trace</span><span>optional</span></div>
+          <h2>Relationship Trace</h2>
+          <ul class="ledger-list edge-list">${relationshipTrace || "<li>No relationship edges yet.</li>"}</ul>
+          <h3>Achievement Ledger</h3>
+          <ul class="ledger-list">${achievements || "<li>No achievement entries yet.</li>"}</ul>
+        </article>
       </section>
     </section>
-    <aside class="side">
-      <section class="panel">
-        <h2>Clean-room Schema</h2>
-        <p class="schema-line">${escapeHtml(graph.schema.purpose)}</p>
-        <div class="badge-list">${schemaLabels}</div>
-      </section>
-      <section class="panel route">
-        <h2>Relationship Trace</h2>
-        <ul class="edge-list">${relationshipTrace || "<li>还没有关系边。</li>"}</ul>
-      </section>
-      <section class="panel">
-        <h2>成就账本</h2>
-        <ul>${achievements || "<li>还没有完成信号。</li>"}</ul>
-      </section>
-      <section class="panel">
-        <h2>下一轮接力</h2>
-        <ul>${nextSteps}</ul>
-      </section>
-      <section class="panel">
-        <h2>捕获来源</h2>
-        <ul>${sources || "<li>当前记录来自手动事件。</li>"}</ul>
-      </section>
-      <p class="footer-note">Generated at ${escapeHtml(graph.generated_at)} from .donegraph/session.jsonl. This dashboard is static and can be opened without a server.</p>
-    </aside>
+    <nav class="page-controls" aria-label="Journal pages">
+      <button class="active" type="button" data-target="0">Progress</button>
+      <button type="button" data-target="1">Finished</button>
+      <button type="button" data-target="2">Proof</button>
+      <button type="button" data-target="3">Details</button>
+    </nav>
   </main>
+  <script>
+    const spreads = Array.from(document.querySelectorAll(".spread"));
+    const buttons = Array.from(document.querySelectorAll(".page-controls button"));
+    const journalStage = document.querySelector(".journal-stage");
+    function showSpread(target) {
+      spreads.forEach((spread) => {
+        spread.classList.toggle("active", spread.dataset.spread === target);
+      });
+      buttons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.target === target);
+      });
+      journalStage?.scrollIntoView({ block: "start", behavior: "smooth" });
+    }
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => showSpread(button.dataset.target || "0"));
+    });
+  </script>
 </body>
 </html>`;
 }
