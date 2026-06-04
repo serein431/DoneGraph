@@ -72,6 +72,8 @@ describe("DoneGraph core", () => {
     expect(renderAchievementLog(graph)).toContain("DoneGraph Achievement Log");
     expect(renderNextSteps(graph)).toContain("Give This To The Next AI");
     expect(renderDashboardHtml(graph)).toContain("Done Task Map");
+    expect(renderDashboardHtml(graph)).toContain("<span>DoneGraph</span><span>Island</span><span>Board</span>");
+    expect(renderDashboardHtml(graph)).toContain("Progress Notes");
     expect(renderDashboardHtml(graph)).toContain("Clean-room Schema");
     expect(renderDashboardHtml(graph)).toContain("verified_by");
     expect(renderDashboardHtml(graph)).toContain("Generated at 2026-05-28T00:04:00.000Z");
