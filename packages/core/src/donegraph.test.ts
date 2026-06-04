@@ -72,7 +72,9 @@ describe("DoneGraph core", () => {
     expect(renderAchievementLog(graph)).toContain("DoneGraph Achievement Log");
     expect(renderNextSteps(graph)).toContain("Give This To The Next AI");
     expect(renderDashboardHtml(graph)).toContain("完成进度地图");
-    expect(renderDashboardHtml(graph)).toContain("<span>DoneGraph</span><span>进度</span><span>手账</span>");
+    expect(renderDashboardHtml(graph)).toContain("<span>DoneGraph</span><span>进度岛</span><span>手账</span>");
+    expect(renderDashboardHtml(graph)).toContain("翻到完成页");
+    expect(renderDashboardHtml(graph)).toContain("journalStage?.classList.add(\"turning\")");
     expect(renderDashboardHtml(graph)).toContain("收集到的进展");
     expect(renderDashboardHtml(graph)).toContain("data-target=\"1\">完成");
     expect(renderDashboardHtml(graph)).toContain("洁净室结构");

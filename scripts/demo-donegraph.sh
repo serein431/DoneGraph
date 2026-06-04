@@ -3,10 +3,12 @@ set -euo pipefail
 
 WORKSPACE_ROOT="$(pwd)"
 
-npm run cli -- start "Ship a hackathon demo that shows AI progress clearly" --platform codex --workspace "$WORKSPACE_ROOT"
-npm run cli -- capture --goal "Ship a standalone clean-room DoneGraph demo" --platform codex --workspace "$WORKSPACE_ROOT"
-npm run cli -- checkpoint "Implemented the command-first DoneGraph CLI" --command "npm test" --workspace "$WORKSPACE_ROOT"
-npm run cli -- checkpoint "Generated a static dashboard" --path ".donegraph/dashboard.html" --workspace "$WORKSPACE_ROOT"
-npm run cli -- proof "Tests passed" --pass --command "npm test" --workspace "$WORKSPACE_ROOT"
-npm run cli -- done "The demo can now show completed work, evidence, and the next handoff" --workspace "$WORKSPACE_ROOT"
+rm -rf "$WORKSPACE_ROOT/.donegraph"
+
+npm run cli -- start "做一个能看见 AI 协作进度的黑客松演示" --platform codex --workspace "$WORKSPACE_ROOT"
+npm run cli -- capture --goal "交付独立、洁净室重写的 DoneGraph 演示" --platform codex --workspace "$WORKSPACE_ROOT"
+npm run cli -- checkpoint "完成命令优先的 DoneGraph CLI" --command "npm test" --workspace "$WORKSPACE_ROOT"
+npm run cli -- checkpoint "生成可静态打开的进度手账首页" --path ".donegraph/dashboard.html" --workspace "$WORKSPACE_ROOT"
+npm run cli -- proof "测试已经通过" --pass --command "npm test" --workspace "$WORKSPACE_ROOT"
+npm run cli -- done "演示现在能展示完成进度、验证证据和下一步交接" --workspace "$WORKSPACE_ROOT"
 npm run cli -- dashboard --no-open --workspace "$WORKSPACE_ROOT"

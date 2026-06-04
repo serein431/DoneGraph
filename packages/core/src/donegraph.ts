@@ -582,18 +582,21 @@ export function renderDashboardHtml(graph: DoneGraph): string {
   <title>DoneGraph 进度手账</title>
   <style>
     :root {
-      --meadow: #dcebd7;
-      --field: #eef4dc;
-      --paper: #fff8e4;
-      --page: #fff3cc;
-      --page-deep: #f0dca4;
-      --ink: #2a3528;
-      --muted: #73806d;
-      --moss: #5e865f;
+      --meadow: #dbeed5;
+      --field: #f7f0d0;
+      --paper: #fff9e9;
+      --page: #fff3d5;
+      --page-deep: #ecd99e;
+      --ink: #56391f;
+      --muted: #806a4e;
+      --moss: #4f926c;
+      --mint: #83c999;
+      --teal: #1dbeb0;
       --clay: #c9784b;
       --amber: #e9bd66;
-      --cream-line: rgba(78, 92, 64, .18);
-      --shadow: rgba(84, 98, 66, .18);
+      --cream-line: rgba(118, 79, 39, .18);
+      --shadow: rgba(91, 63, 32, .18);
+      --button-shadow: #d5a96e;
     }
     * { box-sizing: border-box; }
     html, body { overflow-x: hidden; }
@@ -602,10 +605,11 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       min-width: 320px;
       color: var(--ink);
       background:
-        radial-gradient(ellipse at 20% 8%, rgba(255, 248, 228, .82), transparent 34rem),
-        radial-gradient(ellipse at 78% 18%, rgba(233, 189, 102, .18), transparent 30rem),
-        linear-gradient(180deg, var(--meadow) 0%, var(--field) 58%, #f5e8bd 100%);
-      font-family: "Outfit", "Avenir Next", "Nunito Sans", "PingFang SC", "Hiragino Sans GB", sans-serif;
+        radial-gradient(ellipse at 18% 12%, rgba(255, 249, 233, .92), transparent 32rem),
+        radial-gradient(ellipse at 76% 10%, rgba(29, 190, 176, .18), transparent 24rem),
+        radial-gradient(ellipse at 50% 100%, rgba(233, 189, 102, .34), transparent 40rem),
+        linear-gradient(180deg, var(--meadow) 0%, #eef5d8 44%, var(--field) 100%);
+      font-family: "Nunito", "Zen Maru Gothic", "Avenir Next", "PingFang SC", "Hiragino Sans GB", sans-serif;
       text-rendering: geometricPrecision;
     }
     body::before {
@@ -613,10 +617,10 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       position: fixed;
       inset: 0;
       pointer-events: none;
-      opacity: .34;
+      opacity: .28;
       background-image:
-        linear-gradient(120deg, rgba(94, 134, 95, .07) 0 1px, transparent 1px 28px),
-        linear-gradient(60deg, rgba(42, 53, 40, .045) 0 1px, transparent 1px 34px);
+        radial-gradient(circle at 20% 20%, rgba(121, 79, 39, .10) 0 1px, transparent 1px 22px),
+        linear-gradient(120deg, rgba(79, 146, 108, .07) 0 1px, transparent 1px 30px);
       mask-image: linear-gradient(180deg, #000 0%, transparent 88%);
     }
     .journal-shell {
@@ -653,6 +657,24 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       min-height: 760px;
       perspective: 1800px;
     }
+    .journal-stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      border-radius: 34px;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateX(-22%) rotateY(-74deg);
+      transform-origin: left center;
+      background:
+        linear-gradient(90deg, rgba(255, 249, 233, .92), rgba(255, 243, 213, .34)),
+        radial-gradient(ellipse at 25% 50%, rgba(121, 79, 39, .12), transparent 42%);
+      box-shadow: 24px 0 44px rgba(91, 63, 32, .12);
+    }
+    .journal-stage.turning::after {
+      animation: page-turn .72s cubic-bezier(.18, .82, .2, 1);
+    }
     .spread {
       grid-area: 1 / 1;
       display: grid;
@@ -660,14 +682,16 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       gap: 18px;
       opacity: 0;
       pointer-events: none;
-      transform: rotateY(8deg) translateX(16px);
+      transform: rotateY(10deg) translateX(20px) scale(.992);
       transform-origin: center right;
-      transition: opacity .42s ease, transform .62s cubic-bezier(.2, .8, .2, 1);
+      filter: blur(1px);
+      transition: opacity .42s ease, transform .68s cubic-bezier(.2, .8, .2, 1), filter .42s ease;
     }
     .spread.active {
       opacity: 1;
       pointer-events: auto;
-      transform: rotateY(0) translateX(0);
+      transform: rotateY(0) translateX(0) scale(1);
+      filter: none;
     }
     .page {
       position: relative;
@@ -679,8 +703,16 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         linear-gradient(90deg, rgba(160, 118, 69, .10), transparent 26px),
         linear-gradient(180deg, rgba(255, 248, 228, .98), rgba(255, 243, 204, .96));
       border-radius: 34px;
-      box-shadow: 0 28px 72px var(--shadow);
+      box-shadow: 0 28px 0 rgba(213, 169, 110, .26), 0 36px 72px var(--shadow);
       overflow: hidden;
+    }
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border: 1px dashed rgba(121, 79, 39, .12);
+      border-radius: 26px;
+      pointer-events: none;
     }
     .page.left::after,
     .page.right::before {
@@ -736,10 +768,179 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     .story {
       max-width: 58ch;
       margin: 0;
-      color: #455844;
+      color: #6d5638;
       font-size: clamp(17px, 1.8vw, 23px);
       line-height: 1.42;
       overflow-wrap: anywhere;
+    }
+    .home-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+    }
+    .home-title {
+      margin-bottom: 22px;
+      color: var(--ink);
+      font-size: clamp(54px, 7vw, 106px);
+      line-height: .9;
+      text-shadow: 0 6px 0 rgba(213, 169, 110, .22);
+    }
+    .home-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .home-actions button {
+      min-height: 48px;
+      padding: 12px 18px;
+      border: 1px solid rgba(121, 79, 39, .2);
+      border-radius: 22px;
+      background: var(--teal);
+      color: #fffdf3;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 7px 0 #0f8f86, 0 14px 22px rgba(29, 190, 176, .18);
+      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    }
+    .home-actions button.secondary {
+      background: #fff7dc;
+      color: var(--ink);
+      box-shadow: 0 7px 0 var(--button-shadow), 0 14px 22px rgba(121, 79, 39, .12);
+    }
+    .home-actions button:hover {
+      transform: translateY(-2px);
+      filter: saturate(1.08);
+    }
+    .home-actions button:active {
+      transform: translateY(4px);
+      box-shadow: 0 3px 0 #0f8f86, 0 8px 16px rgba(29, 190, 176, .14);
+    }
+    .home-actions button.secondary:active {
+      box-shadow: 0 3px 0 var(--button-shadow), 0 8px 16px rgba(121, 79, 39, .10);
+    }
+    .home-map {
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+      background:
+        radial-gradient(circle at 20% 18%, rgba(255, 255, 255, .72), transparent 9rem),
+        radial-gradient(circle at 78% 24%, rgba(131, 201, 153, .34), transparent 11rem),
+        linear-gradient(180deg, #fff8df, #f6e7b7);
+    }
+    .island-scene {
+      position: relative;
+      min-height: 430px;
+      border-radius: 32px;
+      background:
+        radial-gradient(ellipse at 50% 62%, rgba(131, 201, 153, .26) 0 39%, transparent 40%),
+        linear-gradient(180deg, rgba(255, 255, 255, .36), rgba(255, 249, 233, .2));
+      overflow: hidden;
+    }
+    .island-scene::before,
+    .island-scene::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, .72);
+      animation: cloud-drift 8s ease-in-out infinite alternate;
+    }
+    .island-scene::before { width: 150px; height: 42px; left: 9%; top: 12%; }
+    .island-scene::after { width: 108px; height: 34px; right: 12%; top: 20%; animation-delay: -2s; }
+    .island-ground {
+      position: absolute;
+      left: 50%;
+      top: 56%;
+      width: min(82%, 440px);
+      aspect-ratio: 1.32;
+      transform: translate(-50%, -50%) rotate(-3deg);
+      border: 3px solid rgba(121, 79, 39, .10);
+      border-radius: 48% 52% 44% 56% / 58% 48% 52% 42%;
+      background:
+        radial-gradient(circle at 38% 44%, rgba(255, 249, 233, .62) 0 10%, transparent 11%),
+        radial-gradient(circle at 68% 58%, rgba(29, 190, 176, .20) 0 12%, transparent 13%),
+        linear-gradient(135deg, #a8d88c, #79c991 54%, #52ae7b);
+      box-shadow: inset 0 -18px 0 rgba(56, 126, 83, .16), 0 26px 0 rgba(213, 169, 110, .28), 0 38px 48px rgba(91, 63, 32, .15);
+      animation: island-bob 5s ease-in-out infinite;
+    }
+    .path-ribbon {
+      position: absolute;
+      left: 13%;
+      right: 12%;
+      top: 52%;
+      height: 58px;
+      border-top: 8px dotted rgba(121, 79, 39, .32);
+      border-radius: 50%;
+      transform: rotate(9deg);
+    }
+    .path-dot {
+      position: absolute;
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: var(--paper);
+      color: var(--ink);
+      font: 900 13px "SFMono-Regular", Menlo, monospace;
+      box-shadow: 0 6px 0 rgba(213, 169, 110, .5), 0 12px 16px rgba(91, 63, 32, .14);
+    }
+    .dot-one { left: 17%; top: 59%; }
+    .dot-two { left: 38%; top: 43%; }
+    .dot-three { right: 30%; top: 55%; }
+    .dot-four { right: 13%; top: 35%; }
+    .tiny-house {
+      position: absolute;
+      left: 31%;
+      top: 24%;
+      width: 74px;
+      height: 58px;
+      border-radius: 20px 20px 16px 16px;
+      background: #fff4cf;
+      box-shadow: 0 8px 0 rgba(121, 79, 39, .12);
+    }
+    .tiny-house::before {
+      content: "";
+      position: absolute;
+      left: -8px;
+      top: -26px;
+      width: 90px;
+      height: 46px;
+      border-radius: 26px 26px 8px 8px;
+      background: var(--clay);
+      transform: rotate(-4deg);
+    }
+    .tiny-house::after {
+      content: "";
+      position: absolute;
+      left: 28px;
+      bottom: 0;
+      width: 20px;
+      height: 28px;
+      border-radius: 10px 10px 0 0;
+      background: #8f653d;
+    }
+    .tiny-tree {
+      position: absolute;
+      right: 24%;
+      top: 25%;
+      width: 46px;
+      height: 76px;
+      border-radius: 999px 999px 22px 22px;
+      background: #2f9267;
+      box-shadow: -28px 34px 0 -8px #4cae72;
+    }
+    .tiny-tree::after {
+      content: "";
+      position: absolute;
+      left: 17px;
+      bottom: -20px;
+      width: 12px;
+      height: 32px;
+      border-radius: 8px;
+      background: #8b6038;
     }
     .progress-orb {
       position: relative;
@@ -751,7 +952,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       border-radius: 50%;
       background:
         radial-gradient(circle at center, var(--paper) 0 48%, transparent 49%),
-        conic-gradient(var(--moss) 0 ${graph.summary.progress_percent * 3.6}deg, rgba(94, 134, 95, .16) 0deg);
+        conic-gradient(var(--teal) 0 ${graph.summary.progress_percent * 3.6}deg, rgba(79, 146, 108, .16) 0deg);
       box-shadow: inset 0 0 0 16px rgba(255, 248, 228, .72), 0 24px 46px rgba(94, 134, 95, .16);
     }
     .progress-orb::after {
@@ -775,6 +976,49 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       font-size: 12px;
       letter-spacing: .13em;
       text-transform: uppercase;
+    }
+    .home-map .progress-orb {
+      z-index: 2;
+      width: min(58%, 238px);
+      margin: 250px auto 0;
+      background:
+        radial-gradient(circle at center, var(--paper) 0 50%, transparent 51%),
+        conic-gradient(var(--teal) 0 ${graph.summary.progress_percent * 3.6}deg, rgba(255, 255, 255, .42) 0deg);
+      box-shadow: inset 0 0 0 12px rgba(255, 249, 233, .72), 0 14px 0 rgba(213, 169, 110, .30), 0 24px 34px rgba(91, 63, 32, .14);
+    }
+    .home-map .progress-orb strong {
+      font-size: clamp(48px, 7vw, 78px);
+      letter-spacing: -3px;
+    }
+    .home-map .progress-orb span {
+      bottom: 25%;
+      font-size: 11px;
+    }
+    .home-stat-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .home-stat {
+      min-height: 88px;
+      padding: 14px;
+      border: 1px solid rgba(121, 79, 39, .14);
+      border-radius: 22px;
+      background: rgba(255, 249, 233, .78);
+      box-shadow: 0 6px 0 rgba(213, 169, 110, .22);
+    }
+    .home-stat span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .home-stat strong {
+      display: block;
+      margin-top: 10px;
+      color: var(--moss);
+      font: 900 34px/1 "SFMono-Regular", Menlo, monospace;
     }
     .soft-note {
       padding: 16px;
@@ -1006,29 +1250,48 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     .page-controls button {
       min-height: 44px;
       padding: 10px 16px;
-      border: 1px solid rgba(94, 134, 95, .26);
-      border-radius: 999px;
-      background: rgba(255, 248, 228, .72);
+      border: 1px solid rgba(121, 79, 39, .18);
+      border-radius: 18px;
+      background: #fff7dc;
       color: var(--ink);
       font: inherit;
       font-size: 13px;
-      font-weight: 760;
+      font-weight: 900;
       letter-spacing: .05em;
       text-transform: uppercase;
       cursor: pointer;
-      transition: transform .18s ease, background .18s ease;
+      box-shadow: 0 6px 0 var(--button-shadow), 0 12px 22px rgba(91, 63, 32, .10);
+      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
     }
-    .page-controls button:active { transform: translateY(1px); }
+    .page-controls button:hover { transform: translateY(-2px); }
+    .page-controls button:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 var(--button-shadow), 0 8px 16px rgba(91, 63, 32, .08);
+    }
     .page-controls button.active {
-      background: var(--ink);
-      color: var(--paper);
+      background: var(--teal);
+      color: #fffdf3;
+      box-shadow: 0 6px 0 #0f8f86, 0 12px 22px rgba(29, 190, 176, .18);
+    }
+    @keyframes page-turn {
+      0% { opacity: 0; transform: translateX(-26%) rotateY(-78deg); }
+      22% { opacity: .72; }
+      100% { opacity: 0; transform: translateX(62%) rotateY(72deg); }
     }
     @keyframes page-settle {
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    @keyframes island-bob {
+      0%, 100% { transform: translate(-50%, -50%) rotate(-3deg) translateY(0); }
+      50% { transform: translate(-50%, -50%) rotate(-2deg) translateY(-8px); }
+    }
+    @keyframes cloud-drift {
+      from { transform: translateX(-8px); }
+      to { transform: translateX(12px); }
+    }
     @media (prefers-reduced-motion: reduce) {
-      .spread, .achievement-card, .proof-card, .journal-card { animation: none; transition: none; }
+      .spread, .achievement-card, .proof-card, .journal-card, .journal-stage::after, .island-ground, .island-scene::before, .island-scene::after { animation: none; transition: none; }
     }
     @media (max-width: 980px) {
       .journal-stage { min-height: auto; }
@@ -1043,9 +1306,48 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       .page.left::after, .page.right::before { display: none; }
     }
     @media (max-width: 820px) {
-      .metric-grid { grid-template-columns: 1fr; }
+      .metric-grid, .home-stat-strip { grid-template-columns: 1fr; }
       h1 { font-size: 48px; }
       .progress-orb { width: min(100%, 280px); }
+      .island-scene { min-height: 360px; }
+      .home-map .progress-orb { margin-top: 210px; }
+    }
+    @media (min-width: 760px) and (max-width: 980px) {
+      .home-spread,
+      .home-spread.active {
+        display: grid;
+        grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr);
+        gap: 14px;
+      }
+      .home-spread .page {
+        min-height: 640px;
+        padding: 24px;
+      }
+      .home-title {
+        font-size: clamp(42px, 5.8vw, 52px);
+        line-height: .94;
+      }
+      .home-actions button {
+        min-height: 44px;
+        padding: 10px 14px;
+      }
+      .island-scene {
+        min-height: 330px;
+      }
+      .home-map .progress-orb {
+        width: min(54%, 190px);
+        margin-top: 194px;
+      }
+      .home-stat-strip {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .home-stat {
+        min-height: 74px;
+        padding: 12px;
+      }
+      .home-stat strong {
+        font-size: 26px;
+      }
     }
     @media (max-width: 560px) {
       .journal-shell { width: min(100vw - 20px, 1380px); padding-block: 10px; }
@@ -1063,14 +1365,46 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       <span>生成于 ${escapeHtml(graph.generated_at)}</span>
     </header>
     <section class="journal-stage" aria-live="polite">
-      <section class="spread active" data-spread="0">
-        <article class="page left">
+      <section class="spread active home-spread" data-spread="0">
+        <article class="page left home-copy">
+          <div>
           <div class="page-kicker"><span>进度手账</span><span>洁净室重写</span></div>
-          <h1><span>DoneGraph</span><span>进度</span><span>手账</span></h1>
+          <h1 class="home-title"><span>DoneGraph</span><span>进度岛</span><span>手账</span></h1>
           <p class="story">${escapeHtml(graph.narrative)}</p>
+          <div class="home-actions">
+            <button type="button" data-jump="1">翻到完成页</button>
+            <button class="secondary" type="button" data-jump="2">看看证据</button>
+          </div>
+          </div>
           <div class="soft-note">${escapeHtml(blockerText)}</div>
         </article>
-        <article class="page right">
+        <article class="page right home-map">
+          <div class="page-kicker"><span>今日进度</span><span>${graph.summary.completed_count} 个完成信号</span></div>
+          <div class="island-scene" aria-hidden="true">
+            <div class="island-ground">
+              <div class="path-ribbon"></div>
+              <div class="tiny-house"></div>
+              <div class="tiny-tree"></div>
+              <div class="path-dot dot-one">01</div>
+              <div class="path-dot dot-two">02</div>
+              <div class="path-dot dot-three">03</div>
+              <div class="path-dot dot-four">${String(Math.max(1, Math.min(99, graph.summary.completed_count))).padStart(2, "0")}</div>
+            </div>
+            <div class="progress-orb" aria-label="完成进度 ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>已完成</span></div>
+          </div>
+          <p class="progress-caption">首页先给一个安定的答案：做到哪里了，哪些已经落袋，下一页再慢慢翻。</p>
+          <div class="home-stat-strip">
+            <div class="home-stat"><span>已完成</span><strong>${graph.summary.completed_count}</strong></div>
+            <div class="home-stat"><span>已验证</span><strong>${graph.summary.evidence_passed}</strong></div>
+            <div class="home-stat"><span>阻塞</span><strong>${graph.summary.blockers}</strong></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="spread" data-spread="1">
+        <article class="page left">
+          <div class="page-kicker"><span>进度详情</span><span>总览</span></div>
+          <h2>进度刻度</h2>
           <div class="progress-orb" aria-label="完成进度 ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>已完成</span></div>
           <p class="progress-caption">第一页只回答一件事：这轮你和 AI 已经一起完成了多少真实进展？</p>
           <div class="metric-grid">
@@ -1080,18 +1414,10 @@ export function renderDashboardHtml(graph: DoneGraph): string {
             <div class="metric"><span>阻塞</span><strong>${graph.summary.blockers}</strong></div>
           </div>
         </article>
-      </section>
-
-      <section class="spread" data-spread="1">
-        <article class="page left">
+        <article class="page right">
           <div class="page-kicker"><span>完成清单</span><span>${graph.achievements.length} 条记录</span></div>
           <h2>收集到的进展</h2>
           <section class="achievement-list">${completedCards || "<p class=\"soft-note\">还没有记录已完成的进展。</p>"}</section>
-        </article>
-        <article class="page right">
-          <div class="page-kicker"><span>全部记录</span><span>任务记忆</span></div>
-          <h2>工作页</h2>
-          <section class="node-grid">${nodes}</section>
         </article>
       </section>
 
@@ -1137,8 +1463,14 @@ export function renderDashboardHtml(graph: DoneGraph): string {
   <script>
     const spreads = Array.from(document.querySelectorAll(".spread"));
     const buttons = Array.from(document.querySelectorAll(".page-controls button"));
+    const jumpButtons = Array.from(document.querySelectorAll("[data-jump]"));
     const journalStage = document.querySelector(".journal-stage");
     function showSpread(target) {
+      const current = document.querySelector(".spread.active")?.dataset.spread;
+      if (current === target) return;
+      journalStage?.classList.remove("turning");
+      void journalStage?.offsetWidth;
+      journalStage?.classList.add("turning");
       spreads.forEach((spread) => {
         spread.classList.toggle("active", spread.dataset.spread === target);
       });
@@ -1146,9 +1478,13 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         button.classList.toggle("active", button.dataset.target === target);
       });
       journalStage?.scrollIntoView({ block: "start", behavior: "smooth" });
+      window.setTimeout(() => journalStage?.classList.remove("turning"), 760);
     }
     buttons.forEach((button) => {
       button.addEventListener("click", () => showSpread(button.dataset.target || "0"));
+    });
+    jumpButtons.forEach((button) => {
+      button.addEventListener("click", () => showSpread(button.dataset.jump || "0"));
     });
   </script>
 </body>
