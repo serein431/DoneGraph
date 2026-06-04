@@ -90,7 +90,10 @@ describe("DoneGraph core", () => {
     expect(renderDashboardHtml(graph)).toContain("完成进度地图");
     expect(renderDashboardHtml(graph)).toContain("<span>DoneGraph</span><span>进度岛</span><span>手账</span>");
     expect(renderDashboardHtml(graph)).toContain("翻到完成页");
-    expect(renderDashboardHtml(graph)).toContain("journalStage?.classList.add(\"turning\")");
+    expect(renderDashboardHtml(graph)).toContain("journalStage?.classList.add(\"turning\", `turning-${direction}`)");
+    expect(renderDashboardHtml(graph)).toContain("<div class=\"book-spine\" aria-hidden=\"true\"></div>");
+    expect(renderDashboardHtml(graph)).toContain("<div class=\"turn-page\" aria-hidden=\"true\"></div>");
+    expect(renderDashboardHtml(graph)).toContain("window.setTimeout(() => setActiveSpread(target), 220);");
     expect(renderDashboardHtml(graph)).toContain("4 / 6 个里程碑");
     expect(renderDashboardHtml(graph)).toContain("演示还差收尾");
     expect(renderDashboardHtml(graph)).toContain("收集到的进展");

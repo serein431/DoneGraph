@@ -832,46 +832,118 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       position: relative;
       display: grid;
       min-height: 760px;
-      perspective: 1800px;
+      perspective: 2200px;
+      transform-style: preserve-3d;
+      isolation: isolate;
     }
+    .journal-stage::before,
     .journal-stage::after {
       content: "";
       position: absolute;
-      inset: 0;
-      z-index: 5;
-      border-radius: 34px;
+      pointer-events: none;
+    }
+    .journal-stage::before {
+      inset: -18px -14px 18px;
+      z-index: 0;
+      border-radius: 42px;
+      background:
+        linear-gradient(90deg, rgba(142, 88, 48, .22), rgba(255, 243, 213, .42) 8%, rgba(255, 243, 213, .32) 92%, rgba(142, 88, 48, .20)),
+        linear-gradient(180deg, rgba(255, 252, 239, .72), rgba(219, 185, 118, .34));
+      box-shadow:
+        0 30px 0 rgba(196, 143, 73, .22),
+        0 48px 78px rgba(85, 59, 34, .22);
+    }
+    .journal-stage::after {
+      left: 5%;
+      right: 5%;
+      bottom: -28px;
+      z-index: 1;
+      height: 42px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse at center, rgba(70, 48, 25, .22), transparent 72%);
+      filter: blur(8px);
+    }
+    .book-spine {
+      position: absolute;
+      top: -4px;
+      bottom: 18px;
+      left: 50%;
+      z-index: 6;
+      width: 34px;
+      pointer-events: none;
+      transform: translateX(-50%) translateZ(28px);
+      border-radius: 999px;
+      background:
+        linear-gradient(90deg, transparent, rgba(89, 61, 34, .24) 22%, rgba(255, 251, 233, .65) 48%, rgba(89, 61, 34, .20) 76%, transparent),
+        repeating-linear-gradient(180deg, rgba(121, 79, 39, .16) 0 1px, transparent 1px 14px);
+      box-shadow:
+        inset 8px 0 14px rgba(98, 67, 35, .14),
+        inset -8px 0 12px rgba(255, 255, 255, .38),
+        0 0 28px rgba(84, 58, 31, .16);
+    }
+    .turn-page {
+      position: absolute;
+      top: 10px;
+      bottom: 34px;
+      left: calc(50% + 8px);
+      z-index: 7;
+      width: calc(50% - 18px);
       pointer-events: none;
       opacity: 0;
-      transform: translateX(-22%) rotateY(-74deg);
+      transform: rotateY(0deg) translateZ(34px);
       transform-origin: left center;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+      border: 1px solid rgba(121, 79, 39, .16);
+      border-radius: 10px 34px 34px 10px;
       background:
-        linear-gradient(90deg, rgba(255, 249, 233, .92), rgba(255, 243, 213, .34)),
-        radial-gradient(ellipse at 25% 50%, rgba(121, 79, 39, .12), transparent 42%);
-      box-shadow: 24px 0 44px rgba(91, 63, 32, .12);
+        linear-gradient(90deg, rgba(113, 78, 41, .18), transparent 12%, rgba(255, 255, 255, .28) 52%, rgba(211, 170, 102, .16)),
+        linear-gradient(180deg, rgba(255, 253, 242, .98), rgba(255, 242, 205, .98));
+      box-shadow:
+        -14px 0 26px rgba(81, 56, 30, .20),
+        22px 20px 44px rgba(84, 58, 31, .16);
     }
-    .journal-stage.turning::after {
-      animation: page-turn .72s cubic-bezier(.18, .82, .2, 1);
+    .turn-page::before {
+      content: "";
+      position: absolute;
+      inset: 14px;
+      border: 1px dashed rgba(121, 79, 39, .10);
+      border-radius: 8px 24px 24px 8px;
+      background:
+        repeating-linear-gradient(180deg, transparent 0 35px, rgba(121, 79, 39, .045) 35px 36px);
+    }
+    .journal-stage.turning-forward .turn-page {
+      animation: page-turn-forward .86s cubic-bezier(.18, .76, .2, 1);
+    }
+    .journal-stage.turning-backward .turn-page {
+      left: 10px;
+      transform-origin: right center;
+      border-radius: 34px 10px 10px 34px;
+      animation: page-turn-backward .86s cubic-bezier(.18, .76, .2, 1);
     }
     .spread {
       grid-area: 1 / 1;
+      position: relative;
+      z-index: 2;
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 18px;
+      gap: 12px;
       opacity: 0;
       pointer-events: none;
-      transform: rotateY(10deg) translateX(20px) scale(.992);
-      transform-origin: center right;
-      filter: blur(1px);
-      transition: opacity .42s ease, transform .68s cubic-bezier(.2, .8, .2, 1), filter .42s ease;
+      transform: translateY(4px) scale(.998);
+      filter: saturate(.96);
+      transition: opacity .24s ease, transform .34s cubic-bezier(.2, .8, .2, 1), filter .24s ease;
     }
     .spread.active {
+      z-index: 3;
       opacity: 1;
       pointer-events: auto;
-      transform: rotateY(0) translateX(0) scale(1);
+      transform: translateY(0) scale(1);
       filter: none;
     }
     .page {
       position: relative;
+      z-index: 1;
       min-width: 0;
       min-height: 740px;
       padding: clamp(24px, 3.2vw, 44px);
@@ -880,8 +952,21 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         linear-gradient(90deg, rgba(160, 118, 69, .10), transparent 26px),
         linear-gradient(180deg, rgba(255, 248, 228, .98), rgba(255, 243, 204, .96));
       border-radius: 34px;
-      box-shadow: 0 28px 0 rgba(213, 169, 110, .26), 0 36px 72px var(--shadow);
+      box-shadow:
+        0 2px 0 rgba(255, 252, 237, .84),
+        0 18px 0 rgba(228, 190, 122, .28),
+        0 30px 58px var(--shadow);
       overflow: hidden;
+    }
+    .page.left {
+      border-radius: 34px 15px 15px 34px;
+      transform: rotateY(.8deg);
+      transform-origin: right center;
+    }
+    .page.right {
+      border-radius: 15px 34px 34px 15px;
+      transform: rotateY(-.8deg);
+      transform-origin: left center;
     }
     .page::before {
       content: "";
@@ -902,11 +987,15 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     }
     .page.left::after {
       right: -1px;
-      background: linear-gradient(90deg, transparent, rgba(98, 74, 42, .12));
+      background:
+        linear-gradient(90deg, transparent, rgba(98, 74, 42, .16)),
+        repeating-linear-gradient(180deg, transparent 0 16px, rgba(121, 79, 39, .035) 16px 17px);
     }
     .page.right::before {
       left: -1px;
-      background: linear-gradient(270deg, transparent, rgba(98, 74, 42, .10));
+      background:
+        linear-gradient(270deg, transparent, rgba(98, 74, 42, .14)),
+        repeating-linear-gradient(180deg, transparent 0 16px, rgba(121, 79, 39, .035) 16px 17px);
     }
     .page-kicker {
       display: flex;
@@ -1450,10 +1539,57 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       color: #fffdf3;
       box-shadow: 0 6px 0 #0f8f86, 0 12px 22px rgba(29, 190, 176, .18);
     }
-    @keyframes page-turn {
-      0% { opacity: 0; transform: translateX(-26%) rotateY(-78deg); }
-      22% { opacity: .72; }
-      100% { opacity: 0; transform: translateX(62%) rotateY(72deg); }
+    @keyframes page-turn-forward {
+      0% {
+        opacity: 0;
+        transform: rotateY(0deg) translateZ(34px);
+        filter: brightness(1.02);
+      }
+      8% {
+        opacity: 1;
+      }
+      42% {
+        opacity: 1;
+        transform: rotateY(-86deg) translateZ(48px) translateX(-4px);
+        filter: brightness(.96);
+        box-shadow: -32px 0 42px rgba(81, 56, 30, .28), 22px 20px 44px rgba(84, 58, 31, .14);
+      }
+      68% {
+        opacity: .92;
+        transform: rotateY(-146deg) translateZ(30px) translateX(-8px);
+        filter: brightness(.9);
+      }
+      100% {
+        opacity: 0;
+        transform: rotateY(-178deg) translateZ(18px) translateX(-10px);
+        filter: brightness(.92);
+      }
+    }
+    @keyframes page-turn-backward {
+      0% {
+        opacity: 0;
+        transform: rotateY(0deg) translateZ(34px);
+        filter: brightness(1.02);
+      }
+      8% {
+        opacity: 1;
+      }
+      42% {
+        opacity: 1;
+        transform: rotateY(86deg) translateZ(48px) translateX(4px);
+        filter: brightness(.96);
+        box-shadow: 32px 0 42px rgba(81, 56, 30, .28), -22px 20px 44px rgba(84, 58, 31, .14);
+      }
+      68% {
+        opacity: .92;
+        transform: rotateY(146deg) translateZ(30px) translateX(8px);
+        filter: brightness(.9);
+      }
+      100% {
+        opacity: 0;
+        transform: rotateY(178deg) translateZ(18px) translateX(10px);
+        filter: brightness(.92);
+      }
     }
     @keyframes page-settle {
       from { opacity: 0; transform: translateY(10px); }
@@ -1468,10 +1604,16 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       to { transform: translateX(12px); }
     }
     @media (prefers-reduced-motion: reduce) {
-      .spread, .achievement-card, .proof-card, .journal-card, .journal-stage::after, .island-ground, .island-scene::before, .island-scene::after { animation: none; transition: none; }
+      .spread, .achievement-card, .proof-card, .journal-card, .turn-page, .island-ground, .island-scene::before, .island-scene::after { animation: none; transition: none; }
     }
-    @media (max-width: 980px) {
+    @media (max-width: 640px) {
       .journal-stage { min-height: auto; }
+      .journal-stage::before,
+      .journal-stage::after,
+      .book-spine,
+      .turn-page {
+        display: none;
+      }
       .spread, .spread.active {
         position: static;
         display: none;
@@ -1479,8 +1621,111 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         transform: none;
       }
       .spread.active { display: grid; }
-      .page { min-height: auto; }
+      .page {
+        min-height: auto;
+        transform: none;
+        border-radius: 24px;
+      }
       .page.left::after, .page.right::before { display: none; }
+    }
+    @media (min-width: 641px) and (max-width: 759px) {
+      .journal-shell {
+        width: min(100vw - 18px, 1380px);
+        padding-block: 14px;
+      }
+      .journal-top {
+        gap: 8px;
+        font-size: 10px;
+      }
+      .journal-top span {
+        min-height: 30px;
+        padding: 7px 9px;
+      }
+      .journal-stage {
+        min-height: 636px;
+      }
+      .journal-stage::before {
+        inset: -12px -8px 12px;
+        border-radius: 32px;
+      }
+      .spread {
+        gap: 8px;
+      }
+      .page {
+        min-height: 616px;
+        padding: 18px;
+      }
+      .book-spine {
+        width: 24px;
+        bottom: 12px;
+      }
+      .turn-page {
+        top: 8px;
+        bottom: 24px;
+        left: calc(50% + 5px);
+        width: calc(50% - 11px);
+      }
+      .home-title {
+        font-size: clamp(38px, 5.6vw, 44px);
+        line-height: .94;
+      }
+      .story {
+        font-size: 14px;
+        line-height: 1.45;
+      }
+      .home-actions button {
+        min-height: 42px;
+        padding: 9px 12px;
+      }
+      .island-scene {
+        min-height: 274px;
+      }
+      .island-ground {
+        width: min(82%, 290px);
+      }
+      .path-dot {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        font-size: 10px;
+      }
+      .tiny-house {
+        width: 54px;
+        height: 43px;
+      }
+      .tiny-house::before {
+        width: 66px;
+        height: 33px;
+        top: -18px;
+      }
+      .tiny-house::after {
+        left: 21px;
+        width: 15px;
+        height: 21px;
+      }
+      .tiny-tree {
+        width: 34px;
+        height: 56px;
+      }
+      .home-map .progress-orb {
+        width: min(52%, 154px);
+        margin-top: 152px;
+      }
+      .home-stat-strip {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 6px;
+      }
+      .home-stat {
+        min-height: 68px;
+        padding: 10px;
+      }
+      .home-stat strong {
+        font-size: 23px;
+      }
+      .progress-caption {
+        margin-bottom: 12px;
+        font-size: 13px;
+      }
     }
     @media (max-width: 820px) {
       .metric-grid, .home-stat-strip { grid-template-columns: 1fr; }
@@ -1542,6 +1787,8 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       <span>生成于 ${escapeHtml(graph.generated_at)}</span>
     </header>
     <section class="journal-stage" aria-live="polite">
+      <div class="book-spine" aria-hidden="true"></div>
+      <div class="turn-page" aria-hidden="true"></div>
       <section class="spread active home-spread" data-spread="0">
         <article class="page left home-copy">
           <div>
@@ -1642,20 +1889,33 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     const buttons = Array.from(document.querySelectorAll(".page-controls button"));
     const jumpButtons = Array.from(document.querySelectorAll("[data-jump]"));
     const journalStage = document.querySelector(".journal-stage");
-    function showSpread(target) {
-      const current = document.querySelector(".spread.active")?.dataset.spread;
-      if (current === target) return;
-      journalStage?.classList.remove("turning");
-      void journalStage?.offsetWidth;
-      journalStage?.classList.add("turning");
+    let turnTimers = [];
+    function clearTurnTimers() {
+      turnTimers.forEach((timer) => window.clearTimeout(timer));
+      turnTimers = [];
+    }
+    function setActiveSpread(target) {
       spreads.forEach((spread) => {
         spread.classList.toggle("active", spread.dataset.spread === target);
       });
       buttons.forEach((button) => {
         button.classList.toggle("active", button.dataset.target === target);
       });
+    }
+    function showSpread(target) {
+      const current = document.querySelector(".spread.active")?.dataset.spread;
+      if (current === target) return;
+      clearTurnTimers();
+      const direction = Number(target) > Number(current || 0) ? "forward" : "backward";
+      journalStage?.classList.remove("turning", "turning-forward", "turning-backward");
+      void journalStage?.offsetWidth;
+      journalStage?.classList.add("turning", \`turning-\${direction}\`);
       journalStage?.scrollIntoView({ block: "start", behavior: "smooth" });
-      window.setTimeout(() => journalStage?.classList.remove("turning"), 760);
+      const switchTimer = window.setTimeout(() => setActiveSpread(target), 220);
+      turnTimers.push(switchTimer);
+      turnTimers.push(window.setTimeout(() => {
+        journalStage?.classList.remove("turning", "turning-forward", "turning-backward");
+      }, 860));
     }
     buttons.forEach((button) => {
       button.addEventListener("click", () => showSpread(button.dataset.target || "0"));
