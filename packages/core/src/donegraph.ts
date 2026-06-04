@@ -679,6 +679,175 @@ function statusText(status: EvidenceStatus): string {
   return "待证明";
 }
 
+interface DashboardStoryCopy {
+  title: string;
+  detail: string;
+  kind: string;
+}
+
+function commandIntent(value: string | undefined): "test" | "typecheck" | "build" | "lint" | undefined {
+  const normalized = value?.toLowerCase() ?? "";
+  if (normalized.includes("typecheck") || normalized.includes("tsc")) return "typecheck";
+  if (normalized.includes("build")) return "build";
+  if (normalized.includes("lint")) return "lint";
+  if (normalized.includes("test") || normalized.includes("vitest")) return "test";
+  return undefined;
+}
+
+function cleanDashboardText(value: string | undefined, fallback: string): string {
+  const cleaned = normalizeText(value ?? "")
+    .replace(/真实运行验证命令并通过[:：]?\s*[\w\s:.-]+/gi, "真实检查已经通过")
+    .replace(/发现可用于证明进展的验证入口[:：][^。]+。?/g, "已经找到可以证明进展的检查入口。")
+    .replace(/\bpath=[^\s，。；;]+/gi, "")
+    .replace(/\bcommand=[^\s，。；;]+/gi, "")
+    .replace(/\bnpm(?:\s+run)?\s+[\w:-]+/gi, "一次项目检查")
+    .replace(/\.donegraph\/[^\s，。；;]+/gi, "进度手账")
+    .replace(/DoneGraph CLI/g, "DoneGraph 工具")
+    .replace(/\bCLI\b/g, "工具")
+    .replace(/命令优先的/g, "核心")
+    .replace(/\s+/g, " ")
+    .replace(/\s+([，。；])/g, "$1")
+    .trim();
+  return cleaned.length > 0 ? cleaned : fallback;
+}
+
+function storyCopyForNode(node: DoneGraphNode): DashboardStoryCopy {
+  const intent = commandIntent(`${node.metadata.command ?? ""} ${node.title} ${node.detail}`);
+  const path = node.metadata.path?.toLowerCase() ?? "";
+
+  if (node.type === "goal") {
+    return {
+      title: "把目标说清楚",
+      detail: `这轮协作先确定了方向：${cleanDashboardText(node.detail, "要完成的事情已经被写下来。")}`,
+      kind: "目标"
+    };
+  }
+
+  if (node.type === "decision") {
+    return {
+      title: "做出一个关键选择",
+      detail: cleanDashboardText(node.detail, "这一步把后面的路线定得更清楚。"),
+      kind: "决策"
+    };
+  }
+
+  if (node.type === "artifact" && path.includes("dashboard")) {
+    return {
+      title: "做出可以翻看的进度手账",
+      detail: "进展被整理成一页页可以打开的手账，不再只是一段聊天记录。",
+      kind: "产物"
+    };
+  }
+
+  if (node.type === "artifact") {
+    return {
+      title: "留下了可交付成果",
+      detail: cleanDashboardText(node.detail, "这一步把协作里的想法变成了可以继续使用的东西。"),
+      kind: "产物"
+    };
+  }
+
+  if (node.type === "evidence" && intent === "typecheck") {
+    return {
+      title: "确认结构没有松动",
+      detail: "类型和接口检查已经过了一遍，后面可以更安心地继续接。",
+      kind: "验证"
+    };
+  }
+
+  if (node.type === "evidence" && intent === "build") {
+    return {
+      title: "把成果打包到可运行状态",
+      detail: "项目可以完整生成成果，说明这轮工作已经不只是想法。",
+      kind: "验证"
+    };
+  }
+
+  if (node.type === "evidence" && intent === "test") {
+    return {
+      title: "确认关键流程跑得稳",
+      detail: "核心行为已经真实检查过，这一步可以算进已完成的进度。",
+      kind: "验证"
+    };
+  }
+
+  if (node.type === "evidence") {
+    return {
+      title: node.status === "pass" ? "留下一条可靠证据" : "留下一条待确认线索",
+      detail: cleanDashboardText(node.detail, "这一步用来说明当前进展是否站得住。"),
+      kind: "验证"
+    };
+  }
+
+  if (node.type === "blocker") {
+    return {
+      title: "发现需要先处理的阻塞",
+      detail: cleanDashboardText(node.detail, "这里需要先停一下，把卡住的地方处理掉。"),
+      kind: "阻塞"
+    };
+  }
+
+  if (node.type === "next_step") {
+    return {
+      title: "下一步已经写清楚",
+      detail: cleanDashboardText(node.detail, "下一轮可以从这里接着走。"),
+      kind: "下一步"
+    };
+  }
+
+  if (intent === "build") {
+    return {
+      title: "把核心工具推进到可运行",
+      detail: cleanDashboardText(node.detail, "DoneGraph 的主要流程已经成形，可以继续围绕体验打磨。"),
+      kind: "推进"
+    };
+  }
+
+  if (intent === "test") {
+    return {
+      title: "让核心流程先跑稳",
+      detail: cleanDashboardText(node.detail, "这一步让项目从想法继续往可验证的成果靠近。"),
+      kind: "推进"
+    };
+  }
+
+  return {
+    title: node.title === "阶段完成" ? "完成一个阶段" : "推进了一步",
+    detail: cleanDashboardText(node.detail, "这一步让任务继续往前走。"),
+    kind: "推进"
+  };
+}
+
+function storyCopyForAchievement(item: DoneGraphAchievement, sourceNode: DoneGraphNode | undefined): DashboardStoryCopy {
+  if (sourceNode) return storyCopyForNode(sourceNode);
+
+  const raw = `${item.title} ${item.detail}`;
+  const intent = commandIntent(raw);
+  if (intent === "typecheck") {
+    return { title: "确认结构没有松动", detail: "类型和接口检查已经过了一遍，后面可以更安心地继续接。", kind: "验证" };
+  }
+  if (intent === "build") {
+    return { title: "把成果打包到可运行状态", detail: "项目可以完整生成成果，说明这轮工作已经不只是想法。", kind: "推进" };
+  }
+  if (intent === "test") {
+    return { title: "确认关键流程跑得稳", detail: "核心行为已经真实检查过，这一步可以算进已完成的进度。", kind: "验证" };
+  }
+  return {
+    title: cleanDashboardText(item.title, "完成一段进展"),
+    detail: cleanDashboardText(item.detail, "这一步让任务继续往前走。"),
+    kind: "进展"
+  };
+}
+
+function dashboardNextStep(step: string): string {
+  return cleanDashboardText(step, "把已完成的进展固定下来，再开启下一阶段目标。");
+}
+
+function dashboardNarrativeFor(graph: DoneGraph): string {
+  const nextStep = graph.next_steps[0] ? dashboardNextStep(graph.next_steps[0]) : "继续记录下一段协作。";
+  return `这轮协作已经走完 ${graph.summary.milestones_completed} / ${graph.summary.milestones_total} 个里程碑，当前阶段是「${graph.summary.current_stage}」，并沉淀 ${graph.summary.evidence_passed} 条通过证据。下一步是：${nextStep}`;
+}
+
 function nodeTypeText(type: DoneGraphNodeType): string {
   const labels: Record<DoneGraphNodeType, string> = {
     goal: "目标",
@@ -708,27 +877,83 @@ function renderNode(node: DoneGraphNode, index: number): string {
 }
 
 export function renderDashboardHtml(graph: DoneGraph): string {
-  const nodes = graph.nodes.map(renderNode).join("\n");
   const milestoneProgress = `${graph.summary.milestones_completed} / ${graph.summary.milestones_total}`;
   const nodeIndex = new Map(graph.nodes.map((node, index) => [node.id, index + 1]));
-  const completedCards = graph.achievements
-    .slice(0, 8)
-    .map(
-      (item, index) =>
-        `<article class="achievement-card" style="--delay: ${index * 80}ms"><span>${escapeHtml(statusText(item.status))}</span><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.detail)}</p></article>`
-    )
-    .join("\n");
-  const achievements = graph.achievements
+  const sourceNodeByEventId = new Map<string, DoneGraphNode>();
+  for (const node of graph.nodes) {
+    for (const eventId of node.source_event_ids) {
+      if (!sourceNodeByEventId.has(eventId)) sourceNodeByEventId.set(eventId, node);
+    }
+  }
+  const progressItems = graph.achievements.map((item) => {
+    const sourceNode = item.source_event_ids.map((eventId) => sourceNodeByEventId.get(eventId)).find(Boolean);
+    return {
+      ...storyCopyForAchievement(item, sourceNode),
+      status: item.status
+    };
+  });
+  const progressSpreadCount = Math.max(progressItems.length, 1);
+  const evidenceSpread = progressSpreadCount + 1;
+  const detailSpread = progressSpreadCount + 2;
+  const progressSpreads =
+    progressItems.length > 0
+      ? progressItems
+          .map((item, index) => {
+            const spread = index + 1;
+            const page = index + 1;
+            const previousTarget = page === 1 ? "0" : String(spread - 1);
+            const nextTarget = page === progressItems.length ? String(evidenceSpread) : String(spread + 1);
+            const nextLabel = page === progressItems.length ? "看证据" : "下一条完成";
+            return `<section class="spread progress-spread" data-spread="${spread}" data-progress-page="${page}">
+        <article class="page left progress-page">
+          <div class="page-kicker"><span>完成</span><span>第 ${page} / ${progressItems.length} 页</span></div>
+          <p class="progress-page-number">${String(page).padStart(2, "0")}</p>
+          <h2>这一页完成了什么</h2>
+          <h3>${escapeHtml(item.title)}</h3>
+          <p class="progress-story">${escapeHtml(item.detail)}</p>
+        </article>
+        <article class="page right progress-proof-page">
+          <div class="page-kicker"><span>${escapeHtml(item.kind)}</span><span>${escapeHtml(statusText(item.status))}</span></div>
+          <h2>为什么算进度</h2>
+          <p class="soft-note">这一页只保留对人有用的答案：完成了什么、它推进了哪一步、下一页该接哪里。</p>
+          <div class="stamp ${escapeHtml(statusLabel(item.status))}">${escapeHtml(statusText(item.status))}</div>
+          <div class="progress-pager">
+            <button class="secondary" type="button" data-jump="${previousTarget}">${page === 1 ? "回到进度" : "上一页"}</button>
+            <button type="button" data-jump="${nextTarget}">${nextLabel}</button>
+          </div>
+        </article>
+      </section>`;
+          })
+          .join("\n\n")
+      : `<section class="spread progress-spread" data-spread="1" data-progress-page="1">
+        <article class="page left progress-page">
+          <div class="page-kicker"><span>完成</span><span>第 1 / 1 页</span></div>
+          <p class="progress-page-number">01</p>
+          <h2>这一页完成了什么</h2>
+          <h3>还没有可翻看的完成页</h3>
+          <p class="progress-story">等下一次记录目标、产物或验证结果后，这里会自动长出新的进度页。</p>
+        </article>
+        <article class="page right progress-proof-page">
+          <div class="page-kicker"><span>等待记录</span><span>待证明</span></div>
+          <h2>从哪里开始</h2>
+          <p class="soft-note">先把这轮协作真正完成的一步写进 DoneGraph，手账就会从这里继续翻下去。</p>
+          <div class="progress-pager">
+            <button class="secondary" type="button" data-jump="0">回到进度</button>
+            <button type="button" data-jump="${evidenceSpread}">看证据</button>
+          </div>
+        </article>
+      </section>`;
+  const achievements = progressItems
     .map((item) => `<li><span>${escapeHtml(statusText(item.status))}</span>${escapeHtml(item.title)}</li>`)
     .join("\n");
   const evidenceCards = graph.nodes
     .filter((node) => node.type === "evidence")
-    .map(
-      (node, index) =>
-        `<article class="proof-card ${escapeHtml(statusLabel(node.status))}" style="--delay: ${index * 80}ms"><span>${escapeHtml(statusText(node.status))}</span><strong>${escapeHtml(node.title)}</strong><p>${escapeHtml(node.detail)}</p>${node.metadata.command ? `<code>${escapeHtml(node.metadata.command)}</code>` : ""}</article>`
-    )
+    .map((node, index) => {
+      const copy = storyCopyForNode(node);
+      return `<article class="proof-card ${escapeHtml(statusLabel(node.status))}" style="--delay: ${index * 80}ms"><span>${escapeHtml(statusText(node.status))}</span><strong>${escapeHtml(copy.title)}</strong><p>${escapeHtml(copy.detail)}</p></article>`;
+    })
     .join("\n");
-  const nextSteps = graph.next_steps.map((step) => `<li>${escapeHtml(step)}</li>`).join("\n");
+  const nextSteps = graph.next_steps.map((step) => `<li>${escapeHtml(dashboardNextStep(step))}</li>`).join("\n");
   const schemaLabels = graph.schema.edge_labels
     .map((label) => `<span class="badge">${escapeHtml(label)}</span>`)
     .join("");
@@ -835,6 +1060,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       perspective: 2200px;
       transform-style: preserve-3d;
       isolation: isolate;
+      overflow: visible;
     }
     .journal-stage::before,
     .journal-stage::after {
@@ -886,14 +1112,14 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       top: 10px;
       bottom: 34px;
       left: calc(50% + 8px);
-      z-index: 7;
+      z-index: 12;
       width: calc(50% - 18px);
       pointer-events: none;
       opacity: 0;
       transform: rotateY(0deg) translateZ(34px);
       transform-origin: left center;
       transform-style: preserve-3d;
-      backface-visibility: hidden;
+      backface-visibility: visible;
       border: 1px solid rgba(121, 79, 39, .16);
       border-radius: 10px 34px 34px 10px;
       background:
@@ -921,6 +1147,9 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       border-radius: 34px 10px 10px 34px;
       animation: page-turn-backward .86s cubic-bezier(.18, .76, .2, 1);
     }
+    .journal-stage.turning .turn-page {
+      opacity: 1;
+    }
     .spread {
       grid-area: 1 / 1;
       position: relative;
@@ -932,6 +1161,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       pointer-events: none;
       transform: translateY(4px) scale(.998);
       filter: saturate(.96);
+      overflow: visible;
       transition: opacity .24s ease, transform .34s cubic-bezier(.2, .8, .2, 1), filter .24s ease;
     }
     .spread.active {
@@ -1342,13 +1572,78 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       color: var(--moss);
       font: 850 48px/1 "SFMono-Regular", Menlo, monospace;
     }
-    .achievement-list,
+    .progress-page,
+    .progress-proof-page {
+      display: flex;
+      flex-direction: column;
+    }
+    .progress-page-number {
+      width: max-content;
+      margin: 8px 0 28px;
+      padding: 10px 16px;
+      border: 1px solid rgba(121, 79, 39, .16);
+      border-radius: 20px;
+      background: rgba(255, 248, 228, .78);
+      color: var(--clay);
+      font: 900 clamp(42px, 5vw, 70px)/.9 "SFMono-Regular", Menlo, monospace;
+      box-shadow: 0 8px 0 rgba(213, 169, 110, .18);
+    }
+    .progress-page h3 {
+      max-width: 13ch;
+      margin: 14px 0 16px;
+      color: var(--moss);
+      font-size: clamp(32px, 4.2vw, 58px);
+      line-height: .98;
+      letter-spacing: 0;
+    }
+    .progress-story {
+      max-width: 34ch;
+      margin: 0;
+      color: #634d31;
+      font-size: clamp(18px, 2vw, 25px);
+      line-height: 1.42;
+    }
+    .progress-proof-page .soft-note {
+      margin-top: 12px;
+      font-size: clamp(16px, 1.6vw, 20px);
+    }
+    .progress-proof-page .stamp {
+      width: max-content;
+      max-width: 100%;
+      margin-top: 18px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      letter-spacing: .08em;
+    }
+    .progress-pager {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .progress-pager button {
+      min-height: 46px;
+      padding: 10px 15px;
+      border: 1px solid rgba(121, 79, 39, .18);
+      border-radius: 18px;
+      background: var(--teal);
+      color: #fffdf3;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 0 #0f8f86, 0 12px 22px rgba(29, 190, 176, .18);
+    }
+    .progress-pager button.secondary {
+      background: #fff7dc;
+      color: var(--ink);
+      box-shadow: 0 6px 0 var(--button-shadow), 0 12px 22px rgba(91, 63, 32, .10);
+    }
     .proof-grid,
     .node-grid {
       display: grid;
       gap: 12px;
     }
-    .achievement-card,
     .proof-card,
     .journal-card {
       min-width: 0;
@@ -1362,7 +1657,6 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       animation: page-settle .56s ease both;
       animation-delay: var(--delay);
     }
-    .achievement-card span,
     .proof-card span {
       width: max-content;
       max-width: 100%;
@@ -1375,12 +1669,10 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       letter-spacing: .08em;
       text-transform: uppercase;
     }
-    .achievement-card strong,
     .proof-card strong {
       font-size: 18px;
       line-height: 1.15;
     }
-    .achievement-card p,
     .proof-card p,
     .journal-card p {
       margin: 0;
@@ -1557,7 +1849,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     }
     @keyframes page-turn-forward {
       0% {
-        opacity: 0;
+        opacity: 1;
         transform: rotateY(0deg) translateZ(34px);
         filter: brightness(1.02);
       }
@@ -1583,7 +1875,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     }
     @keyframes page-turn-backward {
       0% {
-        opacity: 0;
+        opacity: 1;
         transform: rotateY(0deg) translateZ(34px);
         filter: brightness(1.02);
       }
@@ -1620,7 +1912,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       to { transform: translateX(12px); }
     }
     @media (prefers-reduced-motion: reduce) {
-      .spread, .achievement-card, .proof-card, .journal-card, .turn-page, .island-ground, .island-scene::before, .island-scene::after { animation: none; transition: none; }
+      .spread, .proof-card, .journal-card, .turn-page, .island-ground, .island-scene::before, .island-scene::after { animation: none; transition: none; }
     }
     @media (max-width: 640px) {
       .journal-stage { min-height: auto; }
@@ -1812,10 +2104,10 @@ export function renderDashboardHtml(graph: DoneGraph): string {
           <div>
           <div class="page-kicker"><span>进度手账</span><span>洁净室重写</span></div>
           <h1 class="home-title"><span>DoneGraph</span><span>进度岛</span><span>手账</span></h1>
-          <p class="story">${escapeHtml(graph.narrative)}</p>
+          <p class="story">${escapeHtml(dashboardNarrativeFor(graph))}</p>
           <div class="home-actions">
             <button type="button" data-jump="1">翻到完成页</button>
-            <button class="secondary" type="button" data-jump="2">看看证据</button>
+            <button class="secondary" type="button" data-jump="${evidenceSpread}">看看证据</button>
           </div>
           </div>
           <div class="soft-note">${escapeHtml(blockerText)}</div>
@@ -1845,27 +2137,9 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         </article>
       </section>
 
-      <section class="spread" data-spread="1">
-        <article class="page left">
-          <div class="page-kicker"><span>进度详情</span><span>总览</span></div>
-          <h2>进度刻度</h2>
-          <div class="progress-orb" aria-label="完成进度 ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>已完成</span></div>
-          <p class="progress-caption">第一页只回答一件事：这轮你和 AI 已经一起完成了多少真实进展？当前阶段：${escapeHtml(graph.summary.current_stage)}。</p>
-          <div class="metric-grid">
-            <div class="metric"><span>里程碑</span><strong>${milestoneProgress}</strong></div>
-            <div class="metric"><span>已验证</span><strong>${graph.summary.evidence_passed}</strong></div>
-            <div class="metric"><span>待确认</span><strong>${graph.summary.evidence_unknown}</strong></div>
-            <div class="metric"><span>阻塞</span><strong>${graph.summary.blockers}</strong></div>
-          </div>
-        </article>
-        <article class="page right">
-          <div class="page-kicker"><span>完成清单</span><span>${graph.achievements.length} 条记录</span></div>
-          <h2>收集到的进展</h2>
-          <section class="achievement-list">${completedCards || "<p class=\"soft-note\">还没有记录已完成的进展。</p>"}</section>
-        </article>
-      </section>
+      ${progressSpreads}
 
-      <section class="spread" data-spread="2">
+      <section class="spread" data-spread="${evidenceSpread}">
         <article class="page left">
           <div class="page-kicker"><span>证据</span><span>验证状态</span></div>
           <h2>证据贴纸</h2>
@@ -1879,7 +2153,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         </article>
       </section>
 
-      <section class="spread" data-spread="3">
+      <section class="spread" data-spread="${detailSpread}">
         <article class="page left">
           <div class="page-kicker"><span>洁净室结构</span><span>细节</span></div>
           <h2>洁净室结构</h2>
@@ -1900,8 +2174,8 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     <nav class="page-controls" aria-label="手账页">
       <button class="active" type="button" data-target="0">进度</button>
       <button type="button" data-target="1">完成</button>
-      <button type="button" data-target="2">证据</button>
-      <button type="button" data-target="3">细节</button>
+      <button type="button" data-target="${evidenceSpread}">证据</button>
+      <button type="button" data-target="${detailSpread}">细节</button>
     </nav>
   </main>
   <script>
