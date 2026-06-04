@@ -16,6 +16,7 @@ export interface DoneGraphPaths {
   achievementLog: string;
   nextSteps: string;
   dashboardHtml: string;
+  fingerprintsJson: string;
 }
 
 const eventTypes = new Set<DoneGraphEventType>([
@@ -53,7 +54,8 @@ export function pathsForWorkspace(workspacePath: string): DoneGraphPaths {
     graphJson: path.join(workspace, ".donegraph", "task-graph.json"),
     achievementLog: path.join(workspace, ".donegraph", "achievement-log.md"),
     nextSteps: path.join(workspace, ".donegraph", "next-steps.md"),
-    dashboardHtml: path.join(workspace, ".donegraph", "dashboard.html")
+    dashboardHtml: path.join(workspace, ".donegraph", "dashboard.html"),
+    fingerprintsJson: path.join(workspace, ".donegraph", "fingerprints.json")
   };
 }
 

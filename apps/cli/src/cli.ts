@@ -31,6 +31,12 @@ interface ParsedCommand {
   positionals: string[];
 }
 
+interface CaptureFingerprintStore {
+  version: "1.0.0";
+  generatedAt: string;
+  files: Record<string, string>;
+}
+
 const eventTypes = new Set<DoneGraphEventType>([
   "goal",
   "decision",
@@ -43,7 +49,7 @@ const eventTypes = new Set<DoneGraphEventType>([
 
 const platforms = new Set<DoneGraphPlatform>(["codex", "claude", "cursor", "generic"]);
 const statuses = new Set<EvidenceStatus>(["pass", "fail", "unknown", "blocked"]);
-const booleanOptions = new Set(["blocked", "fail", "no-open", "pass", "unknown"]);
+const booleanOptions = new Set(["blocked", "fail", "no-open", "pass", "unknown", "verify"]);
 
 const shortcutCommands = new Map<string, DoneGraphEventType>([
   ["action", "action"],
@@ -64,7 +70,7 @@ function usage(): string {
     "  donegraph checkpoint <text> [--command <cmd>] [--workspace <path>]",
     "  donegraph proof <text> --pass|--fail|--unknown|--blocked [--command <cmd>] [--workspace <path>]",
     "  donegraph done <text> [--workspace <path>]",
-    "  donegraph capture [--goal <goal>] [--platform codex|claude|cursor|generic] [--workspace <path>]",
+    "  donegraph capture [--goal <goal>] [--platform codex|claude|cursor|generic] [--verify] [--workspace <path>]",
     "  donegraph build [--workspace <path>]",
     "  donegraph dashboard [--workspace <path>] [--no-open]",
     "  donegraph summary [--workspace <path>]",
@@ -73,7 +79,7 @@ function usage(): string {
     "  donegraph start \"Ship the hackathon demo\" --platform codex",
     "  donegraph checkpoint \"Implemented CLI\" --command \"npm test\"",
     "  donegraph proof \"Tests passed\" --pass --command \"npm test\"",
-    "  donegraph capture --goal \"Make AI progress visible\" --platform codex",
+    "  donegraph capture --goal \"Make AI progress visible\" --platform codex --verify",
     "  donegraph done \"The demo is ready\"",
     "  donegraph dashboard --no-open"
   ].join("\n");
@@ -99,6 +105,10 @@ function packageScriptsFor(workspacePath: string): string[] {
     ...preferred.filter((name) => names.includes(name)),
     ...names.filter((name) => !preferred.includes(name))
   ].slice(0, 5);
+}
+
+function commandForScript(script: string): string {
+  return script === "test" ? "npm test" : `npm run ${script}`;
 }
 
 function projectNameFor(workspacePath: string): string | undefined {
@@ -142,6 +152,48 @@ function changedFilesFor(workspacePath: string): string[] {
   } catch {
     return fallbackWorkspaceFiles(workspacePath);
   }
+}
+
+function fileContentHash(workspacePath: string, filePath: string): string | undefined {
+  const absolute = path.join(workspacePath, filePath);
+  if (!fs.existsSync(absolute) || !fs.statSync(absolute).isFile()) return undefined;
+  return crypto.createHash("sha256").update(fs.readFileSync(absolute)).digest("hex");
+}
+
+function readCaptureFingerprints(workspacePath: string): CaptureFingerprintStore | undefined {
+  const filePath = pathsForWorkspace(workspacePath).fingerprintsJson;
+  if (!fs.existsSync(filePath)) return undefined;
+  try {
+    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as CaptureFingerprintStore;
+    if (parsed.version !== "1.0.0" || !parsed.files || typeof parsed.files !== "object") return undefined;
+    return parsed;
+  } catch {
+    return undefined;
+  }
+}
+
+function changedSinceLastCapture(workspacePath: string, files: string[]): string[] {
+  const previous = readCaptureFingerprints(workspacePath);
+  if (!previous) return files;
+  return files.filter((filePath) => {
+    const hash = fileContentHash(workspacePath, filePath);
+    return hash !== previous.files[filePath];
+  });
+}
+
+function writeCaptureFingerprints(workspacePath: string, files: string[], generatedAt: string): void {
+  const paths = pathsForWorkspace(workspacePath);
+  const hashes: Record<string, string> = {};
+  for (const filePath of [...files].sort()) {
+    const hash = fileContentHash(workspacePath, filePath);
+    if (hash) hashes[filePath] = hash;
+  }
+  const store: CaptureFingerprintStore = {
+    version: "1.0.0",
+    generatedAt,
+    files: hashes
+  };
+  fs.writeFileSync(paths.fingerprintsJson, `${JSON.stringify(store, null, 2)}\n`, "utf8");
 }
 
 function parseArgs(argv: string[], cwd: string): ParsedCommand {
@@ -289,6 +341,40 @@ function makeEvent(input: {
   };
 }
 
+function runVerificationCommands(input: {
+  workspacePath: string;
+  platform: DoneGraphPlatform;
+  packageScripts: string[];
+  now: () => string;
+  uuid: () => string;
+}): DoneGraphEvent[] {
+  return input.packageScripts.slice(0, 3).map((script, index) => {
+    const command = commandForScript(script);
+    let status: EvidenceStatus = "pass";
+    try {
+      execFileSync(command, {
+        cwd: input.workspacePath,
+        shell: true,
+        stdio: "ignore"
+      });
+    } catch {
+      status = "fail";
+    }
+    return makeEvent({
+      type: "verification",
+      text: status === "pass" ? `真实运行验证命令并通过：${command}` : `真实运行验证命令但失败：${command}`,
+      platform: input.platform,
+      metadata: {
+        command,
+        status,
+        source: "capture-verify"
+      },
+      now: input.now,
+      uuid: () => `${input.uuid()}_${index + 1}`
+    });
+  });
+}
+
 function openDashboardFile(filePath: string): void {
   const opener =
     process.platform === "darwin"
@@ -364,19 +450,45 @@ export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {
   if (parsed.command === "capture") {
     const platform = platformForEvent(parsed);
     const existingEvents = readDoneGraphEvents(parsed.workspacePath);
+    const packageScripts = packageScriptsFor(parsed.workspacePath);
+    const allChangedFiles = changedFilesFor(parsed.workspacePath);
+    const changedFiles = changedSinceLastCapture(parsed.workspacePath, allChangedFiles);
+    const hasExistingGoal = existingEvents.some((event) => event.type === "goal");
+    const shouldVerify = parsed.options.has("verify");
     const capturedEvents = buildCaptureEvents({
       platform,
       goal: optionalString(parsed.options, "goal") ?? positionalText(parsed.positionals),
       projectName: projectNameFor(parsed.workspacePath),
-      changedFiles: changedFilesFor(parsed.workspacePath),
-      packageScripts: packageScriptsFor(parsed.workspacePath),
+      changedFiles,
+      packageScripts,
       existingEvents,
       now,
       uuid
-    });
+    }).filter(
+      (event) =>
+        (changedFiles.length > 0 || !hasExistingGoal || event.type === "goal") &&
+        !(shouldVerify && event.type === "verification")
+    );
 
     for (const event of capturedEvents) appendDoneGraphEvent(parsed.workspacePath, event);
+    const verificationEvents = shouldVerify
+      ? runVerificationCommands({
+          workspacePath: parsed.workspacePath,
+          platform,
+          packageScripts,
+          now,
+          uuid
+        })
+      : [];
+    for (const event of verificationEvents) appendDoneGraphEvent(parsed.workspacePath, event);
     const { graph } = buildDoneGraphArtifacts(parsed.workspacePath, now());
+    writeCaptureFingerprints(parsed.workspacePath, allChangedFiles, now());
+    if (capturedEvents.length === 0 && verificationEvents.length === 0) {
+      write("No project file changes since last capture. Reused the existing progress graph.");
+    }
+    if (verificationEvents.length > 0) {
+      write(`Verified ${verificationEvents.length} command${verificationEvents.length === 1 ? "" : "s"}.`);
+    }
     write(`Captured ${capturedEvents.length} context events. Progress is now ${graph.summary.progress_percent}%.`);
     printArtifacts(write, parsed.workspacePath);
     return 0;

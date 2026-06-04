@@ -178,4 +178,65 @@ describe("donegraph CLI", () => {
       "belongs_to_goal"
     );
   });
+
+  it("runs verification scripts during capture when requested", async () => {
+    const workspace = tempWorkspace();
+    fs.writeFileSync(
+      path.join(workspace, "package.json"),
+      JSON.stringify({ name: "verified-donegraph", scripts: { test: "node -e \"process.exit(0)\"" } }, null, 2)
+    );
+    const output: string[] = [];
+
+    const code = await runDoneGraphCli(["capture", "--goal", "Verify real progress", "--platform", "codex", "--verify"], {
+      cwd: workspace,
+      write: (line) => output.push(line),
+      now: () => "2026-05-28T00:07:00.000Z",
+      uuid: () => "verified"
+    });
+
+    const events = readDoneGraphEvents(workspace);
+    expect(code).toBe(0);
+    expect(events).toContainEqual(
+      expect.objectContaining({
+        type: "verification",
+        text: "真实运行验证命令并通过：npm test",
+        metadata: expect.objectContaining({ command: "npm test", status: "pass", source: "capture-verify" })
+      })
+    );
+    expect(events.some((event) => event.text.includes("发现可用于证明进展的验证入口"))).toBe(false);
+    expect(output.join("\n")).toContain("Verified 1 command");
+  });
+
+  it("skips duplicate capture events when project fingerprints are unchanged", async () => {
+    const workspace = tempWorkspace();
+    fs.writeFileSync(
+      path.join(workspace, "package.json"),
+      JSON.stringify({ name: "stable-donegraph", scripts: { test: "node -e \"process.exit(0)\"" } }, null, 2)
+    );
+    fs.mkdirSync(path.join(workspace, "src"));
+    fs.writeFileSync(path.join(workspace, "src", "index.ts"), "export const stable = true;\n");
+    const firstOutput: string[] = [];
+    const secondOutput: string[] = [];
+
+    await runDoneGraphCli(["capture", "--goal", "Stable generation", "--platform", "codex"], {
+      cwd: workspace,
+      write: (line) => firstOutput.push(line),
+      now: () => "2026-05-28T00:08:00.000Z",
+      uuid: () => "stable_first"
+    });
+    const firstEvents = readDoneGraphEvents(workspace);
+
+    await runDoneGraphCli(["capture", "--goal", "Stable generation", "--platform", "codex"], {
+      cwd: workspace,
+      write: (line) => secondOutput.push(line),
+      now: () => "2026-05-28T00:09:00.000Z",
+      uuid: () => "stable_second"
+    });
+    const secondEvents = readDoneGraphEvents(workspace);
+
+    expect(firstEvents).toHaveLength(4);
+    expect(secondEvents).toHaveLength(4);
+    expect(secondOutput.join("\n")).toContain("No project file changes since last capture");
+    expect(fs.existsSync(path.join(workspace, ".donegraph", "fingerprints.json"))).toBe(true);
+  });
 });

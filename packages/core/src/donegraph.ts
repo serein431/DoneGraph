@@ -79,9 +79,28 @@ export interface DoneGraphAchievement {
   source_event_ids: string[];
 }
 
+export type DoneGraphMilestoneId =
+  | "goal_defined"
+  | "implementation_started"
+  | "artifact_created"
+  | "evidence_collected"
+  | "demo_ready"
+  | "handoff_ready";
+
+export interface DoneGraphMilestone {
+  id: DoneGraphMilestoneId;
+  title: string;
+  detail: string;
+  status: EvidenceStatus;
+  source_node_ids: string[];
+}
+
 export interface DoneGraphSummary {
   total_events: number;
   completed_count: number;
+  milestones_completed: number;
+  milestones_total: number;
+  current_stage: string;
   evidence_passed: number;
   evidence_failed: number;
   evidence_unknown: number;
@@ -101,6 +120,7 @@ export interface DoneGraph {
   summary: DoneGraphSummary;
   nodes: DoneGraphNode[];
   edges: DoneGraphEdge[];
+  milestones: DoneGraphMilestone[];
   achievements: DoneGraphAchievement[];
   next_steps: string[];
 }
@@ -234,6 +254,60 @@ function commandForScript(script: string): string {
   return script === "test" ? "npm test" : `npm run ${script}`;
 }
 
+function categoryForChangedFile(filePath: string): string {
+  const normalized = filePath.toLowerCase();
+  if (
+    normalized.includes("test") ||
+    normalized.includes("spec") ||
+    normalized.includes("__tests__") ||
+    normalized.endsWith(".snap")
+  ) {
+    return "验证补强";
+  }
+  if (
+    normalized === "readme.md" ||
+    normalized.startsWith("readmes/") ||
+    normalized.startsWith("docs/") ||
+    normalized.endsWith("design.md") ||
+    normalized.endsWith(".md")
+  ) {
+    return "产品说明";
+  }
+  if (
+    normalized.startsWith("plugins/") ||
+    normalized.includes("plugin.json") ||
+    normalized.includes("marketplace.json") ||
+    normalized.includes("install.sh")
+  ) {
+    return "插件交付";
+  }
+  if (normalized.startsWith("scripts/") || normalized.startsWith(".github/")) {
+    return "工作流自动化";
+  }
+  if (normalized.startsWith("src/") || normalized.includes("/src/")) {
+    return "功能实现";
+  }
+  return "项目文件";
+}
+
+function changedFileProgressText(changedFiles: string[], projectName: string): string {
+  if (changedFiles.length === 0) {
+    return `记录 ${projectName} 的当前项目快照，尚未检测到 git 改动文件。`;
+  }
+  const counts = new Map<string, number>();
+  for (const file of changedFiles) {
+    const category = categoryForChangedFile(file);
+    counts.set(category, (counts.get(category) ?? 0) + 1);
+  }
+  const categoryOrder = ["功能实现", "验证补强", "产品说明", "插件交付", "工作流自动化", "项目文件"];
+  const summary = categoryOrder
+    .filter((category) => counts.has(category))
+    .map((category) => `${category} ${counts.get(category)} 个`)
+    .join("、");
+  const preview = changedFiles.slice(0, 4).join(", ");
+  return `识别到 ${counts.size} 类项目进展：${summary}。代表文件：${preview}${changedFiles.length > 4 ? " ..." : ""}`;
+}
+
 export function buildCaptureEvents(input: DoneGraphCaptureInput): DoneGraphEvent[] {
   const events: DoneGraphEvent[] = [];
   const hasGoal = input.existingEvents.some((event) => event.type === "goal");
@@ -266,15 +340,11 @@ export function buildCaptureEvents(input: DoneGraphCaptureInput): DoneGraphEvent
     })
   );
 
-  const changedPreview = input.changedFiles.slice(0, 4).join(", ");
   events.push(
     makeCaptureEvent({
       index: events.length + 1,
       type: "artifact",
-      text:
-        input.changedFiles.length > 0
-          ? `检测到 ${input.changedFiles.length} 个本地改动文件：${changedPreview}${input.changedFiles.length > 4 ? " ..." : ""}`
-          : `记录 ${projectName} 的当前项目快照，尚未检测到 git 改动文件。`,
+      text: changedFileProgressText(input.changedFiles, projectName),
       platform: input.platform,
       now: input.now,
       uuid: input.uuid,
@@ -308,6 +378,95 @@ export function buildCaptureEvents(input: DoneGraphCaptureInput): DoneGraphEvent
   return events;
 }
 
+function milestone(
+  id: DoneGraphMilestoneId,
+  title: string,
+  status: EvidenceStatus,
+  detail: string,
+  sourceNodes: DoneGraphNode[]
+): DoneGraphMilestone {
+  return {
+    id,
+    title,
+    status,
+    detail,
+    source_node_ids: sourceNodes.map((node) => node.id)
+  };
+}
+
+function milestoneStatusFromNodes(nodes: DoneGraphNode[]): EvidenceStatus {
+  if (nodes.some((node) => node.status === "fail")) return "fail";
+  if (nodes.some((node) => node.status === "blocked")) return "blocked";
+  if (nodes.some((node) => node.status === "pass")) return "pass";
+  return "unknown";
+}
+
+function buildMilestones(nodes: DoneGraphNode[]): DoneGraphMilestone[] {
+  const goals = nodes.filter((node) => node.type === "goal");
+  const implementation = nodes.filter((node) => node.type === "task" || node.type === "decision");
+  const artifacts = nodes.filter((node) => node.type === "artifact");
+  const evidence = nodes.filter((node) => node.type === "evidence");
+  const completions = nodes.filter((node) => node.type === "task" && node.title === "阶段完成");
+  const blockingNodes = nodes.filter(
+    (node) => node.type === "blocker" || node.status === "blocked" || node.status === "fail"
+  );
+
+  const evidenceStatus = milestoneStatusFromNodes(evidence);
+  const demoStatus =
+    blockingNodes.length > 0
+      ? milestoneStatusFromNodes(blockingNodes)
+      : completions.length > 0 && evidence.some((node) => node.status === "pass")
+        ? "pass"
+        : "unknown";
+  const handoffStatus =
+    demoStatus === "pass" && !evidence.some((node) => node.status === "unknown") ? "pass" : demoStatus === "fail" || demoStatus === "blocked" ? demoStatus : "unknown";
+
+  return [
+    milestone(
+      "goal_defined",
+      "目标已确定",
+      goals.length > 0 ? "pass" : "unknown",
+      goals[0]?.detail ?? "还没有记录这轮协作的目标。",
+      goals
+    ),
+    milestone(
+      "implementation_started",
+      "实现已启动",
+      implementation.length > 0 ? milestoneStatusFromNodes(implementation) : "unknown",
+      implementation[0]?.detail ?? "还没有记录实现动作或关键决策。",
+      implementation
+    ),
+    milestone(
+      "artifact_created",
+      "产物已出现",
+      artifacts.length > 0 ? milestoneStatusFromNodes(artifacts) : "unknown",
+      artifacts[0]?.detail ?? "还没有记录 README、代码、插件或演示产物。",
+      artifacts
+    ),
+    milestone(
+      "evidence_collected",
+      "证据已收集",
+      evidence.length > 0 ? evidenceStatus : "unknown",
+      evidence.find((node) => node.status === "pass")?.detail ?? evidence[0]?.detail ?? "还没有记录可判断的验证证据。",
+      evidence
+    ),
+    milestone(
+      "demo_ready",
+      "演示已可用",
+      demoStatus,
+      demoStatus === "pass" ? completions[0]?.detail ?? "已有完成记录和通过证据。" : "还需要一条阶段完成记录，把进度变成可演示成果。",
+      completions
+    ),
+    milestone(
+      "handoff_ready",
+      "交接已清楚",
+      handoffStatus,
+      handoffStatus === "pass" ? "下一轮可以直接接着已完成成果继续。" : "还需要把下一步、风险或验证缺口写清楚。",
+      nodes.filter((node) => node.type === "next_step")
+    )
+  ];
+}
+
 function nextStepsForNodes(nodes: DoneGraphNode[]): string[] {
   const failedEvidence = nodes.find((node) => node.type === "evidence" && node.status === "fail");
   if (failedEvidence) return [`先修复失败验证：${failedEvidence.detail}`];
@@ -324,13 +483,28 @@ function nextStepsForNodes(nodes: DoneGraphNode[]): string[] {
   return ["把已通过的证据固化到 README、测试或下一轮任务清单，然后开启下一阶段目标。"];
 }
 
-function summaryFor(nodes: DoneGraphNode[], totalEvents: number, nextSteps: string[]): DoneGraphSummary {
+function currentStageFor(milestones: DoneGraphMilestone[]): string {
+  const firstOpen = milestones.find((item) => item.status !== "pass");
+  if (!firstOpen) return "可以交付演示";
+  if (firstOpen.id === "goal_defined") return "目标还没定";
+  if (firstOpen.id === "implementation_started") return "等待开始实现";
+  if (firstOpen.id === "artifact_created") return "等待产物出现";
+  if (firstOpen.id === "evidence_collected") return "等待证据验证";
+  if (firstOpen.id === "demo_ready") return "演示还差收尾";
+  return "交接还要整理";
+}
+
+function summaryFor(nodes: DoneGraphNode[], totalEvents: number, nextSteps: string[], milestones: DoneGraphMilestone[]): DoneGraphSummary {
   const scoreable = nodes.filter((node) => node.type !== "next_step");
   const completed = scoreable.filter((node) => node.status === "pass").length;
-  const progress = scoreable.length === 0 ? 0 : Math.round((completed / scoreable.length) * 100);
+  const completedMilestones = milestones.filter((item) => item.status === "pass").length;
+  const progress = milestones.length === 0 ? 0 : Math.round((completedMilestones / milestones.length) * 100);
   return {
     total_events: totalEvents,
     completed_count: completed,
+    milestones_completed: completedMilestones,
+    milestones_total: milestones.length,
+    current_stage: currentStageFor(milestones),
     evidence_passed: nodes.filter((node) => node.type === "evidence" && node.status === "pass").length,
     evidence_failed: nodes.filter((node) => node.type === "evidence" && node.status === "fail").length,
     evidence_unknown: nodes.filter((node) => node.type === "evidence" && node.status === "unknown").length,
@@ -343,7 +517,7 @@ function summaryFor(nodes: DoneGraphNode[], totalEvents: number, nextSteps: stri
 
 function narrativeFor(graph: Pick<DoneGraph, "goal" | "summary" | "next_steps">): string {
   if (!graph.goal) return "DoneGraph 还没有任务目标。";
-  return `这轮协作已经沉淀 ${graph.summary.completed_count} 个完成信号，${graph.summary.evidence_passed} 条通过证据。下一步是：${graph.next_steps[0] ?? "继续记录协作事件"}`;
+  return `这轮协作已经走完 ${graph.summary.milestones_completed} / ${graph.summary.milestones_total} 个里程碑，当前阶段是「${graph.summary.current_stage}」，并沉淀 ${graph.summary.evidence_passed} 条通过证据。下一步是：${graph.next_steps[0] ?? "继续记录协作事件"}`;
 }
 
 function addEdge(edges: DoneGraphEdge[], seen: Set<string>, edge: DoneGraphEdge): void {
@@ -419,6 +593,7 @@ export function buildDoneGraph(events: DoneGraphEvent[], generatedAt = new Date(
     metadata: {}
   }));
   const allNodes = [...nodes, ...nextStepNodes];
+  const milestones = buildMilestones(allNodes);
   const edges = buildEdges(allNodes);
   const base = {
     version: "1" as const,
@@ -426,9 +601,10 @@ export function buildDoneGraph(events: DoneGraphEvent[], generatedAt = new Date(
     generated_at: generatedAt,
     goal: goalEvent?.text ?? "",
     platform: goalEvent?.platform ?? sorted[0]?.platform ?? "generic",
-    summary: summaryFor(allNodes, sorted.length, nextSteps),
+    summary: summaryFor(allNodes, sorted.length, nextSteps, milestones),
     nodes: allNodes,
     edges,
+    milestones,
     achievements: buildAchievements(allNodes),
     next_steps: nextSteps
   };
@@ -533,6 +709,7 @@ function renderNode(node: DoneGraphNode, index: number): string {
 
 export function renderDashboardHtml(graph: DoneGraph): string {
   const nodes = graph.nodes.map(renderNode).join("\n");
+  const milestoneProgress = `${graph.summary.milestones_completed} / ${graph.summary.milestones_total}`;
   const nodeIndex = new Map(graph.nodes.map((node, index) => [node.id, index + 1]));
   const completedCards = graph.achievements
     .slice(0, 8)
@@ -1379,7 +1556,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
           <div class="soft-note">${escapeHtml(blockerText)}</div>
         </article>
         <article class="page right home-map">
-          <div class="page-kicker"><span>今日进度</span><span>${graph.summary.completed_count} 个完成信号</span></div>
+          <div class="page-kicker"><span>今日进度</span><span>${milestoneProgress} 个里程碑</span></div>
           <div class="island-scene" aria-hidden="true">
             <div class="island-ground">
               <div class="path-ribbon"></div>
@@ -1388,13 +1565,13 @@ export function renderDashboardHtml(graph: DoneGraph): string {
               <div class="path-dot dot-one">01</div>
               <div class="path-dot dot-two">02</div>
               <div class="path-dot dot-three">03</div>
-              <div class="path-dot dot-four">${String(Math.max(1, Math.min(99, graph.summary.completed_count))).padStart(2, "0")}</div>
+              <div class="path-dot dot-four">${String(Math.max(1, Math.min(99, graph.summary.milestones_completed))).padStart(2, "0")}</div>
             </div>
             <div class="progress-orb" aria-label="完成进度 ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>已完成</span></div>
           </div>
-          <p class="progress-caption">首页先给一个安定的答案：做到哪里了，哪些已经落袋，下一页再慢慢翻。</p>
+          <p class="progress-caption">首页先给一个安定的答案：已经走完 ${milestoneProgress} 个里程碑，当前阶段是「${escapeHtml(graph.summary.current_stage)}」。</p>
           <div class="home-stat-strip">
-            <div class="home-stat"><span>已完成</span><strong>${graph.summary.completed_count}</strong></div>
+            <div class="home-stat"><span>里程碑</span><strong>${milestoneProgress}</strong></div>
             <div class="home-stat"><span>已验证</span><strong>${graph.summary.evidence_passed}</strong></div>
             <div class="home-stat"><span>阻塞</span><strong>${graph.summary.blockers}</strong></div>
           </div>
@@ -1406,9 +1583,9 @@ export function renderDashboardHtml(graph: DoneGraph): string {
           <div class="page-kicker"><span>进度详情</span><span>总览</span></div>
           <h2>进度刻度</h2>
           <div class="progress-orb" aria-label="完成进度 ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>已完成</span></div>
-          <p class="progress-caption">第一页只回答一件事：这轮你和 AI 已经一起完成了多少真实进展？</p>
+          <p class="progress-caption">第一页只回答一件事：这轮你和 AI 已经一起完成了多少真实进展？当前阶段：${escapeHtml(graph.summary.current_stage)}。</p>
           <div class="metric-grid">
-            <div class="metric"><span>已完成</span><strong>${graph.summary.completed_count}</strong></div>
+            <div class="metric"><span>里程碑</span><strong>${milestoneProgress}</strong></div>
             <div class="metric"><span>已验证</span><strong>${graph.summary.evidence_passed}</strong></div>
             <div class="metric"><span>待确认</span><strong>${graph.summary.evidence_unknown}</strong></div>
             <div class="metric"><span>阻塞</span><strong>${graph.summary.blockers}</strong></div>

@@ -44,6 +44,22 @@ describe("DoneGraph core", () => {
     expect(graph.goal).toBe("做一个 AI 协作进度图谱");
     expect(graph.platform).toBe("codex");
     expect(graph.summary.evidence_passed).toBe(1);
+    expect(graph.summary.milestones_total).toBe(6);
+    expect(graph.summary.milestones_completed).toBe(4);
+    expect(graph.summary.current_stage).toBe("演示还差收尾");
+    expect(graph.summary.progress_percent).toBe(67);
+    expect(graph.milestones.map((milestone) => milestone.title)).toEqual([
+      "目标已确定",
+      "实现已启动",
+      "产物已出现",
+      "证据已收集",
+      "演示已可用",
+      "交接已清楚"
+    ]);
+    expect(graph.milestones.find((milestone) => milestone.id === "demo_ready")).toMatchObject({
+      status: "unknown",
+      detail: "还需要一条阶段完成记录，把进度变成可演示成果。"
+    });
     expect(graph.achievements.map((item) => item.title)).toContain("验证：npm run typecheck");
     expect(graph.nodes.some((node) => node.type === "next_step")).toBe(true);
     expect(graph.narrative).toContain("下一步");
@@ -75,6 +91,8 @@ describe("DoneGraph core", () => {
     expect(renderDashboardHtml(graph)).toContain("<span>DoneGraph</span><span>进度岛</span><span>手账</span>");
     expect(renderDashboardHtml(graph)).toContain("翻到完成页");
     expect(renderDashboardHtml(graph)).toContain("journalStage?.classList.add(\"turning\")");
+    expect(renderDashboardHtml(graph)).toContain("4 / 6 个里程碑");
+    expect(renderDashboardHtml(graph)).toContain("演示还差收尾");
     expect(renderDashboardHtml(graph)).toContain("收集到的进展");
     expect(renderDashboardHtml(graph)).toContain("data-target=\"1\">完成");
     expect(renderDashboardHtml(graph)).toContain("洁净室结构");
@@ -97,7 +115,7 @@ describe("DoneGraph core", () => {
       platform: "codex",
       goal: "Ship standalone DoneGraph",
       projectName: "donegraph-workspace",
-      changedFiles: ["packages/core/src/donegraph.ts", "apps/cli/src/cli.ts"],
+      changedFiles: ["packages/core/src/donegraph.ts", "packages/core/src/donegraph.test.ts", "README.md"],
       packageScripts: ["test", "typecheck", "build"],
       existingEvents: [],
       now: () => "2026-05-28T00:05:00.000Z",
@@ -106,7 +124,9 @@ describe("DoneGraph core", () => {
 
     expect(captured.map((event) => event.type)).toEqual(["goal", "action", "artifact", "verification"]);
     expect(captured[1]?.metadata.source).toBe("clean-room-capture");
-    expect(captured[2]?.text).toContain("2 个本地改动文件");
+    expect(captured[2]?.text).toContain("功能实现 1 个");
+    expect(captured[2]?.text).toContain("验证补强 1 个");
+    expect(captured[2]?.text).toContain("产品说明 1 个");
     expect(captured[3]?.metadata.status).toBe("unknown");
   });
 
