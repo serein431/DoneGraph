@@ -118,7 +118,7 @@ export interface DoneGraphCaptureInput {
 
 const doneGraphSchema: DoneGraphSchemaInfo = {
   name: "DoneGraph",
-  purpose: "Clean-room AI collaboration progress graph for goals, actions, artifacts, evidence, decisions, blockers, achievements, and next steps.",
+  purpose: "洁净室重写的 AI 协作进度图，用来记录目标、动作、产物、证据、决策、阻塞、成就和下一步。",
   node_types: ["goal", "task", "decision", "artifact", "evidence", "blocker", "achievement", "next_step"],
   edge_labels: [
     "belongs_to_goal",
@@ -497,16 +497,30 @@ function statusLabel(status: EvidenceStatus): string {
 }
 
 function statusText(status: EvidenceStatus): string {
-  if (status === "pass") return "Proven";
-  if (status === "fail") return "Needs repair";
-  if (status === "blocked") return "Blocked";
-  return "Needs proof";
+  if (status === "pass") return "已证明";
+  if (status === "fail") return "待修复";
+  if (status === "blocked") return "被阻塞";
+  return "待证明";
+}
+
+function nodeTypeText(type: DoneGraphNodeType): string {
+  const labels: Record<DoneGraphNodeType, string> = {
+    goal: "目标",
+    task: "任务",
+    decision: "决策",
+    artifact: "产物",
+    evidence: "证据",
+    blocker: "阻塞",
+    achievement: "成就",
+    next_step: "下一步"
+  };
+  return labels[type];
 }
 
 function renderNode(node: DoneGraphNode, index: number): string {
   return [
     `<article class="journal-card ${escapeHtml(node.type)} ${escapeHtml(statusLabel(node.status))}" style="--delay: ${index * 70}ms">`,
-    `<div class="card-cap"><span class="card-number">${String(index + 1).padStart(2, "0")}</span><span class="card-kind">${escapeHtml(node.type)}</span></div>`,
+    `<div class="card-cap"><span class="card-number">${String(index + 1).padStart(2, "0")}</span><span class="card-kind">${escapeHtml(nodeTypeText(node.type))}</span></div>`,
     `<h3>${escapeHtml(node.title)}</h3>`,
     `<p>${escapeHtml(node.detail)}</p>`,
     `<div class="stamp ${escapeHtml(statusLabel(node.status))}">${escapeHtml(statusText(node.status))}</div>`,
@@ -528,7 +542,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     )
     .join("\n");
   const achievements = graph.achievements
-    .map((item) => `<li><span>${escapeHtml(statusLabel(item.status))}</span>${escapeHtml(item.title)}</li>`)
+    .map((item) => `<li><span>${escapeHtml(statusText(item.status))}</span>${escapeHtml(item.title)}</li>`)
     .join("\n");
   const evidenceCards = graph.nodes
     .filter((node) => node.type === "evidence")
@@ -555,17 +569,17 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     return counts;
   }, new Map<string, number>());
   const sources = Array.from(sourceCounts.entries())
-    .map(([source, count]) => `<li><span>${escapeHtml(source)}</span>${count} captured nodes</li>`)
+    .map(([source, count]) => `<li><span>${escapeHtml(source)}</span>${count} 条捕获记录</li>`)
     .join("\n");
   const blockerText =
-    graph.summary.blockers === 0 ? "No blockers are holding this session back." : `${graph.summary.blockers} blocker${graph.summary.blockers === 1 ? "" : "s"} need attention.`;
+    graph.summary.blockers === 0 ? "这一轮暂时没有阻塞，可以安心往前翻。" : `还有 ${graph.summary.blockers} 个阻塞需要先处理。`;
 
   return `<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DoneGraph Dashboard</title>
+  <title>DoneGraph 进度手账</title>
   <style>
     :root {
       --meadow: #dcebd7;
@@ -1044,80 +1058,80 @@ export function renderDashboardHtml(graph: DoneGraph): string {
 <body>
   <main class="journal-shell">
     <header class="journal-top">
-      <span>Done Task Map</span>
+      <span>完成进度地图</span>
       <span>${escapeHtml(graph.platform)}</span>
-      <span>Generated ${escapeHtml(graph.generated_at)}</span>
+      <span>生成于 ${escapeHtml(graph.generated_at)}</span>
     </header>
     <section class="journal-stage" aria-live="polite">
       <section class="spread active" data-spread="0">
         <article class="page left">
-          <div class="page-kicker"><span>Progress Journal</span><span>Clean-room</span></div>
-          <h1><span>DoneGraph</span><span>Progress</span><span>Journal</span></h1>
+          <div class="page-kicker"><span>进度手账</span><span>洁净室重写</span></div>
+          <h1><span>DoneGraph</span><span>进度</span><span>手账</span></h1>
           <p class="story">${escapeHtml(graph.narrative)}</p>
           <div class="soft-note">${escapeHtml(blockerText)}</div>
         </article>
         <article class="page right">
-          <div class="progress-orb" aria-label="Progress ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>complete</span></div>
-          <p class="progress-caption">The first page only answers one question: how much real progress has this collaboration earned?</p>
+          <div class="progress-orb" aria-label="完成进度 ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>已完成</span></div>
+          <p class="progress-caption">第一页只回答一件事：这轮你和 AI 已经一起完成了多少真实进展？</p>
           <div class="metric-grid">
-            <div class="metric"><span>Completed</span><strong>${graph.summary.completed_count}</strong></div>
-            <div class="metric"><span>Evidence Pass</span><strong>${graph.summary.evidence_passed}</strong></div>
-            <div class="metric"><span>Unknown Proof</span><strong>${graph.summary.evidence_unknown}</strong></div>
-            <div class="metric"><span>Blockers</span><strong>${graph.summary.blockers}</strong></div>
+            <div class="metric"><span>已完成</span><strong>${graph.summary.completed_count}</strong></div>
+            <div class="metric"><span>已验证</span><strong>${graph.summary.evidence_passed}</strong></div>
+            <div class="metric"><span>待确认</span><strong>${graph.summary.evidence_unknown}</strong></div>
+            <div class="metric"><span>阻塞</span><strong>${graph.summary.blockers}</strong></div>
           </div>
         </article>
       </section>
 
       <section class="spread" data-spread="1">
         <article class="page left">
-          <div class="page-kicker"><span>Finished Work</span><span>${graph.achievements.length} entries</span></div>
-          <h2>Collected Progress</h2>
-          <section class="achievement-list">${completedCards || "<p class=\"soft-note\">No completed work has been recorded yet.</p>"}</section>
+          <div class="page-kicker"><span>完成清单</span><span>${graph.achievements.length} 条记录</span></div>
+          <h2>收集到的进展</h2>
+          <section class="achievement-list">${completedCards || "<p class=\"soft-note\">还没有记录已完成的进展。</p>"}</section>
         </article>
         <article class="page right">
-          <div class="page-kicker"><span>All Notes</span><span>task memory</span></div>
-          <h2>Work Pages</h2>
+          <div class="page-kicker"><span>全部记录</span><span>任务记忆</span></div>
+          <h2>工作页</h2>
           <section class="node-grid">${nodes}</section>
         </article>
       </section>
 
       <section class="spread" data-spread="2">
         <article class="page left">
-          <div class="page-kicker"><span>Proof</span><span>evidence state</span></div>
-          <h2>Evidence Stamps</h2>
-          <section class="proof-grid">${evidenceCards || "<p class=\"soft-note\">No verification evidence has been recorded yet.</p>"}</section>
+          <div class="page-kicker"><span>证据</span><span>验证状态</span></div>
+          <h2>证据贴纸</h2>
+          <section class="proof-grid">${evidenceCards || "<p class=\"soft-note\">还没有记录验证证据。</p>"}</section>
         </article>
         <article class="page right">
-          <div class="page-kicker"><span>Next Page</span><span>handoff</span></div>
-          <h2>Continue Here</h2>
+          <div class="page-kicker"><span>下一页</span><span>交接</span></div>
+          <h2>从这里继续</h2>
           <ul class="ledger-list">${nextSteps}</ul>
-          <p class="footer-note">This page is what the next AI session should read before it continues the work.</p>
+          <p class="footer-note">下一轮 AI 继续之前，先读这一页就能知道该从哪里接上。</p>
         </article>
       </section>
 
       <section class="spread" data-spread="3">
         <article class="page left">
-          <div class="page-kicker"><span>Clean-room Schema</span><span>details</span></div>
-          <h2>Clean-room Schema</h2>
+          <div class="page-kicker"><span>洁净室结构</span><span>细节</span></div>
+          <h2>洁净室结构</h2>
           <p class="soft-note">${escapeHtml(graph.schema.purpose)}</p>
           <div class="badge-list">${schemaLabels}</div>
-          <h3>Captured Sources</h3>
-          <ul class="ledger-list">${sources || "<li>Current records came from manual events.</li>"}</ul>
+          <h3>来源记录</h3>
+          <ul class="ledger-list">${sources || "<li>当前记录来自手动事件。</li>"}</ul>
         </article>
         <article class="page right">
-          <div class="page-kicker"><span>Relationship Trace</span><span>optional</span></div>
-          <h2>Relationship Trace</h2>
-          <ul class="ledger-list edge-list">${relationshipTrace || "<li>No relationship edges yet.</li>"}</ul>
-          <h3>Achievement Ledger</h3>
-          <ul class="ledger-list">${achievements || "<li>No achievement entries yet.</li>"}</ul>
+          <div class="page-kicker"><span>关系线索</span><span>可选</span></div>
+          <h2>关系线索</h2>
+          <ul class="ledger-list edge-list">${relationshipTrace || "<li>还没有关系连线。</li>"}</ul>
+          <h3>成就账本</h3>
+          <ul class="ledger-list">${achievements || "<li>还没有成就记录。</li>"}</ul>
         </article>
       </section>
     </section>
-    <nav class="page-controls" aria-label="Journal pages">
-      <button class="active" type="button" data-target="0">Progress</button>
-      <button type="button" data-target="1">Finished</button>
-      <button type="button" data-target="2">Proof</button>
-      <button type="button" data-target="3">Details</button>
+    <nav class="page-controls" aria-label="手账页">
+      <button class="active" type="button" data-target="0">进度</button>
+      <button type="button" data-target="1">完成</button>
+      <button type="button" data-target="2">证据</button>
+      <button type="button" data-target="3">细节</button>
     </nav>
   </main>
   <script>

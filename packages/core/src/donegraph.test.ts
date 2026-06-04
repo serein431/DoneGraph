@@ -71,13 +71,13 @@ describe("DoneGraph core", () => {
 
     expect(renderAchievementLog(graph)).toContain("DoneGraph Achievement Log");
     expect(renderNextSteps(graph)).toContain("Give This To The Next AI");
-    expect(renderDashboardHtml(graph)).toContain("Done Task Map");
-    expect(renderDashboardHtml(graph)).toContain("<span>DoneGraph</span><span>Progress</span><span>Journal</span>");
-    expect(renderDashboardHtml(graph)).toContain("Collected Progress");
-    expect(renderDashboardHtml(graph)).toContain("data-target=\"1\">Finished");
-    expect(renderDashboardHtml(graph)).toContain("Clean-room Schema");
+    expect(renderDashboardHtml(graph)).toContain("完成进度地图");
+    expect(renderDashboardHtml(graph)).toContain("<span>DoneGraph</span><span>进度</span><span>手账</span>");
+    expect(renderDashboardHtml(graph)).toContain("收集到的进展");
+    expect(renderDashboardHtml(graph)).toContain("data-target=\"1\">完成");
+    expect(renderDashboardHtml(graph)).toContain("洁净室结构");
     expect(renderDashboardHtml(graph)).toContain("verified_by");
-    expect(renderDashboardHtml(graph)).toContain("Generated 2026-05-28T00:04:00.000Z");
+    expect(renderDashboardHtml(graph)).toContain("生成于 2026-05-28T00:04:00.000Z");
   });
 
   it("uses clean-room collaboration edges instead of code graph relationships", () => {
@@ -87,7 +87,7 @@ describe("DoneGraph core", () => {
       expect.arrayContaining(["belongs_to_goal", "produced", "verified_by", "continues_as"])
     );
     expect(graph.edges.map((edge) => edge.label)).not.toEqual(expect.arrayContaining(["imports", "calls"]));
-    expect(graph.schema.purpose).toContain("AI collaboration progress");
+    expect(graph.schema.purpose).toContain("AI 协作进度图");
   });
 
   it("builds automatic context capture events without external graph input", () => {
@@ -126,7 +126,7 @@ describe("DoneGraph core", () => {
     const html = renderDashboardHtml(graph);
 
     expect(html).toContain("clean-room-capture");
-    expect(html).toContain("Relationship Trace");
+    expect(html).toContain("关系线索");
     expect(html).toContain("belongs_to_goal");
   });
 });
