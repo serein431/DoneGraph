@@ -217,9 +217,25 @@
       }
 
       .language-link {
-        padding: 0.5rem 0.8rem;
+        display: inline-flex;
+        width: 2.45rem;
+        height: 2.45rem;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
         border: 1px solid var(--line);
         border-radius: 999px;
+        background: rgba(245, 239, 220, 0.04);
+      }
+
+      .language-link svg {
+        width: 1.08rem;
+        height: 1.08rem;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
       }
 
       main {
@@ -1230,6 +1246,15 @@
           font-size: 0.86rem;
         }
 
+        .nav .language-link {
+          width: 2.45rem;
+          min-width: 2.45rem;
+          height: 2.45rem;
+          min-height: 2.45rem;
+          justify-content: center;
+          padding: 0;
+        }
+
         .hero {
           min-height: auto;
           padding: 2.25rem 1rem 3.25rem;
@@ -1551,7 +1576,15 @@
         <a href="#market">Market</a>
         <a href="#radio">Radio</a>
         <a href="#business">Business</a>
-        <a class="language-link" href="frontstage-demo.html">中文</a>
+        <a class="language-link" href="frontstage-demo.html" aria-label="Switch to Chinese">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 21a9 9 0 1 0 0-18a9 9 0 0 0 0 18Z" />
+            <path d="M3.6 9h16.8" />
+            <path d="M3.6 15h16.8" />
+            <path d="M12 3a14.5 14.5 0 0 1 0 18" />
+            <path d="M12 3a14.5 14.5 0 0 0 0 18" />
+          </svg>
+        </a>
       </nav>
     </header>
 
