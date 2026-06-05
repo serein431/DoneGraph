@@ -283,6 +283,51 @@
           linear-gradient(90deg, rgba(7, 16, 15, 0.08), transparent 32%);
       }
 
+      .hero-sound-toggle {
+        position: absolute;
+        right: 0.75rem;
+        bottom: 0.75rem;
+        z-index: 2;
+        display: inline-flex;
+        min-height: 38px;
+        align-items: center;
+        gap: 0.45rem;
+        border: 1px solid rgba(189, 247, 231, 0.38);
+        border-radius: 999px;
+        padding: 0.52rem 0.76rem;
+        background: rgba(7, 16, 15, 0.76);
+        color: var(--paper);
+        font: inherit;
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.03em;
+        cursor: pointer;
+        box-shadow: 0 12px 34px rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(14px);
+        transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+      }
+
+      .hero-sound-toggle::before {
+        content: "";
+        width: 0.62rem;
+        height: 0.62rem;
+        border-radius: 999px;
+        background: rgba(189, 247, 231, 0.62);
+        box-shadow: 0 0 18px rgba(189, 247, 231, 0.28);
+      }
+
+      .hero-sound-toggle:hover,
+      .hero-sound-toggle:focus-visible {
+        transform: translateY(-1px);
+        border-color: rgba(189, 247, 231, 0.72);
+        background: rgba(10, 28, 26, 0.86);
+      }
+
+      .hero-sound-toggle[data-sound-state="on"]::before {
+        background: var(--mint);
+        box-shadow: 0 0 20px rgba(189, 247, 231, 0.58);
+      }
+
       .hero-inner {
         position: relative;
         z-index: 2;
@@ -1201,6 +1246,14 @@
           border-radius: 8px;
         }
 
+        .hero-sound-toggle {
+          right: 0.62rem;
+          bottom: 0.62rem;
+          min-height: 34px;
+          padding: 0.46rem 0.66rem;
+          font-size: 0.76rem;
+        }
+
         .hero-inner {
           width: 100%;
           max-width: calc(100vw - 2rem);
@@ -1505,6 +1558,7 @@
       <section class="hero" aria-label="DoneGraph product page">
         <div class="hero-media" aria-label="DoneGraph 15 second demo video">
           <video
+            data-hero-video
             src="assets/donegraph-demo-15s.mp4"
             poster="assets/donegraph-demo-15s-poster.jpg"
             muted
@@ -1513,6 +1567,16 @@
             playsinline
             preload="metadata"
           ></video>
+          <button
+            class="hero-sound-toggle"
+            type="button"
+            data-hero-sound
+            data-sound-on="Sound on"
+            data-sound-off="Mute"
+            data-sound-state="off"
+            aria-label="Turn demo sound on"
+            aria-pressed="false"
+          >Sound on</button>
         </div>
         <div class="hero-inner">
           <p class="eyebrow">Chengji / DoneGraph</p>
@@ -1891,6 +1955,8 @@
     </main>
 
     <script>
+      const heroVideo = document.querySelector("[data-hero-video]");
+      const heroSound = document.querySelector("[data-hero-sound]");
       const playButton = document.querySelector("[data-demo-play]");
       const video = document.querySelector("[data-demo-video]");
       const meter = document.querySelector("[data-demo-meter]");
@@ -1904,6 +1970,36 @@
       const frontRadioLetter = document.querySelector("[data-front-radio-letter]");
       const frontRadioRadio = document.querySelector("[data-front-radio-radio]");
       const frontRadioSection = document.querySelector("#radio");
+
+      if (heroVideo && heroSound) {
+        const setHeroSoundState = (isOn) => {
+          heroSound.dataset.soundState = isOn ? "on" : "off";
+          heroSound.textContent = isOn ? heroSound.dataset.soundOff : heroSound.dataset.soundOn;
+          heroSound.setAttribute("aria-pressed", String(isOn));
+          heroSound.setAttribute("aria-label", isOn ? "Mute demo sound" : "Turn demo sound on");
+        };
+
+        setHeroSoundState(!heroVideo.muted && heroVideo.volume > 0);
+
+        heroSound.addEventListener("click", async () => {
+          const shouldTurnOn = heroVideo.muted || heroVideo.volume === 0;
+
+          if (shouldTurnOn) {
+            heroVideo.muted = false;
+            heroVideo.volume = 0.82;
+            try {
+              await heroVideo.play();
+            } catch (error) {
+              heroVideo.muted = true;
+            }
+          } else {
+            heroVideo.muted = true;
+          }
+
+          setHeroSoundState(!heroVideo.muted && heroVideo.volume > 0);
+        });
+      }
+
       const frontRadioSegments = [
         {
           frequency: "88.4",
