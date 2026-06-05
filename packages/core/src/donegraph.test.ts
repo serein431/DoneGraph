@@ -82,6 +82,84 @@ describe("DoneGraph core", () => {
     expect(graph.summary.evidence_failed).toBe(1);
   });
 
+  it("keeps similar verification progress pages distinct", () => {
+    const graph = buildDoneGraph([
+      ...events,
+      {
+        id: "evt_auto_verify",
+        timestamp: "2026-05-28T00:04:00.000Z",
+        platform: "codex",
+        type: "verification",
+        text: "真实运行验证命令并通过：npm test",
+        metadata: { command: "npm test", status: "pass", source: "capture-verify" }
+      },
+      {
+        id: "evt_manual_verify",
+        timestamp: "2026-05-28T00:05:00.000Z",
+        platform: "codex",
+        type: "verification",
+        text: "关键流程检查已经通过",
+        metadata: { command: "npm test", status: "pass" }
+      }
+    ]);
+
+    const html = renderDashboardHtml(graph);
+
+    expect(html).toContain("自动检查跑过核心流程");
+    expect(html).toContain("手动证明已经补上");
+    expect(html).toContain("自动验证已经帮你扫过");
+    expect(html).toContain("这条手动证明");
+  });
+
+  it("makes right-side progress pages tell different completion stories", () => {
+    const graph = buildDoneGraph([
+      {
+        id: "evt_goal",
+        timestamp: "2026-05-28T00:00:00.000Z",
+        platform: "codex",
+        type: "goal",
+        text: "做一个能看见 AI 协作进度的黑客松演示",
+        metadata: {}
+      },
+      {
+        id: "evt_scan",
+        timestamp: "2026-05-28T00:01:00.000Z",
+        platform: "codex",
+        type: "action",
+        text: "自动扫描 donegraph-workspace 的本地上下文，生成协作进度起点。",
+        metadata: {}
+      },
+      {
+        id: "evt_journal",
+        timestamp: "2026-05-28T00:02:00.000Z",
+        platform: "codex",
+        type: "action",
+        text: "生成可以翻看的进度手账首页",
+        metadata: {}
+      },
+      {
+        id: "evt_demo",
+        timestamp: "2026-05-28T00:03:00.000Z",
+        platform: "codex",
+        type: "completion",
+        text: "演示现在能展示完成进度、验证证据和下一步交接",
+        metadata: {}
+      }
+    ]);
+
+    const html = renderDashboardHtml(graph);
+    const proofTitles = Array.from(
+      html.matchAll(/<article class="page right progress-proof-page">[\s\S]*?<h2>([^<]+)<\/h2>/g),
+      (match) => match[1]
+    );
+
+    expect(proofTitles).toEqual(["方向已经落到纸上", "起点已经整理出来", "手账已经翻得开", "演示线索已经接上"]);
+    expect(new Set(proofTitles).size).toBe(proofTitles.length);
+    expect(html).toContain("整理协作起点");
+    expect(html).toContain("做出可翻看的手账首页");
+    expect(html).toContain("完成演示接力");
+  });
+
   it("renders markdown and static dashboard artifacts", () => {
     const graph = buildDoneGraph(events, "2026-05-28T00:04:00.000Z");
 
@@ -109,6 +187,12 @@ describe("DoneGraph core", () => {
     expect(renderDashboardHtml(graph)).toContain("4 / 6 个里程碑");
     expect(renderDashboardHtml(graph)).toContain("演示还差收尾");
     expect(renderDashboardHtml(graph)).toContain("这一页完成了什么");
+    expect(renderDashboardHtml(graph)).toContain("方向已经落到纸上");
+    expect(renderDashboardHtml(graph)).toContain("核心流程已经推进");
+    expect(renderDashboardHtml(graph)).toContain("可以打开的成果已经出现");
+    expect(renderDashboardHtml(graph)).toContain("类型结构已经稳住");
+    expect(renderDashboardHtml(graph)).not.toContain("这一页只保留对人有用的答案");
+    expect(renderDashboardHtml(graph)).not.toContain("packages/core");
     expect(renderDashboardHtml(graph)).toContain("data-target=\"1\">完成");
     expect(renderDashboardHtml(graph)).toContain("洁净室结构");
     expect(renderDashboardHtml(graph)).toContain("verified_by");

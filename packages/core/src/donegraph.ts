@@ -685,6 +685,10 @@ interface DashboardStoryCopy {
   kind: string;
 }
 
+interface DashboardProgressItem extends DashboardStoryCopy {
+  status: EvidenceStatus;
+}
+
 function commandIntent(value: string | undefined): "test" | "typecheck" | "build" | "lint" | undefined {
   const normalized = value?.toLowerCase() ?? "";
   if (normalized.includes("typecheck") || normalized.includes("tsc")) return "typecheck";
@@ -698,10 +702,12 @@ function cleanDashboardText(value: string | undefined, fallback: string): string
   const cleaned = normalizeText(value ?? "")
     .replace(/真实运行验证命令并通过[:：]?\s*[\w\s:.-]+/gi, "真实检查已经通过")
     .replace(/发现可用于证明进展的验证入口[:：][^。]+。?/g, "已经找到可以证明进展的检查入口。")
+    .replace(/代表文件[:：][^。；;]+[。；;]?/g, "这些变化已经被整理成一条可以继续追的进展。")
     .replace(/\bpath=[^\s，。；;]+/gi, "")
     .replace(/\bcommand=[^\s，。；;]+/gi, "")
     .replace(/\bnpm(?:\s+run)?\s+[\w:-]+/gi, "一次项目检查")
     .replace(/\.donegraph\/[^\s，。；;]+/gi, "进度手账")
+    .replace(/\b(?:apps|packages|plugins|platforms|scripts|src|test|tests|READMEs?)\/[^\s，。；;]+/gi, "相关项目内容")
     .replace(/DoneGraph CLI/g, "DoneGraph 工具")
     .replace(/\bCLI\b/g, "工具")
     .replace(/命令优先的/g, "核心")
@@ -764,9 +770,16 @@ function storyCopyForNode(node: DoneGraphNode): DashboardStoryCopy {
   }
 
   if (node.type === "evidence" && intent === "test") {
+    if (node.metadata.source === "capture-verify") {
+      return {
+        title: "自动检查跑过核心流程",
+        detail: "自动验证已经帮你扫过核心流程，这一步说明基础行为没有明显断掉。",
+        kind: "验证"
+      };
+    }
     return {
-      title: "确认关键流程跑得稳",
-      detail: "核心行为已经真实检查过，这一步可以算进已完成的进度。",
+      title: "关键流程检查已经通过",
+      detail: "这条手动证明把关键流程确认了一遍，可以放心算进已完成进度。",
       kind: "验证"
     };
   }
@@ -811,6 +824,31 @@ function storyCopyForNode(node: DoneGraphNode): DashboardStoryCopy {
     };
   }
 
+  if (node.type === "task") {
+    const raw = `${node.title} ${node.detail}`;
+    if (raw.includes("自动扫描") || raw.includes("协作进度起点")) {
+      return {
+        title: "整理协作起点",
+        detail: cleanDashboardText(node.detail, "这一步把散在上下文整理成可以继续推进的起点。"),
+        kind: "推进"
+      };
+    }
+    if (raw.includes("手账") || raw.includes("翻看") || raw.includes("首页")) {
+      return {
+        title: "做出可翻看的手账首页",
+        detail: cleanDashboardText(node.detail, "这一步把进度变成可以打开和翻看的手账首页。"),
+        kind: "推进"
+      };
+    }
+    if (raw.includes("演示") || raw.includes("交接")) {
+      return {
+        title: "完成演示接力",
+        detail: cleanDashboardText(node.detail, "这一步把完成进度、证据和下一步接力整理到一起。"),
+        kind: "推进"
+      };
+    }
+  }
+
   return {
     title: node.title === "阶段完成" ? "完成一个阶段" : "推进了一步",
     detail: cleanDashboardText(node.detail, "这一步让任务继续往前走。"),
@@ -841,6 +879,74 @@ function storyCopyForAchievement(item: DoneGraphAchievement, sourceNode: DoneGra
 
 function dashboardNextStep(step: string): string {
   return cleanDashboardText(step, "把已完成的进展固定下来，再开启下一阶段目标。");
+}
+
+function progressProofTitle(item: DashboardStoryCopy, page: number): string {
+  const raw = `${item.title} ${item.detail}`;
+  if (item.kind === "目标") return "方向已经落到纸上";
+  if (item.kind === "决策") return "路线已经选定";
+  if (item.kind === "产物") return item.title.includes("手账") ? "可以打开的成果已经出现" : "交付物已经落地";
+  if (item.kind === "验证" && item.title.includes("自动检查")) return "自动验证已经扫过";
+  if (item.kind === "验证" && item.detail.includes("手动证明")) return "手动证明已经补上";
+  if (item.kind === "验证" && item.title.includes("结构")) return "类型结构已经稳住";
+  if (item.kind === "验证" && item.title.includes("打包")) return "构建结果已经过关";
+  if (item.kind === "验证") return "验证让进度站得住";
+  if (item.kind === "阻塞") return "风险已经被看见";
+  if (item.kind === "下一步") return "接力点已经清楚";
+  if (raw.includes("自动扫描") || raw.includes("协作进度起点")) return "起点已经整理出来";
+  if (raw.includes("手账") || raw.includes("翻看") || raw.includes("首页")) return "手账已经翻得开";
+  if (raw.includes("演示") || raw.includes("交接")) return "演示线索已经接上";
+  if (item.title.includes("核心") || item.detail.includes("核心")) return "核心流程已经推进";
+  return `第 ${page} 页也算数`;
+}
+
+function progressProofDetail(item: DashboardStoryCopy, page: number): string {
+  const raw = `${item.title} ${item.detail}`;
+  if (item.kind === "目标") {
+    return "目标页证明这轮协作已经有了共同坐标，后面的动作、产物和验证才知道往哪里靠。";
+  }
+  if (item.kind === "决策") {
+    return "决策页记录路线选择，下一次接手时不用重新猜为什么这么做。";
+  }
+  if (item.kind === "产物") {
+    return item.title.includes("手账")
+      ? "这页说明成果已经变成能打开、能翻看、能交给别人理解的东西。"
+      : "这页说明协作不只停在讨论里，已经留下了可以继续使用的交付物。";
+  }
+  if (item.kind === "验证") {
+    if (item.title.includes("自动检查")) {
+      return "自动验证已经帮你扫过一遍基础流程，这页说明机器可重复检查的部分已经留下记录。";
+    }
+    if (item.detail.includes("手动证明")) {
+      return "这条手动证明把最后确认补上，说明它不是自动扫描里的同一条进展。";
+    }
+    if (item.title.includes("结构")) {
+      return "这页说明类型和接口已经对齐，后面继续接功能时不容易踩到结构问题。";
+    }
+    if (item.title.includes("打包")) {
+      return "这页说明成果已经能完整生成，演示和交付可以继续往前走。";
+    }
+    return "验证页说明这一步不是口头完成，而是已经有证据支撑，可以安心算进进度。";
+  }
+  if (item.kind === "阻塞") {
+    return "阻塞页把卡点摆到明面上，避免下一轮继续在同一个地方打转。";
+  }
+  if (item.kind === "下一步") {
+    return "接力页把下一步放在这里，让后面的人能直接续上。";
+  }
+  if (raw.includes("自动扫描") || raw.includes("协作进度起点")) {
+    return "这页把散在上下文收成一个起点，后面翻到这里时，能知道这轮协作从哪里开始。";
+  }
+  if (raw.includes("手账") || raw.includes("翻看") || raw.includes("首页")) {
+    return "这页说明进度已经从聊天里走出来，变成能打开、能翻看、能给别人看的首页。";
+  }
+  if (raw.includes("演示") || raw.includes("交接")) {
+    return "这页把完成进度、证据和接力点收在一起，演示时能讲清楚已经走到哪里。";
+  }
+  if (item.title.includes("核心") || item.detail.includes("核心")) {
+    return "这页说明核心流程已经往可用状态推进，后面可以把注意力放到体验和收尾。";
+  }
+  return `第 ${page} 页记录的是一次具体推进。它不需要变成报告，只要能让人看见任务确实往前走了一格。`;
 }
 
 function dashboardNarrativeFor(graph: DoneGraph): string {
@@ -885,7 +991,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       if (!sourceNodeByEventId.has(eventId)) sourceNodeByEventId.set(eventId, node);
     }
   }
-  const progressItems = graph.achievements.map((item) => {
+  const progressItems: DashboardProgressItem[] = graph.achievements.map((item) => {
     const sourceNode = item.source_event_ids.map((eventId) => sourceNodeByEventId.get(eventId)).find(Boolean);
     return {
       ...storyCopyForAchievement(item, sourceNode),
@@ -914,8 +1020,8 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         </article>
         <article class="page right progress-proof-page">
           <div class="page-kicker"><span>${escapeHtml(item.kind)}</span><span>${escapeHtml(statusText(item.status))}</span></div>
-          <h2>为什么算进度</h2>
-          <p class="soft-note">这一页只保留对人有用的答案：完成了什么、它推进了哪一步、下一页该接哪里。</p>
+          <h2>${escapeHtml(progressProofTitle(item, page))}</h2>
+          <p class="soft-note">${escapeHtml(progressProofDetail(item, page))}</p>
           <div class="stamp ${escapeHtml(statusLabel(item.status))}">${escapeHtml(statusText(item.status))}</div>
           <div class="progress-pager">
             <button class="secondary" type="button" data-jump="${previousTarget}">${page === 1 ? "回到进度" : "上一页"}</button>
