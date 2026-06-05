@@ -1575,7 +1575,6 @@
         <a href="#audience">受众</a>
         <a href="#market">市场</a>
         <a href="#radio">电台</a>
-        <a href="#demo">Demo</a>
         <a href="#business">商业化</a>
         <a class="language-link" href="en.html">English</a>
       </nav>
@@ -1861,34 +1860,6 @@
         </div>
       </section>
 
-      <section class="section dark" id="demo">
-        <div class="inner">
-          <div class="section-title">
-            <h2>Demo：一轮真实任务，15 秒看懂。</h2>
-            <p>
-              用户给 AI 一个任务。成迹捕捉工作轨迹。Agent 留下一封复盘信，让这轮工作可以轻松重新打开。
-            </p>
-          </div>
-          <div class="demo-shell">
-            <div class="demo-screen">
-              <video
-                data-demo-video
-                src="assets/donegraph-demo-15s.mp4"
-                poster="assets/seedance-letter-radio-reference.png"
-                preload="metadata"
-                playsinline
-                controls
-              ></video>
-            </div>
-            <div class="demo-controls">
-              <button class="button primary" type="button" data-demo-play>播放 Demo</button>
-              <div class="meter" aria-hidden="true"><span data-demo-meter></span></div>
-              <span class="scene-label" data-demo-label>00:00 / 00:15</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section class="section" id="business">
         <div class="inner">
           <div class="section-title">
@@ -1982,10 +1953,6 @@
     <script>
       const heroVideo = document.querySelector("[data-hero-video]");
       const heroSound = document.querySelector("[data-hero-sound]");
-      const playButton = document.querySelector("[data-demo-play]");
-      const video = document.querySelector("[data-demo-video]");
-      const meter = document.querySelector("[data-demo-meter]");
-      const label = document.querySelector("[data-demo-label]");
       const frontRadioPlay = document.querySelector("[data-front-radio-play]");
       const frontRadioFrequency = document.querySelector("[data-front-radio-frequency]");
       const frontRadioStatus = document.querySelector("[data-front-radio-status]");
@@ -2073,32 +2040,6 @@
       let frontBgmAudio = null;
       let frontRadioAutoStarted = false;
       let frontRadioWaitingForGesture = false;
-
-      function formatTime(value) {
-        const safeValue = Number.isFinite(value) ? value : 0;
-        const minutes = Math.floor(safeValue / 60);
-        const seconds = Math.floor(safeValue % 60);
-        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-      }
-
-      function syncVideoState() {
-        if (!video) return;
-        const duration = Number.isFinite(video.duration) ? video.duration : 15;
-        const progress = duration > 0 ? (video.currentTime / duration) * 100 : 0;
-        if (meter) meter.style.width = `${Math.min(100, Math.max(0, progress))}%`;
-        if (label) label.textContent = `${formatTime(video.currentTime)} / ${formatTime(duration)}`;
-        if (playButton) playButton.textContent = video.paused ? "播放 Demo" : "暂停 Demo";
-      }
-
-      async function toggleVideo() {
-        if (!video) return;
-        if (video.paused) {
-          await video.play();
-        } else {
-          video.pause();
-        }
-        syncVideoState();
-      }
 
       function renderFrontRadioSegment(index) {
         const segment = frontRadioSegments[index % frontRadioSegments.length];
@@ -2190,7 +2131,6 @@
         startFrontRadioVoice({ auto: true });
       }
 
-      playButton?.addEventListener("click", toggleVideo);
       frontRadioPlay?.addEventListener("click", toggleFrontRadioVoice);
       if ("IntersectionObserver" in window && frontRadioSection) {
         const frontRadioObserver = new IntersectionObserver((entries) => {
@@ -2209,13 +2149,7 @@
       ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
         window.addEventListener(eventName, retryFrontRadioAfterGesture, { passive: true });
       });
-      video?.addEventListener("loadedmetadata", syncVideoState);
-      video?.addEventListener("timeupdate", syncVideoState);
-      video?.addEventListener("play", syncVideoState);
-      video?.addEventListener("pause", syncVideoState);
-      video?.addEventListener("ended", syncVideoState);
       renderFrontRadioSegment(frontRadioIndex);
-      syncVideoState();
     </script>
   </body>
 </html>
