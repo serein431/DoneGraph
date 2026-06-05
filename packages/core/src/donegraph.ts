@@ -689,6 +689,11 @@ interface DashboardProgressItem extends DashboardStoryCopy {
   status: EvidenceStatus;
 }
 
+const DASHBOARD_TEMPLATE_CONTRACT = "fixed-journal-scene-v1";
+const DASHBOARD_DYNAMIC_SURFACE = "copy-only-v1";
+const DASHBOARD_PAGE_SWITCH_DELAY_MS = 220;
+const DASHBOARD_PAGE_TURN_DURATION_MS = 860;
+
 function commandIntent(value: string | undefined): "test" | "typecheck" | "build" | "lint" | undefined {
   const normalized = value?.toLowerCase() ?? "";
   if (normalized.includes("typecheck") || normalized.includes("tsc")) return "typecheck";
@@ -1087,6 +1092,8 @@ export function renderDashboardHtml(graph: DoneGraph): string {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="donegraph-template-contract" content="${DASHBOARD_TEMPLATE_CONTRACT}" />
+  <meta name="donegraph-dynamic-surface" content="${DASHBOARD_DYNAMIC_SURFACE}" />
   <title>DoneGraph 进度手账</title>
   <style>
     :root {
@@ -1105,6 +1112,12 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       --cream-line: rgba(118, 79, 39, .18);
       --shadow: rgba(91, 63, 32, .18);
       --button-shadow: #d5a96e;
+      --motion-page-turn-duration: .86s;
+      --motion-page-settle-duration: .56s;
+      --motion-page-switch-delay: 220ms;
+      --scene-cloud-drift-duration: 8s;
+      --scene-cloud-late-delay: -2s;
+      --scene-island-bob-duration: 5s;
     }
     * { box-sizing: border-box; }
     html, body { overflow-x: hidden; }
@@ -1245,13 +1258,13 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         repeating-linear-gradient(180deg, transparent 0 35px, rgba(121, 79, 39, .045) 35px 36px);
     }
     .journal-stage.turning-forward .turn-page {
-      animation: page-turn-forward .86s cubic-bezier(.18, .76, .2, 1);
+      animation: page-turn-forward var(--motion-page-turn-duration) cubic-bezier(.18, .76, .2, 1);
     }
     .journal-stage.turning-backward .turn-page {
       left: 10px;
       transform-origin: right center;
       border-radius: 34px 10px 10px 34px;
-      animation: page-turn-backward .86s cubic-bezier(.18, .76, .2, 1);
+      animation: page-turn-backward var(--motion-page-turn-duration) cubic-bezier(.18, .76, .2, 1);
     }
     .journal-stage.turning .turn-page {
       opacity: 1;
@@ -1447,10 +1460,10 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       position: absolute;
       border-radius: 999px;
       background: rgba(255, 255, 255, .72);
-      animation: cloud-drift 8s ease-in-out infinite alternate;
+      animation: cloud-drift var(--scene-cloud-drift-duration) ease-in-out infinite alternate;
     }
     .island-scene::before { width: 150px; height: 42px; left: 9%; top: 12%; }
-    .island-scene::after { width: 108px; height: 34px; right: 12%; top: 20%; animation-delay: -2s; }
+    .island-scene::after { width: 108px; height: 34px; right: 12%; top: 20%; animation-delay: var(--scene-cloud-late-delay); }
     .island-ground {
       position: absolute;
       left: 50%;
@@ -1465,7 +1478,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         radial-gradient(circle at 68% 58%, rgba(29, 190, 176, .20) 0 12%, transparent 13%),
         linear-gradient(135deg, #a8d88c, #79c991 54%, #52ae7b);
       box-shadow: inset 0 -18px 0 rgba(56, 126, 83, .16), 0 26px 0 rgba(213, 169, 110, .28), 0 38px 48px rgba(91, 63, 32, .15);
-      animation: island-bob 5s ease-in-out infinite;
+      animation: island-bob var(--scene-island-bob-duration) ease-in-out infinite;
     }
     .path-ribbon {
       position: absolute;
@@ -1760,7 +1773,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       border-radius: 24px;
       background: rgba(255, 248, 228, .82);
       box-shadow: 0 14px 26px rgba(84, 98, 66, .08);
-      animation: page-settle .56s ease both;
+      animation: page-settle var(--motion-page-settle-duration) ease both;
       animation-delay: var(--delay);
     }
     .proof-card span {
@@ -2196,7 +2209,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
   </style>
 </head>
 <body>
-  <main class="journal-shell">
+  <main class="journal-shell" data-template-contract="${DASHBOARD_TEMPLATE_CONTRACT}" data-dynamic-surface="${DASHBOARD_DYNAMIC_SURFACE}">
     <header class="journal-top">
       <span>完成进度地图</span>
       <span>${escapeHtml(graph.platform)}</span>
@@ -2285,6 +2298,8 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     </nav>
   </main>
   <script>
+    const pageSwitchDelayMs = ${DASHBOARD_PAGE_SWITCH_DELAY_MS};
+    const pageTurnDurationMs = ${DASHBOARD_PAGE_TURN_DURATION_MS};
     const spreads = Array.from(document.querySelectorAll(".spread"));
     const buttons = Array.from(document.querySelectorAll(".page-controls button"));
     const jumpButtons = Array.from(document.querySelectorAll("[data-jump]"));
@@ -2311,11 +2326,11 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       void journalStage?.offsetWidth;
       journalStage?.classList.add("turning", \`turning-\${direction}\`);
       journalStage?.scrollIntoView({ block: "start", behavior: "smooth" });
-      const switchTimer = window.setTimeout(() => setActiveSpread(target), 220);
+      const switchTimer = window.setTimeout(() => setActiveSpread(target), pageSwitchDelayMs);
       turnTimers.push(switchTimer);
       turnTimers.push(window.setTimeout(() => {
         journalStage?.classList.remove("turning", "turning-forward", "turning-backward");
-      }, 860));
+      }, pageTurnDurationMs));
     }
     buttons.forEach((button) => {
       button.addEventListener("click", () => showSpread(button.dataset.target || "0"));

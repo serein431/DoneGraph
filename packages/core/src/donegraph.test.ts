@@ -37,6 +37,10 @@ const events: DoneGraphEvent[] = [
   }
 ];
 
+function extractTagBody(html: string, tag: "script" | "style"): string {
+  return html.match(new RegExp(`<${tag}>([\\s\\S]*?)<\\/${tag}>`))?.[1] ?? "";
+}
+
 describe("DoneGraph core", () => {
   it("builds a graph with achievements, evidence, and handoff steps", () => {
     const graph = buildDoneGraph(events, "2026-05-28T00:04:00.000Z");
@@ -160,6 +164,33 @@ describe("DoneGraph core", () => {
     expect(html).toContain("完成演示接力");
   });
 
+  it("keeps the journal scene and motion deterministic while copy changes", () => {
+    const firstGraph = buildDoneGraph(events, "2026-05-28T00:04:00.000Z");
+    const secondGraph = buildDoneGraph(
+      events.map((event, index) => ({
+        ...event,
+        id: `${event.id}_alt`,
+        text: [`整理一次新的协作目标`, `推进另一段体验打磨`, `留下另一份可交付成果`, `另一条检查已经通过`][index] ?? event.text
+      })),
+      "2026-05-28T00:04:00.000Z"
+    );
+
+    const firstHtml = renderDashboardHtml(firstGraph);
+    const secondHtml = renderDashboardHtml(secondGraph);
+
+    expect(extractTagBody(firstHtml, "style")).toBe(extractTagBody(secondHtml, "style"));
+    expect(firstHtml).toContain('<meta name="donegraph-template-contract" content="fixed-journal-scene-v1" />');
+    expect(firstHtml).toContain('<meta name="donegraph-dynamic-surface" content="copy-only-v1" />');
+    expect(firstHtml).toContain('data-template-contract="fixed-journal-scene-v1"');
+    expect(firstHtml).toContain('data-dynamic-surface="copy-only-v1"');
+    expect(firstHtml).toContain("--motion-page-turn-duration: .86s;");
+    expect(firstHtml).toContain("--motion-page-settle-duration: .56s;");
+    expect(firstHtml).toContain("--scene-cloud-drift-duration: 8s;");
+    expect(firstHtml).toContain("--scene-island-bob-duration: 5s;");
+    expect(extractTagBody(firstHtml, "script")).not.toMatch(/Math\.random|Date\.now|crypto\./);
+    expect(extractTagBody(firstHtml, "style")).not.toMatch(/Math\.random|Date\.now|crypto\./);
+  });
+
   it("renders markdown and static dashboard artifacts", () => {
     const graph = buildDoneGraph(events, "2026-05-28T00:04:00.000Z");
 
@@ -171,7 +202,8 @@ describe("DoneGraph core", () => {
     expect(renderDashboardHtml(graph)).toContain("journalStage?.classList.add(\"turning\", `turning-${direction}`)");
     expect(renderDashboardHtml(graph)).toContain("<div class=\"book-spine\" aria-hidden=\"true\"></div>");
     expect(renderDashboardHtml(graph)).toContain("<div class=\"turn-page\" aria-hidden=\"true\"></div>");
-    expect(renderDashboardHtml(graph)).toContain("window.setTimeout(() => setActiveSpread(target), 220);");
+    expect(renderDashboardHtml(graph)).toContain("const pageSwitchDelayMs = 220;");
+    expect(renderDashboardHtml(graph)).toContain("window.setTimeout(() => setActiveSpread(target), pageSwitchDelayMs);");
     expect(renderDashboardHtml(graph)).toContain("overflow: visible;");
     expect(renderDashboardHtml(graph)).toContain("backface-visibility: visible;");
     expect(renderDashboardHtml(graph)).toContain("<div class=\"home-progress-row\">");
