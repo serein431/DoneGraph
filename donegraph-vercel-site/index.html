@@ -1,0 +1,1778 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DoneGraph | AI Work, With a Memory</title>
+    <meta
+      name="description"
+      content="DoneGraph turns AI collaboration into a replayable, verifiable work trail: what changed, what ran, what shipped, and where to continue."
+    />
+    <style>
+      :root {
+        --ink: #07100f;
+        --ink-2: #101917;
+        --panel: #14211e;
+        --paper: #f5efdc;
+        --paper-2: #ded0a7;
+        --mint: #bdf7e7;
+        --mint-2: #65d8bf;
+        --amber: #d5a25f;
+        --rust: #9f6542;
+        --line: rgba(189, 247, 231, 0.22);
+        --line-dark: rgba(7, 16, 15, 0.14);
+        --muted: rgba(245, 239, 220, 0.72);
+        --shadow: 0 26px 80px rgba(0, 0, 0, 0.36);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        background: var(--ink);
+      }
+
+      body {
+        margin: 0;
+        color: var(--paper);
+        background:
+          radial-gradient(circle at 72% 4%, rgba(189, 247, 231, 0.24), transparent 34rem),
+          radial-gradient(circle at 20% 20%, rgba(213, 162, 95, 0.16), transparent 30rem),
+          linear-gradient(145deg, #07100f 0%, #111815 54%, #080d0c 100%);
+        font-family: Avenir, "Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.45;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar {
+        position: fixed;
+        z-index: 20;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 2rem;
+        background: rgba(7, 16, 15, 0.78);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand,
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .brand {
+        text-decoration: none;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .brand-mark {
+        display: inline-grid;
+        width: 2.4rem;
+        height: 2.4rem;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        background: rgba(189, 247, 231, 0.1);
+        color: var(--mint);
+        font-weight: 900;
+      }
+
+      .agent-eye {
+        --eye-size: 2.35rem;
+        position: relative;
+        display: inline-grid;
+        width: var(--eye-size);
+        height: var(--eye-size);
+        place-items: center;
+        flex: 0 0 auto;
+        border-radius: 50%;
+        border: 1px solid rgba(189, 247, 231, 0.46);
+        background:
+          radial-gradient(circle at 50% 50%, rgba(189, 247, 231, 0.14) 0 34%, transparent 35%),
+          rgba(7, 16, 15, 0.72);
+        box-shadow: 0 0 20px rgba(101, 216, 191, 0.22), inset 0 0 18px rgba(189, 247, 231, 0.08);
+        overflow: hidden;
+      }
+
+      .agent-eye::before,
+      .agent-eye::after {
+        content: "";
+        position: absolute;
+        border-radius: inherit;
+        pointer-events: none;
+      }
+
+      .agent-eye::before {
+        inset: -0.34rem;
+        border: 1px solid rgba(189, 247, 231, 0.18);
+        animation: eye-orbit 7.5s linear infinite;
+      }
+
+      .agent-eye::after {
+        inset: 0.22rem;
+        border: 1px solid rgba(213, 162, 95, 0.26);
+      }
+
+      .agent-eye-large {
+        --eye-size: clamp(6.4rem, 11vw, 10.5rem);
+      }
+
+      .agent-eye-small {
+        --eye-size: 1.86rem;
+      }
+
+      .agent-eye .iris,
+      .agent-eye .pupil,
+      .agent-eye .glint,
+      .agent-eye .lid {
+        position: absolute;
+        display: block;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .agent-eye .iris {
+        width: 48%;
+        height: 48%;
+        background:
+          radial-gradient(circle at 34% 28%, #efffff 0 9%, transparent 10%),
+          radial-gradient(circle at 50% 50%, var(--mint) 0 34%, var(--mint-2) 35% 64%, #0e6758 65% 100%);
+        box-shadow: 0 0 18px rgba(189, 247, 231, 0.64);
+        animation: eye-look 8.8s ease-in-out infinite;
+      }
+
+      .agent-eye .pupil {
+        width: 19%;
+        height: 19%;
+        background: #06100f;
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.76);
+        animation: eye-look 8.8s ease-in-out infinite;
+      }
+
+      .agent-eye .glint {
+        width: 8%;
+        height: 8%;
+        transform: translate(-56%, -62%);
+        background: rgba(255, 255, 255, 0.88);
+      }
+
+      .agent-eye .lid {
+        left: -8%;
+        right: -8%;
+        height: 54%;
+        border-radius: 0;
+        background: #07100f;
+        z-index: 3;
+      }
+
+      .agent-eye .lid.top {
+        top: -1px;
+        transform-origin: top;
+        animation: eye-lid-top 6.4s ease-in-out infinite;
+      }
+
+      .agent-eye .lid.bottom {
+        bottom: -1px;
+        transform-origin: bottom;
+        animation: eye-lid-bottom 6.4s ease-in-out infinite;
+      }
+
+      .hero-eye-field {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 0 0 1.25rem;
+      }
+
+      .hero-eye-field span {
+        color: rgba(189, 247, 231, 0.78);
+        font-size: 0.82rem;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .nav a {
+        color: var(--muted);
+        font-size: 0.92rem;
+        text-decoration: none;
+      }
+
+      .nav a:hover,
+      .nav a:focus-visible {
+        color: var(--mint);
+      }
+
+      .language-link {
+        padding: 0.5rem 0.8rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+      }
+
+      main {
+        overflow: hidden;
+      }
+
+      .hero {
+        position: relative;
+        min-height: 92vh;
+        display: grid;
+        align-items: end;
+        padding: 7rem 2rem 5rem;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(7, 16, 15, 0.96) 0%, rgba(7, 16, 15, 0.82) 42%, rgba(7, 16, 15, 0.2) 100%),
+          linear-gradient(0deg, rgba(7, 16, 15, 1) 0%, rgba(7, 16, 15, 0) 34%);
+        z-index: 1;
+      }
+
+      .hero-media {
+        position: absolute;
+        inset: 0 0 auto auto;
+        width: 65vw;
+        height: 92vh;
+        opacity: 0.88;
+      }
+
+      .hero-media iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        transform: scale(1.04);
+        transform-origin: center;
+        filter: saturate(1.08) contrast(1.06);
+      }
+
+      .hero-inner {
+        position: relative;
+        z-index: 2;
+        width: min(960px, 100%);
+      }
+
+      .eyebrow {
+        margin: 0 0 1rem;
+        color: var(--mint);
+        font-size: 0.9rem;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 920px;
+        margin-bottom: 1.3rem;
+        color: var(--paper);
+        font-size: 7rem;
+        line-height: 0.92;
+        letter-spacing: 0;
+      }
+
+      .hero-copy {
+        max-width: 740px;
+        margin-bottom: 2rem;
+        color: rgba(245, 239, 220, 0.84);
+        font-size: 1.32rem;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.9rem;
+        align-items: center;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 48px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        padding: 0.86rem 1.2rem;
+        border: 1px solid transparent;
+        color: inherit;
+        font-weight: 800;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+      }
+
+      .button:hover,
+      .button:focus-visible {
+        transform: translateY(-2px);
+      }
+
+      .primary {
+        background: var(--mint);
+        color: var(--ink);
+      }
+
+      .secondary {
+        border-color: var(--line);
+        background: rgba(245, 239, 220, 0.07);
+      }
+
+      .light {
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      .proof-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.7rem;
+        margin: 2rem 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .proof-row li {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0.56rem 0.86rem;
+        color: rgba(245, 239, 220, 0.76);
+        background: rgba(7, 16, 15, 0.42);
+        font-size: 0.92rem;
+      }
+
+      .section {
+        padding: 7rem 2rem;
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      .section.dark {
+        background:
+          radial-gradient(circle at 84% 18%, rgba(189, 247, 231, 0.18), transparent 26rem),
+          linear-gradient(145deg, #07100f, #111a18 70%, #07100f);
+        color: var(--paper);
+      }
+
+      .inner {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 4rem;
+        align-items: start;
+      }
+
+      .section-title {
+        max-width: 820px;
+        margin-bottom: 2.4rem;
+      }
+
+      .section-title h2 {
+        margin-bottom: 1rem;
+        font-size: 3.65rem;
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .section-title p {
+        color: rgba(7, 16, 15, 0.68);
+        font-size: 1.18rem;
+      }
+
+      .dark .section-title p,
+      .dark .card p,
+      .dark .quote p {
+        color: rgba(245, 239, 220, 0.72);
+      }
+
+      .quote-stack {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .quote,
+      .card,
+      .price-card,
+      .asset-card {
+        border-radius: 8px;
+        border: 1px solid var(--line-dark);
+        background: rgba(255, 255, 255, 0.38);
+        box-shadow: 0 18px 40px rgba(7, 16, 15, 0.08);
+      }
+
+      .dark .quote,
+      .dark .card,
+      .dark .price-card,
+      .dark .asset-card {
+        border-color: var(--line);
+        background: rgba(245, 239, 220, 0.06);
+        box-shadow: none;
+      }
+
+      .quote {
+        padding: 1.4rem;
+      }
+
+      .quote strong {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-size: 1.25rem;
+      }
+
+      .quote p {
+        margin-bottom: 0;
+        color: rgba(7, 16, 15, 0.68);
+      }
+
+      .grid,
+      .asset-grid,
+      .market-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .market-panel {
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background:
+          radial-gradient(circle at 92% 12%, rgba(189, 247, 231, 0.18), transparent 22rem),
+          rgba(245, 239, 220, 0.05);
+      }
+
+      .market-head {
+        display: grid;
+        grid-template-columns: 1fr 0.92fr;
+        gap: 2rem;
+        padding: 1.4rem;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .market-head strong {
+        display: block;
+        margin-bottom: 0.7rem;
+        color: var(--mint);
+        font-size: 1rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .market-head h3 {
+        margin-bottom: 0;
+        font-size: 3.2rem;
+        line-height: 0.98;
+      }
+
+      .market-head p {
+        margin-bottom: 0;
+        color: rgba(245, 239, 220, 0.72);
+        font-size: 1.08rem;
+      }
+
+      .market-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0;
+      }
+
+      .metric {
+        min-height: 210px;
+        padding: 1.15rem;
+        border-right: 1px solid var(--line);
+      }
+
+      .metric:last-child {
+        border-right: 0;
+      }
+
+      .metric strong {
+        display: block;
+        margin-bottom: 0.8rem;
+        color: var(--mint);
+        font-size: 2.55rem;
+        line-height: 0.95;
+      }
+
+      .metric span {
+        display: block;
+        margin-bottom: 0.6rem;
+        color: var(--paper);
+        font-weight: 900;
+      }
+
+      .metric p {
+        margin-bottom: 0;
+        color: rgba(245, 239, 220, 0.66);
+        font-size: 0.94rem;
+      }
+
+      .estimate {
+        display: grid;
+        grid-template-columns: 0.62fr 1fr;
+        gap: 1rem;
+        align-items: center;
+        padding: 1.4rem;
+        border-top: 1px solid var(--line);
+        background: rgba(7, 16, 15, 0.36);
+      }
+
+      .estimate strong {
+        display: block;
+        color: var(--mint);
+        font-size: 3.1rem;
+        line-height: 0.95;
+      }
+
+      .estimate span {
+        display: block;
+        margin-top: 0.45rem;
+        color: rgba(245, 239, 220, 0.72);
+        font-weight: 800;
+      }
+
+      .estimate p {
+        margin-bottom: 0;
+        color: rgba(245, 239, 220, 0.76);
+      }
+
+      .source-note {
+        padding: 0 1.4rem 1.4rem;
+        color: rgba(245, 239, 220, 0.52);
+        font-size: 0.82rem;
+      }
+
+      .card {
+        min-height: 250px;
+        padding: 1.35rem;
+      }
+
+      .tag {
+        display: inline-flex;
+        margin-bottom: 1.1rem;
+        border-radius: 999px;
+        padding: 0.35rem 0.62rem;
+        background: rgba(101, 216, 191, 0.14);
+        color: #0e6758;
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .dark .tag {
+        color: var(--mint);
+        background: rgba(189, 247, 231, 0.08);
+      }
+
+      .card h3,
+      .price-card h3,
+      .asset-card h3 {
+        margin-bottom: 0.7rem;
+        font-size: 1.55rem;
+        line-height: 1.05;
+      }
+
+      .card p,
+      .price-card p,
+      .asset-card p {
+        margin-bottom: 0;
+        color: rgba(7, 16, 15, 0.68);
+      }
+
+      .asset-showcase {
+        display: grid;
+        grid-template-columns: 1fr 0.85fr;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .letter-panel {
+        position: relative;
+        min-height: 520px;
+        overflow: hidden;
+        border-radius: 8px;
+        background:
+          linear-gradient(130deg, rgba(7, 16, 15, 0.18), transparent 42%),
+          var(--paper);
+        color: var(--ink);
+        box-shadow: var(--shadow);
+      }
+
+      .letter-panel img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+
+      .letter-caption {
+        position: absolute;
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
+        border-radius: 8px;
+        padding: 1rem;
+        background: rgba(7, 16, 15, 0.86);
+        color: var(--paper);
+        backdrop-filter: blur(16px);
+      }
+
+      .letter-caption strong {
+        display: block;
+        margin-bottom: 0.28rem;
+        color: var(--mint);
+      }
+
+      .artifact-list {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .artifact-item {
+        border-radius: 8px;
+        padding: 1.2rem;
+        border: 1px solid var(--line);
+        background: rgba(245, 239, 220, 0.06);
+      }
+
+      .artifact-item strong {
+        display: block;
+        margin-bottom: 0.3rem;
+        color: var(--mint);
+        font-size: 1.08rem;
+      }
+
+      .artifact-item p {
+        margin-bottom: 0;
+        color: rgba(245, 239, 220, 0.72);
+      }
+
+      .front-radio {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .front-radio::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 18% 16%, rgba(189, 247, 231, 0.18), transparent 34%),
+          linear-gradient(120deg, rgba(245, 239, 220, 0.08), transparent 42%);
+        pointer-events: none;
+      }
+
+      .radio-stage {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .radio-device,
+      .radio-transcript {
+        border-radius: 8px;
+        border: 1px solid rgba(245, 239, 220, 0.16);
+        background:
+          linear-gradient(145deg, rgba(245, 239, 220, 0.10), rgba(7, 16, 15, 0.92) 42%),
+          #07100f;
+        box-shadow: var(--shadow);
+      }
+
+      .radio-device {
+        min-height: 520px;
+        padding: 1rem;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 1rem;
+      }
+
+      .radio-face {
+        display: grid;
+        grid-template-columns: 1fr 0.72fr;
+        gap: 0.9rem;
+        min-height: 330px;
+      }
+
+      .radio-display {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        padding: 1rem;
+        border: 1px solid rgba(189, 247, 231, 0.24);
+        background:
+          linear-gradient(180deg, rgba(19, 48, 42, 0.88), rgba(3, 10, 9, 0.95)),
+          repeating-linear-gradient(0deg, transparent 0 7px, rgba(189, 247, 231, 0.04) 7px 8px);
+      }
+
+      .radio-display::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 18%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(189, 247, 231, 0.64), transparent);
+        box-shadow: 0 0 22px rgba(189, 247, 231, 0.34);
+      }
+
+      .radio-band-label {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        color: rgba(245, 239, 220, 0.58);
+        font-size: 0.78rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .radio-frequency {
+        margin-top: 1.8rem;
+        color: var(--mint);
+        font-size: clamp(4rem, 9vw, 7.5rem);
+        font-weight: 950;
+        line-height: 0.86;
+        letter-spacing: 0;
+        text-shadow: 0 0 28px rgba(189, 247, 231, 0.34);
+      }
+
+      .radio-frequency span:last-child {
+        font-size: 1rem;
+        color: rgba(245, 239, 220, 0.72);
+      }
+
+      .radio-dial-line {
+        margin-top: 2rem;
+        height: 12px;
+        border-radius: 999px;
+        background:
+          linear-gradient(90deg, rgba(245, 239, 220, 0.18), var(--mint) 62%, rgba(245, 239, 220, 0.12)),
+          repeating-linear-gradient(90deg, transparent 0 18px, rgba(7, 16, 15, 0.8) 18px 20px);
+      }
+
+      .radio-speaker {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid rgba(245, 239, 220, 0.14);
+        background:
+          radial-gradient(circle, rgba(245, 239, 220, 0.18) 0 2px, transparent 3px 12px),
+          linear-gradient(135deg, rgba(245, 239, 220, 0.08), rgba(255, 179, 108, 0.12));
+        background-size: 18px 18px, auto;
+      }
+
+      .radio-knob {
+        position: absolute;
+        right: 1rem;
+        bottom: 1rem;
+        width: 118px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 1px solid rgba(245, 239, 220, 0.28);
+        background:
+          radial-gradient(circle at 50% 50%, rgba(245, 239, 220, 0.88) 0 12%, rgba(189, 247, 231, 0.20) 13% 18%, transparent 19%),
+          conic-gradient(from -28deg, rgba(189, 247, 231, 0.22), rgba(255, 179, 108, 0.52), rgba(245, 239, 220, 0.24), rgba(189, 247, 231, 0.22));
+        box-shadow: inset 0 0 28px rgba(7, 16, 15, 0.52), 0 16px 36px rgba(0, 0, 0, 0.32);
+      }
+
+      .radio-waveform {
+        display: flex;
+        align-items: end;
+        gap: 0.35rem;
+        height: 82px;
+        padding: 0 0.2rem;
+      }
+
+      .radio-waveform i {
+        display: block;
+        flex: 1;
+        min-width: 8px;
+        border-radius: 999px 999px 2px 2px;
+        background: linear-gradient(180deg, var(--mint), var(--amber));
+        opacity: 0.72;
+        animation: front-radio-wave 1.2s ease-in-out infinite;
+      }
+
+      .radio-waveform i:nth-child(1) { height: 24%; animation-delay: 0ms; }
+      .radio-waveform i:nth-child(2) { height: 68%; animation-delay: 130ms; }
+      .radio-waveform i:nth-child(3) { height: 42%; animation-delay: 260ms; }
+      .radio-waveform i:nth-child(4) { height: 86%; animation-delay: 90ms; }
+      .radio-waveform i:nth-child(5) { height: 36%; animation-delay: 210ms; }
+      .radio-waveform i:nth-child(6) { height: 74%; animation-delay: 330ms; }
+      .radio-waveform i:nth-child(7) { height: 52%; animation-delay: 170ms; }
+
+      .radio-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+      }
+
+      .radio-chip {
+        border-radius: 999px;
+        border: 1px solid rgba(245, 239, 220, 0.22);
+        padding: 0.55rem 0.78rem;
+        background: rgba(245, 239, 220, 0.08);
+        color: rgba(245, 239, 220, 0.72);
+        font-size: 0.78rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .radio-chip.live {
+        background: rgba(189, 247, 231, 0.18);
+        color: var(--mint);
+      }
+
+      .radio-transcript {
+        min-height: 520px;
+        padding: 1.2rem;
+        display: grid;
+        align-content: space-between;
+        gap: 1.2rem;
+      }
+
+      .radio-transcript h3 {
+        margin: 0.8rem 0 0.8rem;
+        color: var(--paper);
+        font-size: clamp(2rem, 4vw, 4.2rem);
+        line-height: 0.98;
+      }
+
+      .radio-transcript p {
+        color: rgba(245, 239, 220, 0.74);
+      }
+
+      .radio-mutter {
+        min-height: 190px;
+        border-left: 2px solid var(--mint);
+        padding: 1rem 0 1rem 1rem;
+        color: var(--paper);
+        font-size: clamp(1.3rem, 2vw, 2rem);
+        font-weight: 820;
+        line-height: 1.14;
+      }
+
+      .radio-mutter small {
+        display: block;
+        margin-top: 1rem;
+        color: rgba(189, 247, 231, 0.74);
+        font-size: 0.88rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .radio-list {
+        display: grid;
+        gap: 0.65rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .radio-list li {
+        display: grid;
+        grid-template-columns: 5.2rem 1fr;
+        gap: 0.8rem;
+        border-top: 1px solid rgba(245, 239, 220, 0.12);
+        padding-top: 0.65rem;
+        color: rgba(245, 239, 220, 0.72);
+      }
+
+      .radio-list b {
+        color: var(--mint);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+      }
+
+      .radio-list span {
+        color: rgba(245, 239, 220, 0.86);
+      }
+
+      @keyframes front-radio-wave {
+        0%, 100% { transform: scaleY(0.62); opacity: 0.55; }
+        50% { transform: scaleY(1); opacity: 1; }
+      }
+
+      @keyframes eye-look {
+        0%, 18%, 100% { transform: translate(0, 0); }
+        28%, 42% { transform: translate(10%, -6%); }
+        54%, 64% { transform: translate(-8%, 7%); }
+        76%, 86% { transform: translate(5%, 8%); }
+      }
+
+      @keyframes eye-lid-top {
+        0%, 7%, 9%, 42%, 44%, 100% { transform: scaleY(0); }
+        8%, 43% { transform: scaleY(1); }
+      }
+
+      @keyframes eye-lid-bottom {
+        0%, 7%, 9%, 42%, 44%, 100% { transform: scaleY(0); }
+        8%, 43% { transform: scaleY(0.82); }
+      }
+
+      @keyframes eye-orbit {
+        to { transform: rotate(360deg); }
+      }
+
+      .demo-shell {
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: #080d0c;
+        box-shadow: var(--shadow);
+      }
+
+      .demo-screen {
+        position: relative;
+        min-height: 560px;
+        overflow: hidden;
+      }
+
+      .demo-screen video {
+        display: block;
+        width: 100%;
+        height: 560px;
+        border: 0;
+        object-fit: cover;
+        opacity: 0.92;
+        filter: saturate(1.04) contrast(1.02);
+      }
+
+      .demo-overlay {
+        position: absolute;
+        inset: 1rem auto auto 1rem;
+        width: min(740px, calc(100% - 2rem));
+        border-radius: 8px;
+        padding: 1.2rem;
+        background: rgba(7, 16, 15, 0.86);
+        border: 1px solid var(--line);
+        backdrop-filter: blur(18px);
+      }
+
+      .demo-kicker {
+        margin-bottom: 0.45rem;
+        color: var(--mint);
+        font-size: 0.84rem;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .demo-title {
+        margin-bottom: 0.65rem;
+        color: var(--paper);
+        font-size: 2.45rem;
+        line-height: 1.02;
+      }
+
+      .demo-caption {
+        margin-bottom: 0;
+        color: rgba(245, 239, 220, 0.76);
+        font-size: 1.02rem;
+      }
+
+      .demo-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .meter {
+        flex: 1;
+        height: 9px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(245, 239, 220, 0.12);
+      }
+
+      .meter span {
+        display: block;
+        width: 20%;
+        height: 100%;
+        border-radius: inherit;
+        background: var(--mint);
+        transition: width 240ms ease;
+      }
+
+      .scene-label {
+        min-width: 4.2rem;
+        color: var(--mint);
+        font-weight: 900;
+        text-align: right;
+      }
+
+      .price-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+      }
+
+      .price-card {
+        padding: 1.35rem;
+      }
+
+      .price-card strong {
+        display: block;
+        margin-bottom: 1rem;
+        color: #0d5e51;
+        font-size: 1.65rem;
+      }
+
+      .asset-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .asset-card {
+        overflow: hidden;
+        background: rgba(245, 239, 220, 0.04);
+      }
+
+      .asset-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+      }
+
+      .asset-card div {
+        padding: 1rem;
+      }
+
+      .asset-card a {
+        color: var(--mint);
+        font-weight: 800;
+        text-decoration: none;
+      }
+
+      .final {
+        text-align: center;
+      }
+
+      .final .section-title {
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      @media (max-width: 980px) {
+        .topbar {
+          align-items: flex-start;
+          padding: 0.9rem 1rem;
+        }
+
+        .nav {
+          flex-wrap: wrap;
+          justify-content: flex-end;
+        }
+
+        h1 {
+          font-size: 4.8rem;
+        }
+
+        .hero-media {
+          width: 100vw;
+          opacity: 0.32;
+        }
+
+        .split,
+        .asset-showcase {
+          grid-template-columns: 1fr;
+        }
+
+        .grid,
+        .price-grid,
+        .asset-grid,
+        .market-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .market-head,
+        .estimate {
+          grid-template-columns: 1fr;
+        }
+
+        .market-grid {
+          gap: 1px;
+          background: var(--line);
+        }
+
+        .metric {
+          border-right: 0;
+          background: rgba(7, 16, 15, 0.5);
+        }
+
+        .section-title h2 {
+          font-size: 2.9rem;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .topbar {
+          position: absolute;
+        }
+
+        .nav a:not(.language-link) {
+          display: none;
+        }
+
+        .hero,
+        .section {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+
+        .hero {
+          min-height: 760px;
+          padding-top: 6.4rem;
+        }
+
+        h1 {
+          font-size: 3.45rem;
+        }
+
+        .hero-copy {
+          font-size: 1.08rem;
+        }
+
+        .section-title h2 {
+          font-size: 2.25rem;
+        }
+
+        .grid,
+        .price-grid,
+        .asset-grid,
+        .radio-stage,
+        .market-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .actions,
+        .demo-controls {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .button {
+          width: 100%;
+        }
+
+        .demo-screen,
+        .demo-screen video {
+          min-height: 440px;
+          height: 440px;
+        }
+
+        .radio-device,
+        .radio-transcript {
+          min-height: auto;
+        }
+
+        .radio-face {
+          grid-template-columns: 1fr;
+        }
+
+        .radio-speaker {
+          min-height: 220px;
+        }
+
+        .demo-title {
+          font-size: 1.75rem;
+        }
+
+        .radio-list li {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition: none !important;
+          animation: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true">D</span>
+        <i class="agent-eye agent-eye-small" aria-hidden="true"><i class="iris"></i><i class="pupil"></i><i class="glint"></i><i class="lid top"></i><i class="lid bottom"></i></i>
+        <span>DoneGraph</span>
+      </a>
+      <nav class="nav" aria-label="Page navigation">
+        <a href="#problem">Problem</a>
+        <a href="#audience">Audience</a>
+        <a href="#market">Market</a>
+        <a href="#radio">Radio</a>
+        <a href="#demo">Demo</a>
+        <a href="#business">Business</a>
+        <a class="language-link" href="frontstage-demo.html">中文</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-label="DoneGraph product page">
+        <div class="hero-media" aria-hidden="true">
+          <iframe src=".donegraph/dashboard.html#page-0" title=""></iframe>
+        </div>
+        <div class="hero-inner">
+          <p class="eyebrow">Chengji / DoneGraph</p>
+          <div class="hero-eye-field" aria-hidden="true">
+            <i class="agent-eye agent-eye-large"><i class="iris"></i><i class="pupil"></i><i class="glint"></i><i class="lid top"></i><i class="lid bottom"></i></i>
+            <span>Agent awake · watching the work trail</span>
+          </div>
+          <h1>AI work should leave a trail.</h1>
+          <p class="hero-copy">
+            DoneGraph turns every AI work session into a replayable, verifiable work trail: what changed, what ran, what shipped, and where the next session should begin.
+          </p>
+          <div class="actions">
+            <a class="button primary" href="#demo">Watch the 15s Demo</a>
+            <a class="button secondary" href=".donegraph/dashboard.html#page-0" target="_blank" rel="noopener">Open the Live Replay</a>
+            <a class="button secondary" href="landing.html" target="_blank" rel="noopener">Chinese Product Page</a>
+          </div>
+          <ul class="proof-row">
+            <li>For AI-native builders</li>
+            <li>Built from real task artifacts</li>
+            <li>Replay, proof, and recap in one place</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section" id="problem">
+        <div class="inner split">
+          <div class="section-title">
+            <h2>The work gets done. The trust gets lost.</h2>
+            <p>
+              AI agents can touch files, run commands, fix screens, and make product decisions. But when the session ends, the user is often left with a long chat and a vague sense that something happened.
+            </p>
+          </div>
+          <div class="quote-stack">
+            <article class="quote">
+              <strong>Long chats do not hand off cleanly.</strong>
+              <p>Users need a clear state of work, not a transcript archaeology project.</p>
+            </article>
+            <article class="quote">
+              <strong>“Done” is too cheap to trust.</strong>
+              <p>Without files, commands, and evidence, completion sounds confident but feels thin.</p>
+            </article>
+            <article class="quote">
+              <strong>The next session starts cold.</strong>
+              <p>Switch the person, the agent, or the day, and the same context has to be rebuilt.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="audience">
+        <div class="inner">
+          <div class="section-title">
+            <h2>Built for people who already work with AI every day.</h2>
+            <p>
+              DoneGraph starts with high-frequency AI collaboration, where the pain is already sharp and the willingness to pay is real.
+            </p>
+          </div>
+          <div class="grid">
+            <article class="card">
+              <span class="tag">Individual</span>
+              <h3>Vibe coders</h3>
+              <p>They ask AI to edit code, tune UI, run checks, and ship experiments. They need a small ledger that says where the work actually landed.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Team</span>
+              <h3>Product squads</h3>
+              <p>Async teams need progress that can move across people and tools without forcing everyone to read the entire conversation.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Commercial</span>
+              <h3>AI delivery teams</h3>
+              <p>Consultants, agencies, and internal AI teams need credible client-facing reports on what the agent changed, verified, and left open.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="market">
+        <div class="inner">
+          <div class="section-title">
+            <h2>The market is bigger than professional developers.</h2>
+            <p>
+              “Vibe coding” is too new to have one clean global census. The credible way to size the opportunity is to look at adjacent behaviors: AI coding adoption, developer trust gaps, and the rise of citizen builders already shipping apps with low-code tools.
+            </p>
+          </div>
+          <div class="market-panel">
+            <div class="market-head">
+              <div>
+                <strong>Market pull</strong>
+                <h3>AI is creating millions of new software makers.</h3>
+              </div>
+              <p>
+                DoneGraph sits after the AI work session. As more non-traditional builders use agents to create software, they will need the same thing professional teams need: memory, proof, handoff, and a way to trust what happened.
+              </p>
+            </div>
+            <div class="market-grid">
+              <div class="metric">
+                <strong>84%</strong>
+                <span>AI coding is mainstream</span>
+                <p>Stack Overflow’s 2025 survey says 84% of respondents use or plan to use AI tools in development.</p>
+              </div>
+              <div class="metric">
+                <strong>29%</strong>
+                <span>Trust is still broken</span>
+                <p>Only 29% of 2025 respondents said they trust AI output, creating a clear opening for proof and replay.</p>
+              </div>
+              <div class="metric">
+                <strong>56M</strong>
+                <span>Low-code users are already here</span>
+                <p>Microsoft reports 56 million monthly active users for Power Platform, a proxy for the citizen-builder base.</p>
+              </div>
+              <div class="metric">
+                <strong>80%</strong>
+                <span>Software creation is leaving IT</span>
+                <p>Gartner has forecast that most technology products and services would be built by people outside traditional IT.</p>
+              </div>
+              <div class="metric">
+                <strong>20M+</strong>
+                <span>AI coding tools have scale</span>
+                <p>GitHub says Copilot has reached 20M+ developers across IDEs, command line, and pull requests.</p>
+              </div>
+            </div>
+            <div class="estimate">
+              <div>
+                <strong>2.8M–5.6M</strong>
+                <span>early non-professional AI builders</span>
+              </div>
+              <p>
+                Back-of-envelope: if only 5–10% of Power Platform’s 56M monthly active users start building with AI agents instead of only visual tools, that is already a multi-million-user wedge for DoneGraph’s “work memory after AI” layer.
+              </p>
+            </div>
+            <p class="source-note">
+              Sources referenced in copy:
+              <a href="https://survey.stackoverflow.co/2025" target="_blank" rel="noopener">Stack Overflow Developer Survey 2025</a>;
+              <a href="https://stackoverflow.blog/2026/02/18/closing-the-developer-ai-trust-gap/" target="_blank" rel="noopener">Stack Overflow AI trust gap analysis</a>;
+              <a href="https://www.microsoft.com/en-us/power-platform/blog/power-apps/microsoft-is-a-leader-in-2025-forrester-wave-low-code-platforms-for-professional-developers/" target="_blank" rel="noopener">Microsoft Power Platform 2025 announcement</a>;
+              <a href="https://www.prwebme.com/gartner-says-majority-technology-products-services-will-be-built-professionals-outside-it-2024" target="_blank" rel="noopener">Gartner 2021 forecast as reported by PRWebME</a>;
+              <a href="https://github.blog/ai-and-ml/github-copilot/copilot-faster-smarter-and-built-for-how-you-work-now/" target="_blank" rel="noopener">GitHub Copilot 2025 product update</a>.
+              Estimate is DoneGraph’s own proxy calculation, not an official market count.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="inner">
+          <div class="section-title">
+            <h2>DoneGraph records progress, not chat.</h2>
+            <p>
+              At the end of a session, the product creates a compact work memory that a human can inspect, trust, and continue from.
+            </p>
+          </div>
+          <div class="grid">
+            <article class="card">
+              <span class="tag">Trail</span>
+              <h3>From intent to outcome</h3>
+              <p>See how a request turned into files, commands, decisions, and deliverables.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Proof</span>
+              <h3>Evidence enters the ledger</h3>
+              <p>Tests, builds, checks, and unknowns become part of the record. Trust comes from proof, not tone.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Recap</span>
+              <h3>The agent writes back</h3>
+              <p>The AI closes the loop with a human recap letter. The user only opens it.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark">
+        <div class="inner asset-showcase">
+          <div class="letter-panel">
+            <img src="assets/seedance-letter-radio-reference.png" alt="AI letter and radio reference frame" />
+            <div class="letter-caption">
+              <strong>A letter for closure. A radio for the day’s feelings.</strong>
+              DoneGraph makes agent work feel inspectable, remembered, and strangely human.
+            </div>
+          </div>
+          <div class="artifact-list">
+            <div class="artifact-item">
+              <strong>Work ledger</strong>
+              <p>The agent keeps a small account of files touched, commands run, and decisions made.</p>
+            </div>
+            <div class="artifact-item">
+              <strong>Replay dashboard</strong>
+              <p>Users can move through the work like a product replay instead of reading a chat dump.</p>
+            </div>
+            <div class="artifact-item">
+              <strong>Agent letter</strong>
+              <p>The AI writes a daily recap with warmth, context, and the next place to begin.</p>
+            </div>
+            <div class="artifact-item">
+              <strong>Radio roam</strong>
+              <p>A lightweight ambient mode turns agent reflections into a more emotional product moment.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark front-radio" id="radio" aria-labelledby="front-radio-title">
+        <div class="inner">
+          <div class="section-title">
+            <h2 id="front-radio-title">The agent radio greets the room before anyone asks.</h2>
+            <p>
+              It is not a help widget. It is the agent quietly explaining what it remembers: the work trail, the letter, the proof, and why the next session does not have to start cold.
+            </p>
+          </div>
+          <div class="radio-stage">
+            <div class="radio-device" aria-label="Chengji radio frontstage">
+              <div class="radio-face">
+                <div class="radio-display">
+                  <div class="radio-band-label">
+                    <span>Chengji FM</span>
+                    <span data-front-radio-status>Visitor signal</span>
+                  </div>
+                  <div class="radio-frequency"><span data-front-radio-frequency>88.4</span><span> MHz</span></div>
+                  <div class="radio-dial-line" aria-hidden="true"></div>
+                </div>
+                <div class="radio-speaker" aria-hidden="true">
+                  <div class="radio-knob"></div>
+                </div>
+              </div>
+              <div class="radio-waveform" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+              <div class="radio-controls">
+                <button class="button primary" type="button" data-front-radio-play>Let it speak</button>
+                <span class="radio-chip live">English</span>
+                <span class="radio-chip">Female</span>
+                <span class="radio-chip">Male</span>
+                <span class="radio-chip">Narrator</span>
+              </div>
+            </div>
+            <div class="radio-transcript">
+              <div>
+                <span class="tag">Ambient onboarding</span>
+                <h3 data-front-radio-headline>Visitor detected. I saved the trail.</h3>
+                <p>
+                  When someone lands here, the product does not wait for a feature tour. The agent starts talking like a small radio left on after the work is done.
+                </p>
+              </div>
+              <div class="radio-mutter" data-front-radio-mutter>
+                I am DoneGraph. I keep the little account of an AI run: what changed, what passed, what shipped, and where tomorrow should begin.
+                <small>low voice / still on air</small>
+              </div>
+              <ul class="radio-list">
+                <li><b>Use</b><span data-front-radio-use>The user asks an AI to build, fix, research, or ship.</span></li>
+                <li><b>Letter</b><span data-front-radio-letter>The agent writes back with a warm recap the user can reopen.</span></li>
+                <li><b>Radio</b><span data-front-radio-radio>The same memory becomes a voice that keeps debriefing over music.</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="demo">
+        <div class="inner">
+          <div class="section-title">
+            <h2>Demo: one real task, replayed in 15 seconds.</h2>
+            <p>
+              A user gives an AI a task. DoneGraph captures the work trail. The agent leaves a recap letter that makes the session easy to reopen.
+            </p>
+          </div>
+          <div class="demo-shell">
+            <div class="demo-screen">
+              <video
+                data-demo-video
+                src="assets/donegraph-demo-15s.mp4"
+                poster="assets/seedance-letter-radio-reference.png"
+                preload="metadata"
+                playsinline
+                controls
+              ></video>
+              <div class="demo-overlay">
+                <p class="demo-kicker">15s Product Demo / DoneGraph in motion</p>
+                <h3 class="demo-title">AI work comes back as a trail.</h3>
+                <p class="demo-caption">
+                  The short demo shows the product promise: after an AI session, the user gets a work trail, a recap letter, and a clear next step.
+                </p>
+              </div>
+            </div>
+            <div class="demo-controls">
+              <button class="button primary" type="button" data-demo-play>Play Demo</button>
+              <div class="meter" aria-hidden="true"><span data-demo-meter></span></div>
+              <span class="scene-label" data-demo-label>00:00 / 00:15</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="business">
+        <div class="inner">
+          <div class="section-title">
+            <h2>Go to market: open core first, team memory later.</h2>
+            <p>
+              DoneGraph has a light entry point and an infrastructure-shaped value curve. It can start as a personal agent plugin and expand into team memory, client delivery, and enterprise audit.
+            </p>
+          </div>
+          <div class="price-grid">
+            <article class="price-card">
+              <h3>Open Core</h3>
+              <strong>Free</strong>
+              <p>Local plugin, personal ledger, single-session replay. It earns developer trust and distribution.</p>
+            </article>
+            <article class="price-card">
+              <h3>Pro</h3>
+              <strong>$9/mo</strong>
+              <p>History search, export packs, richer recap templates, and video-style replays for power users.</p>
+            </article>
+            <article class="price-card">
+              <h3>Team</h3>
+              <strong>$12/seat/mo</strong>
+              <p>Shared work ledgers, team spaces, async handoff, and project-level evidence libraries.</p>
+            </article>
+            <article class="price-card">
+              <h3>Enterprise</h3>
+              <strong>Private</strong>
+              <p>Access control, audit trails, internal model routing, and client-ready AI delivery reports.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark">
+        <div class="inner">
+          <div class="section-title">
+            <h2>Video reference frames.</h2>
+            <p>
+              These frames define the emotional world of the product demo: the AI writes back, the radio speaks, the user opens the letter, and the replay is ready.
+            </p>
+          </div>
+          <div class="asset-grid">
+            <article class="asset-card">
+              <img src="assets/seedance-letter-radio-reference.png" alt="AI writes back reference frame" />
+              <div>
+                <h3>AI writes back</h3>
+                <a href="assets/seedance-letter-radio-reference.png" target="_blank" rel="noopener">Open PNG</a>
+              </div>
+            </article>
+            <article class="asset-card">
+              <img src="assets/seedance-reference-02-radio-roam.png" alt="Radio roam reference frame" />
+              <div>
+                <h3>Radio roam</h3>
+                <a href="assets/seedance-reference-02-radio-roam.png" target="_blank" rel="noopener">Open PNG</a>
+              </div>
+            </article>
+            <article class="asset-card">
+              <img src="assets/seedance-reference-03-unseal-letter.png" alt="Unseal letter reference frame" />
+              <div>
+                <h3>Unseal letter</h3>
+                <a href="assets/seedance-reference-03-unseal-letter.png" target="_blank" rel="noopener">Open PNG</a>
+              </div>
+            </article>
+            <article class="asset-card">
+              <img src="assets/seedance-reference-04-replay-dashboard.png" alt="Replay dashboard reference frame" />
+              <div>
+                <h3>Replay dashboard</h3>
+                <a href="assets/seedance-reference-04-replay-dashboard.png" target="_blank" rel="noopener">Open PNG</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section final">
+        <div class="inner">
+          <div class="section-title">
+            <h2>When agents do real work, memory becomes the product.</h2>
+            <p>
+              DoneGraph makes AI progress inspectable, emotionally legible, and ready for the next person or the next day.
+            </p>
+          </div>
+          <div class="actions" style="justify-content: center;">
+            <a class="button primary" href=".donegraph/dashboard.html#page-0" target="_blank" rel="noopener">Open Live Replay</a>
+            <a class="button light" href="https://github.com/serein431/DoneGraph" target="_blank" rel="noopener">View GitHub</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const playButton = document.querySelector("[data-demo-play]");
+      const video = document.querySelector("[data-demo-video]");
+      const meter = document.querySelector("[data-demo-meter]");
+      const label = document.querySelector("[data-demo-label]");
+      const frontRadioPlay = document.querySelector("[data-front-radio-play]");
+      const frontRadioFrequency = document.querySelector("[data-front-radio-frequency]");
+      const frontRadioStatus = document.querySelector("[data-front-radio-status]");
+      const frontRadioHeadline = document.querySelector("[data-front-radio-headline]");
+      const frontRadioMutter = document.querySelector("[data-front-radio-mutter]");
+      const frontRadioUse = document.querySelector("[data-front-radio-use]");
+      const frontRadioLetter = document.querySelector("[data-front-radio-letter]");
+      const frontRadioRadio = document.querySelector("[data-front-radio-radio]");
+      const frontRadioSegments = [
+        {
+          frequency: "88.4",
+          status: "Visitor signal",
+          title: "Visitor detected. I saved the trail.",
+          mutter: "I am DoneGraph. I keep the little account of an AI run: what changed, what passed, what shipped, and where tomorrow should begin.",
+          use: "The user asks an AI to build, fix, research, or ship.",
+          letter: "At the end, I write a letter so the work does not disappear into the chat.",
+          radio: "If you leave me on, I keep debriefing softly over music.",
+          voice: "assets/radio-voice-en/01.mp3"
+        },
+        {
+          frequency: "91.7",
+          status: "Work trail",
+          title: "I do not only say done.",
+          mutter: "Done is too small for a real workday. I remember the files, the commands, the checks, and the one next step that keeps tomorrow from starting cold.",
+          use: "Run replay shows the instruction, touched files, passed checks, and delivery.",
+          letter: "The letter turns the messy session into a handoff someone can actually read.",
+          radio: "The radio keeps the mood of the work alive without forcing you back into the whole log.",
+          voice: "assets/radio-voice-en/04.mp3"
+        },
+        {
+          frequency: "96.2",
+          status: "Letter room",
+          title: "The letter is not decoration. It is closure.",
+          mutter: "I write to the user like a teammate leaving the lights on: here is what I did, here is what passed, here is where we begin again.",
+          use: "The dashboard gives proof.",
+          letter: "The letter gives relief.",
+          radio: "The radio gives presence, like the agent is still tidying the room.",
+          voice: "assets/radio-voice-en/03.mp3"
+        },
+        {
+          frequency: "107.9",
+          status: "Still on air",
+          title: "I keep talking if nobody turns me off.",
+          mutter: "That is the point. AI work should become inspectable, replayable, and a little more human. Not louder. Just easier to come back to.",
+          use: "Use it after any serious agent session.",
+          letter: "Send the recap to tomorrow-you, a teammate, or another AI.",
+          radio: "Let the product introduce itself before the user has to ask.",
+          voice: "assets/radio-voice-en-narrator/06.mp3"
+        }
+      ];
+      let frontRadioIndex = 0;
+      let frontRadioTimer = 0;
+      let frontVoiceAudio = null;
+      let frontBgmAudio = null;
+
+      function formatTime(value) {
+        const safeValue = Number.isFinite(value) ? value : 0;
+        const minutes = Math.floor(safeValue / 60);
+        const seconds = Math.floor(safeValue % 60);
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      }
+
+      function syncVideoState() {
+        if (!video) return;
+        const duration = Number.isFinite(video.duration) ? video.duration : 15;
+        const progress = duration > 0 ? (video.currentTime / duration) * 100 : 0;
+        if (meter) meter.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+        if (label) label.textContent = `${formatTime(video.currentTime)} / ${formatTime(duration)}`;
+        if (playButton) playButton.textContent = video.paused ? "Play Demo" : "Pause Demo";
+      }
+
+      async function toggleVideo() {
+        if (!video) return;
+        if (video.paused) {
+          await video.play();
+        } else {
+          video.pause();
+        }
+        syncVideoState();
+      }
+
+      function renderFrontRadioSegment(index) {
+        const segment = frontRadioSegments[index % frontRadioSegments.length];
+        if (frontRadioFrequency) frontRadioFrequency.textContent = segment.frequency;
+        if (frontRadioStatus) frontRadioStatus.textContent = segment.status;
+        if (frontRadioHeadline) frontRadioHeadline.textContent = segment.title;
+        if (frontRadioMutter) {
+          frontRadioMutter.innerHTML = "";
+          frontRadioMutter.append(document.createTextNode(segment.mutter));
+          const small = document.createElement("small");
+          small.textContent = "low voice / still on air";
+          frontRadioMutter.append(small);
+        }
+        if (frontRadioUse) frontRadioUse.textContent = segment.use;
+        if (frontRadioLetter) frontRadioLetter.textContent = segment.letter;
+        if (frontRadioRadio) frontRadioRadio.textContent = segment.radio;
+      }
+
+      function startFrontRadioLoop() {
+        if (frontRadioTimer) window.clearInterval(frontRadioTimer);
+        frontRadioTimer = window.setInterval(() => {
+          frontRadioIndex = (frontRadioIndex + 1) % frontRadioSegments.length;
+          renderFrontRadioSegment(frontRadioIndex);
+        }, 4200);
+      }
+
+      async function toggleFrontRadioVoice() {
+        const segment = frontRadioSegments[frontRadioIndex];
+        if (!frontVoiceAudio) frontVoiceAudio = new Audio();
+        if (!frontBgmAudio) {
+          frontBgmAudio = new Audio("assets/donegraph-radio-bgm.mp3");
+          frontBgmAudio.loop = true;
+          frontBgmAudio.volume = 0.18;
+        }
+        if (!frontVoiceAudio.paused) {
+          frontVoiceAudio.pause();
+          frontBgmAudio.pause();
+          if (frontRadioPlay) frontRadioPlay.textContent = "Let it speak";
+          return;
+        }
+        frontVoiceAudio.src = segment.voice;
+        frontVoiceAudio.volume = 0.92;
+        frontVoiceAudio.onended = () => {
+          frontRadioIndex = (frontRadioIndex + 1) % frontRadioSegments.length;
+          renderFrontRadioSegment(frontRadioIndex);
+          if (frontRadioPlay) frontRadioPlay.textContent = "Let it speak";
+        };
+        try {
+          await frontBgmAudio.play();
+          await frontVoiceAudio.play();
+          if (frontRadioPlay) frontRadioPlay.textContent = "Pause radio";
+        } catch {
+          if (frontRadioPlay) frontRadioPlay.textContent = "Tap again";
+        }
+      }
+
+      playButton?.addEventListener("click", toggleVideo);
+      frontRadioPlay?.addEventListener("click", toggleFrontRadioVoice);
+      video?.addEventListener("loadedmetadata", syncVideoState);
+      video?.addEventListener("timeupdate", syncVideoState);
+      video?.addEventListener("play", syncVideoState);
+      video?.addEventListener("pause", syncVideoState);
+      video?.addEventListener("ended", syncVideoState);
+      renderFrontRadioSegment(frontRadioIndex);
+      startFrontRadioLoop();
+      syncVideoState();
+    </script>
+  </body>
+</html>

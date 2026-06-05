@@ -10,9 +10,9 @@ Works as a local plugin for Codex, Claude Code, Cursor, VS Code Copilot, and she
 
 **You have been building with an AI agent for three hours. It edited files, ran tests, changed direction twice, and left a long chat behind. What is actually done?**
 
-DoneGraph is a clean-room AI collaboration plugin that records goals, actions, decisions, artifacts, evidence, blockers, and next steps into a local `.donegraph/` folder. It then generates a static dashboard and handoff files so a human team, a judge, or the next AI session can understand the state of the work without rereading the whole conversation.
+DoneGraph is a local AI collaboration plugin that turns goals, actions, decisions, artifacts, evidence, blockers, and next steps into a `.donegraph/` folder you can hand to someone else. The dashboard gives a judge, teammate, or next AI session the state of the work without making them reread the whole conversation.
 
-> **The goal is not to make your project look busy. The goal is to make progress feel earned, inspectable, and easy to resume.**
+> **The point is simple: progress should feel earned, inspectable, and easy to resume.**
 
 ---
 
@@ -32,7 +32,7 @@ Progress is tied to proof. A passing command, manual check, failing test, unknow
 
 ### Generate A Local Dashboard
 
-Open `.donegraph/dashboard.html` to see completed work, clean-room schema labels, relationship edges, captured sources, evidence state, and next-session handoff steps.
+Open `.donegraph/dashboard.html` to see what was completed, which evidence supports it, how the records connect, and where the next session should pick up.
 
 ### Resume Large Tasks Cleanly
 
@@ -112,6 +112,10 @@ DoneGraph writes:
 .donegraph/next-steps.md
 .donegraph/dashboard.html
 ```
+
+The dashboard includes a real-run replay, a guided walkthrough, a copyable plain-language summary, and a daily recap letter written by the AI for the user.
+
+For hackathon review, open `landing.html` after `npm run demo`. It gives judges a product landing page first, with the real dashboard embedded inside the page.
 
 ---
 
@@ -196,6 +200,7 @@ The graph is just local artifacts. Commit or attach the files when they are usef
 Good candidates:
 
 ```text
+landing.html
 .donegraph/task-graph.json
 .donegraph/achievement-log.md
 .donegraph/next-steps.md
@@ -249,6 +254,8 @@ Adapters stay thin. The graph logic lives in `packages/core`; the CLI and storag
 
 ## 3 Minute Hackathon Demo
 
+For the shortest live operator script, see [DEMO.md](./DEMO.md). For the judging path, pitch script, MVP boundary, and fallback plan, see [HACKATHON.md](./HACKATHON.md).
+
 ```bash
 npm install
 npm run build
@@ -257,9 +264,17 @@ npm run cli -- start "Ship a hackathon demo that shows AI progress clearly" --pl
 npm run cli -- capture --goal "Ship a standalone clean-room DoneGraph demo" --platform codex
 npm run cli -- checkpoint "Implemented the command-first DoneGraph CLI" --command "npm test"
 npm run cli -- checkpoint "Generated a static dashboard" --path ".donegraph/dashboard.html"
+npm test
 npm run cli -- proof "Tests passed" --pass --command "npm test"
+npm run typecheck
+npm run cli -- proof "Typecheck passed" --pass --command "npm run typecheck"
+npm run build
+npm run cli -- proof "Build passed" --pass --command "npm run build"
+npm run cli -- checkpoint "The dashboard can replay the real work run" --path ".donegraph/dashboard.html"
+npm run cli -- checkpoint "The dashboard can write a daily recap letter from the work record" --path ".donegraph/dashboard.html"
 npm run cli -- done "The demo can now show completed work, evidence, and the next handoff"
 npm run cli -- dashboard
+open landing.html
 ```
 
 Use `--no-open` if you only want to generate the HTML.
@@ -275,6 +290,7 @@ plugins/donegraph         Codex plugin root, skills, and wrapper script
 platforms/*               Thin integration notes for other AI environments
 install.sh                Multi-platform local installer
 scripts/demo-donegraph.sh 3-minute hackathon demo path
+landing.html              Product landing page that embeds the generated dashboard
 ```
 
 ## Verify
@@ -283,7 +299,12 @@ scripts/demo-donegraph.sh 3-minute hackathon demo path
 npm test
 npm run typecheck
 npm run build
-python3 /Users/dgsp/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/donegraph
+```
+
+Optional Codex plugin package validation, when the local Codex system skill is available:
+
+```bash
+python3 "$HOME/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py" plugins/donegraph
 ```
 
 ---

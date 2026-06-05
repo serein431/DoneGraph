@@ -1,0 +1,759 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>成迹 | 产品 Demo</title>
+    <meta
+      name="description"
+      content="成迹把 AI 协作过程沉淀成可回放、可验证、可继续的工作轨迹。"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #111412;
+        --coal: #1d211f;
+        --paper: #f4f1e8;
+        --surface: #fffdf5;
+        --line: #d8d1c1;
+        --muted: #5f675f;
+        --teal: #0f766e;
+        --teal-dark: #0c4c48;
+        --coral: #d64a3f;
+        --gold: #c78b19;
+        --blue: #2463eb;
+        --white: #ffffff;
+        --shadow: 0 28px 84px rgba(15, 20, 18, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+        letter-spacing: 0;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 64px;
+        padding: 0 28px;
+        color: var(--white);
+        background: rgba(17, 20, 18, 0.76);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 900;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        color: var(--ink);
+        background: var(--surface);
+        border: 2px solid rgba(255, 255, 255, 0.52);
+        border-radius: 8px;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 0.92rem;
+      }
+
+      .nav a {
+        color: rgba(255, 255, 255, 0.84);
+        text-decoration: none;
+      }
+
+      .nav a:hover {
+        color: var(--white);
+      }
+
+      .hero {
+        position: relative;
+        display: grid;
+        min-height: 84svh;
+        padding: 118px 28px 58px;
+        overflow: hidden;
+        color: var(--white);
+        background: var(--ink);
+      }
+
+      .hero-visual {
+        position: absolute;
+        inset: 0;
+        opacity: 0.32;
+        transform: scale(1.05);
+        pointer-events: none;
+        filter: saturate(1.08) contrast(1.04);
+      }
+
+      .hero-visual iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(17, 20, 18, 0.94), rgba(17, 20, 18, 0.68) 52%, rgba(17, 20, 18, 0.38)),
+          linear-gradient(0deg, rgba(17, 20, 18, 0.22), rgba(17, 20, 18, 0.08));
+      }
+
+      .hero-inner {
+        position: relative;
+        z-index: 1;
+        align-self: end;
+        width: min(1040px, 100%);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0 0 18px;
+        color: #d6f3ed;
+        font-weight: 820;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 12px;
+        height: 12px;
+        background: var(--teal);
+        border: 2px solid #d6f3ed;
+        border-radius: 50%;
+      }
+
+      h1 {
+        max-width: 900px;
+        margin: 0;
+        font-size: clamp(4.4rem, 10vw, 9rem);
+        line-height: 0.9;
+        letter-spacing: 0;
+      }
+
+      .hero-copy {
+        max-width: 760px;
+        margin: 24px 0 0;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: clamp(1.16rem, 2.2vw, 1.52rem);
+        line-height: 1.66;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 50px;
+        padding: 0 18px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font: inherit;
+        font-weight: 860;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .button.primary {
+        color: var(--white);
+        background: var(--teal);
+        box-shadow: 0 16px 36px rgba(15, 118, 110, 0.34);
+      }
+
+      .button.secondary {
+        color: var(--white);
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.32);
+      }
+
+      .button.light {
+        color: var(--ink);
+        background: var(--surface);
+        border-color: var(--line);
+      }
+
+      .hero-points {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 28px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .hero-points li {
+        min-height: 38px;
+        padding: 9px 12px;
+        color: rgba(255, 255, 255, 0.86);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+      }
+
+      .section {
+        padding: 78px 28px;
+      }
+
+      .section.dark {
+        color: var(--white);
+        background: var(--ink);
+      }
+
+      .inner {
+        width: min(1160px, 100%);
+        margin: 0 auto;
+      }
+
+      .section-title {
+        max-width: 780px;
+        margin-bottom: 28px;
+      }
+
+      .section-title h2 {
+        margin: 0;
+        font-size: clamp(2.25rem, 4vw, 4.1rem);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .section-title p {
+        margin: 16px 0 0;
+        color: var(--muted);
+        font-size: 1.06rem;
+        line-height: 1.72;
+      }
+
+      .dark .section-title p {
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 24px;
+        align-items: stretch;
+      }
+
+      .problem-panel {
+        padding: 26px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .problem-panel h3,
+      .card h3,
+      .price-card h3 {
+        margin: 0;
+        font-size: 1.22rem;
+        line-height: 1.25;
+      }
+
+      .problem-panel p,
+      .card p,
+      .price-card p {
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .quote-strip {
+        display: grid;
+        gap: 12px;
+      }
+
+      .quote {
+        padding: 18px 20px;
+        color: var(--white);
+        background: var(--coal);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 8px;
+      }
+
+      .quote strong {
+        display: block;
+        margin-bottom: 8px;
+        color: #c9f4eb;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .grid.two {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .card {
+        min-height: 226px;
+        padding: 22px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .card .tag {
+        display: inline-flex;
+        align-items: center;
+        min-height: 30px;
+        margin-bottom: 36px;
+        padding: 0 10px;
+        color: var(--white);
+        background: var(--teal);
+        border-radius: 8px;
+        font-weight: 820;
+      }
+
+      .video-shell {
+        overflow: hidden;
+        background: #0d1110;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .video-screen {
+        position: relative;
+        min-height: 560px;
+        background: #101412;
+      }
+
+      .video-screen video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        object-fit: cover;
+        opacity: 0.9;
+        filter: saturate(1.04) contrast(1.02);
+      }
+
+      .video-overlay {
+        position: absolute;
+        inset: 24px auto auto 24px;
+        width: min(560px, calc(100% - 48px));
+        padding: 22px;
+        background: rgba(13, 17, 16, 0.78);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 8px;
+        backdrop-filter: blur(16px);
+      }
+
+      .video-kicker {
+        margin: 0 0 10px;
+        color: #c9f4eb;
+        font-weight: 840;
+      }
+
+      .video-title {
+        margin: 0;
+        max-width: 780px;
+        font-size: clamp(2rem, 4vw, 4rem);
+        line-height: 1;
+      }
+
+      .video-caption {
+        max-width: 760px;
+        margin: 14px 0 0;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 1.05rem;
+        line-height: 1.65;
+      }
+
+      .video-controls {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 14px;
+        align-items: center;
+        padding: 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
+      .timeline {
+        height: 12px;
+        overflow: hidden;
+        background: rgba(255, 255, 255, 0.14);
+        border-radius: 999px;
+      }
+
+      .timeline span {
+        display: block;
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, var(--teal), var(--gold), var(--coral));
+        transition: width 240ms ease;
+      }
+
+      .scene-label {
+        color: rgba(255, 255, 255, 0.78);
+        font-weight: 780;
+      }
+
+      .price-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .price-card {
+        padding: 22px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .price-card strong {
+        display: block;
+        margin: 18px 0 8px;
+        font-size: 1.8rem;
+      }
+
+      .final {
+        text-align: center;
+      }
+
+      .final .section-title {
+        margin-inline: auto;
+      }
+
+      @media (max-width: 900px) {
+        .nav {
+          display: none;
+        }
+
+        .hero {
+          min-height: 78svh;
+          padding-top: 104px;
+        }
+
+        .hero::after {
+          background: rgba(17, 20, 18, 0.78);
+        }
+
+        .split,
+        .grid,
+        .grid.two,
+        .price-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .video-screen {
+          min-height: 460px;
+        }
+
+        .video-controls {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .topbar {
+          height: 58px;
+          padding: 0 18px;
+        }
+
+        .hero,
+        .section {
+          padding-left: 18px;
+          padding-right: 18px;
+        }
+
+        .button {
+          width: 100%;
+        }
+
+        .video-screen {
+          min-height: 400px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true">迹</span>
+        <span>成迹</span>
+      </a>
+      <nav class="nav" aria-label="Page navigation">
+        <a href="#problem">痛点</a>
+        <a href="#audience">受众</a>
+        <a href="#video">Demo 视频</a>
+        <a href="#money">变现路径</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-label="成迹产品 Demo">
+        <div class="hero-visual" aria-hidden="true">
+          <iframe src=".donegraph/dashboard.html#page-0" title=""></iframe>
+        </div>
+        <div class="hero-inner">
+          <p class="eyebrow">AI 做完活，也要把话说清楚</p>
+          <h1>让每一次 AI 协作，留下成迹。</h1>
+          <p class="hero-copy">
+            成迹面向正在用 AI 写代码、做产品、赶项目的人。它把一轮 AI 工作自动沉淀成可回放的轨迹：做了什么、验证过什么、交付了什么、下一次从哪里继续。
+          </p>
+          <div class="actions">
+            <a class="button primary" href="#video">播放 Demo 视频</a>
+            <a class="button secondary" href=".donegraph/dashboard.html#page-0" target="_blank" rel="noopener">打开真实回放</a>
+            <a class="button secondary" href="landing.html" target="_blank" rel="noopener">查看产品页</a>
+          </div>
+          <ul class="hero-points">
+            <li>用户：AI-native builders</li>
+            <li>痛点：长聊天无法交接</li>
+            <li>价值：进展可回放、证据可检查</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section" id="problem">
+        <div class="inner split">
+          <div class="section-title">
+            <h2>AI 干了很多，人却很难放心。</h2>
+            <p>
+              真实的 AI 协作，远不止一句“完成了”。它有临时改动、失败尝试、跑过的命令、没来得及做的下一步。成迹解决的是收尾时的信任问题。
+            </p>
+          </div>
+          <div class="quote-strip">
+            <div class="quote">
+              <strong>长聊天太长</strong>
+              用户想知道结果，却被迫回去翻几十轮上下文。
+            </div>
+            <div class="quote">
+              <strong>完成感太虚</strong>
+              AI 说完成了，但文件、命令和证据散在不同地方。
+            </div>
+            <div class="quote">
+              <strong>下一轮太难接</strong>
+              换人、换 Agent、换时间后，任务状态又要重新讲一遍。
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="audience">
+        <div class="inner">
+          <div class="section-title">
+            <h2>先服务高频 AI 协作人群。</h2>
+            <p>
+              成迹服务的是每天把 AI 当工作伙伴的人：用它写代码、做产品、交付客户项目，也让下一轮协作不用重新开始。
+            </p>
+          </div>
+          <div class="grid">
+            <article class="card">
+              <span class="tag">个人用户</span>
+              <h3>Vibe coding 用户</h3>
+              <p>他们连续让 AI 改代码、调页面、跑命令。最需要一个能告诉自己“今天到底推进到哪”的账本。</p>
+            </article>
+            <article class="card">
+              <span class="tag">团队用户</span>
+              <h3>黑客松与产品小队</h3>
+              <p>多人协作时，进展不能只留在某个人的聊天窗口里。成迹让任务状态能被共享、复盘和继续。</p>
+            </article>
+            <article class="card">
+              <span class="tag">商业用户</span>
+              <h3>AI 交付团队</h3>
+              <p>咨询、外包、内部平台团队需要向客户或老板说明：AI 做了什么，凭什么可信，下一步怎么推进。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="inner">
+          <div class="section-title">
+            <h2>产品不是记录聊天，而是记录进展。</h2>
+            <p>
+              成迹把 AI 协作拆成三类资产：轨迹、证据、复盘。用户拿到的是一个能继续工作的状态，摆脱聊天截图式交接。
+            </p>
+          </div>
+          <div class="grid">
+            <article class="card">
+              <span class="tag">轨迹</span>
+              <h3>从目标到交付可回放</h3>
+              <p>用户可以看到任务如何从一句需求走到文件、命令和交付物。</p>
+            </article>
+            <article class="card">
+              <span class="tag">证据</span>
+              <h3>测试与构建进入账本</h3>
+              <p>通过、失败、未知状态都会被记录。可信度不靠语气，靠证据。</p>
+            </article>
+            <article class="card">
+              <span class="tag">复盘</span>
+              <h3>AI 写好信，用户只负责拆</h3>
+              <p>任务结束后，AI 把今天做过的活写给用户。用户打开就知道发生了什么。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="video">
+        <div class="inner">
+          <div class="section-title">
+            <h2>Demo 视频：15 秒看懂成迹。</h2>
+            <p>
+              这段前台演示按真实使用路径播放：用户交给 AI 一轮任务，成迹生成工作账本，最后拆开 AI 写好的复盘信。
+            </p>
+          </div>
+          <div class="video-shell">
+            <div class="video-screen">
+              <video
+                data-product-video
+                src="assets/donegraph-demo-15s.mp4"
+                poster="assets/seedance-letter-radio-reference.png"
+                preload="metadata"
+                playsinline
+                controls
+              ></video>
+              <div class="video-overlay">
+                <p class="video-kicker">15s Product Demo / 成迹真实演示</p>
+                <h3 class="video-title">AI 做完活，也会把过程讲清楚。</h3>
+                <p class="video-caption">
+                  这支短片演示的是成迹的核心体验：任务结束后，AI 留下一条工作轨迹、一封复盘信，以及可以继续接力的下一步。
+                </p>
+              </div>
+            </div>
+            <div class="video-controls">
+              <button class="button primary" type="button" data-video-play>播放 Demo</button>
+              <div class="timeline" aria-hidden="true"><span data-video-meter></span></div>
+              <span class="scene-label" data-video-label>00:00 / 00:15</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="money">
+        <div class="inner">
+          <div class="section-title">
+            <h2>变现路径：先插件，后团队协作层。</h2>
+            <p>
+              成迹的入口轻，价值却接近团队基础设施。它可以从个人工具自然走向团队协作、客户交付和企业私有部署。
+            </p>
+          </div>
+          <div class="price-grid">
+            <article class="price-card">
+              <h3>Open Core</h3>
+              <strong>免费</strong>
+              <p>本地插件、个人工作账本、单人任务回放。负责获客，也让开发者先建立信任。</p>
+            </article>
+            <article class="price-card">
+              <h3>Pro</h3>
+              <strong>$9/月</strong>
+              <p>更好的复盘模板、历史搜索、导出包、视频化回放。面向高频个人用户。</p>
+            </article>
+            <article class="price-card">
+              <h3>Team</h3>
+              <strong>$12/席/月</strong>
+              <p>共享任务账本、团队空间、异步接力、项目级证据库。面向产品小队。</p>
+            </article>
+            <article class="price-card">
+              <h3>Enterprise</h3>
+              <strong>私有部署</strong>
+              <p>权限、审计、内部模型接入、客户交付报告。面向 AI 交付团队和企业平台。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section final">
+        <div class="inner">
+          <div class="section-title">
+            <h2>成迹让 AI 的工作，有始有终。</h2>
+            <p>
+              当 AI 成为日常生产力，真正稀缺的不是回答，而是能被人理解、信任、继续的工作状态。
+            </p>
+          </div>
+          <div class="actions" style="justify-content: center;">
+            <a class="button primary" href=".donegraph/dashboard.html#page-0" target="_blank" rel="noopener">打开真实回放</a>
+            <a class="button light" href="https://github.com/serein431/DoneGraph" target="_blank" rel="noopener">查看 GitHub</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const playButton = document.querySelector("[data-video-play]");
+      const video = document.querySelector("[data-product-video]");
+      const meter = document.querySelector("[data-video-meter]");
+      const label = document.querySelector("[data-video-label]");
+
+      function formatTime(value) {
+        const safeValue = Number.isFinite(value) ? value : 0;
+        const minutes = Math.floor(safeValue / 60);
+        const seconds = Math.floor(safeValue % 60);
+        return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      }
+
+      function syncVideoState() {
+        if (!video) return;
+        const duration = Number.isFinite(video.duration) ? video.duration : 15;
+        const progress = duration > 0 ? (video.currentTime / duration) * 100 : 0;
+        if (meter) meter.style.width = `${Math.min(100, Math.max(0, progress))}%`;
+        if (label) label.textContent = `${formatTime(video.currentTime)} / ${formatTime(duration)}`;
+        if (playButton) playButton.textContent = video.paused ? "播放 Demo" : "暂停 Demo";
+      }
+
+      async function toggleVideo() {
+        if (!video) return;
+        if (video.paused) {
+          await video.play();
+        } else {
+          video.pause();
+        }
+        syncVideoState();
+      }
+
+      playButton?.addEventListener("click", toggleVideo);
+      video?.addEventListener("loadedmetadata", syncVideoState);
+      video?.addEventListener("timeupdate", syncVideoState);
+      video?.addEventListener("play", syncVideoState);
+      video?.addEventListener("pause", syncVideoState);
+      video?.addEventListener("ended", syncVideoState);
+      syncVideoState();
+    </script>
+  </body>
+</html>

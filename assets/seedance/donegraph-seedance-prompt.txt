@@ -1,0 +1,18 @@
+Create a polished 15-second 16:9 cinematic product demo film for DoneGraph / Chengji, using the three reference UI screenshots exactly as product context.
+
+Use [image 1] as the real dashboard usage scene: a live AI work ledger with files, commands, run replay, and proof of progress. Use [image 2] as the letter scene: the AI writes a warm end-of-day recap letter to the user. Use [image 3] as the AI radio scene: an agent radio with BGM, language selection, and multiple voices.
+
+The film must include a realistic human presenter on camera, fictional person, not a celebrity, not based on any real public figure. Presenter: early-30s product builder, calm and credible, modern black jacket, sitting at a laptop in a dark glass workspace, soft cyan and amber screen light on their face. Show real hands using the laptop and phone, pointing at the product UI.
+
+Shot plan, 15 seconds total:
+0-3s: Close-up of the presenter opening a laptop. The DoneGraph HUD appears on the screen. Camera slowly pushes in. On-screen text: "AI work should not vanish into chat."
+3-7s: Over-the-shoulder product usage demo. The dashboard animates like a real task just finished: instruction received, files touched, commands passed, next step highlighted. Keep UI legible and close to [image 1].
+7-11s: Warm letter scene. The presenter opens a digital envelope; the AI letter unfolds on screen, visually inspired by [image 2]. The presenter smiles slightly, relieved, as if tomorrow's context has been saved.
+11-14s: Radio scene. The interface transforms into a tactile AI radio inspired by [image 3]: glowing frequency display, speaker grille, waveform bars, BGM button, Female / Male / Narrator voice chips. The presenter listens while the agent softly debriefs.
+14-15s: Final hero lockup. Logo text: "DoneGraph / Chengji". Tagline: "AI progress you can inspect, replay, and feel."
+
+Style: premium hackathon product film, realistic human footage mixed with high-end screen UI inserts, cinematic macro shots, shallow depth of field, crisp glass reflections, subtle handheld movement, no cartoon style, no fake app store ad look. Color palette: deep graphite, cyan HUD light, warm amber highlights, paper-white letter glow. Make it feel like a serious product with emotional value.
+
+Audio direction: elegant electronic background music, soft radio texture in the final scene, natural English voiceover by a calm founder voice: "DoneGraph turns every AI run into a trail you can trust. It shows what changed, what passed, and what to do next. At the end, the agent writes you a letter, and can even debrief through radio. AI work becomes something you can replay, hand off, and feel."
+
+Constraints: no celebrity likeness, no famous person, no unreadable gibberish UI, no distorted hands, no extra animals or mascots, no generic stock-office montage. Keep the product UI visible and recognizable in every demo scene.

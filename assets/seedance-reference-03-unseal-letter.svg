@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Seedance reference 03 unseal letter</title>
+  <desc id="desc">Morning hands open an AI-written daily recap letter from DoneGraph.</desc>
+  <defs>
+    <linearGradient id="morning" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff3ce"/>
+      <stop offset="40%" stop-color="#d6f5ea"/>
+      <stop offset="100%" stop-color="#0d1715"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffaf0"/>
+      <stop offset="65%" stop-color="#eadbb5"/>
+      <stop offset="100%" stop-color="#cdb574"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="24" stdDeviation="22" flood-color="#000" flood-opacity="0.34"/>
+    </filter>
+    <filter id="soft" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#morning)"/>
+  <rect y="520" width="1600" height="380" fill="#241b16" opacity="0.9"/>
+  <circle cx="1240" cy="100" r="126" fill="#fff2bd" opacity="0.52" filter="url(#soft)"/>
+  <path d="M96 618 C420 546 736 592 1030 542 C1252 506 1408 522 1600 476 L1600 900 L0 900 L0 644 Z" fill="#201711"/>
+
+  <g transform="translate(333 174) rotate(-6 470 302)" filter="url(#shadow)">
+    <path d="M42 365 L890 250 L962 650 L128 770 Z" fill="#a88e55"/>
+    <path d="M42 365 L490 574 L890 250 Z" fill="#efe0b8"/>
+    <path d="M128 770 L490 574 L962 650 Z" fill="#c3a66d"/>
+    <path d="M42 365 L490 574 L128 770 Z" fill="#d9c287"/>
+  </g>
+
+  <g transform="translate(448 98) rotate(-3 364 360)" filter="url(#shadow)">
+    <rect x="0" y="0" width="620" height="720" rx="18" fill="url(#paper)"/>
+    <text x="58" y="110" font-family="Georgia, 'Times New Roman', serif" font-size="72" fill="#4f422f">Dear you,</text>
+    <text x="62" y="190" font-family="Avenir, Helvetica, Arial, sans-serif" font-size="31" fill="#5b513d" opacity="0.86">I kept the day from disappearing.</text>
+    <text x="62" y="248" font-family="Avenir, Helvetica, Arial, sans-serif" font-size="31" fill="#5b513d" opacity="0.76">Nine things are remembered.</text>
+    <text x="62" y="306" font-family="Avenir, Helvetica, Arial, sans-serif" font-size="31" fill="#5b513d" opacity="0.68">Three checks are still warm.</text>
+    <text x="62" y="364" font-family="Avenir, Helvetica, Arial, sans-serif" font-size="31" fill="#5b513d" opacity="0.62">The next step is waiting gently.</text>
+    <path d="M64 520 C152 482 246 542 336 505 C424 470 486 482 558 520" fill="none" stroke="#51432d" stroke-width="4" stroke-linecap="round" opacity="0.74"/>
+    <text x="64" y="612" font-family="Avenir, Helvetica, Arial, sans-serif" font-size="30" fill="#5b513d" opacity="0.72">Chengji / DoneGraph</text>
+  </g>
+
+  <g fill="#d3a078" opacity="0.95" filter="url(#shadow)">
+    <path d="M162 542 C218 512 292 530 354 580 C390 610 410 670 386 704 C338 694 288 666 244 628 C206 594 178 580 162 542 Z"/>
+    <path d="M1182 500 C1122 496 1060 536 1022 594 C996 634 992 694 1028 720 C1074 700 1120 660 1154 612 C1182 572 1204 544 1182 500 Z"/>
+  </g>
+  <g fill="#f2c5a4" opacity="0.82">
+    <ellipse cx="306" cy="594" rx="28" ry="72" transform="rotate(-48 306 594)"/>
+    <ellipse cx="1095" cy="586" rx="28" ry="78" transform="rotate(42 1095 586)"/>
+  </g>
+
+  <g font-family="Avenir, Helvetica, Arial, sans-serif">
+    <text x="88" y="104" font-size="26" fill="#16312b" font-weight="700" letter-spacing="3">03 UNSEAL</text>
+    <text x="88" y="808" font-size="54" fill="#f7f2e5" font-weight="800">The user only opens it.</text>
+  </g>
+</svg>

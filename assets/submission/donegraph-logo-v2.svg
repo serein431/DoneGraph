@@ -1,0 +1,72 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(318 216) rotate(54) scale(776 826)">
+      <stop offset="0" stop-color="#173D3E"/>
+      <stop offset="0.34" stop-color="#071C1E"/>
+      <stop offset="1" stop-color="#020605"/>
+    </radialGradient>
+    <linearGradient id="dStroke" x1="262" y1="242" x2="770" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E8FFF8"/>
+      <stop offset="0.42" stop-color="#9EFFF1"/>
+      <stop offset="1" stop-color="#55D9FF"/>
+    </linearGradient>
+    <linearGradient id="amber" x1="638" y1="314" x2="818" y2="726" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE3A3"/>
+      <stop offset="1" stop-color="#FF9D45"/>
+    </linearGradient>
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.33 0 0 0 0 1 0 0 0 0 0.93 0 0 0 0.62 0"/>
+      <feBlend in="SourceGraphic" mode="screen"/>
+    </filter>
+    <filter id="nodeGlow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="7" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.42 0 0 0 0 1 0 0 0 0 0.96 0 0 0 0.9 0"/>
+      <feBlend in="SourceGraphic" mode="screen"/>
+    </filter>
+    <clipPath id="dClip">
+      <path d="M280 256H471C629.5 256 748 362.4 748 512C748 661.6 629.5 768 471 768H280V256Z"/>
+    </clipPath>
+  </defs>
+
+  <rect width="1024" height="1024" fill="#020605"/>
+  <rect x="12" y="12" width="1000" height="1000" rx="184" fill="url(#bgGlow)"/>
+  <rect x="34" y="34" width="956" height="956" rx="160" stroke="#8DFFF3" stroke-opacity="0.18" stroke-width="2"/>
+  <path d="M128 226C222 88 425 58 570 92C734 130 860 256 896 416C936 596 851 804 680 889C513 972 286 930 172 783" stroke="#8DFFF3" stroke-opacity="0.12" stroke-width="2"/>
+  <path d="M146 805C232 918 420 965 588 922C772 874 897 704 903 520" stroke="#FFBF5B" stroke-opacity="0.15" stroke-width="2"/>
+
+  <g filter="url(#softGlow)">
+    <path d="M288 272H468C617.1 272 728 371.6 728 512C728 652.4 617.1 752 468 752H288V272Z" fill="#071312" fill-opacity="0.72"/>
+    <path d="M288 272H468C617.1 272 728 371.6 728 512C728 652.4 617.1 752 468 752H288V272Z" stroke="url(#dStroke)" stroke-width="58" stroke-linejoin="round"/>
+    <path d="M408 374H468C552.1 374 618 430.7 618 512C618 593.3 552.1 650 468 650H408V374Z" fill="#071312"/>
+  </g>
+
+  <g clip-path="url(#dClip)">
+    <path d="M452 514C510 456 560 444 614 472C656 494 690 488 736 438" stroke="#8DFFF3" stroke-opacity="0.42" stroke-width="5"/>
+    <path d="M452 514C518 548 558 606 626 594C681 584 706 628 744 692" stroke="#FFBF5B" stroke-opacity="0.36" stroke-width="5"/>
+    <path d="M452 514C524 512 560 504 604 530C648 556 686 548 740 516" stroke="#55D9FF" stroke-opacity="0.38" stroke-width="5"/>
+    <path d="M488 420C518 444 544 454 584 448" stroke="#8DFFF3" stroke-opacity="0.35" stroke-width="4"/>
+    <path d="M486 604C522 584 552 584 586 610" stroke="#8DFFF3" stroke-opacity="0.30" stroke-width="4"/>
+
+    <g filter="url(#nodeGlow)">
+      <circle cx="452" cy="514" r="17" fill="#9EFFF1"/>
+      <circle cx="452" cy="514" r="7" fill="#06100F"/>
+      <circle cx="524" cy="466" r="11" fill="#8DFFF3"/>
+      <circle cx="604" cy="472" r="13" fill="#FFBF5B"/>
+      <circle cx="618" cy="532" r="12" fill="#8DFFF3"/>
+      <circle cx="632" cy="594" r="14" fill="#FFBF5B"/>
+      <circle cx="710" cy="516" r="11" fill="#8DFFF3"/>
+      <circle cx="694" cy="438" r="10" fill="#8DFFF3"/>
+      <circle cx="710" cy="646" r="10" fill="#FFBF5B"/>
+    </g>
+  </g>
+
+  <path d="M298 274H465C609 274 715 372 715 512C715 652 609 750 465 750H298" stroke="#E8FFF8" stroke-opacity="0.34" stroke-width="8" stroke-linecap="round"/>
+  <path d="M298 274V750" stroke="#E8FFF8" stroke-opacity="0.84" stroke-width="12" stroke-linecap="round"/>
+  <path d="M722 392L790 392M704 512L806 512M722 632L790 632" stroke="url(#amber)" stroke-width="18" stroke-linecap="round"/>
+
+  <circle cx="512" cy="512" r="352" stroke="#8DFFF3" stroke-opacity="0.16" stroke-width="2"/>
+  <circle cx="512" cy="512" r="252" stroke="#FFBF5B" stroke-opacity="0.14" stroke-width="2"/>
+  <path d="M354 842H670" stroke="#8DFFF3" stroke-opacity="0.22" stroke-width="2" stroke-linecap="round"/>
+  <text x="512" y="884" text-anchor="middle" fill="#E8FFF8" fill-opacity="0.82" font-family="Inter, Avenir Next, Arial, sans-serif" font-size="48" font-weight="800" letter-spacing="7">DONEGRAPH</text>
+</svg>

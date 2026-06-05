@@ -10,9 +10,9 @@
 
 **你和 AI 已经一起做了三个小时。它改了文件、跑了测试、中途换了两次方向，最后留下了一长串聊天记录。可是，到底完成了什么？**
 
-DoneGraph 是一个 clean-room 的 AI 协作插件。它会把目标、动作、决策、产物、验证、阻塞和下一步写入本地 `.donegraph/`，再生成静态 dashboard 和交接文件，让团队、评委或下一轮 AI 不需要重读整段对话，也能看清任务状态。
+DoneGraph 是一个本地 AI 协作插件。它会把目标、动作、决策、产物、验证、阻塞和下一步写入 `.donegraph/`，再生成静态 dashboard 和交接文件。团队、评委或下一轮 AI 打开之后，可以直接看到这轮工作的真实状态。
 
-> **目标不是制造一个看起来很复杂的图，而是让进展有成就感、可检查、可接力。**
+> **目标很简单：让进展有成就感、能检查、能接力。**
 
 ---
 
@@ -32,7 +32,7 @@ DoneGraph 是一个 clean-room 的 AI 协作插件。它会把目标、动作、
 
 ### 生成本地 Dashboard
 
-打开 `.donegraph/dashboard.html`，可以看到完成项、clean-room schema、关系边、捕获来源、证据状态和下一轮接力。
+打开 `.donegraph/dashboard.html`，可以看到做成了什么、哪些证据能支撑、记录之间怎么连起来，以及下一轮应该从哪接上。
 
 ### 让大任务容易继续
 
@@ -113,6 +113,10 @@ DoneGraph 会写出：
 .donegraph/dashboard.html
 ```
 
+Dashboard 里有真实任务回放、一步一步的演示、能复制的人话摘要，也能让 AI 把今天干过的活写成一封给你的复盘信。
+
+黑客松展示时，先打开 `landing.html`。它是给评委看的产品落地页，页面里直接嵌入真实 dashboard。
+
 ---
 
 ## 常用命令
@@ -182,6 +186,7 @@ Cursor 和 VS Code 也可以通过这些元数据自动发现：
 图谱只是本地产物。需要做 review、交接、演示或异步协作时，可以提交或附上这些文件：
 
 ```text
+landing.html
 .donegraph/task-graph.json
 .donegraph/achievement-log.md
 .donegraph/next-steps.md
@@ -235,6 +240,8 @@ task-graph.json + achievement-log.md + next-steps.md + dashboard.html
 
 ## 3 分钟黑客松 Demo
 
+最短现场操作单见 [DEMO.md](../DEMO.md)。评审路径、路演稿、MVP 边界和降级方案见 [HACKATHON.md](../HACKATHON.md)。
+
 ```bash
 npm install
 npm run build
@@ -243,9 +250,17 @@ npm run cli -- start "Ship a hackathon demo that shows AI progress clearly" --pl
 npm run cli -- capture --goal "Ship a standalone clean-room DoneGraph demo" --platform codex
 npm run cli -- checkpoint "Implemented the command-first DoneGraph CLI" --command "npm test"
 npm run cli -- checkpoint "Generated a static dashboard" --path ".donegraph/dashboard.html"
+npm test
 npm run cli -- proof "Tests passed" --pass --command "npm test"
+npm run typecheck
+npm run cli -- proof "Typecheck passed" --pass --command "npm run typecheck"
+npm run build
+npm run cli -- proof "Build passed" --pass --command "npm run build"
+npm run cli -- checkpoint "The dashboard can replay the real work run" --path ".donegraph/dashboard.html"
+npm run cli -- checkpoint "The dashboard can write a daily recap letter from the work record" --path ".donegraph/dashboard.html"
 npm run cli -- done "The demo can now show completed work, evidence, and the next handoff"
 npm run cli -- dashboard
+open landing.html
 ```
 
 只想生成 HTML 时使用 `--no-open`。
@@ -261,6 +276,7 @@ plugins/donegraph         Codex 插件根目录、skills 和 wrapper
 platforms/*               其他 AI 环境的轻量接入说明
 install.sh                多平台本地安装脚本
 scripts/demo-donegraph.sh 3 分钟黑客松 demo 路径
+landing.html              给评委看的产品落地页，内嵌生成后的 dashboard
 ```
 
 ## 验证
@@ -269,7 +285,12 @@ scripts/demo-donegraph.sh 3 分钟黑客松 demo 路径
 npm test
 npm run typecheck
 npm run build
-python3 /Users/dgsp/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/donegraph
+```
+
+如果本机有 Codex 系统 skill，可以额外校验插件包结构：
+
+```bash
+python3 "$HOME/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py" plugins/donegraph
 ```
 
 ---

@@ -4,3 +4,4 @@ dist/
 .understand-anything/
 .DS_Store
 npm-debug.log*
+assets/seedance/tokenrouter-*.json

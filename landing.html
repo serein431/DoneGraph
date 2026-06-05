@@ -1,0 +1,919 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>成迹 | AI 的工作小账本</title>
+    <meta
+      name="description"
+      content="成迹把 AI 协作过程沉淀成可回放、可验证、可接力的工作轨迹。"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #111412;
+        --muted: #555f5a;
+        --line: #d9ded6;
+        --paper: #f5f7f2;
+        --surface: #fffef8;
+        --teal: #0f766e;
+        --teal-dark: #0b4f4b;
+        --coral: #d94841;
+        --gold: #c28a18;
+        --blue: #2563eb;
+        --white: #ffffff;
+        --shadow: 0 24px 80px rgba(13, 22, 18, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        color: var(--ink);
+        background: var(--paper);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+          sans-serif;
+        letter-spacing: 0;
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar {
+        position: fixed;
+        inset: 0 0 auto;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 64px;
+        padding: 0 28px;
+        color: var(--white);
+        background: rgba(17, 20, 18, 0.72);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+      }
+
+      .brand-mark {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        color: var(--ink);
+        background: var(--surface);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 8px;
+      }
+
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-size: 0.92rem;
+      }
+
+      .nav-links a {
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.84);
+      }
+
+      .nav-links a:hover {
+        color: var(--white);
+      }
+
+      .hero {
+        position: relative;
+        display: grid;
+        min-height: 82svh;
+        padding: 120px 28px 56px;
+        overflow: hidden;
+        color: var(--white);
+        background: #101412;
+      }
+
+      .hero-preview {
+        position: absolute;
+        inset: 0;
+        opacity: 0.36;
+        transform: scale(1.06);
+        transform-origin: center top;
+        pointer-events: none;
+        filter: saturate(1.02) contrast(1.02);
+      }
+
+      .hero-preview iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(17, 20, 18, 0.92), rgba(17, 20, 18, 0.64) 48%, rgba(17, 20, 18, 0.42)),
+          linear-gradient(0deg, rgba(17, 20, 18, 0.24), rgba(17, 20, 18, 0.08));
+      }
+
+      .hero-inner {
+        position: relative;
+        z-index: 1;
+        align-self: end;
+        width: min(960px, 100%);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 18px;
+        font-size: 0.92rem;
+        font-weight: 760;
+        color: #d8f3ec;
+      }
+
+      .eyebrow::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        background: var(--teal);
+        border: 2px solid #d8f3ec;
+        border-radius: 50%;
+      }
+
+      h1 {
+        margin: 0;
+        max-width: 760px;
+        font-size: 5rem;
+        line-height: 0.96;
+        letter-spacing: 0;
+      }
+
+      .hero-copy {
+        max-width: 720px;
+        margin: 22px 0 0;
+        font-size: 1.35rem;
+        line-height: 1.68;
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 30px 0 0;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 48px;
+        padding: 0 18px;
+        border: 1px solid transparent;
+        border-radius: 8px;
+        font-weight: 800;
+        text-decoration: none;
+        cursor: pointer;
+        transition:
+          transform 160ms ease,
+          background 160ms ease,
+          border-color 160ms ease;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+      }
+
+      .button.primary {
+        color: var(--white);
+        background: var(--teal);
+        box-shadow: 0 16px 36px rgba(15, 118, 110, 0.34);
+      }
+
+      .button.primary:hover {
+        background: var(--teal-dark);
+      }
+
+      .button.secondary {
+        color: var(--white);
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.34);
+      }
+
+      .button.light {
+        color: var(--ink);
+        background: var(--surface);
+        border-color: var(--line);
+      }
+
+      .button.light:hover {
+        border-color: var(--teal);
+      }
+
+      .button-icon {
+        display: inline-grid;
+        place-items: center;
+        width: 18px;
+        height: 18px;
+        font-size: 0.9rem;
+        line-height: 1;
+      }
+
+      .hero-facts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 26px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .hero-facts li {
+        min-height: 38px;
+        padding: 9px 12px;
+        color: rgba(255, 255, 255, 0.86);
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+      }
+
+      .section {
+        padding: 76px 28px;
+      }
+
+      .section.compact {
+        padding-top: 34px;
+        padding-bottom: 34px;
+      }
+
+      .inner {
+        width: min(1160px, 100%);
+        margin: 0 auto;
+      }
+
+      .proof-strip {
+        background: var(--ink);
+        color: var(--white);
+      }
+
+      .proof-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1px;
+        background: rgba(255, 255, 255, 0.18);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+      }
+
+      .proof-item {
+        min-height: 110px;
+        padding: 18px;
+        background: #151a17;
+      }
+
+      .proof-item strong {
+        display: block;
+        margin: 0 0 8px;
+        font-size: 1.8rem;
+        line-height: 1;
+      }
+
+      .proof-item span {
+        color: rgba(255, 255, 255, 0.72);
+        line-height: 1.5;
+      }
+
+      .section-title {
+        max-width: 760px;
+        margin: 0 0 26px;
+      }
+
+      .section-title p {
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.7;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 2.35rem;
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 1.12rem;
+        line-height: 1.25;
+        letter-spacing: 0;
+      }
+
+      .value-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .value-card {
+        min-height: 230px;
+        padding: 22px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .value-card .number {
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        margin-bottom: 46px;
+        color: var(--white);
+        background: var(--ink);
+        border-radius: 8px;
+        font-weight: 900;
+      }
+
+      .value-card p {
+        margin: 12px 0 0;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+
+      .live-demo {
+        background: #e8f2ef;
+      }
+
+      .demo-frame-shell {
+        overflow: hidden;
+        background: var(--surface);
+        border: 1px solid #bfd1cb;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .demo-frame-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        min-height: 58px;
+        padding: 12px 14px;
+        border-bottom: 1px solid #d2dfdb;
+      }
+
+      .preview-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .preview-tab {
+        min-height: 34px;
+        padding: 0 12px;
+        color: var(--ink);
+        background: transparent;
+        border: 1px solid #c5d4cf;
+        border-radius: 8px;
+        font: inherit;
+        font-weight: 760;
+        cursor: pointer;
+      }
+
+      .preview-tab[aria-pressed="true"] {
+        color: var(--white);
+        background: var(--teal);
+        border-color: var(--teal);
+      }
+
+      .demo-frame-shell iframe {
+        display: block;
+        width: 100%;
+        height: 660px;
+        border: 0;
+        background: var(--white);
+      }
+
+      .workflow {
+        display: grid;
+        grid-template-columns: 0.92fr 1.08fr;
+        gap: 28px;
+        align-items: start;
+      }
+
+      .steps {
+        display: grid;
+        gap: 12px;
+      }
+
+      .step {
+        display: grid;
+        grid-template-columns: 42px 1fr;
+        gap: 14px;
+        padding: 18px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .step strong {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        color: var(--white);
+        background: var(--coral);
+        border-radius: 8px;
+      }
+
+      .step p {
+        margin: 8px 0 0;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .terminal {
+        overflow: hidden;
+        background: #111412;
+        color: #e5f4ed;
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+
+      .terminal-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 42px;
+        padding: 0 14px;
+        color: rgba(255, 255, 255, 0.72);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+
+      .dot.red {
+        background: var(--coral);
+      }
+
+      .dot.gold {
+        background: var(--gold);
+      }
+
+      .dot.green {
+        background: var(--teal);
+      }
+
+      pre {
+        margin: 0;
+        padding: 22px;
+        overflow-x: auto;
+        font-size: 0.94rem;
+        line-height: 1.75;
+      }
+
+      code {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      }
+
+      .product-summary {
+        background: var(--ink);
+        color: var(--white);
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+        gap: 28px;
+        align-items: start;
+      }
+
+      .field-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .field {
+        display: grid;
+        grid-template-columns: 130px 1fr;
+        gap: 14px;
+        padding: 14px 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      }
+
+      .field b {
+        color: #bfe7df;
+      }
+
+      .field span,
+      .product-summary p {
+        color: rgba(255, 255, 255, 0.76);
+        line-height: 1.7;
+      }
+
+      .copy-panel {
+        padding: 22px;
+        color: var(--ink);
+        background: var(--surface);
+        border-radius: 8px;
+      }
+
+      .copy-panel p {
+        margin: 12px 0 18px;
+        color: var(--muted);
+      }
+
+      .copy-status {
+        min-height: 22px;
+        margin-left: 10px;
+        color: var(--teal-dark);
+        font-weight: 800;
+      }
+
+      .hero-status {
+        display: inline-block;
+        margin: 14px 0 0;
+        color: #d8f3ec;
+      }
+
+      .footer {
+        padding: 34px 28px 48px;
+        color: var(--muted);
+        background: var(--paper);
+      }
+
+      .footer .inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        border-top: 1px solid var(--line);
+        padding-top: 22px;
+      }
+
+      @media (max-width: 900px) {
+        .nav-links {
+          display: none;
+        }
+
+        h1 {
+          font-size: 3.55rem;
+        }
+
+        .hero {
+          min-height: 78svh;
+          padding-top: 104px;
+        }
+
+        .hero::after {
+          background: rgba(17, 20, 18, 0.78);
+        }
+
+        .hero-copy {
+          font-size: 1.12rem;
+        }
+
+        .proof-grid,
+        .value-grid,
+        .workflow,
+        .summary-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .demo-frame-shell iframe {
+          height: 520px;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .topbar {
+          height: 58px;
+          padding: 0 18px;
+        }
+
+        .hero,
+        .section {
+          padding-left: 18px;
+          padding-right: 18px;
+        }
+
+        h1 {
+          font-size: 3rem;
+        }
+
+        h2 {
+          font-size: 2rem;
+        }
+
+        .button {
+          width: 100%;
+        }
+
+        .demo-frame-bar,
+        .footer .inner {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .demo-frame-shell iframe {
+          height: 460px;
+        }
+
+        .field {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar" aria-label="成迹 navigation">
+      <a class="brand" href="#top" aria-label="成迹 home">
+        <span class="brand-mark" aria-hidden="true">迹</span>
+        <span>成迹</span>
+      </a>
+      <nav class="nav-links" aria-label="Page links">
+        <a href="#demo">产品回放</a>
+        <a href="#workflow">接入方式</a>
+        <a href="#summary">产品价值</a>
+        <a href="https://github.com/serein431/DoneGraph" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-label="成迹 product hero">
+        <div class="hero-preview" aria-hidden="true">
+          <iframe src=".donegraph/dashboard.html#page-0" title=""></iframe>
+        </div>
+        <div class="hero-inner">
+          <p class="eyebrow">让 AI 的努力留下清楚的痕迹</p>
+          <h1>成迹</h1>
+          <p class="hero-copy">
+            AI 做完一轮工作后，不该只剩一段长聊天。成迹把目标、文件、命令、交付物和下一步收成一条可回放的工作轨迹，让进展看得见，成果接得上。
+          </p>
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button primary" href=".donegraph/dashboard.html#page-0" target="_blank" rel="noopener">
+              <span class="button-icon" aria-hidden="true">&#9658;</span>
+              打开产品回放
+            </a>
+            <button class="button secondary" type="button" data-copy-summary>
+              <span class="button-icon" aria-hidden="true">&#10697;</span>
+              复制产品简介
+            </button>
+            <a class="button secondary" href="https://github.com/serein431/DoneGraph" target="_blank" rel="noopener">
+              <span class="button-icon" aria-hidden="true">&#8599;</span>
+              查看源码
+            </a>
+          </div>
+          <span class="copy-status hero-status" data-copy-status aria-live="polite"></span>
+          <ul class="hero-facts" aria-label="Product facts">
+            <li>工作轨迹自动沉淀</li>
+            <li>验证结果可追溯</li>
+            <li>复盘信自然生成</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="section compact proof-strip" aria-label="Proof summary">
+        <div class="inner proof-grid">
+          <div class="proof-item">
+            <strong>100%</strong>
+            <span>一轮 AI 工作跑完后，过程和结果都能回放。</span>
+          </div>
+          <div class="proof-item">
+            <strong>test</strong>
+            <span>`npm test` 通过，关键逻辑有验证。</span>
+          </div>
+          <div class="proof-item">
+            <strong>types</strong>
+            <span>`npm run typecheck` 通过，接口和类型没打架。</span>
+          </div>
+          <div class="proof-item">
+            <strong>build</strong>
+            <span>`npm run build` 通过，交付物能生成。</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="value-title">
+        <div class="inner">
+          <div class="section-title">
+            <h2 id="value-title">每一轮 AI 协作，都能变成资产</h2>
+            <p>
+              成迹把一次容易散掉的 AI 对话，沉淀成能回放、能验证、能继续的工作记录。
+            </p>
+          </div>
+          <div class="value-grid">
+            <article class="value-card">
+              <span class="number">1</span>
+              <h3>看见 AI 的真实贡献</h3>
+              <p>从用户指令到文件改动，再到交付结果，成迹把一轮协作串成连续轨迹。AI 忙过什么，不再靠猜。</p>
+            </article>
+            <article class="value-card">
+              <span class="number">2</span>
+              <h3>把信任落到证据上</h3>
+              <p>测试、类型检查、构建结果都会进入账本。每个“完成了”旁边，都有一条能被检查的依据。</p>
+            </article>
+            <article class="value-card">
+              <span class="number">3</span>
+              <h3>让下一次继续更轻松</h3>
+              <p>成迹会把今天做过的活写成复盘信，讲清楚忙了什么、跑通什么、下一步先看哪里。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section live-demo" id="demo" aria-labelledby="demo-title">
+        <div class="inner">
+          <div class="section-title">
+            <h2 id="demo-title">产品回放，不靠截图讲故事</h2>
+            <p>
+              下面嵌的是成迹生成的工作账本。目标、文件、命令、复盘信都在同一条轨迹上，打开就能看懂一轮 AI 协作留下了什么。
+            </p>
+          </div>
+          <div class="demo-frame-shell">
+            <div class="demo-frame-bar">
+              <div class="preview-tabs" aria-label="Preview pages">
+                <button class="preview-tab" type="button" data-preview-page="0" aria-pressed="true">概览</button>
+                <button class="preview-tab" type="button" data-preview-page="1" aria-pressed="false">证据</button>
+                <button class="preview-tab" type="button" data-preview-page="2" aria-pressed="false">复盘信</button>
+                <button class="preview-tab" type="button" data-preview-page="3" aria-pressed="false">下一步</button>
+              </div>
+              <a class="button light" href=".donegraph/dashboard.html#page-0" target="_blank" rel="noopener">
+                <span class="button-icon" aria-hidden="true">&#8599;</span>
+                打开完整回放
+              </a>
+              <a class="button light" href="frontstage-demo.html#video">
+                <span class="button-icon" aria-hidden="true">&#9654;</span>
+                播放 15 秒视频
+              </a>
+            </div>
+            <iframe data-demo-frame src=".donegraph/dashboard.html#page-0" title="成迹工作账本预览"></iframe>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="workflow" aria-labelledby="workflow-title">
+        <div class="inner workflow">
+          <div class="section-title">
+            <h2 id="workflow-title">不打断原来的工作流</h2>
+            <p>
+              成迹不要求团队换工具。AI 做事时顺手记账，收尾时生成工作账本、证据记录和复盘信。
+            </p>
+            <div class="hero-actions">
+              <a class="button light" href=".donegraph/dashboard.html#page-0" target="_blank" rel="noopener">
+                <span class="button-icon" aria-hidden="true">&#8599;</span>
+                打开工作账本
+              </a>
+            </div>
+          </div>
+          <div class="terminal" aria-label="Demo commands">
+            <div class="terminal-head">
+              <span class="dot red" aria-hidden="true"></span>
+              <span class="dot gold" aria-hidden="true"></span>
+              <span class="dot green" aria-hidden="true"></span>
+              <span>local run</span>
+            </div>
+            <pre><code>npm install
+npm run demo
+open landing.html
+
+# 成迹会沉淀：
+# 我动过哪些文件
+# 我跑通哪些命令
+# 我建议下一轮先做哪步
+# 我把这轮工作写成一封复盘信</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="section product-summary" id="summary" aria-labelledby="summary-title">
+        <div class="inner summary-grid">
+          <div>
+            <div class="section-title">
+              <h2 id="summary-title">AI 协作终于有了收尾感</h2>
+              <p>
+                成迹把“AI 帮我做了很多”变成一份能被看见、被验证、被继续的工作资产。它让用户放心，也让团队少丢上下文。
+              </p>
+            </div>
+            <div class="field-list">
+              <div class="field">
+                <b>看得见</b>
+                <span>一轮 AI 工作从目标到结果都有轨迹。</span>
+              </div>
+              <div class="field">
+                <b>信得过</b>
+                <span>测试、类型检查、构建结果直接进入证据记录。</span>
+              </div>
+              <div class="field">
+                <b>接得上</b>
+                <span>下一步、未完成项和复盘信会留给明天。</span>
+              </div>
+              <div class="field">
+                <b>带得走</b>
+                <span>所有产物都在本地生成，可以放进任何 AI 开发流程。</span>
+              </div>
+            </div>
+          </div>
+          <aside class="copy-panel" aria-label="Product summary">
+            <h3>产品简介</h3>
+            <p data-summary-text>
+              成迹是一款 AI 协作记录工具，把一轮 AI 工作自动沉淀成可回放的工作轨迹：做了什么、改了哪些文件、跑通哪些命令、交付了什么、下一步从哪里继续。
+            </p>
+            <button class="button light" type="button" data-copy-summary>
+              <span class="button-icon" aria-hidden="true">&#10697;</span>
+              复制简介
+            </button>
+            <span class="copy-status" data-copy-status aria-live="polite"></span>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="inner">
+        <span>成迹让 AI 进展可回放、可验证、可继续。</span>
+        <a href=".donegraph/dashboard.html#page-0" target="_blank" rel="noopener">打开工作账本</a>
+      </div>
+    </footer>
+
+    <script>
+      const summaryText =
+        "成迹是一款 AI 协作记录工具，把一轮 AI 工作自动沉淀成可回放的工作轨迹：做了什么、改了哪些文件、跑通哪些命令、交付了什么、下一步从哪里继续。";
+
+      function fallbackCopy(text) {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        const copied = document.execCommand("copy");
+        area.remove();
+        return copied;
+      }
+
+      async function copySummary() {
+        let copied = false;
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(summaryText);
+            copied = true;
+          }
+        } catch (error) {
+          copied = false;
+        }
+
+        if (!copied) {
+          copied = fallbackCopy(summaryText);
+        }
+
+        document.querySelectorAll("[data-copy-status]").forEach((node) => {
+          node.textContent = copied ? "已复制" : "选中文本后复制";
+          window.setTimeout(() => {
+            node.textContent = "";
+          }, 2400);
+        });
+      }
+
+      document.querySelectorAll("[data-copy-summary]").forEach((button) => {
+        button.addEventListener("click", copySummary);
+      });
+
+      const demoFrame = document.querySelector("[data-demo-frame]");
+      document.querySelectorAll("[data-preview-page]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const page = button.dataset.previewPage || "0";
+          if (demoFrame) {
+            demoFrame.src = `.donegraph/dashboard.html#page-${page}`;
+          }
+          document.querySelectorAll("[data-preview-page]").forEach((tab) => {
+            tab.setAttribute("aria-pressed", String(tab === button));
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

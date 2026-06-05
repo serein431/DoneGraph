@@ -87,9 +87,12 @@ prompt_platform() {
 }
 
 clone_or_update() {
+  local mode="${1:-install}"
   if [[ -f "$REPO_DIR/package.json" && -d "$REPO_DIR/plugins/donegraph/skills" ]]; then
     printf -- '-> Using checkout at %s\n' "$REPO_DIR"
-    if [[ -d "$REPO_DIR/.git" ]]; then
+    if [[ "$mode" == "update" && -d "$REPO_DIR/.git" ]]; then
+      git -C "$REPO_DIR" pull --ff-only
+    elif [[ "$REPO_DIR" != "$SCRIPT_DIR" && -d "$REPO_DIR/.git" ]]; then
       git -C "$REPO_DIR" pull --ff-only
     fi
     return 0
@@ -193,7 +196,7 @@ cmd_install() {
   target="$(printf '%s\n' "$row" | cut -d'|' -f2)"
   style="$(printf '%s\n' "$row" | cut -d'|' -f3)"
 
-  clone_or_update
+  clone_or_update install
   ensure_built
   printf -- '-> Linking skills for %s (%s -> %s)\n' "$id" "$style" "$target"
   link_skills "$target" "$style"
@@ -221,7 +224,7 @@ cmd_uninstall() {
 }
 
 cmd_update() {
-  clone_or_update
+  clone_or_update update
   ensure_built
   printf 'Updated DoneGraph.\n'
 }

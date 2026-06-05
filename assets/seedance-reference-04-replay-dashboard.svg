@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Seedance reference 04 replay dashboard</title>
+  <desc id="desc">A DoneGraph replay dashboard with a letter panel and radio in the corner.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="12%" r="75%">
+      <stop offset="0%" stop-color="#465b54"/>
+      <stop offset="55%" stop-color="#111b19"/>
+      <stop offset="100%" stop-color="#060a09"/>
+    </radialGradient>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f1716"/>
+      <stop offset="100%" stop-color="#1d2a26"/>
+    </linearGradient>
+    <linearGradient id="mint" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#bff7e9"/>
+      <stop offset="100%" stop-color="#72d9c2"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="28" stdDeviation="28" flood-color="#000" flood-opacity="0.46"/>
+    </filter>
+    <filter id="glow" x="-70%" y="-70%" width="240%" height="240%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect y="632" width="1600" height="268" fill="#191511"/>
+  <ellipse cx="820" cy="808" rx="690" ry="70" fill="#000" opacity="0.32"/>
+
+  <g transform="translate(148 92)" filter="url(#shadow)">
+    <rect x="0" y="0" width="1304" height="690" rx="34" fill="#090d0c"/>
+    <rect x="34" y="34" width="1236" height="610" rx="20" fill="url(#screen)"/>
+    <rect x="80" y="78" width="196" height="18" rx="9" fill="url(#mint)"/>
+    <text x="80" y="150" font-family="Avenir, Helvetica, Arial, sans-serif" font-size="62" font-weight="800" fill="#f7f2e5">成迹</text>
+    <text x="236" y="150" font-family="Avenir, Helvetica, Arial, sans-serif" font-size="26" fill="#a8eada">today's replay</text>
+    <rect x="80" y="196" width="330" height="116" rx="8" fill="#172521" stroke="#36574f"/>
+    <text x="112" y="246" font-family="Avenir, Helvetica, Arial, sans-serif" font-size="25" fill="#bff7e9">I remembered</text>
+    <text x="112" y="292" font-family="Avenir, Helvetica, Arial, sans-serif" font-size="44" font-weight="800" fill="#f7f2e5">12 things</text>
+    <rect x="444" y="196" width="330" height="116" rx="8" fill="#172521" stroke="#36574f"/>
+    <text x="476" y="246" font-family="Avenir, Helvetica, Arial, sans-serif" font-size="25" fill="#bff7e9">Checks passed</text>
+    <text x="476" y="292" font-family="Avenir, Helvetica, Arial, sans-serif" font-size="44" font-weight="800" fill="#f7f2e5">3</text>
+    <rect x="808" y="196" width="382" height="370" rx="8" fill="#f1e6c9"/>
+    <text x="842" y="254" font-family="Georgia, 'Times New Roman', serif" font-size="44" fill="#51422f">Dear you,</text>
+    <rect x="846" y="300" width="272" height="14" rx="7" fill="#7c6f57" opacity="0.44"/>
+    <rect x="846" y="340" width="292" height="14" rx="7" fill="#7c6f57" opacity="0.36"/>
+    <rect x="846" y="380" width="232" height="14" rx="7" fill="#7c6f57" opacity="0.3"/>
+    <path d="M846 482 C914 455 976 502 1042 474 C1082 457 1118 466 1150 488" fill="none" stroke="#51422f" stroke-width="4" opacity="0.68"/>
+    <g transform="translate(104 370)">
+      <circle cx="0" cy="0" r="12" fill="#bff7e9" filter="url(#glow)"/>
+      <line x1="22" y1="0" x2="582" y2="0" stroke="#3b5a52" stroke-width="4"/>
+      <circle cx="160" cy="0" r="12" fill="#bff7e9"/>
+      <circle cx="316" cy="0" r="12" fill="#bff7e9"/>
+      <circle cx="486" cy="0" r="12" fill="#bff7e9"/>
+      <rect x="40" y="34" width="208" height="70" rx="8" fill="#20312d"/>
+      <rect x="274" y="34" width="240" height="70" rx="8" fill="#20312d"/>
+      <rect x="88" y="132" width="310" height="20" rx="10" fill="#29463f"/>
+      <rect x="88" y="172" width="232" height="18" rx="9" fill="#376f62"/>
+    </g>
+  </g>
+
+  <g transform="translate(1148 612)" filter="url(#shadow)">
+    <rect x="0" y="46" width="242" height="150" rx="28" fill="#b47e4e"/>
+    <rect x="22" y="78" width="96" height="80" rx="12" fill="#20130d" opacity="0.8"/>
+    <circle cx="176" cy="126" r="36" fill="#24150e"/>
+    <circle cx="176" cy="126" r="19" fill="#bff7e9" filter="url(#glow)"/>
+    <path d="M46 46 C72 4 164 2 192 46" fill="none" stroke="#cda36a" stroke-width="10" stroke-linecap="round"/>
+  </g>
+
+  <g fill="none" stroke="#bff7e9" stroke-linecap="round" opacity="0.64" filter="url(#glow)">
+    <path d="M1350 648 C1414 620 1464 630 1514 668" stroke-width="4"/>
+    <path d="M1326 612 C1410 558 1490 580 1552 632" stroke-width="3" opacity="0.58"/>
+  </g>
+
+  <g font-family="Avenir, Helvetica, Arial, sans-serif">
+    <text x="86" y="836" font-size="26" fill="#bff7e9" font-weight="700" letter-spacing="3">04 REPLAY</text>
+    <text x="290" y="838" font-size="44" fill="#f7f2e5" font-weight="800">The trail is ready when the user comes back.</text>
+  </g>
+</svg>

@@ -69,6 +69,50 @@ describe("donegraph CLI", () => {
     ]);
   });
 
+  it("supports the documented shortcut commands for artifacts, blockers, verification, and builds", async () => {
+    const workspace = tempWorkspace();
+    const output: string[] = [];
+
+    await runDoneGraphCli(["start", "Cover documented command routes", "--platform", "codex"], {
+      cwd: workspace,
+      write: () => undefined,
+      now: () => "2026-05-28T00:00:00.000Z",
+      uuid: () => "goal"
+    });
+    await runDoneGraphCli(["artifact", "Generated dashboard", "--path", ".donegraph/dashboard.html"], {
+      cwd: workspace,
+      write: () => undefined,
+      now: () => "2026-05-28T00:01:00.000Z",
+      uuid: () => "artifact"
+    });
+    await runDoneGraphCli(["block", "Waiting on reviewer credentials"], {
+      cwd: workspace,
+      write: () => undefined,
+      now: () => "2026-05-28T00:02:00.000Z",
+      uuid: () => "blocker"
+    });
+    await runDoneGraphCli(["verify", "Fallback path documented", "--unknown"], {
+      cwd: workspace,
+      write: () => undefined,
+      now: () => "2026-05-28T00:03:00.000Z",
+      uuid: () => "verify"
+    });
+    const code = await runDoneGraphCli(["build"], {
+      cwd: workspace,
+      write: (line) => output.push(line),
+      now: () => "2026-05-28T00:04:00.000Z"
+    });
+
+    expect(code).toBe(0);
+    expect(readDoneGraphEvents(workspace)).toMatchObject([
+      { type: "goal", text: "Cover documented command routes" },
+      { type: "artifact", text: "Generated dashboard", metadata: { path: ".donegraph/dashboard.html" } },
+      { type: "blocker", text: "Waiting on reviewer credentials", metadata: { status: "blocked" } },
+      { type: "verification", text: "Fallback path documented", metadata: { status: "unknown" } }
+    ]);
+    expect(output.join("\n")).toContain("Built DoneGraph");
+  });
+
   it("accepts positional record type and text", async () => {
     const workspace = tempWorkspace();
 
@@ -124,7 +168,7 @@ describe("donegraph CLI", () => {
     expect(output.join("\n")).toContain("Build task graph");
     expect(output.join("\n")).toContain("Next steps:");
     expect(fs.readFileSync(path.join(workspace, ".donegraph", "achievement-log.md"), "utf8")).toContain(
-      "验证：npm test"
+      "验证：npm test: Tests passed"
     );
   });
 
