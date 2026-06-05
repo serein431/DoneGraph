@@ -8,15 +8,15 @@ DoneGraph
 
 ## Tagline
 
-Make AI progress inspectable.
+Your AI finally shows its work.
 
 ## Short Description
 
-DoneGraph is a local plugin that lets an AI show its work after a coding session. It records what the AI changed, which commands passed, what it delivered, and where the next session should start. Instead of asking a teammate, judge, or future AI to reread a long chat, DoneGraph turns the session into a replayable dashboard, proof log, and a warm daily recap letter from the AI to the user.
+DoneGraph makes AI work trustworthy after the run. It captures what the agent changed, which commands passed, what shipped, what stayed unresolved, and where the next session should begin. Instead of forcing a user, teammate, or future AI to dig through a long chat, DoneGraph turns the session into a replayable work trail, attached proof, and a warm recap letter from the AI to the user.
 
 ## Long Description
 
-After a long vibe-coding session, the hard part is often not writing more code. It is remembering what actually happened.
+After a long vibe-coding session, the hard part is often not writing more code. It is knowing what actually happened, what can be trusted, and where to continue.
 
 The AI edited files, ran commands, changed direction, fixed some things, maybe left a few loose ends. A few hours later, the user is left with a long chat and one uncomfortable question: what is really done?
 
@@ -75,7 +75,7 @@ Then click:
 写复盘信
 ```
 
-## What Judges Should Notice
+## What Reviewers Should Notice
 
 - The dashboard is generated from real local events, not a fake mock screen.
 - Proof is attached to progress: `npm test`, `npm run typecheck`, and `npm run build`.
@@ -84,6 +84,6 @@ Then click:
 
 ## One-Minute Pitch
 
-DoneGraph answers the question every AI-assisted builder hits after a long session: what did the AI actually do?
+DoneGraph answers the scariest question after an AI run: what did it actually do, and can I trust it?
 
-It records the work while it happens, then turns the session into a replayable dashboard with files, commands, artifacts, proof, next steps, and a daily recap letter from the AI to the user. A judge can inspect it. A teammate can continue from it. The next AI session can start from it.
+It records the work while it happens, then turns the session into a replayable dashboard with files, commands, artifacts, proof, next steps, and a daily recap letter from the AI to the user. A reviewer can inspect it. A teammate can continue from it. The next AI session can start from it.

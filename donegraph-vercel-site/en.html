@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DoneGraph | AI Work, With a Memory</title>
+    <title>DoneGraph | Your AI Shows Its Work</title>
     <meta
       name="description"
       content="DoneGraph turns AI collaboration into a replayable, verifiable work trail: what changed, what ran, what shipped, and where to continue."
@@ -43,6 +43,7 @@
           linear-gradient(145deg, #07100f 0%, #111815 54%, #080d0c 100%);
         font-family: Avenir, "Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         line-height: 1.45;
+        overflow-x: hidden;
       }
 
       a {
@@ -290,6 +291,10 @@
         font-size: 7rem;
         line-height: 0.92;
         letter-spacing: 0;
+      }
+
+      h1 span {
+        display: block;
       }
 
       .hero-copy {
@@ -1192,6 +1197,7 @@
 
         .hero-inner {
           width: 100%;
+          max-width: calc(100vw - 2rem);
         }
 
         .hero-eye-field {
@@ -1212,7 +1218,7 @@
         }
 
         h1 {
-          max-width: 100%;
+          max-width: calc(100vw - 2rem);
           font-size: 3.4rem;
           line-height: 0.96;
           overflow-wrap: anywhere;
@@ -1220,8 +1226,9 @@
         }
 
         .hero-copy {
-          max-width: 100%;
+          max-width: calc(100vw - 2rem);
           font-size: 1.08rem;
+          overflow-wrap: break-word;
         }
 
         .proof-row {
@@ -1515,9 +1522,10 @@
             <i class="agent-eye agent-eye-large"><i class="iris"></i><i class="pupil"></i><i class="glint"></i><i class="lid top"></i><i class="lid bottom"></i></i>
             <span>Agent awake · watching the work trail</span>
           </div>
-          <h1>AI work should leave a trail.</h1>
+          <h1><span>Your AI shows</span><span>its work.</span></h1>
           <p class="hero-copy">
-            DoneGraph turns every AI work session into a replayable, verifiable work trail: what changed, what ran, what shipped, and where the next session should begin.
+            Every AI run becomes proof.<br />
+            Open the trail, checks, letter, and next move.
           </p>
           <div class="actions">
             <a class="button primary" href="#demo">Watch the 15s Demo</a>
@@ -1600,7 +1608,7 @@
                 <h3>AI is creating millions of new software makers.</h3>
               </div>
               <p>
-                DoneGraph sits after the AI work session. As more non-traditional builders use agents to create software, they will need the same thing professional teams need: memory, proof, handoff, and a way to trust what happened.
+                DoneGraph sits after the AI work session. As more non-traditional builders use agents to create software, they will need the same thing professional teams need: a clear trail, attached proof, handoff, and a way to trust what happened.
               </p>
             </div>
             <div class="market-grid">
@@ -1636,7 +1644,7 @@
                 <span>early non-professional AI builders</span>
               </div>
               <p>
-                Back-of-envelope: if only 5–10% of Power Platform’s 56M monthly active users start building with AI agents instead of only visual tools, that is already a multi-million-user wedge for DoneGraph’s “work memory after AI” layer.
+                Back-of-envelope: if only 5–10% of Power Platform’s 56M monthly active users start building with AI agents instead of only visual tools, that is already a multi-million-user wedge for DoneGraph’s “proof layer after AI work”.
               </p>
             </div>
             <p class="source-note">
@@ -1657,7 +1665,7 @@
           <div class="section-title">
             <h2>DoneGraph records progress, not chat.</h2>
             <p>
-              At the end of a session, the product creates a compact work memory that a human can inspect, trust, and continue from.
+              At the end of a session, the product creates a compact progress trail that a human can inspect, trust, and continue from.
             </p>
           </div>
           <div class="grid">
@@ -1686,7 +1694,7 @@
             <img src="assets/seedance-letter-radio-reference.png" alt="AI letter and radio reference frame" />
             <div class="letter-caption">
               <strong>A letter for closure. A radio for the day’s feelings.</strong>
-              DoneGraph makes agent work feel inspectable, remembered, and strangely human.
+              DoneGraph makes agent work feel inspectable, replayable, and strangely human.
             </div>
           </div>
           <div class="artifact-list">
@@ -1715,7 +1723,7 @@
           <div class="section-title">
             <h2 id="front-radio-title">The agent radio greets the room before anyone asks.</h2>
             <p>
-              It is not a help widget. It is the agent quietly explaining what it remembers: the work trail, the letter, the proof, and why the next session does not have to start cold.
+              It is not a help widget. It is the agent quietly explaining what happened: the work trail, the letter, the proof, and why the next session does not have to start cold.
             </p>
           </div>
           <div class="radio-stage">
@@ -1759,7 +1767,7 @@
               <ul class="radio-list">
                 <li><b>Use</b><span data-front-radio-use>The user asks an AI to build, fix, research, or ship.</span></li>
                 <li><b>Letter</b><span data-front-radio-letter>The agent writes back with a warm recap the user can reopen.</span></li>
-                <li><b>Radio</b><span data-front-radio-radio>The same memory becomes a voice that keeps debriefing over music.</span></li>
+                <li><b>Radio</b><span data-front-radio-radio>The same run becomes a voice that keeps debriefing over music.</span></li>
               </ul>
             </div>
           </div>
@@ -1804,9 +1812,9 @@
       <section class="section" id="business">
         <div class="inner">
           <div class="section-title">
-            <h2>Go to market: open core first, team memory later.</h2>
+            <h2>Go to market: open core first, team proof later.</h2>
             <p>
-              DoneGraph has a light entry point and an infrastructure-shaped value curve. It can start as a personal agent plugin and expand into team memory, client delivery, and enterprise audit.
+              DoneGraph has a light entry point and an infrastructure-shaped value curve. It can start as a personal agent plugin and expand into team work trails, client delivery, and enterprise audit.
             </p>
           </div>
           <div class="price-grid">
@@ -1878,7 +1886,7 @@
       <section class="section final">
         <div class="inner">
           <div class="section-title">
-            <h2>When agents do real work, memory becomes the product.</h2>
+            <h2>When agents do real work, proof becomes the product.</h2>
             <p>
               DoneGraph makes AI progress inspectable, emotionally legible, and ready for the next person or the next day.
             </p>
@@ -1920,7 +1928,7 @@
           frequency: "91.7",
           status: "Work trail",
           title: "I do not only say done.",
-          mutter: "Done is too small for a real workday. I remember the files, the commands, the checks, and the one next step that keeps tomorrow from starting cold.",
+          mutter: "Done is too small for a real workday. I caught the files, the commands, the checks, and the one next step that keeps tomorrow from starting cold.",
           use: "Run replay shows the instruction, touched files, passed checks, and delivery.",
           letter: "The letter turns the messy session into a handoff someone can actually read.",
           radio: "The radio keeps the mood of the work alive without forcing you back into the whole log.",

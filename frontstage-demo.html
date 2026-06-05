@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>成迹 | 让 AI 工作留下可回放的记忆</title>
+    <title>成迹 | AI 干了什么，一眼看懂</title>
     <meta
       name="description"
       content="成迹把 AI 协作沉淀成可回放、可验证、可继续的工作轨迹：改了什么、跑了什么、交付了什么、下一轮从哪里开始。"
@@ -43,6 +43,7 @@
           linear-gradient(145deg, #07100f 0%, #111815 54%, #080d0c 100%);
         font-family: Avenir, "Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         line-height: 1.45;
+        overflow-x: hidden;
       }
 
       a {
@@ -1192,6 +1193,7 @@
 
         .hero-inner {
           width: 100%;
+          max-width: calc(100vw - 2rem);
         }
 
         .hero-eye-field {
@@ -1212,7 +1214,7 @@
         }
 
         h1 {
-          max-width: 100%;
+          max-width: calc(100vw - 2rem);
           font-size: 3.4rem;
           line-height: 0.96;
           overflow-wrap: anywhere;
@@ -1220,8 +1222,9 @@
         }
 
         .hero-copy {
-          max-width: 100%;
+          max-width: calc(100vw - 2rem);
           font-size: 1.08rem;
+          overflow-wrap: break-word;
         }
 
         .proof-row {
@@ -1543,9 +1546,10 @@
             <i class="agent-eye agent-eye-large"><i class="iris"></i><i class="pupil"></i><i class="glint"></i><i class="lid top"></i><i class="lid bottom"></i></i>
             <span>Agent 已醒来 · 正在看见工作轨迹</span>
           </div>
-          <h1>AI 做完的活，应该留下成迹。</h1>
+          <h1>AI 干了什么，成迹让你一眼看懂。</h1>
           <p class="hero-copy">
-            成迹把每一次 AI 工作变成可回放、可验证、可继续的轨迹：改了什么、跑了什么、交付了什么、下一轮应该从哪里开始。
+            每一次 AI 工作，都会留下证据。<br />
+            打开轨迹、验证结果、复盘信和下一步。
           </p>
           <div class="actions">
             <a class="button primary" href="#demo">播放 15 秒 Demo</a>
@@ -1628,7 +1632,7 @@
                 <h3>AI 正在制造数百万新的软件创造者。</h3>
               </div>
               <p>
-                成迹站在 AI 工作完成之后。越来越多非传统开发者开始用 Agent 创造软件，他们同样需要专业团队需要的东西：记忆、证据、交接，以及一种能相信“刚才到底发生了什么”的方式。
+                成迹站在 AI 工作完成之后。越来越多非传统开发者开始用 Agent 创造软件，他们同样需要专业团队需要的东西：清楚的轨迹、可核验的证据、顺手的交接，以及一种能相信“刚才到底发生了什么”的方式。
               </p>
             </div>
             <div class="market-grid">
@@ -1664,7 +1668,7 @@
                 <span>早期非专业 AI 构建者</span>
               </div>
               <p>
-                粗略估算：如果 Power Platform 5600 万月活里只有 5–10% 开始用 AI Agent 构建，而不只是使用可视化工具，这已经是一个数百万用户级的切口，正好对应成迹要做的“AI 工作后的记忆层”。
+                粗略估算：如果 Power Platform 5600 万月活里只有 5–10% 开始用 AI Agent 构建，而不只是使用可视化工具，这已经是一个数百万用户级的切口，正好对应成迹要做的“AI 工作后的证据层”。
               </p>
             </div>
             <p class="source-note">
@@ -1685,7 +1689,7 @@
           <div class="section-title">
             <h2>成迹记录的是进展，不是聊天。</h2>
             <p>
-              一轮协作结束时，产品生成一份紧凑的工作记忆，让人能检查、能相信、能继续。
+              一轮协作结束时，产品生成一份紧凑的工作轨迹，让人能检查、能相信、能继续。
             </p>
           </div>
           <div class="grid">
@@ -1714,7 +1718,7 @@
             <img src="assets/seedance-letter-radio-reference.png" alt="AI 信件和电台参考画面" />
             <div class="letter-caption">
               <strong>一封信负责收尾，一个电台留下当天的余温。</strong>
-              成迹让 Agent 的工作可检查、被记住，也多了一点奇妙的人味。
+              成迹让 Agent 的工作可检查、可回放，也多了一点奇妙的人味。
             </div>
           </div>
           <div class="artifact-list">
@@ -1743,7 +1747,7 @@
           <div class="section-title">
             <h2 id="front-radio-title">用户还没开口，Agent 电台已经在低声介绍自己。</h2>
             <p>
-              它不是帮助小组件。它像一个工作结束后还没关掉的小电台，低声讲自己记住了什么：轨迹、信、证据，以及为什么下一轮不必冷启动。
+              它不是帮助小组件。它像一个工作结束后还没关掉的小电台，低声讲清楚刚才发生了什么：轨迹、信、证据，以及为什么下一轮不必冷启动。
             </p>
           </div>
           <div class="radio-stage">
@@ -1777,7 +1781,7 @@
                 <span class="tag">氛围式 onboarding</span>
                 <h3 data-front-radio-headline>检测到访客。我已经把轨迹收好。</h3>
                 <p>
-                  有人进入页面时，产品不必等用户点功能说明。Agent 会像工作结束后还亮着的小电台一样，自己开始讲清楚它记得什么。
+                  有人进入页面时，产品不必等用户点功能说明。Agent 会像工作结束后还亮着的小电台一样，自己开始讲清楚它留下了什么。
                 </p>
               </div>
               <div class="radio-mutter" data-front-radio-mutter>
@@ -1787,7 +1791,7 @@
               <ul class="radio-list">
                 <li><b>使用</b><span data-front-radio-use>用户让 AI 构建、修复、研究或交付。</span></li>
                 <li><b>信件</b><span data-front-radio-letter>Agent 写回一封有温度、可重新打开的复盘。</span></li>
-                <li><b>电台</b><span data-front-radio-radio>同一份记忆变成声音，伴着音乐继续复盘。</span></li>
+                <li><b>电台</b><span data-front-radio-radio>同一轮工作变成声音，伴着音乐继续复盘。</span></li>
               </ul>
             </div>
           </div>
@@ -1832,9 +1836,9 @@
       <section class="section" id="business">
         <div class="inner">
           <div class="section-title">
-            <h2>商业化路径：先开源核心，再进入团队记忆层。</h2>
+            <h2>商业化路径：先开源核心，再进入团队证据层。</h2>
             <p>
-              成迹入口很轻，但价值曲线接近基础设施。它可以从个人 Agent 插件开始，扩展到团队记忆、客户交付和企业审计。
+              成迹入口很轻，但价值曲线接近基础设施。它可以从个人 Agent 插件开始，扩展到团队工作轨迹、客户交付和企业审计。
             </p>
           </div>
           <div class="price-grid">
@@ -1906,7 +1910,7 @@
       <section class="section final">
         <div class="inner">
           <div class="section-title">
-            <h2>当 Agent 开始真正干活，记忆就会成为产品。</h2>
+            <h2>当 Agent 开始真正干活，证据就会成为产品。</h2>
             <p>
               成迹让 AI 进展可检查、有情绪、也能交给下一个人或明天继续。
             </p>
@@ -1948,7 +1952,7 @@
           frequency: "91.7",
           status: "工作轨迹",
           title: "我不只说完成。",
-          mutter: "完成两个字太小，装不下一整天真正发生的工作。我记得文件、命令、检查，也记得让明天不再冷启动的下一步。",
+          mutter: "完成两个字太小，装不下一整天真正发生的工作。我收好了文件、命令、检查，也收好了让明天不再冷启动的下一步。",
           use: "任务回放展示指令、动过的文件、跑通的检查和交付结果。",
           letter: "信件把混乱的一轮协作变成别人真的能读懂的交接。",
           radio: "电台保留工作的余温，不强迫你回到完整日志里。",

@@ -191,26 +191,26 @@ def frame(idx: int) -> Image.Image:
 
     text(d, (56, 126), "DoneGraph", FONT_H2, (111, 250, 255, 245))
     text(d, (54, 200), "Your AI", FONT_DISPLAY, (239, 252, 255, 255))
-    text(d, (56, 284), "remembers.", FONT_HERO, (239, 252, 255, 255))
+    text(d, (56, 284), "shows its work.", FONT_HERO, (239, 252, 255, 255))
     text(
         d,
         (60, 360),
-        "It writes back after every run.",
+        "Proof, replay, and handoff after every run.",
         FONT_BODY,
         (214, 234, 238, 230),
     )
 
     for i, (label, x, color) in enumerate([
         ("TRAIL", 60, (111, 250, 255)),
-        ("LETTER", 210, (255, 191, 91)),
-        ("RADIO", 360, (92, 255, 190)),
+        ("PROOF", 210, (255, 191, 91)),
+        ("LETTER", 360, (92, 255, 190)),
     ]):
         alpha = int(120 + 90 * pulse(t, i * 0.12))
         rounded(d, (x, 406, x + 126, 448), 20, (3, 18, 37), color + (alpha,), 1)
         text(d, (x + 63, 419), label, FONT_MICRO, (239, 252, 255, 232), anchor="ma")
 
     rounded(d, (54, 488, 338, 630), 20, (3, 18, 37, 210), (111, 250, 255, 110), 2)
-    text(d, (82, 514), "AI WORK LEDGER", FONT_MICRO, (111, 250, 255, 230))
+    text(d, (82, 514), "AI WORK PROOF", FONT_MICRO, (111, 250, 255, 230))
     draw_ledger(d, 116, 548, t)
 
     draw_hero_envelope(d, 560, 360, t)
