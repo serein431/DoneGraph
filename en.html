@@ -80,15 +80,14 @@
       }
 
       .brand-mark {
-        display: inline-grid;
+        display: block;
         width: 2.4rem;
         height: 2.4rem;
-        place-items: center;
-        border: 1px solid var(--line);
-        border-radius: 50%;
-        background: rgba(189, 247, 231, 0.1);
-        color: var(--mint);
-        font-weight: 900;
+        border: 1px solid rgba(189, 247, 231, 0.28);
+        border-radius: 0.72rem;
+        background: rgba(7, 16, 15, 0.82);
+        box-shadow: 0 0 18px rgba(101, 216, 191, 0.12);
+        object-fit: cover;
       }
 
       .agent-eye {
@@ -1542,7 +1541,7 @@
   <body>
     <header class="topbar">
       <a class="brand" href="#top">
-        <span class="brand-mark" aria-hidden="true">D</span>
+        <img class="brand-mark" src="assets/submission/donegraph-logo.png" alt="" aria-hidden="true" />
         <i class="agent-eye agent-eye-small" aria-hidden="true"><i class="iris"></i><i class="pupil"></i><i class="glint"></i><i class="lid top"></i><i class="lid bottom"></i></i>
         <span>DoneGraph</span>
       </a>
