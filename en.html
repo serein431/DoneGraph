@@ -1128,13 +1128,243 @@
         }
       }
 
-      @media (max-width: 640px) {
-        .topbar {
-          position: absolute;
+      @media (max-width: 760px) {
+        body {
+          min-width: 320px;
+          overflow-x: hidden;
         }
 
-        .nav a:not(.language-link) {
+        .topbar {
+          position: sticky;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 0.75rem;
+          padding: 0.75rem;
+        }
+
+        .brand {
+          min-width: 0;
+          flex: 1 1 auto;
+        }
+
+        .nav {
+          width: 100%;
+          justify-content: flex-start;
+          gap: 0.55rem;
+          overflow-x: auto;
+          padding-bottom: 0.2rem;
+          scrollbar-width: none;
+        }
+
+        .nav::-webkit-scrollbar {
           display: none;
+        }
+
+        .nav a {
+          flex: 0 0 auto;
+          min-height: 36px;
+          display: inline-flex;
+          align-items: center;
+          border: 1px solid var(--line);
+          border-radius: 999px;
+          padding: 0.48rem 0.72rem;
+          background: rgba(245, 239, 220, 0.06);
+          font-size: 0.86rem;
+        }
+
+        .hero {
+          min-height: auto;
+          padding: 2.25rem 1rem 3.25rem;
+          align-items: end;
+        }
+
+        .hero::before {
+          background:
+            linear-gradient(180deg, rgba(7, 16, 15, 0.62) 0%, rgba(7, 16, 15, 0.88) 54%, rgba(7, 16, 15, 0.98) 100%),
+            linear-gradient(90deg, rgba(7, 16, 15, 0.94), rgba(7, 16, 15, 0.48));
+        }
+
+        .hero-media {
+          width: 100%;
+          height: 100%;
+          opacity: 0.24;
+        }
+
+        .hero-inner {
+          width: 100%;
+        }
+
+        .hero-eye-field {
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+
+        .hero-eye-field span {
+          min-width: 0;
+          flex: 1 1 auto;
+          white-space: normal;
+          overflow-wrap: anywhere;
+        }
+
+        .hero-eye-field span,
+        .eyebrow {
+          letter-spacing: 0.08em;
+        }
+
+        h1 {
+          max-width: 100%;
+          font-size: 3.4rem;
+          line-height: 0.96;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+        }
+
+        .hero-copy {
+          max-width: 100%;
+          font-size: 1.08rem;
+        }
+
+        .proof-row {
+          gap: 0.5rem;
+        }
+
+        .proof-row li {
+          border-radius: 12px;
+          font-size: 0.86rem;
+        }
+
+        .section {
+          padding: 3.7rem 1rem;
+        }
+
+        .section-inner,
+        .split,
+        .asset-showcase,
+        .market-head,
+        .estimate,
+        .radio-stage {
+          gap: 1rem;
+        }
+
+        .section-title h2 {
+          font-size: 2.35rem;
+          line-height: 1.03;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+        }
+
+        .section-title p,
+        .market-head p,
+        .estimate p,
+        .card p,
+        .price-card p,
+        .asset-card p,
+        .artifact-item p {
+          font-size: 1rem;
+          overflow-wrap: anywhere;
+        }
+
+        .market-panel,
+        .demo-shell,
+        .radio-device,
+        .radio-transcript,
+        .letter-panel {
+          border-radius: 10px;
+        }
+
+        .market-head h3,
+        .estimate strong {
+          font-size: 2.2rem;
+        }
+
+        .metric {
+          min-height: auto;
+        }
+
+        .metric strong {
+          font-size: 2.1rem;
+        }
+
+        .letter-panel {
+          min-height: auto;
+        }
+
+        .letter-panel img {
+          height: 320px;
+        }
+
+        .letter-caption {
+          position: static;
+          margin: 0.75rem;
+        }
+
+        .radio-device {
+          padding: 0.85rem;
+        }
+
+        .radio-display,
+        .radio-transcript {
+          padding: 0.9rem;
+        }
+
+        .radio-frequency {
+          font-size: 3.25rem;
+        }
+
+        .radio-band-label {
+          flex-direction: column;
+          gap: 0.25rem;
+        }
+
+        .radio-speaker {
+          min-height: 170px;
+        }
+
+        .radio-controls,
+        .demo-controls {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .radio-controls .button,
+        .demo-controls .button,
+        .actions .button {
+          width: 100%;
+        }
+
+        .radio-list li {
+          gap: 0.35rem;
+        }
+
+        .demo-screen {
+          min-height: auto;
+        }
+
+        .demo-screen video {
+          height: 340px;
+        }
+
+        .demo-overlay {
+          position: static;
+          width: auto;
+          margin: 0;
+          border-width: 0 0 1px;
+          border-radius: 0;
+        }
+
+        .demo-title {
+          font-size: 1.85rem;
+        }
+
+        .scene-label {
+          min-width: 0;
+          text-align: left;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .topbar {
+          position: sticky;
         }
 
         .hero,
@@ -1144,12 +1374,12 @@
         }
 
         .hero {
-          min-height: 760px;
-          padding-top: 6.4rem;
+          min-height: auto;
+          padding-top: 2.25rem;
         }
 
         h1 {
-          font-size: 3.45rem;
+          font-size: 3rem;
         }
 
         .hero-copy {
@@ -1180,8 +1410,8 @@
 
         .demo-screen,
         .demo-screen video {
-          min-height: 440px;
-          height: 440px;
+          min-height: auto;
+          height: 320px;
         }
 
         .radio-device,
@@ -1203,6 +1433,45 @@
 
         .radio-list li {
           grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .brand span:last-child {
+          max-width: 9rem;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .nav a {
+          font-size: 0.8rem;
+          padding-inline: 0.62rem;
+        }
+
+        h1 {
+          font-size: 2.55rem;
+        }
+
+        .section-title h2 {
+          font-size: 2rem;
+        }
+
+        .card,
+        .price-card,
+        .artifact-item,
+        .market-head,
+        .estimate {
+          padding: 1rem;
+        }
+
+        .letter-panel img,
+        .demo-screen video {
+          height: 280px;
+        }
+
+        .radio-frequency {
+          font-size: 2.75rem;
         }
       }
 
@@ -1635,6 +1904,7 @@
       const frontRadioUse = document.querySelector("[data-front-radio-use]");
       const frontRadioLetter = document.querySelector("[data-front-radio-letter]");
       const frontRadioRadio = document.querySelector("[data-front-radio-radio]");
+      const frontRadioSection = document.querySelector("#radio");
       const frontRadioSegments = [
         {
           frequency: "88.4",
@@ -1681,6 +1951,8 @@
       let frontRadioTimer = 0;
       let frontVoiceAudio = null;
       let frontBgmAudio = null;
+      let frontRadioAutoStarted = false;
+      let frontRadioWaitingForGesture = false;
 
       function formatTime(value) {
         const safeValue = Number.isFinite(value) ? value : 0;
@@ -1733,7 +2005,14 @@
         }, 4200);
       }
 
-      async function toggleFrontRadioVoice() {
+      function stopFrontRadioVoice() {
+        frontVoiceAudio?.pause();
+        frontBgmAudio?.pause();
+        frontRadioWaitingForGesture = false;
+        if (frontRadioPlay) frontRadioPlay.textContent = "Let it speak";
+      }
+
+      async function startFrontRadioVoice(options = { auto: false }) {
         const segment = frontRadioSegments[frontRadioIndex];
         if (!frontVoiceAudio) frontVoiceAudio = new Audio();
         if (!frontBgmAudio) {
@@ -1741,12 +2020,7 @@
           frontBgmAudio.loop = true;
           frontBgmAudio.volume = 0.18;
         }
-        if (!frontVoiceAudio.paused) {
-          frontVoiceAudio.pause();
-          frontBgmAudio.pause();
-          if (frontRadioPlay) frontRadioPlay.textContent = "Let it speak";
-          return;
-        }
+        startFrontRadioLoop();
         frontVoiceAudio.src = segment.voice;
         frontVoiceAudio.volume = 0.92;
         frontVoiceAudio.onended = () => {
@@ -1757,21 +2031,70 @@
         try {
           await frontBgmAudio.play();
           await frontVoiceAudio.play();
+          frontRadioWaitingForGesture = false;
           if (frontRadioPlay) frontRadioPlay.textContent = "Pause radio";
+          if (options.auto && frontRadioStatus) frontRadioStatus.textContent = "Auto on-air";
+          return true;
         } catch {
-          if (frontRadioPlay) frontRadioPlay.textContent = "Tap again";
+          frontRadioWaitingForGesture = true;
+          if (frontRadioPlay) frontRadioPlay.textContent = "Tap once to hear me";
+          if (frontRadioStatus) frontRadioStatus.textContent = "Ready, waiting for sound permission";
+          return false;
         }
+      }
+
+      async function toggleFrontRadioVoice() {
+        if (frontVoiceAudio && !frontVoiceAudio.paused) {
+          stopFrontRadioVoice();
+          return;
+        }
+        await startFrontRadioVoice({ auto: false });
+      }
+
+      function isFrontRadioVisible() {
+        if (!frontRadioSection) return false;
+        const rect = frontRadioSection.getBoundingClientRect();
+        const viewport = window.innerHeight || document.documentElement.clientHeight;
+        return rect.top < viewport * 0.68 && rect.bottom > viewport * 0.22;
+      }
+
+      function autoStartFrontRadio() {
+        if (frontRadioAutoStarted) return;
+        frontRadioAutoStarted = true;
+        renderFrontRadioSegment(frontRadioIndex);
+        startFrontRadioVoice({ auto: true });
+      }
+
+      function retryFrontRadioAfterGesture() {
+        if (!frontRadioWaitingForGesture || !isFrontRadioVisible()) return;
+        startFrontRadioVoice({ auto: true });
       }
 
       playButton?.addEventListener("click", toggleVideo);
       frontRadioPlay?.addEventListener("click", toggleFrontRadioVoice);
+      if ("IntersectionObserver" in window && frontRadioSection) {
+        const frontRadioObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.42) {
+              autoStartFrontRadio();
+            }
+          });
+        }, { threshold: [0.42, 0.68] });
+        frontRadioObserver.observe(frontRadioSection);
+      } else {
+        window.addEventListener("scroll", () => {
+          if (isFrontRadioVisible()) autoStartFrontRadio();
+        }, { passive: true });
+      }
+      ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
+        window.addEventListener(eventName, retryFrontRadioAfterGesture, { passive: true });
+      });
       video?.addEventListener("loadedmetadata", syncVideoState);
       video?.addEventListener("timeupdate", syncVideoState);
       video?.addEventListener("play", syncVideoState);
       video?.addEventListener("pause", syncVideoState);
       video?.addEventListener("ended", syncVideoState);
       renderFrontRadioSegment(frontRadioIndex);
-      startFrontRadioLoop();
       syncVideoState();
     </script>
   </body>

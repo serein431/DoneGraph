@@ -3122,6 +3122,443 @@
       .dashboard-language { width: 100%; justify-content: center; }
     }
 
+    /* Mobile cockpit pass */
+    @media (max-width: 760px) {
+      html,
+      body {
+        width: 100%;
+        min-width: 320px;
+        overflow-x: hidden;
+      }
+
+      body::after,
+      .journal-shell::before {
+        opacity: .18;
+      }
+
+      .journal-shell {
+        width: calc(100vw - 20px);
+        max-width: 1380px;
+        gap: 14px;
+        padding-block: 12px 24px;
+      }
+
+      .journal-shell > *,
+      .memory-room-hero,
+      .memory-panel,
+      .page,
+      .run-console,
+      .demo-console,
+      .letter-console,
+      .radio-console {
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .journal-top {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 8px;
+      }
+
+      .journal-top span,
+      .dashboard-language {
+        min-width: 0;
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .journal-top .journal-eye {
+        grid-column: 1 / -1;
+        justify-content: center;
+      }
+
+      .dashboard-language {
+        grid-column: 1 / -1;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dashboard-language button {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .memory-room-hero,
+      .memory-panel,
+      .page,
+      .run-console,
+      .demo-console,
+      .letter-console,
+      .radio-console {
+        clip-path: none;
+        border-radius: 10px;
+      }
+
+      .memory-room-hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding: 22px;
+        gap: 18px;
+        background-position: center;
+      }
+
+      .memory-room-hero::before {
+        opacity: .38;
+      }
+
+      .memory-room-hero::after {
+        inset: 10px;
+      }
+
+      .memory-hero-copy .hero-eye-field {
+        align-items: center;
+        gap: 12px;
+      }
+
+      .agent-eye-large {
+        --eye-size: 76px;
+      }
+
+      .memory-hero-copy h1 {
+        max-width: 100%;
+        font-size: 3.1rem;
+        line-height: 1;
+      }
+
+      .memory-hero-copy h1 span {
+        white-space: normal;
+      }
+
+      .memory-hero-copy p,
+      .story,
+      .demo-console p,
+      .run-console p,
+      .letter-console p,
+      .radio-console p {
+        max-width: 100%;
+        font-size: 1rem;
+        line-height: 1.52;
+        overflow-wrap: anywhere;
+      }
+
+      .memory-hero-copy,
+      .memory-panel,
+      .page,
+      .run-console,
+      .demo-console,
+      .letter-console,
+      .radio-console,
+      h1,
+      h2,
+      h3 {
+        overflow-wrap: anywhere;
+      }
+
+      .memory-hero-actions,
+      .run-actions,
+      .letter-actions,
+      .radio-actions,
+      .page-controls {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .memory-hero-actions button,
+      .run-actions button,
+      .letter-actions button,
+      .radio-actions button,
+      .page-controls button {
+        width: 100%;
+        min-width: 0;
+        min-height: 46px;
+        padding: 10px;
+        font-size: .78rem;
+        letter-spacing: .04em;
+      }
+
+      .page-controls {
+        position: sticky;
+        bottom: 8px;
+        z-index: 8;
+        padding: 8px;
+        border: 1px solid rgba(111, 250, 255, .28);
+        border-radius: 12px;
+        background: rgba(2, 9, 22, .86);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, .36), inset 0 0 22px rgba(111, 250, 255, .08);
+        backdrop-filter: blur(14px);
+      }
+
+      .journal-stage,
+      .spread,
+      .spread.active {
+        min-height: auto;
+      }
+
+      .spread,
+      .spread.active {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .page {
+        min-height: auto;
+        max-height: none;
+        padding: 20px;
+        overflow: visible;
+      }
+
+      .page.left::after,
+      .page.right::before,
+      .page::before {
+        display: none;
+      }
+
+      h1 {
+        font-size: 2.85rem;
+        line-height: 1;
+      }
+
+      h2,
+      .letter-console h2,
+      .radio-console h2 {
+        font-size: 2rem;
+        line-height: 1.05;
+      }
+
+      h3 {
+        font-size: 1.15rem;
+      }
+
+      .memory-stats,
+      .metric-grid,
+      .emotional-strip,
+      .demo-step-list,
+      .run-step-list,
+      .run-output,
+      .radio-shell,
+      .radio-meta {
+        grid-template-columns: 1fr;
+      }
+
+      .memory-stat,
+      .metric,
+      .achievement-card,
+      .proof-card,
+      .journal-card,
+      .radio-meta article {
+        min-height: auto;
+      }
+
+      .metric strong,
+      .memory-stat strong,
+      .progress-sign strong {
+        font-size: 2.6rem;
+      }
+
+      .progress-sign {
+        width: min(100%, 250px);
+        margin-block: 20px 14px;
+      }
+
+      .edge-list li,
+      .run-receipt span {
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .edge-list small,
+      .run-receipt strong {
+        white-space: normal;
+      }
+
+      code,
+      .source,
+      .badge,
+      .run-log,
+      .radio-output,
+      .letter-output {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      .run-log {
+        max-height: 260px;
+      }
+
+      .letter-console,
+      .radio-console,
+      .demo-console,
+      .run-console {
+        padding: 22px 16px 16px;
+      }
+
+      .letter-output.envelope,
+      .letter-output.ready {
+        min-height: 260px;
+      }
+
+      .letter-output.ready {
+        max-height: 420px;
+        overflow: auto;
+      }
+
+      .radio-console-head,
+      .letter-console-head,
+      .run-console-head,
+      .demo-console-head {
+        display: grid;
+        gap: 10px;
+        align-items: start;
+      }
+
+      .radio-console-head > p {
+        min-width: 0;
+        text-align: left;
+      }
+
+      .radio-dial {
+        min-height: 220px;
+      }
+
+      .radio-dial strong {
+        font-size: 1.65rem;
+      }
+
+      .radio-output {
+        min-height: 220px;
+        max-height: 340px;
+        overflow: auto;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .journal-shell {
+        width: calc(100vw - 16px);
+        max-width: 1380px;
+        padding-block: 8px 22px;
+      }
+
+      .journal-top {
+        grid-template-columns: 1fr;
+      }
+
+      .journal-top span {
+        min-height: 34px;
+        padding: 8px;
+        font-size: .68rem;
+      }
+
+      .dashboard-language {
+        padding: 5px;
+      }
+
+      .dashboard-language button {
+        flex: 1 1 0;
+        min-height: 34px;
+      }
+
+      .memory-room-hero {
+        padding: 18px;
+      }
+
+      .agent-eye-large {
+        --eye-size: 64px;
+      }
+
+      .memory-hero-copy .hero-eye-field {
+        flex-wrap: wrap;
+      }
+
+      .memory-hero-copy h1,
+      h1 {
+        font-size: 2.35rem;
+      }
+
+      h2,
+      .letter-console h2,
+      .radio-console h2 {
+        font-size: 1.72rem;
+      }
+
+      .page {
+        padding: 17px;
+      }
+
+      .memory-hero-actions,
+      .run-actions,
+      .letter-actions,
+      .radio-actions,
+      .page-controls {
+        grid-template-columns: 1fr;
+      }
+
+      .page-controls {
+        position: static;
+      }
+
+      .progress-sign {
+        width: min(100%, 220px);
+      }
+
+      .letter-output.envelope,
+      .letter-output.ready,
+      .radio-output {
+        min-height: 220px;
+      }
+
+      .letter-output.ready,
+      .radio-output,
+      .run-log {
+        max-height: 320px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .journal-shell {
+        width: calc(100vw - 12px);
+        max-width: 1380px;
+      }
+
+      .memory-room-hero,
+      .page,
+      .run-console,
+      .demo-console,
+      .letter-console,
+      .radio-console {
+        padding-inline: 14px;
+      }
+
+      .memory-hero-copy h1,
+      h1 {
+        font-size: 2.05rem;
+      }
+
+      h2,
+      .letter-console h2,
+      .radio-console h2 {
+        font-size: 1.5rem;
+      }
+
+      .memory-hero-copy > span,
+      .memory-panel > span,
+      .page-kicker span,
+      .letter-console::before,
+      .radio-console::before,
+      .demo-console::before,
+      .run-console::before {
+        letter-spacing: .08em;
+      }
+
+      .radio-dial {
+        min-height: 190px;
+      }
+    }
+
   </style>
 </head>
 <body>
@@ -3949,6 +4386,7 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
     let radioLoopTimer = 0;
     let radioLanguage = dashboardLanguage;
     let radioVoice = "female";
+    let radioAutoStarted = false;
     const radioVoiceFolders = {
       zh: {
         female: "radio-voice",
@@ -4491,7 +4929,8 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
       }
       if (options.scroll) radioConsole?.scrollIntoView({ block: "start", behavior: "smooth" });
     }
-    function startRadio(options = { scroll: true }) {
+    function startRadio(options = { scroll: true, auto: false }) {
+      if (options.auto && radioIsRoaming) return;
       stopTour();
       radioIsRoaming = true;
       radioConsole?.classList.add("on-air");
@@ -4502,7 +4941,7 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
           ? copy.connecting
           : copy.connectingNoBgm;
       }
-      tuneRadio({ speak: true, scroll: options.scroll });
+      tuneRadio({ speak: true, scroll: options.scroll, auto: options.auto });
     }
     function stopRadio() {
       radioIsRoaming = false;
@@ -4528,6 +4967,25 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
           ? copy.muted
           : copy.bgmBack;
       }
+    }
+    function isRadioConsoleVisible() {
+      if (!radioConsole) return false;
+      const rect = radioConsole.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      return rect.top < viewportHeight * 0.72 && rect.bottom > viewportHeight * 0.18;
+    }
+    function autoStartRadioWhenVisible() {
+      if (radioAutoStarted || !isRadioConsoleVisible()) return;
+      radioAutoStarted = true;
+      startRadio({ scroll: false, auto: true });
+    }
+    function retryRadioAfterGesture() {
+      if (!radioIsRoaming || !isRadioConsoleVisible()) return;
+      const ttsSpeaking = "speechSynthesis" in window && window.speechSynthesis.speaking;
+      if (radioVoiceAudio && radioVoiceAudio.paused && !ttsSpeaking) {
+        tuneRadio({ speak: true, scroll: false, auto: true });
+      }
+      if (radioAudio && radioAudio.paused) ensureRadioBgm();
     }
     function nextTarget(direction) {
       const current = Number(currentTarget());
@@ -4634,6 +5092,21 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
     radioStop?.addEventListener("click", () => {
       stopTour();
       stopRadio();
+    });
+    if ("IntersectionObserver" in window && radioConsole) {
+      const radioObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.36) {
+            autoStartRadioWhenVisible();
+          }
+        });
+      }, { threshold: [0.36, 0.6] });
+      radioObserver.observe(radioConsole);
+    } else {
+      window.addEventListener("scroll", autoStartRadioWhenVisible, { passive: true });
+    }
+    ["pointerdown", "keydown", "touchstart"].forEach((eventName) => {
+      window.addEventListener(eventName, retryRadioAfterGesture, { passive: true });
     });
     radioLanguageButtons.forEach((button) => {
       button.addEventListener("click", () => {
