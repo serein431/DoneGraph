@@ -128,7 +128,7 @@
       }
 
       .agent-eye-large {
-        --eye-size: clamp(6.4rem, 11vw, 10.5rem);
+        --eye-size: clamp(4.9rem, 7.6vw, 8.3rem);
       }
 
       .agent-eye-small {
@@ -231,8 +231,10 @@
         position: relative;
         min-height: 92vh;
         display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(460px, 0.72fr);
+        gap: clamp(2.25rem, 4.2vw, 5.75rem);
         align-items: center;
-        padding: 7rem 2rem 5rem;
+        padding: 7rem clamp(2rem, 4.5vw, 5rem) 5rem;
       }
 
       .hero::before {
@@ -247,11 +249,12 @@
       }
 
       .hero-media {
-        position: absolute;
+        position: relative;
+        grid-column: 2;
+        grid-row: 1;
         z-index: 1;
-        top: 50%;
-        right: clamp(1rem, 4vw, 4rem);
-        width: min(44vw, 720px);
+        justify-self: end;
+        width: min(100%, 660px);
         aspect-ratio: 16 / 9;
         overflow: hidden;
         border: 1px solid rgba(189, 247, 231, 0.32);
@@ -261,7 +264,6 @@
           0 34px 100px rgba(0, 0, 0, 0.44),
           0 0 70px rgba(101, 216, 191, 0.16);
         opacity: 1;
-        transform: translateY(-42%);
       }
 
       .hero-media video {
@@ -330,8 +332,10 @@
 
       .hero-inner {
         position: relative;
+        grid-column: 1;
+        grid-row: 1;
         z-index: 2;
-        width: min(740px, 48vw);
+        width: min(760px, 100%);
       }
 
       .eyebrow {
@@ -354,8 +358,8 @@
         max-width: 920px;
         margin-bottom: 1.3rem;
         color: var(--paper);
-        font-size: 7rem;
-        line-height: 0.92;
+        font-size: clamp(5.4rem, 7.1vw, 6.8rem);
+        line-height: 0.9;
         letter-spacing: 0;
       }
 
@@ -1144,7 +1148,6 @@
           width: min(100%, 780px);
           margin: 2rem auto 0;
           order: 2;
-          transform: none;
         }
 
         .hero-inner {
