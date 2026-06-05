@@ -3,27 +3,26 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>成迹 | 产品 Demo</title>
+    <title>成迹 | 让 AI 工作留下可回放的记忆</title>
     <meta
       name="description"
-      content="成迹把 AI 协作过程沉淀成可回放、可验证、可继续的工作轨迹。"
+      content="成迹把 AI 协作沉淀成可回放、可验证、可继续的工作轨迹：改了什么、跑了什么、交付了什么、下一轮从哪里开始。"
     />
     <style>
       :root {
-        color-scheme: light;
-        --ink: #111412;
-        --coal: #1d211f;
-        --paper: #f4f1e8;
-        --surface: #fffdf5;
-        --line: #d8d1c1;
-        --muted: #5f675f;
-        --teal: #0f766e;
-        --teal-dark: #0c4c48;
-        --coral: #d64a3f;
-        --gold: #c78b19;
-        --blue: #2463eb;
-        --white: #ffffff;
-        --shadow: 0 28px 84px rgba(15, 20, 18, 0.18);
+        --ink: #07100f;
+        --ink-2: #101917;
+        --panel: #14211e;
+        --paper: #f5efdc;
+        --paper-2: #ded0a7;
+        --mint: #bdf7e7;
+        --mint-2: #65d8bf;
+        --amber: #d5a25f;
+        --rust: #9f6542;
+        --line: rgba(189, 247, 231, 0.22);
+        --line-dark: rgba(7, 16, 15, 0.14);
+        --muted: rgba(245, 239, 220, 0.72);
+        --shadow: 0 26px 80px rgba(0, 0, 0, 0.36);
       }
 
       * {
@@ -32,17 +31,18 @@
 
       html {
         scroll-behavior: smooth;
+        background: var(--ink);
       }
 
       body {
         margin: 0;
-        color: var(--ink);
-        background: var(--paper);
-        font-family:
-          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-          "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
-          sans-serif;
-        letter-spacing: 0;
+        color: var(--paper);
+        background:
+          radial-gradient(circle at 72% 4%, rgba(189, 247, 231, 0.24), transparent 34rem),
+          radial-gradient(circle at 20% 20%, rgba(213, 162, 95, 0.16), transparent 30rem),
+          linear-gradient(145deg, #07100f 0%, #111815 54%, #080d0c 100%);
+        font-family: Avenir, "Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.45;
       }
 
       a {
@@ -51,405 +51,1020 @@
 
       .topbar {
         position: fixed;
-        inset: 0 0 auto;
-        z-index: 30;
+        z-index: 20;
+        top: 0;
+        left: 0;
+        right: 0;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        height: 64px;
-        padding: 0 28px;
-        color: var(--white);
-        background: rgba(17, 20, 18, 0.76);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+        gap: 1rem;
+        padding: 1rem 2rem;
+        background: rgba(7, 16, 15, 0.78);
+        border-bottom: 1px solid var(--line);
         backdrop-filter: blur(18px);
       }
 
-      .brand {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 900;
-        text-decoration: none;
-      }
-
-      .brand-mark {
-        display: grid;
-        place-items: center;
-        width: 34px;
-        height: 34px;
-        color: var(--ink);
-        background: var(--surface);
-        border: 2px solid rgba(255, 255, 255, 0.52);
-        border-radius: 8px;
-      }
-
+      .brand,
       .nav {
         display: flex;
         align-items: center;
-        gap: 18px;
-        font-size: 0.92rem;
+        gap: 0.8rem;
+      }
+
+      .brand {
+        text-decoration: none;
+        font-weight: 800;
+        letter-spacing: 0;
+      }
+
+      .brand-mark {
+        display: inline-grid;
+        width: 2.4rem;
+        height: 2.4rem;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 50%;
+        background: rgba(189, 247, 231, 0.1);
+        color: var(--mint);
+        font-weight: 900;
+      }
+
+      .agent-eye {
+        --eye-size: 2.35rem;
+        position: relative;
+        display: inline-grid;
+        width: var(--eye-size);
+        height: var(--eye-size);
+        place-items: center;
+        flex: 0 0 auto;
+        border-radius: 50%;
+        border: 1px solid rgba(189, 247, 231, 0.46);
+        background:
+          radial-gradient(circle at 50% 50%, rgba(189, 247, 231, 0.14) 0 34%, transparent 35%),
+          rgba(7, 16, 15, 0.72);
+        box-shadow: 0 0 20px rgba(101, 216, 191, 0.22), inset 0 0 18px rgba(189, 247, 231, 0.08);
+        overflow: hidden;
+      }
+
+      .agent-eye::before,
+      .agent-eye::after {
+        content: "";
+        position: absolute;
+        border-radius: inherit;
+        pointer-events: none;
+      }
+
+      .agent-eye::before {
+        inset: -0.34rem;
+        border: 1px solid rgba(189, 247, 231, 0.18);
+        animation: eye-orbit 7.5s linear infinite;
+      }
+
+      .agent-eye::after {
+        inset: 0.22rem;
+        border: 1px solid rgba(213, 162, 95, 0.26);
+      }
+
+      .agent-eye-large {
+        --eye-size: clamp(6.4rem, 11vw, 10.5rem);
+      }
+
+      .agent-eye-small {
+        --eye-size: 1.86rem;
+      }
+
+      .agent-eye .iris,
+      .agent-eye .pupil,
+      .agent-eye .glint,
+      .agent-eye .lid {
+        position: absolute;
+        display: block;
+        border-radius: 50%;
+        pointer-events: none;
+      }
+
+      .agent-eye .iris {
+        width: 48%;
+        height: 48%;
+        background:
+          radial-gradient(circle at 34% 28%, #efffff 0 9%, transparent 10%),
+          radial-gradient(circle at 50% 50%, var(--mint) 0 34%, var(--mint-2) 35% 64%, #0e6758 65% 100%);
+        box-shadow: 0 0 18px rgba(189, 247, 231, 0.64);
+        animation: eye-look 8.8s ease-in-out infinite;
+      }
+
+      .agent-eye .pupil {
+        width: 19%;
+        height: 19%;
+        background: #06100f;
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.76);
+        animation: eye-look 8.8s ease-in-out infinite;
+      }
+
+      .agent-eye .glint {
+        width: 8%;
+        height: 8%;
+        transform: translate(-56%, -62%);
+        background: rgba(255, 255, 255, 0.88);
+      }
+
+      .agent-eye .lid {
+        left: -8%;
+        right: -8%;
+        height: 54%;
+        border-radius: 0;
+        background: #07100f;
+        z-index: 3;
+      }
+
+      .agent-eye .lid.top {
+        top: -1px;
+        transform-origin: top;
+        animation: eye-lid-top 6.4s ease-in-out infinite;
+      }
+
+      .agent-eye .lid.bottom {
+        bottom: -1px;
+        transform-origin: bottom;
+        animation: eye-lid-bottom 6.4s ease-in-out infinite;
+      }
+
+      .hero-eye-field {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 0 0 1.25rem;
+      }
+
+      .hero-eye-field span {
+        color: rgba(189, 247, 231, 0.78);
+        font-size: 0.82rem;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
       }
 
       .nav a {
-        color: rgba(255, 255, 255, 0.84);
+        color: var(--muted);
+        font-size: 0.92rem;
         text-decoration: none;
       }
 
-      .nav a:hover {
-        color: var(--white);
+      .nav a:hover,
+      .nav a:focus-visible {
+        color: var(--mint);
+      }
+
+      .language-link {
+        padding: 0.5rem 0.8rem;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+      }
+
+      main {
+        overflow: hidden;
       }
 
       .hero {
         position: relative;
+        min-height: 92vh;
         display: grid;
-        min-height: 84svh;
-        padding: 118px 28px 58px;
-        overflow: hidden;
-        color: var(--white);
-        background: var(--ink);
+        align-items: end;
+        padding: 7rem 2rem 5rem;
       }
 
-      .hero-visual {
-        position: absolute;
-        inset: 0;
-        opacity: 0.32;
-        transform: scale(1.05);
-        pointer-events: none;
-        filter: saturate(1.08) contrast(1.04);
-      }
-
-      .hero-visual iframe {
-        width: 100%;
-        height: 100%;
-        border: 0;
-      }
-
-      .hero::after {
+      .hero::before {
         content: "";
         position: absolute;
         inset: 0;
         background:
-          linear-gradient(90deg, rgba(17, 20, 18, 0.94), rgba(17, 20, 18, 0.68) 52%, rgba(17, 20, 18, 0.38)),
-          linear-gradient(0deg, rgba(17, 20, 18, 0.22), rgba(17, 20, 18, 0.08));
+          linear-gradient(90deg, rgba(7, 16, 15, 0.96) 0%, rgba(7, 16, 15, 0.82) 42%, rgba(7, 16, 15, 0.2) 100%),
+          linear-gradient(0deg, rgba(7, 16, 15, 1) 0%, rgba(7, 16, 15, 0) 34%);
+        z-index: 1;
+      }
+
+      .hero-media {
+        position: absolute;
+        inset: 0 0 auto auto;
+        width: 65vw;
+        height: 92vh;
+        opacity: 0.88;
+      }
+
+      .hero-media iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+        transform: scale(1.04);
+        transform-origin: center;
+        filter: saturate(1.08) contrast(1.06);
       }
 
       .hero-inner {
         position: relative;
-        z-index: 1;
-        align-self: end;
-        width: min(1040px, 100%);
+        z-index: 2;
+        width: min(960px, 100%);
       }
 
       .eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 9px;
-        margin: 0 0 18px;
-        color: #d6f3ed;
-        font-weight: 820;
+        margin: 0 0 1rem;
+        color: var(--mint);
+        font-size: 0.9rem;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
       }
 
-      .eyebrow::before {
-        content: "";
-        width: 12px;
-        height: 12px;
-        background: var(--teal);
-        border: 2px solid #d6f3ed;
-        border-radius: 50%;
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
       }
 
       h1 {
-        max-width: 900px;
-        margin: 0;
-        font-size: clamp(4.4rem, 10vw, 9rem);
-        line-height: 0.9;
+        max-width: 920px;
+        margin-bottom: 1.3rem;
+        color: var(--paper);
+        font-size: 7rem;
+        line-height: 0.92;
         letter-spacing: 0;
       }
 
       .hero-copy {
-        max-width: 760px;
-        margin: 24px 0 0;
-        color: rgba(255, 255, 255, 0.88);
-        font-size: clamp(1.16rem, 2.2vw, 1.52rem);
-        line-height: 1.66;
+        max-width: 740px;
+        margin-bottom: 2rem;
+        color: rgba(245, 239, 220, 0.84);
+        font-size: 1.32rem;
       }
 
       .actions {
         display: flex;
         flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 30px;
+        gap: 0.9rem;
+        align-items: center;
       }
 
       .button {
         display: inline-flex;
+        min-height: 48px;
         align-items: center;
         justify-content: center;
-        gap: 10px;
-        min-height: 50px;
-        padding: 0 18px;
+        border-radius: 999px;
+        padding: 0.86rem 1.2rem;
         border: 1px solid transparent;
-        border-radius: 8px;
-        font: inherit;
-        font-weight: 860;
+        color: inherit;
+        font-weight: 800;
         text-decoration: none;
         cursor: pointer;
+        transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
       }
 
-      .button.primary {
-        color: var(--white);
-        background: var(--teal);
-        box-shadow: 0 16px 36px rgba(15, 118, 110, 0.34);
+      .button:hover,
+      .button:focus-visible {
+        transform: translateY(-2px);
       }
 
-      .button.secondary {
-        color: var(--white);
-        background: rgba(255, 255, 255, 0.12);
-        border-color: rgba(255, 255, 255, 0.32);
-      }
-
-      .button.light {
+      .primary {
+        background: var(--mint);
         color: var(--ink);
-        background: var(--surface);
-        border-color: var(--line);
       }
 
-      .hero-points {
+      .secondary {
+        border-color: var(--line);
+        background: rgba(245, 239, 220, 0.07);
+      }
+
+      .light {
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      .proof-row {
         display: flex;
         flex-wrap: wrap;
-        gap: 10px;
-        margin: 28px 0 0;
+        gap: 0.7rem;
+        margin: 2rem 0 0;
         padding: 0;
         list-style: none;
       }
 
-      .hero-points li {
-        min-height: 38px;
-        padding: 9px 12px;
-        color: rgba(255, 255, 255, 0.86);
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 8px;
+      .proof-row li {
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0.56rem 0.86rem;
+        color: rgba(245, 239, 220, 0.76);
+        background: rgba(7, 16, 15, 0.42);
+        font-size: 0.92rem;
       }
 
       .section {
-        padding: 78px 28px;
+        padding: 7rem 2rem;
+        background: var(--paper);
+        color: var(--ink);
       }
 
       .section.dark {
-        color: var(--white);
-        background: var(--ink);
+        background:
+          radial-gradient(circle at 84% 18%, rgba(189, 247, 231, 0.18), transparent 26rem),
+          linear-gradient(145deg, #07100f, #111a18 70%, #07100f);
+        color: var(--paper);
       }
 
       .inner {
-        width: min(1160px, 100%);
+        width: min(1180px, 100%);
         margin: 0 auto;
       }
 
+      .split {
+        display: grid;
+        grid-template-columns: 0.9fr 1.1fr;
+        gap: 4rem;
+        align-items: start;
+      }
+
       .section-title {
-        max-width: 780px;
-        margin-bottom: 28px;
+        max-width: 820px;
+        margin-bottom: 2.4rem;
       }
 
       .section-title h2 {
-        margin: 0;
-        font-size: clamp(2.25rem, 4vw, 4.1rem);
+        margin-bottom: 1rem;
+        font-size: 3.65rem;
         line-height: 0.98;
         letter-spacing: 0;
       }
 
       .section-title p {
-        margin: 16px 0 0;
-        color: var(--muted);
-        font-size: 1.06rem;
-        line-height: 1.72;
+        color: rgba(7, 16, 15, 0.68);
+        font-size: 1.18rem;
       }
 
-      .dark .section-title p {
-        color: rgba(255, 255, 255, 0.72);
+      .dark .section-title p,
+      .dark .card p,
+      .dark .quote p {
+        color: rgba(245, 239, 220, 0.72);
       }
 
-      .split {
+      .quote-stack {
         display: grid;
-        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-        gap: 24px;
-        align-items: stretch;
+        gap: 1rem;
       }
 
-      .problem-panel {
-        padding: 26px;
-        background: var(--surface);
-        border: 1px solid var(--line);
+      .quote,
+      .card,
+      .price-card,
+      .asset-card {
         border-radius: 8px;
+        border: 1px solid var(--line-dark);
+        background: rgba(255, 255, 255, 0.38);
+        box-shadow: 0 18px 40px rgba(7, 16, 15, 0.08);
       }
 
-      .problem-panel h3,
-      .card h3,
-      .price-card h3 {
-        margin: 0;
-        font-size: 1.22rem;
-        line-height: 1.25;
-      }
-
-      .problem-panel p,
-      .card p,
-      .price-card p {
-        color: var(--muted);
-        line-height: 1.7;
-      }
-
-      .quote-strip {
-        display: grid;
-        gap: 12px;
+      .dark .quote,
+      .dark .card,
+      .dark .price-card,
+      .dark .asset-card {
+        border-color: var(--line);
+        background: rgba(245, 239, 220, 0.06);
+        box-shadow: none;
       }
 
       .quote {
-        padding: 18px 20px;
-        color: var(--white);
-        background: var(--coal);
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        border-radius: 8px;
+        padding: 1.4rem;
       }
 
       .quote strong {
         display: block;
-        margin-bottom: 8px;
-        color: #c9f4eb;
+        margin-bottom: 0.4rem;
+        font-size: 1.25rem;
       }
 
-      .grid {
+      .quote p {
+        margin-bottom: 0;
+        color: rgba(7, 16, 15, 0.68);
+      }
+
+      .grid,
+      .asset-grid,
+      .market-grid {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 16px;
+        gap: 1rem;
       }
 
-      .grid.two {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .market-panel {
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background:
+          radial-gradient(circle at 92% 12%, rgba(189, 247, 231, 0.18), transparent 22rem),
+          rgba(245, 239, 220, 0.05);
+      }
+
+      .market-head {
+        display: grid;
+        grid-template-columns: 1fr 0.92fr;
+        gap: 2rem;
+        padding: 1.4rem;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .market-head strong {
+        display: block;
+        margin-bottom: 0.7rem;
+        color: var(--mint);
+        font-size: 1rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .market-head h3 {
+        margin-bottom: 0;
+        font-size: 3.2rem;
+        line-height: 0.98;
+      }
+
+      .market-head p {
+        margin-bottom: 0;
+        color: rgba(245, 239, 220, 0.72);
+        font-size: 1.08rem;
+      }
+
+      .market-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0;
+      }
+
+      .metric {
+        min-height: 210px;
+        padding: 1.15rem;
+        border-right: 1px solid var(--line);
+      }
+
+      .metric:last-child {
+        border-right: 0;
+      }
+
+      .metric strong {
+        display: block;
+        margin-bottom: 0.8rem;
+        color: var(--mint);
+        font-size: 2.55rem;
+        line-height: 0.95;
+      }
+
+      .metric span {
+        display: block;
+        margin-bottom: 0.6rem;
+        color: var(--paper);
+        font-weight: 900;
+      }
+
+      .metric p {
+        margin-bottom: 0;
+        color: rgba(245, 239, 220, 0.66);
+        font-size: 0.94rem;
+      }
+
+      .estimate {
+        display: grid;
+        grid-template-columns: 0.62fr 1fr;
+        gap: 1rem;
+        align-items: center;
+        padding: 1.4rem;
+        border-top: 1px solid var(--line);
+        background: rgba(7, 16, 15, 0.36);
+      }
+
+      .estimate strong {
+        display: block;
+        color: var(--mint);
+        font-size: 3.1rem;
+        line-height: 0.95;
+      }
+
+      .estimate span {
+        display: block;
+        margin-top: 0.45rem;
+        color: rgba(245, 239, 220, 0.72);
+        font-weight: 800;
+      }
+
+      .estimate p {
+        margin-bottom: 0;
+        color: rgba(245, 239, 220, 0.76);
+      }
+
+      .source-note {
+        padding: 0 1.4rem 1.4rem;
+        color: rgba(245, 239, 220, 0.52);
+        font-size: 0.82rem;
       }
 
       .card {
-        min-height: 226px;
-        padding: 22px;
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 8px;
+        min-height: 250px;
+        padding: 1.35rem;
       }
 
-      .card .tag {
+      .tag {
         display: inline-flex;
-        align-items: center;
-        min-height: 30px;
-        margin-bottom: 36px;
-        padding: 0 10px;
-        color: var(--white);
-        background: var(--teal);
-        border-radius: 8px;
-        font-weight: 820;
+        margin-bottom: 1.1rem;
+        border-radius: 999px;
+        padding: 0.35rem 0.62rem;
+        background: rgba(101, 216, 191, 0.14);
+        color: #0e6758;
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
       }
 
-      .video-shell {
+      .dark .tag {
+        color: var(--mint);
+        background: rgba(189, 247, 231, 0.08);
+      }
+
+      .card h3,
+      .price-card h3,
+      .asset-card h3 {
+        margin-bottom: 0.7rem;
+        font-size: 1.55rem;
+        line-height: 1.05;
+      }
+
+      .card p,
+      .price-card p,
+      .asset-card p {
+        margin-bottom: 0;
+        color: rgba(7, 16, 15, 0.68);
+      }
+
+      .asset-showcase {
+        display: grid;
+        grid-template-columns: 1fr 0.85fr;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .letter-panel {
+        position: relative;
+        min-height: 520px;
         overflow: hidden;
-        background: #0d1110;
-        border: 1px solid rgba(255, 255, 255, 0.16);
         border-radius: 8px;
+        background:
+          linear-gradient(130deg, rgba(7, 16, 15, 0.18), transparent 42%),
+          var(--paper);
+        color: var(--ink);
         box-shadow: var(--shadow);
       }
 
-      .video-screen {
-        position: relative;
-        min-height: 560px;
-        background: #101412;
-      }
-
-      .video-screen video {
-        position: absolute;
-        inset: 0;
+      .letter-panel img {
         width: 100%;
         height: 100%;
-        border: 0;
         object-fit: cover;
-        opacity: 0.9;
-        filter: saturate(1.04) contrast(1.02);
+        display: block;
       }
 
-      .video-overlay {
+      .letter-caption {
         position: absolute;
-        inset: 24px auto auto 24px;
-        width: min(560px, calc(100% - 48px));
-        padding: 22px;
-        background: rgba(13, 17, 16, 0.78);
-        border: 1px solid rgba(255, 255, 255, 0.14);
+        left: 1rem;
+        right: 1rem;
+        bottom: 1rem;
         border-radius: 8px;
+        padding: 1rem;
+        background: rgba(7, 16, 15, 0.86);
+        color: var(--paper);
         backdrop-filter: blur(16px);
       }
 
-      .video-kicker {
-        margin: 0 0 10px;
-        color: #c9f4eb;
-        font-weight: 840;
-      }
-
-      .video-title {
-        margin: 0;
-        max-width: 780px;
-        font-size: clamp(2rem, 4vw, 4rem);
-        line-height: 1;
-      }
-
-      .video-caption {
-        max-width: 760px;
-        margin: 14px 0 0;
-        color: rgba(255, 255, 255, 0.78);
-        font-size: 1.05rem;
-        line-height: 1.65;
-      }
-
-      .video-controls {
-        display: grid;
-        grid-template-columns: auto 1fr auto;
-        gap: 14px;
-        align-items: center;
-        padding: 14px;
-        border-top: 1px solid rgba(255, 255, 255, 0.14);
-      }
-
-      .timeline {
-        height: 12px;
-        overflow: hidden;
-        background: rgba(255, 255, 255, 0.14);
-        border-radius: 999px;
-      }
-
-      .timeline span {
+      .letter-caption strong {
         display: block;
-        width: 0%;
+        margin-bottom: 0.28rem;
+        color: var(--mint);
+      }
+
+      .artifact-list {
+        display: grid;
+        gap: 1rem;
+      }
+
+      .artifact-item {
+        border-radius: 8px;
+        padding: 1.2rem;
+        border: 1px solid var(--line);
+        background: rgba(245, 239, 220, 0.06);
+      }
+
+      .artifact-item strong {
+        display: block;
+        margin-bottom: 0.3rem;
+        color: var(--mint);
+        font-size: 1.08rem;
+      }
+
+      .artifact-item p {
+        margin-bottom: 0;
+        color: rgba(245, 239, 220, 0.72);
+      }
+
+      .front-radio {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .front-radio::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 18% 16%, rgba(189, 247, 231, 0.18), transparent 34%),
+          linear-gradient(120deg, rgba(245, 239, 220, 0.08), transparent 42%);
+        pointer-events: none;
+      }
+
+      .radio-stage {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .radio-device,
+      .radio-transcript {
+        border-radius: 8px;
+        border: 1px solid rgba(245, 239, 220, 0.16);
+        background:
+          linear-gradient(145deg, rgba(245, 239, 220, 0.10), rgba(7, 16, 15, 0.92) 42%),
+          #07100f;
+        box-shadow: var(--shadow);
+      }
+
+      .radio-device {
+        min-height: 520px;
+        padding: 1rem;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        gap: 1rem;
+      }
+
+      .radio-face {
+        display: grid;
+        grid-template-columns: 1fr 0.72fr;
+        gap: 0.9rem;
+        min-height: 330px;
+      }
+
+      .radio-display {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        padding: 1rem;
+        border: 1px solid rgba(189, 247, 231, 0.24);
+        background:
+          linear-gradient(180deg, rgba(19, 48, 42, 0.88), rgba(3, 10, 9, 0.95)),
+          repeating-linear-gradient(0deg, transparent 0 7px, rgba(189, 247, 231, 0.04) 7px 8px);
+      }
+
+      .radio-display::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 18%;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(189, 247, 231, 0.64), transparent);
+        box-shadow: 0 0 22px rgba(189, 247, 231, 0.34);
+      }
+
+      .radio-band-label {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        color: rgba(245, 239, 220, 0.58);
+        font-size: 0.78rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .radio-frequency {
+        margin-top: 1.8rem;
+        color: var(--mint);
+        font-size: clamp(4rem, 9vw, 7.5rem);
+        font-weight: 950;
+        line-height: 0.86;
+        letter-spacing: 0;
+        text-shadow: 0 0 28px rgba(189, 247, 231, 0.34);
+      }
+
+      .radio-frequency span:last-child {
+        font-size: 1rem;
+        color: rgba(245, 239, 220, 0.72);
+      }
+
+      .radio-dial-line {
+        margin-top: 2rem;
+        height: 12px;
+        border-radius: 999px;
+        background:
+          linear-gradient(90deg, rgba(245, 239, 220, 0.18), var(--mint) 62%, rgba(245, 239, 220, 0.12)),
+          repeating-linear-gradient(90deg, transparent 0 18px, rgba(7, 16, 15, 0.8) 18px 20px);
+      }
+
+      .radio-speaker {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid rgba(245, 239, 220, 0.14);
+        background:
+          radial-gradient(circle, rgba(245, 239, 220, 0.18) 0 2px, transparent 3px 12px),
+          linear-gradient(135deg, rgba(245, 239, 220, 0.08), rgba(255, 179, 108, 0.12));
+        background-size: 18px 18px, auto;
+      }
+
+      .radio-knob {
+        position: absolute;
+        right: 1rem;
+        bottom: 1rem;
+        width: 118px;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        border: 1px solid rgba(245, 239, 220, 0.28);
+        background:
+          radial-gradient(circle at 50% 50%, rgba(245, 239, 220, 0.88) 0 12%, rgba(189, 247, 231, 0.20) 13% 18%, transparent 19%),
+          conic-gradient(from -28deg, rgba(189, 247, 231, 0.22), rgba(255, 179, 108, 0.52), rgba(245, 239, 220, 0.24), rgba(189, 247, 231, 0.22));
+        box-shadow: inset 0 0 28px rgba(7, 16, 15, 0.52), 0 16px 36px rgba(0, 0, 0, 0.32);
+      }
+
+      .radio-waveform {
+        display: flex;
+        align-items: end;
+        gap: 0.35rem;
+        height: 82px;
+        padding: 0 0.2rem;
+      }
+
+      .radio-waveform i {
+        display: block;
+        flex: 1;
+        min-width: 8px;
+        border-radius: 999px 999px 2px 2px;
+        background: linear-gradient(180deg, var(--mint), var(--amber));
+        opacity: 0.72;
+        animation: front-radio-wave 1.2s ease-in-out infinite;
+      }
+
+      .radio-waveform i:nth-child(1) { height: 24%; animation-delay: 0ms; }
+      .radio-waveform i:nth-child(2) { height: 68%; animation-delay: 130ms; }
+      .radio-waveform i:nth-child(3) { height: 42%; animation-delay: 260ms; }
+      .radio-waveform i:nth-child(4) { height: 86%; animation-delay: 90ms; }
+      .radio-waveform i:nth-child(5) { height: 36%; animation-delay: 210ms; }
+      .radio-waveform i:nth-child(6) { height: 74%; animation-delay: 330ms; }
+      .radio-waveform i:nth-child(7) { height: 52%; animation-delay: 170ms; }
+
+      .radio-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.65rem;
+      }
+
+      .radio-chip {
+        border-radius: 999px;
+        border: 1px solid rgba(245, 239, 220, 0.22);
+        padding: 0.55rem 0.78rem;
+        background: rgba(245, 239, 220, 0.08);
+        color: rgba(245, 239, 220, 0.72);
+        font-size: 0.78rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .radio-chip.live {
+        background: rgba(189, 247, 231, 0.18);
+        color: var(--mint);
+      }
+
+      .radio-transcript {
+        min-height: 520px;
+        padding: 1.2rem;
+        display: grid;
+        align-content: space-between;
+        gap: 1.2rem;
+      }
+
+      .radio-transcript h3 {
+        margin: 0.8rem 0 0.8rem;
+        color: var(--paper);
+        font-size: clamp(2rem, 4vw, 4.2rem);
+        line-height: 0.98;
+      }
+
+      .radio-transcript p {
+        color: rgba(245, 239, 220, 0.74);
+      }
+
+      .radio-mutter {
+        min-height: 190px;
+        border-left: 2px solid var(--mint);
+        padding: 1rem 0 1rem 1rem;
+        color: var(--paper);
+        font-size: clamp(1.3rem, 2vw, 2rem);
+        font-weight: 820;
+        line-height: 1.14;
+      }
+
+      .radio-mutter small {
+        display: block;
+        margin-top: 1rem;
+        color: rgba(189, 247, 231, 0.74);
+        font-size: 0.88rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .radio-list {
+        display: grid;
+        gap: 0.65rem;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .radio-list li {
+        display: grid;
+        grid-template-columns: 5.2rem 1fr;
+        gap: 0.8rem;
+        border-top: 1px solid rgba(245, 239, 220, 0.12);
+        padding-top: 0.65rem;
+        color: rgba(245, 239, 220, 0.72);
+      }
+
+      .radio-list b {
+        color: var(--mint);
+        font-size: 0.8rem;
+        text-transform: uppercase;
+      }
+
+      .radio-list span {
+        color: rgba(245, 239, 220, 0.86);
+      }
+
+      @keyframes front-radio-wave {
+        0%, 100% { transform: scaleY(0.62); opacity: 0.55; }
+        50% { transform: scaleY(1); opacity: 1; }
+      }
+
+      @keyframes eye-look {
+        0%, 18%, 100% { transform: translate(0, 0); }
+        28%, 42% { transform: translate(10%, -6%); }
+        54%, 64% { transform: translate(-8%, 7%); }
+        76%, 86% { transform: translate(5%, 8%); }
+      }
+
+      @keyframes eye-lid-top {
+        0%, 7%, 9%, 42%, 44%, 100% { transform: scaleY(0); }
+        8%, 43% { transform: scaleY(1); }
+      }
+
+      @keyframes eye-lid-bottom {
+        0%, 7%, 9%, 42%, 44%, 100% { transform: scaleY(0); }
+        8%, 43% { transform: scaleY(0.82); }
+      }
+
+      @keyframes eye-orbit {
+        to { transform: rotate(360deg); }
+      }
+
+      .demo-shell {
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background: #080d0c;
+        box-shadow: var(--shadow);
+      }
+
+      .demo-screen {
+        position: relative;
+        min-height: 560px;
+        overflow: hidden;
+      }
+
+      .demo-screen video {
+        display: block;
+        width: 100%;
+        height: 560px;
+        border: 0;
+        object-fit: cover;
+        opacity: 0.92;
+        filter: saturate(1.04) contrast(1.02);
+      }
+
+      .demo-overlay {
+        position: absolute;
+        inset: 1rem auto auto 1rem;
+        width: min(740px, calc(100% - 2rem));
+        border-radius: 8px;
+        padding: 1.2rem;
+        background: rgba(7, 16, 15, 0.86);
+        border: 1px solid var(--line);
+        backdrop-filter: blur(18px);
+      }
+
+      .demo-kicker {
+        margin-bottom: 0.45rem;
+        color: var(--mint);
+        font-size: 0.84rem;
+        font-weight: 900;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .demo-title {
+        margin-bottom: 0.65rem;
+        color: var(--paper);
+        font-size: 2.45rem;
+        line-height: 1.02;
+      }
+
+      .demo-caption {
+        margin-bottom: 0;
+        color: rgba(245, 239, 220, 0.76);
+        font-size: 1.02rem;
+      }
+
+      .demo-controls {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        border-top: 1px solid var(--line);
+      }
+
+      .meter {
+        flex: 1;
+        height: 9px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(245, 239, 220, 0.12);
+      }
+
+      .meter span {
+        display: block;
+        width: 20%;
         height: 100%;
-        background: linear-gradient(90deg, var(--teal), var(--gold), var(--coral));
+        border-radius: inherit;
+        background: var(--mint);
         transition: width 240ms ease;
       }
 
       .scene-label {
-        color: rgba(255, 255, 255, 0.78);
-        font-weight: 780;
+        min-width: 4.2rem;
+        color: var(--mint);
+        font-weight: 900;
+        text-align: right;
       }
 
       .price-grid {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
+        gap: 1rem;
       }
 
       .price-card {
-        padding: 22px;
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 8px;
+        padding: 1.35rem;
       }
 
       .price-card strong {
         display: block;
-        margin: 18px 0 8px;
-        font-size: 1.8rem;
+        margin-bottom: 1rem;
+        color: #0d5e51;
+        font-size: 1.65rem;
+      }
+
+      .asset-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .asset-card {
+        overflow: hidden;
+        background: rgba(245, 239, 220, 0.04);
+      }
+
+      .asset-card img {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+      }
+
+      .asset-card div {
+        padding: 1rem;
+      }
+
+      .asset-card a {
+        color: var(--mint);
+        font-weight: 800;
+        text-decoration: none;
       }
 
       .final {
@@ -457,57 +1072,147 @@
       }
 
       .final .section-title {
-        margin-inline: auto;
+        margin-left: auto;
+        margin-right: auto;
       }
 
-      @media (max-width: 900px) {
+      @media (max-width: 980px) {
+        .topbar {
+          align-items: flex-start;
+          padding: 0.9rem 1rem;
+        }
+
         .nav {
-          display: none;
+          flex-wrap: wrap;
+          justify-content: flex-end;
         }
 
-        .hero {
-          min-height: 78svh;
-          padding-top: 104px;
+        h1 {
+          font-size: 4.8rem;
         }
 
-        .hero::after {
-          background: rgba(17, 20, 18, 0.78);
+        .hero-media {
+          width: 100vw;
+          opacity: 0.32;
         }
 
         .split,
+        .asset-showcase {
+          grid-template-columns: 1fr;
+        }
+
         .grid,
-        .grid.two,
-        .price-grid {
+        .price-grid,
+        .asset-grid,
+        .market-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .market-head,
+        .estimate {
           grid-template-columns: 1fr;
         }
 
-        .video-screen {
-          min-height: 460px;
+        .market-grid {
+          gap: 1px;
+          background: var(--line);
         }
 
-        .video-controls {
-          grid-template-columns: 1fr;
+        .metric {
+          border-right: 0;
+          background: rgba(7, 16, 15, 0.5);
+        }
+
+        .section-title h2 {
+          font-size: 2.9rem;
         }
       }
 
-      @media (max-width: 620px) {
+      @media (max-width: 640px) {
         .topbar {
-          height: 58px;
-          padding: 0 18px;
+          position: absolute;
+        }
+
+        .nav a:not(.language-link) {
+          display: none;
         }
 
         .hero,
         .section {
-          padding-left: 18px;
-          padding-right: 18px;
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+
+        .hero {
+          min-height: 760px;
+          padding-top: 6.4rem;
+        }
+
+        h1 {
+          font-size: 3.45rem;
+        }
+
+        .hero-copy {
+          font-size: 1.08rem;
+        }
+
+        .section-title h2 {
+          font-size: 2.25rem;
+        }
+
+        .grid,
+        .price-grid,
+        .asset-grid,
+        .radio-stage,
+        .market-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .actions,
+        .demo-controls {
+          align-items: stretch;
+          flex-direction: column;
         }
 
         .button {
           width: 100%;
         }
 
-        .video-screen {
-          min-height: 400px;
+        .demo-screen,
+        .demo-screen video {
+          min-height: 440px;
+          height: 440px;
+        }
+
+        .radio-device,
+        .radio-transcript {
+          min-height: auto;
+        }
+
+        .radio-face {
+          grid-template-columns: 1fr;
+        }
+
+        .radio-speaker {
+          min-height: 220px;
+        }
+
+        .demo-title {
+          font-size: 1.75rem;
+        }
+
+        .radio-list li {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          transition: none !important;
+          animation: none !important;
         }
       }
     </style>
@@ -516,36 +1221,44 @@
     <header class="topbar">
       <a class="brand" href="#top">
         <span class="brand-mark" aria-hidden="true">迹</span>
+        <i class="agent-eye agent-eye-small" aria-hidden="true"><i class="iris"></i><i class="pupil"></i><i class="glint"></i><i class="lid top"></i><i class="lid bottom"></i></i>
         <span>成迹</span>
       </a>
-      <nav class="nav" aria-label="Page navigation">
+      <nav class="nav" aria-label="页面导航">
         <a href="#problem">痛点</a>
         <a href="#audience">受众</a>
-        <a href="#video">Demo 视频</a>
-        <a href="#money">变现路径</a>
+        <a href="#market">市场</a>
+        <a href="#radio">电台</a>
+        <a href="#demo">Demo</a>
+        <a href="#business">商业化</a>
+        <a class="language-link" href="en.html">English</a>
       </nav>
     </header>
 
     <main id="top">
-      <section class="hero" aria-label="成迹产品 Demo">
-        <div class="hero-visual" aria-hidden="true">
-          <iframe src=".donegraph/dashboard.html#page-0" title=""></iframe>
+      <section class="hero" aria-label="成迹产品页">
+        <div class="hero-media" aria-hidden="true">
+          <iframe src=".donegraph/dashboard.html?lang=zh#page-0" title=""></iframe>
         </div>
         <div class="hero-inner">
-          <p class="eyebrow">AI 做完活，也要把话说清楚</p>
-          <h1>让每一次 AI 协作，留下成迹。</h1>
+          <p class="eyebrow">成迹 / DoneGraph</p>
+          <div class="hero-eye-field" aria-hidden="true">
+            <i class="agent-eye agent-eye-large"><i class="iris"></i><i class="pupil"></i><i class="glint"></i><i class="lid top"></i><i class="lid bottom"></i></i>
+            <span>Agent 已醒来 · 正在看见工作轨迹</span>
+          </div>
+          <h1>AI 做完的活，应该留下成迹。</h1>
           <p class="hero-copy">
-            成迹面向正在用 AI 写代码、做产品、赶项目的人。它把一轮 AI 工作自动沉淀成可回放的轨迹：做了什么、验证过什么、交付了什么、下一次从哪里继续。
+            成迹把每一次 AI 工作变成可回放、可验证、可继续的轨迹：改了什么、跑了什么、交付了什么、下一轮应该从哪里开始。
           </p>
           <div class="actions">
-            <a class="button primary" href="#video">播放 Demo 视频</a>
-            <a class="button secondary" href=".donegraph/dashboard.html#page-0" target="_blank" rel="noopener">打开真实回放</a>
-            <a class="button secondary" href="landing.html" target="_blank" rel="noopener">查看产品页</a>
+            <a class="button primary" href="#demo">播放 15 秒 Demo</a>
+            <a class="button secondary" href=".donegraph/dashboard.html?lang=zh#page-0" target="_blank" rel="noopener">打开真实回放</a>
+            <a class="button secondary" href="en.html" target="_blank" rel="noopener">English Product Page</a>
           </div>
-          <ul class="hero-points">
-            <li>用户：AI-native builders</li>
-            <li>痛点：长聊天无法交接</li>
-            <li>价值：进展可回放、证据可检查</li>
+          <ul class="proof-row">
+            <li>面向 AI-native builders</li>
+            <li>来自真实任务产物</li>
+            <li>回放、证据、复盘在同一处</li>
           </ul>
         </div>
       </section>
@@ -553,24 +1266,24 @@
       <section class="section" id="problem">
         <div class="inner split">
           <div class="section-title">
-            <h2>AI 干了很多，人却很难放心。</h2>
+            <h2>AI 把活做完了，信任却常常丢在路上。</h2>
             <p>
-              真实的 AI 协作，远不止一句“完成了”。它有临时改动、失败尝试、跑过的命令、没来得及做的下一步。成迹解决的是收尾时的信任问题。
+              AI Agent 会改文件、跑命令、修页面、做产品判断。可一轮协作结束后，用户经常只剩下一长串聊天记录，以及一种“好像发生了什么”的模糊感觉。
             </p>
           </div>
-          <div class="quote-strip">
-            <div class="quote">
-              <strong>长聊天太长</strong>
-              用户想知道结果，却被迫回去翻几十轮上下文。
-            </div>
-            <div class="quote">
-              <strong>完成感太虚</strong>
-              AI 说完成了，但文件、命令和证据散在不同地方。
-            </div>
-            <div class="quote">
-              <strong>下一轮太难接</strong>
-              换人、换 Agent、换时间后，任务状态又要重新讲一遍。
-            </div>
+          <div class="quote-stack">
+            <article class="quote">
+              <strong>长聊天交接不了真实进展。</strong>
+              <p>用户要的是清楚的工作状态，不是回到聊天记录里考古。</p>
+            </article>
+            <article class="quote">
+              <strong>一句“完成了”太轻，撑不起信任。</strong>
+              <p>没有文件、命令和证据，完成感听起来很确定，实际很薄。</p>
+            </article>
+            <article class="quote">
+              <strong>下一轮协作又从零开始。</strong>
+              <p>换个人、换个 Agent、换一天，同样的上下文又要重新搭一遍。</p>
+            </article>
           </div>
         </div>
       </section>
@@ -578,27 +1291,94 @@
       <section class="section dark" id="audience">
         <div class="inner">
           <div class="section-title">
-            <h2>先服务高频 AI 协作人群。</h2>
+            <h2>先服务每天都和 AI 一起干活的人。</h2>
             <p>
-              成迹服务的是每天把 AI 当工作伙伴的人：用它写代码、做产品、交付客户项目，也让下一轮协作不用重新开始。
+              成迹从高频 AI 协作场景切入：痛点已经够尖，付费意愿也更真实。
             </p>
           </div>
           <div class="grid">
             <article class="card">
-              <span class="tag">个人用户</span>
+              <span class="tag">个人</span>
               <h3>Vibe coding 用户</h3>
-              <p>他们连续让 AI 改代码、调页面、跑命令。最需要一个能告诉自己“今天到底推进到哪”的账本。</p>
+              <p>他们让 AI 改代码、调 UI、跑检查、发实验。真正需要的是一本小账本，告诉自己今天到底推进到了哪。</p>
             </article>
             <article class="card">
-              <span class="tag">团队用户</span>
-              <h3>黑客松与产品小队</h3>
-              <p>多人协作时，进展不能只留在某个人的聊天窗口里。成迹让任务状态能被共享、复盘和继续。</p>
+              <span class="tag">团队</span>
+              <h3>产品小队</h3>
+              <p>异步团队需要能跨人、跨工具流动的进展，而不是要求每个人读完整聊天。</p>
             </article>
             <article class="card">
-              <span class="tag">商业用户</span>
+              <span class="tag">商业</span>
               <h3>AI 交付团队</h3>
-              <p>咨询、外包、内部平台团队需要向客户或老板说明：AI 做了什么，凭什么可信，下一步怎么推进。</p>
+              <p>咨询、外包、内部 AI 团队需要向客户或老板说清楚：Agent 改了什么、验证了什么、还留下什么。</p>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="market">
+        <div class="inner">
+          <div class="section-title">
+            <h2>这个市场不只属于专业开发者。</h2>
+            <p>
+              “Vibe coding” 还太新，没有一个干净的全球统计口径。更可信的判断方式，是看相邻行为：AI 编程工具的普及、开发者对 AI 输出的信任缺口，以及已经在用低代码交付应用的 citizen builders。
+            </p>
+          </div>
+          <div class="market-panel">
+            <div class="market-head">
+              <div>
+                <strong>市场拉力</strong>
+                <h3>AI 正在制造数百万新的软件创造者。</h3>
+              </div>
+              <p>
+                成迹站在 AI 工作完成之后。越来越多非传统开发者开始用 Agent 创造软件，他们同样需要专业团队需要的东西：记忆、证据、交接，以及一种能相信“刚才到底发生了什么”的方式。
+              </p>
+            </div>
+            <div class="market-grid">
+              <div class="metric">
+                <strong>84%</strong>
+                <span>AI 编程已经主流化</span>
+                <p>Stack Overflow 2025 调研显示，84% 的受访者已经使用或计划在开发中使用 AI 工具。</p>
+              </div>
+              <div class="metric">
+                <strong>29%</strong>
+                <span>信任仍然没有被解决</span>
+                <p>2025 年只有 29% 的受访者表示信任 AI 输出，这给“证据”和“回放”留下了非常清楚的机会。</p>
+              </div>
+              <div class="metric">
+                <strong>56M</strong>
+                <span>低代码用户已经在这里</span>
+                <p>Microsoft 披露 Power Platform 月活用户达到 5600 万，这是 citizen-builder 人群规模的一个重要参照。</p>
+              </div>
+              <div class="metric">
+                <strong>80%</strong>
+                <span>软件创造正在走出 IT 部门</span>
+                <p>Gartner 曾预测，大量技术产品和服务会由传统 IT 部门之外的人来构建。</p>
+              </div>
+              <div class="metric">
+                <strong>20M+</strong>
+                <span>AI 编程工具已有规模</span>
+                <p>GitHub 称 Copilot 已覆盖 2000 万以上开发者，并进入 IDE、命令行和 PR 工作流。</p>
+              </div>
+            </div>
+            <div class="estimate">
+              <div>
+                <strong>2.8M–5.6M</strong>
+                <span>早期非专业 AI 构建者</span>
+              </div>
+              <p>
+                粗略估算：如果 Power Platform 5600 万月活里只有 5–10% 开始用 AI Agent 构建，而不只是使用可视化工具，这已经是一个数百万用户级的切口，正好对应成迹要做的“AI 工作后的记忆层”。
+              </p>
+            </div>
+            <p class="source-note">
+              文案引用来源：
+              <a href="https://survey.stackoverflow.co/2025" target="_blank" rel="noopener">Stack Overflow Developer Survey 2025</a>;
+              <a href="https://stackoverflow.blog/2026/02/18/closing-the-developer-ai-trust-gap/" target="_blank" rel="noopener">Stack Overflow AI trust gap analysis</a>;
+              <a href="https://www.microsoft.com/en-us/power-platform/blog/power-apps/microsoft-is-a-leader-in-2025-forrester-wave-low-code-platforms-for-professional-developers/" target="_blank" rel="noopener">Microsoft Power Platform 2025 announcement</a>;
+              <a href="https://www.prwebme.com/gartner-says-majority-technology-products-services-will-be-built-professionals-outside-it-2024" target="_blank" rel="noopener">Gartner 2021 forecast as reported by PRWebME</a>;
+              <a href="https://github.blog/ai-and-ml/github-copilot/copilot-faster-smarter-and-built-for-how-you-work-now/" target="_blank" rel="noopener">GitHub Copilot 2025 product update</a>.
+              估算为成迹基于公开数据做的代理计算，不是官方市场统计。
+            </p>
           </div>
         </div>
       </section>
@@ -606,94 +1386,221 @@
       <section class="section">
         <div class="inner">
           <div class="section-title">
-            <h2>产品不是记录聊天，而是记录进展。</h2>
+            <h2>成迹记录的是进展，不是聊天。</h2>
             <p>
-              成迹把 AI 协作拆成三类资产：轨迹、证据、复盘。用户拿到的是一个能继续工作的状态，摆脱聊天截图式交接。
+              一轮协作结束时，产品生成一份紧凑的工作记忆，让人能检查、能相信、能继续。
             </p>
           </div>
           <div class="grid">
             <article class="card">
               <span class="tag">轨迹</span>
-              <h3>从目标到交付可回放</h3>
-              <p>用户可以看到任务如何从一句需求走到文件、命令和交付物。</p>
+              <h3>从意图到结果</h3>
+              <p>看见一句需求如何变成文件、命令、决策和交付物。</p>
             </article>
             <article class="card">
               <span class="tag">证据</span>
-              <h3>测试与构建进入账本</h3>
-              <p>通过、失败、未知状态都会被记录。可信度不靠语气，靠证据。</p>
+              <h3>证据进入账本</h3>
+              <p>测试、构建、检查和未知项都会进入记录。信任来自证据，不来自语气。</p>
             </article>
             <article class="card">
               <span class="tag">复盘</span>
-              <h3>AI 写好信，用户只负责拆</h3>
-              <p>任务结束后，AI 把今天做过的活写给用户。用户打开就知道发生了什么。</p>
+              <h3>Agent 写回给你</h3>
+              <p>AI 用一封有人味的复盘信收尾。用户只需要拆开。</p>
             </article>
           </div>
         </div>
       </section>
 
-      <section class="section dark" id="video">
+      <section class="section dark">
+        <div class="inner asset-showcase">
+          <div class="letter-panel">
+            <img src="assets/seedance-letter-radio-reference.png" alt="AI 信件和电台参考画面" />
+            <div class="letter-caption">
+              <strong>一封信负责收尾，一个电台留下当天的余温。</strong>
+              成迹让 Agent 的工作可检查、被记住，也多了一点奇妙的人味。
+            </div>
+          </div>
+          <div class="artifact-list">
+            <div class="artifact-item">
+              <strong>工作账本</strong>
+              <p>Agent 留下一本小账本：动过哪些文件、跑过哪些命令、做过哪些判断。</p>
+            </div>
+            <div class="artifact-item">
+              <strong>回放后台</strong>
+              <p>用户像看产品回放一样走过工作过程，不用读一整坨聊天记录。</p>
+            </div>
+            <div class="artifact-item">
+              <strong>Agent 信件</strong>
+              <p>AI 写下一封有温度、有上下文、也知道明天从哪里开始的日复盘。</p>
+            </div>
+            <div class="artifact-item">
+              <strong>电台漫游</strong>
+              <p>轻量的氛围模式，把 Agent 的自我复盘变成更有情绪价值的产品瞬间。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark front-radio" id="radio" aria-labelledby="front-radio-title">
         <div class="inner">
           <div class="section-title">
-            <h2>Demo 视频：15 秒看懂成迹。</h2>
+            <h2 id="front-radio-title">用户还没开口，Agent 电台已经在低声介绍自己。</h2>
             <p>
-              这段前台演示按真实使用路径播放：用户交给 AI 一轮任务，成迹生成工作账本，最后拆开 AI 写好的复盘信。
+              它不是帮助小组件。它像一个工作结束后还没关掉的小电台，低声讲自己记住了什么：轨迹、信、证据，以及为什么下一轮不必冷启动。
             </p>
           </div>
-          <div class="video-shell">
-            <div class="video-screen">
+          <div class="radio-stage">
+            <div class="radio-device" aria-label="成迹前台电台">
+              <div class="radio-face">
+                <div class="radio-display">
+                  <div class="radio-band-label">
+                    <span>成迹 FM</span>
+                    <span data-front-radio-status>访客信号</span>
+                  </div>
+                  <div class="radio-frequency"><span data-front-radio-frequency>88.4</span><span> MHz</span></div>
+                  <div class="radio-dial-line" aria-hidden="true"></div>
+                </div>
+                <div class="radio-speaker" aria-hidden="true">
+                  <div class="radio-knob"></div>
+                </div>
+              </div>
+              <div class="radio-waveform" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              </div>
+              <div class="radio-controls">
+                <button class="button primary" type="button" data-front-radio-play>让它开口</button>
+                <span class="radio-chip live">中文</span>
+                <span class="radio-chip">女声</span>
+                <span class="radio-chip">男声</span>
+                <span class="radio-chip">旁白</span>
+              </div>
+            </div>
+            <div class="radio-transcript">
+              <div>
+                <span class="tag">氛围式 onboarding</span>
+                <h3 data-front-radio-headline>检测到访客。我已经把轨迹收好。</h3>
+                <p>
+                  有人进入页面时，产品不必等用户点功能说明。Agent 会像工作结束后还亮着的小电台一样，自己开始讲清楚它记得什么。
+                </p>
+              </div>
+              <div class="radio-mutter" data-front-radio-mutter>
+                我是成迹。我替一轮 AI 工作记小账：改了什么、跑通什么、交付什么、明天从哪里开始。
+                <small>低声 / 仍在播出</small>
+              </div>
+              <ul class="radio-list">
+                <li><b>使用</b><span data-front-radio-use>用户让 AI 构建、修复、研究或交付。</span></li>
+                <li><b>信件</b><span data-front-radio-letter>Agent 写回一封有温度、可重新打开的复盘。</span></li>
+                <li><b>电台</b><span data-front-radio-radio>同一份记忆变成声音，伴着音乐继续复盘。</span></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="demo">
+        <div class="inner">
+          <div class="section-title">
+            <h2>Demo：一轮真实任务，15 秒看懂。</h2>
+            <p>
+              用户给 AI 一个任务。成迹捕捉工作轨迹。Agent 留下一封复盘信，让这轮工作可以轻松重新打开。
+            </p>
+          </div>
+          <div class="demo-shell">
+            <div class="demo-screen">
               <video
-                data-product-video
+                data-demo-video
                 src="assets/donegraph-demo-15s.mp4"
                 poster="assets/seedance-letter-radio-reference.png"
                 preload="metadata"
                 playsinline
                 controls
               ></video>
-              <div class="video-overlay">
-                <p class="video-kicker">15s Product Demo / 成迹真实演示</p>
-                <h3 class="video-title">AI 做完活，也会把过程讲清楚。</h3>
-                <p class="video-caption">
-                  这支短片演示的是成迹的核心体验：任务结束后，AI 留下一条工作轨迹、一封复盘信，以及可以继续接力的下一步。
+              <div class="demo-overlay">
+                <p class="demo-kicker">15s Product Demo / 成迹正在运行</p>
+                <h3 class="demo-title">AI 做过的活，回到你面前成为轨迹。</h3>
+                <p class="demo-caption">
+                  这段短片展示核心承诺：一轮 AI 工作结束后，用户拿到工作轨迹、复盘信，以及清楚的下一步。
                 </p>
               </div>
             </div>
-            <div class="video-controls">
-              <button class="button primary" type="button" data-video-play>播放 Demo</button>
-              <div class="timeline" aria-hidden="true"><span data-video-meter></span></div>
-              <span class="scene-label" data-video-label>00:00 / 00:15</span>
+            <div class="demo-controls">
+              <button class="button primary" type="button" data-demo-play>播放 Demo</button>
+              <div class="meter" aria-hidden="true"><span data-demo-meter></span></div>
+              <span class="scene-label" data-demo-label>00:00 / 00:15</span>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="section" id="money">
+      <section class="section" id="business">
         <div class="inner">
           <div class="section-title">
-            <h2>变现路径：先插件，后团队协作层。</h2>
+            <h2>商业化路径：先开源核心，再进入团队记忆层。</h2>
             <p>
-              成迹的入口轻，价值却接近团队基础设施。它可以从个人工具自然走向团队协作、客户交付和企业私有部署。
+              成迹入口很轻，但价值曲线接近基础设施。它可以从个人 Agent 插件开始，扩展到团队记忆、客户交付和企业审计。
             </p>
           </div>
           <div class="price-grid">
             <article class="price-card">
               <h3>Open Core</h3>
               <strong>免费</strong>
-              <p>本地插件、个人工作账本、单人任务回放。负责获客，也让开发者先建立信任。</p>
+              <p>本地插件、个人账本、单轮回放。负责建立开发者信任和自然分发。</p>
             </article>
             <article class="price-card">
               <h3>Pro</h3>
               <strong>$9/月</strong>
-              <p>更好的复盘模板、历史搜索、导出包、视频化回放。面向高频个人用户。</p>
+              <p>历史搜索、导出包、更丰富的复盘模板，以及面向高频用户的视频化回放。</p>
             </article>
             <article class="price-card">
-              <h3>Team</h3>
+              <h3>团队</h3>
               <strong>$12/席/月</strong>
-              <p>共享任务账本、团队空间、异步接力、项目级证据库。面向产品小队。</p>
+              <p>共享工作账本、团队空间、异步交接、项目级证据库。</p>
             </article>
             <article class="price-card">
               <h3>Enterprise</h3>
               <strong>私有部署</strong>
-              <p>权限、审计、内部模型接入、客户交付报告。面向 AI 交付团队和企业平台。</p>
+              <p>权限控制、审计轨迹、内部模型路由，以及可直接给客户看的 AI 交付报告。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark">
+        <div class="inner">
+          <div class="section-title">
+            <h2>视频参考画面。</h2>
+            <p>
+              这些画面定义了产品 Demo 的情绪世界：AI 写信回来，电台开始说话，用户拆开信，回放随时可看。
+            </p>
+          </div>
+          <div class="asset-grid">
+            <article class="asset-card">
+              <img src="assets/seedance-letter-radio-reference.png" alt="AI 写回给你的参考画面" />
+              <div>
+                <h3>AI 写回给你</h3>
+                <a href="assets/seedance-letter-radio-reference.png" target="_blank" rel="noopener">打开 PNG</a>
+              </div>
+            </article>
+            <article class="asset-card">
+              <img src="assets/seedance-reference-02-radio-roam.png" alt="电台漫游参考画面" />
+              <div>
+                <h3>电台漫游</h3>
+                <a href="assets/seedance-reference-02-radio-roam.png" target="_blank" rel="noopener">打开 PNG</a>
+              </div>
+            </article>
+            <article class="asset-card">
+              <img src="assets/seedance-reference-03-unseal-letter.png" alt="拆开信封参考画面" />
+              <div>
+                <h3>拆开信封</h3>
+                <a href="assets/seedance-reference-03-unseal-letter.png" target="_blank" rel="noopener">打开 PNG</a>
+              </div>
+            </article>
+            <article class="asset-card">
+              <img src="assets/seedance-reference-04-replay-dashboard.png" alt="回放后台参考画面" />
+              <div>
+                <h3>回放后台</h3>
+                <a href="assets/seedance-reference-04-replay-dashboard.png" target="_blank" rel="noopener">打开 PNG</a>
+              </div>
             </article>
           </div>
         </div>
@@ -702,13 +1609,13 @@
       <section class="section final">
         <div class="inner">
           <div class="section-title">
-            <h2>成迹让 AI 的工作，有始有终。</h2>
+            <h2>当 Agent 开始真正干活，记忆就会成为产品。</h2>
             <p>
-              当 AI 成为日常生产力，真正稀缺的不是回答，而是能被人理解、信任、继续的工作状态。
+              成迹让 AI 进展可检查、有情绪、也能交给下一个人或明天继续。
             </p>
           </div>
           <div class="actions" style="justify-content: center;">
-            <a class="button primary" href=".donegraph/dashboard.html#page-0" target="_blank" rel="noopener">打开真实回放</a>
+            <a class="button primary" href=".donegraph/dashboard.html?lang=zh#page-0" target="_blank" rel="noopener">打开真实回放</a>
             <a class="button light" href="https://github.com/serein431/DoneGraph" target="_blank" rel="noopener">查看 GitHub</a>
           </div>
         </div>
@@ -716,10 +1623,64 @@
     </main>
 
     <script>
-      const playButton = document.querySelector("[data-video-play]");
-      const video = document.querySelector("[data-product-video]");
-      const meter = document.querySelector("[data-video-meter]");
-      const label = document.querySelector("[data-video-label]");
+      const playButton = document.querySelector("[data-demo-play]");
+      const video = document.querySelector("[data-demo-video]");
+      const meter = document.querySelector("[data-demo-meter]");
+      const label = document.querySelector("[data-demo-label]");
+      const frontRadioPlay = document.querySelector("[data-front-radio-play]");
+      const frontRadioFrequency = document.querySelector("[data-front-radio-frequency]");
+      const frontRadioStatus = document.querySelector("[data-front-radio-status]");
+      const frontRadioHeadline = document.querySelector("[data-front-radio-headline]");
+      const frontRadioMutter = document.querySelector("[data-front-radio-mutter]");
+      const frontRadioUse = document.querySelector("[data-front-radio-use]");
+      const frontRadioLetter = document.querySelector("[data-front-radio-letter]");
+      const frontRadioRadio = document.querySelector("[data-front-radio-radio]");
+      const frontRadioSegments = [
+        {
+          frequency: "88.4",
+          status: "访客信号",
+          title: "检测到访客。我已经把轨迹收好。",
+          mutter: "我是成迹。我替一轮 AI 工作记小账：改了什么、跑通什么、交付什么、明天从哪里开始。",
+          use: "用户让 AI 构建、修复、研究或交付。",
+          letter: "结束时，我写下一封信，让工作不再消失在聊天里。",
+          radio: "如果你不关掉我，我会伴着音乐继续低声复盘。",
+          voice: "assets/radio-voice/01.mp3"
+        },
+        {
+          frequency: "91.7",
+          status: "工作轨迹",
+          title: "我不只说完成。",
+          mutter: "完成两个字太小，装不下一整天真正发生的工作。我记得文件、命令、检查，也记得让明天不再冷启动的下一步。",
+          use: "任务回放展示指令、动过的文件、跑通的检查和交付结果。",
+          letter: "信件把混乱的一轮协作变成别人真的能读懂的交接。",
+          radio: "电台保留工作的余温，不强迫你回到完整日志里。",
+          voice: "assets/radio-voice/04.mp3"
+        },
+        {
+          frequency: "96.2",
+          status: "信件房间",
+          title: "信不是装饰，是收尾。",
+          mutter: "我像一个还替你留着灯的队友一样写给用户：我做了什么，跑通了什么，我们下一次从哪里继续。",
+          use: "后台给出证据。",
+          letter: "信件给人松一口气的感觉。",
+          radio: "电台提供一种在场感，像 Agent 还在替你收拾现场。",
+          voice: "assets/radio-voice/03.mp3"
+        },
+        {
+          frequency: "107.9",
+          status: "仍在播出",
+          title: "没人关掉我，我就继续说。",
+          mutter: "这就是意义。AI 的工作应该可检查、可回放，也稍微更像人一点。不用更吵，只要更容易被重新接住。",
+          use: "任何认真跑过的 Agent 任务结束后都能用。",
+          letter: "把复盘交给明天的你、队友，或另一个 AI。",
+          radio: "让产品在用户开口前先把自己讲清楚。",
+          voice: "assets/radio-voice-zh-narrator/06.mp3"
+        }
+      ];
+      let frontRadioIndex = 0;
+      let frontRadioTimer = 0;
+      let frontVoiceAudio = null;
+      let frontBgmAudio = null;
 
       function formatTime(value) {
         const safeValue = Number.isFinite(value) ? value : 0;
@@ -747,12 +1708,70 @@
         syncVideoState();
       }
 
+      function renderFrontRadioSegment(index) {
+        const segment = frontRadioSegments[index % frontRadioSegments.length];
+        if (frontRadioFrequency) frontRadioFrequency.textContent = segment.frequency;
+        if (frontRadioStatus) frontRadioStatus.textContent = segment.status;
+        if (frontRadioHeadline) frontRadioHeadline.textContent = segment.title;
+        if (frontRadioMutter) {
+          frontRadioMutter.innerHTML = "";
+          frontRadioMutter.append(document.createTextNode(segment.mutter));
+          const small = document.createElement("small");
+          small.textContent = "低声 / 仍在播出";
+          frontRadioMutter.append(small);
+        }
+        if (frontRadioUse) frontRadioUse.textContent = segment.use;
+        if (frontRadioLetter) frontRadioLetter.textContent = segment.letter;
+        if (frontRadioRadio) frontRadioRadio.textContent = segment.radio;
+      }
+
+      function startFrontRadioLoop() {
+        if (frontRadioTimer) window.clearInterval(frontRadioTimer);
+        frontRadioTimer = window.setInterval(() => {
+          frontRadioIndex = (frontRadioIndex + 1) % frontRadioSegments.length;
+          renderFrontRadioSegment(frontRadioIndex);
+        }, 4200);
+      }
+
+      async function toggleFrontRadioVoice() {
+        const segment = frontRadioSegments[frontRadioIndex];
+        if (!frontVoiceAudio) frontVoiceAudio = new Audio();
+        if (!frontBgmAudio) {
+          frontBgmAudio = new Audio("assets/donegraph-radio-bgm.mp3");
+          frontBgmAudio.loop = true;
+          frontBgmAudio.volume = 0.18;
+        }
+        if (!frontVoiceAudio.paused) {
+          frontVoiceAudio.pause();
+          frontBgmAudio.pause();
+          if (frontRadioPlay) frontRadioPlay.textContent = "让它开口";
+          return;
+        }
+        frontVoiceAudio.src = segment.voice;
+        frontVoiceAudio.volume = 0.92;
+        frontVoiceAudio.onended = () => {
+          frontRadioIndex = (frontRadioIndex + 1) % frontRadioSegments.length;
+          renderFrontRadioSegment(frontRadioIndex);
+          if (frontRadioPlay) frontRadioPlay.textContent = "让它开口";
+        };
+        try {
+          await frontBgmAudio.play();
+          await frontVoiceAudio.play();
+          if (frontRadioPlay) frontRadioPlay.textContent = "暂停电台";
+        } catch {
+          if (frontRadioPlay) frontRadioPlay.textContent = "再点一次";
+        }
+      }
+
       playButton?.addEventListener("click", toggleVideo);
+      frontRadioPlay?.addEventListener("click", toggleFrontRadioVoice);
       video?.addEventListener("loadedmetadata", syncVideoState);
       video?.addEventListener("timeupdate", syncVideoState);
       video?.addEventListener("play", syncVideoState);
       video?.addEventListener("pause", syncVideoState);
       video?.addEventListener("ended", syncVideoState);
+      renderFrontRadioSegment(frontRadioIndex);
+      startFrontRadioLoop();
       syncVideoState();
     </script>
   </body>

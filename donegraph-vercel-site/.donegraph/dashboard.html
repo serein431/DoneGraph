@@ -3090,6 +3090,38 @@
       }
     }
 
+    .dashboard-language {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid rgba(107, 244, 255, .42);
+      border-radius: 999px;
+      background: rgba(3, 20, 32, .62);
+      box-shadow: 0 0 22px rgba(107, 244, 255, .16), inset 0 0 18px rgba(107, 244, 255, .08);
+      backdrop-filter: blur(10px);
+    }
+    .dashboard-language button {
+      min-height: 30px;
+      border: 0;
+      border-radius: 999px;
+      padding: 6px 10px;
+      color: rgba(237, 253, 255, .72);
+      background: transparent;
+      font: 800 10px/1 "Avenir Next", "PingFang SC", system-ui, sans-serif;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .dashboard-language button.active {
+      color: #03141d;
+      background: linear-gradient(135deg, #6ff4ff, #f7d26a);
+      box-shadow: 0 0 16px rgba(107, 244, 255, .42);
+    }
+    @media (max-width: 560px) {
+      .dashboard-language { width: 100%; justify-content: center; }
+    }
+
   </style>
 </head>
 <body>
@@ -3099,6 +3131,10 @@
       <span>Ready to continue</span>
       <span>DoneGraph Agent</span>
       <span>Saved today · Jun 5</span>
+      <div class="dashboard-language" aria-label="Dashboard language">
+        <button type="button" data-dashboard-lang="zh" aria-pressed="false">中文</button>
+        <button type="button" data-dashboard-lang="en" aria-pressed="true">English</button>
+      </div>
     </header>
     <section class="memory-room-hero" aria-label="DoneGraph memory room">
       <div class="memory-hero-copy">
@@ -3427,9 +3463,258 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
     const radioStop = document.querySelector("[data-radio-stop]");
     const radioLanguageButtons = Array.from(document.querySelectorAll("[data-radio-lang]"));
     const radioVoiceButtons = Array.from(document.querySelectorAll("[data-radio-voice]"));
+    const dashboardLangButtons = Array.from(document.querySelectorAll("[data-dashboard-lang]"));
+    function storedDashboardLanguage() {
+      try { return window.localStorage?.getItem("donegraph-dashboard-lang") || ""; } catch { return ""; }
+    }
+    const dashboardLangParam = new URLSearchParams(window.location.search).get("lang");
+    let dashboardLanguage = dashboardLangParam === "zh" || dashboardLangParam === "en"
+      ? dashboardLangParam
+      : storedDashboardLanguage() === "zh" ? "zh" : "en";
+    const dashboardTextZh = {
+      "Agent awake": "Agent 已醒来",
+      "Ready to continue": "可以继续",
+      "DoneGraph Agent": "DoneGraph Agent",
+      "Saved today · Jun 5": "已保存 · 6 月 5 日",
+      "Chengji AI HUD": "成迹 AI HUD",
+      "I am watching the trail form": "我正在看见轨迹成形",
+      "Memory core,": "记忆核心，",
+      "online.": "已上线。",
+      "One finished agent run, locked into a live cockpit: files touched, commands passed, voice notes, and the exact point where tomorrow begins.": "一轮完成的 Agent 任务，被收进一个实时座舱：动过的文件、跑通的命令、语音复盘，以及明天应该从哪里开始。",
+      "Play the run": "播放这轮任务",
+      "Open the letter": "打开这封信",
+      "Tune the radio": "调到电台",
+      "Current run": "当前任务",
+      "saved work events": "条工作记录",
+      "commands passed": "个命令通过",
+      "open blockers": "个未解决阻塞",
+      "Letter": "信件",
+      "sealed": "已封好",
+      "Radio": "电台",
+      "off air": "未开播",
+      "Next step": "下一步",
+      "ready": "已准备",
+      "I kept this run here": "我把这轮任务收在这里",
+      "My Work Ledger": "我的工作账本",
+      "Files I touched": "我动过的文件",
+      "Commands I ran": "我跑过的命令",
+      "This is my work ledger: I saved 12 things and ran 3 commands. When you come back, start here: write down the commands that passed.": "这是我的工作账本：我收好了 12 件事，跑通了 3 个命令。你回来时，从这里开始：先记下已经通过的命令。",
+      "Commands that passed": "已经通过的命令",
+      "The next step": "下一步",
+      "I do not see a blocker right now. Start with the files I touched, then check the commands I ran.": "我现在没有看到阻塞。先看我动过的文件，再看我跑过的命令。",
+      "Skip the chat scroll": "不用翻聊天记录",
+      "I kept the ledger here": "我把账本放在这里",
+      "saved": "已保存",
+      "First check the files, then the commands, then continue from the next step.": "先看文件，再看命令，然后从下一步继续。",
+      "Saved": "已保存",
+      "Passed": "通过",
+      "Not run": "未运行",
+      "Blocked": "阻塞",
+      "I saved": "我保存了",
+      "12 things": "12 件事",
+      "What I finished": "我完成了什么",
+      "The task I received": "我收到的任务",
+      "Turn the DoneGraph product replay into a real work trail that anyone can understand.": "把 DoneGraph 产品回放变成任何人都能看懂的真实工作轨迹。",
+      "I took a step": "我推进了一步",
+      "I scanned donegraph-workspace first: changed files, runnable commands, and what the demo needed to explain clearly.": "我先扫描了 donegraph-workspace：改动文件、可运行命令，以及 demo 必须讲清楚的地方。",
+      "I found changed files": "我找到了改动文件",
+      "I saw 13 changed files: DESIGN.md, README.md, READMEs/README.zh-CN.md, apps/cli/src/donegraphCli.test.ts ...": "我看到 13 个改动文件：DESIGN.md、README.md、READMEs/README.zh-CN.md、apps/cli/src/donegraphCli.test.ts ...",
+      "I tried npm test": "我尝试了 npm test",
+      "The command-line flow can now record what happened in this run.": "命令行流程现在可以记录这轮任务里发生过什么。",
+      "I generated a work ledger page that can open directly: .donegraph/dashboard.html": "我生成了一个可以直接打开的工作账本页面：.donegraph/dashboard.html",
+      "I ran npm test": "我跑了 npm test",
+      "npm test passed.": "npm test 已通过。",
+      "I ran npm run typecheck": "我跑了 npm run typecheck",
+      "Typecheck passed.": "类型检查已通过。",
+      "I ran npm run build": "我跑了 npm run build",
+      "The production build passed.": "生产构建已通过。",
+      "How I did it": "我是怎么做的",
+      "Timeline view": "时间线视图",
+      "I kept the trail from start to finish": "我从头到尾保留了轨迹",
+      "Task received": "收到任务",
+      "Work I did": "我做过的事",
+      "Files I left": "我留下的文件",
+      "Found in the project": "从项目中找到",
+      "Queued": "已排队",
+      "I planned npm test": "我计划运行 npm test",
+      "I planned to run the key checks: npm test, npm run typecheck, npm run build.": "我计划运行关键检查：npm test、npm run typecheck、npm run build。",
+      "I prepared the product landing page so people understand DoneGraph before opening the live replay: landing.html": "我准备好了产品落地页，让人先看懂 DoneGraph，再打开真实回放：landing.html",
+      "I turned this task into a playable replay: instruction, files, commands, and delivery result: .donegraph/dashboard.html": "我把这轮任务做成了可播放回放：指令、文件、命令和交付结果都在 .donegraph/dashboard.html",
+      "I wrote the user a daily recap letter. They only need to open it: .donegraph/dashboard.html": "我给用户写好了今日复盘信。用户只需要打开它：.donegraph/dashboard.html",
+      "I wrote the closing line": "我写好了收尾句",
+      "The real task replay is ready: files I touched, commands that passed, and what to do next.": "真实任务回放已准备好：我动过的文件、跑通的命令，以及下一步该做什么。",
+      "Suggested next step": "建议的下一步",
+      "Open": "待处理",
+      "Next time, start here: write down the commands that passed.": "下一次从这里开始：写下已经跑通的命令。",
+      "No guessing": "不用猜",
+      "The commands are here": "命令就在这里",
+      "I planned the key checks: npm test, npm run typecheck, npm run build. They passed later in the run.": "我规划了关键检查：npm test、npm run typecheck、npm run build。它们后来都跑通了。",
+      "Continue from here": "从这里继续",
+      "No reset needed": "不用重来",
+      "What I recommend next": "我建议下一步做什么",
+      "Next time you, a teammate, or another AI opens this page, these lines make the handoff obvious.": "下一次你、队友或另一个 AI 打开这个页面时，这几行会让交接变得很清楚。",
+      "Need details?": "需要细节？",
+      "Open the ledger": "打开账本",
+      "Where this ledger came from": "这本账从哪里来",
+      "My work ledger: files I touched, commands that passed, and the next step I suggest.": "我的工作账本：我动过哪些文件、哪些命令跑通、下一步建议先做什么。",
+      "Worked toward the goal": "围绕目标推进",
+      "Continued from this step": "从这一步继续",
+      "Left this file": "留下这个文件",
+      "Tried this command": "尝试这个命令",
+      "Blocked here": "这里有阻塞",
+      "Followed this decision": "跟随这个决定",
+      "Suggested for next time": "建议留给下一次",
+      "Replaced the old way": "替代旧方式",
+      "What I found automatically": "我自动发现的内容",
+      "3 places": "3 处",
+      "For audit": "用于审计",
+      "The trail lines up": "轨迹对齐",
+      "I matched the goal, files, and commands": "我把目标、文件和命令对齐了",
+      "Finished checklist": "完成清单",
+      "Overview": "概览",
+      "Files": "文件",
+      "Commands": "命令",
+      "Ledger": "账本",
+      "Walk me through": "带我看一遍",
+      "Pause": "暂停",
+      "I just finished this task": "我刚做完这轮任务",
+      "This is not a static poster. I replay the run from the instruction to the checks that passed, so you can see what I actually did.": "这不是静态海报。我会从指令开始回放到通过的检查，让你看见我到底做了什么。",
+      "Run completed": "任务已完成",
+      "Scanned project": "扫描项目",
+      "I saved 13 actions from this run and checked what actually happened.": "我保存了这轮任务里的 13 个动作，并检查实际发生了什么。",
+      "Touched files": "触达文件",
+      "I touched these key places: DESIGN.md, .donegraph/dashboard.html, landing.html": "我触达了这些关键位置：DESIGN.md、.donegraph/dashboard.html、landing.html",
+      "Ran checks": "运行检查",
+      "I confirmed: npm test, npm run typecheck, npm run build.": "我确认了：npm test、npm run typecheck、npm run build。",
+      "Delivered": "完成交付",
+      "I delivered .donegraph/dashboard.html and left a next step: write down the commands that passed.": "我交付了 .donegraph/dashboard.html，并留下下一步：写下已经跑通的命令。",
+      "Status": "状态",
+      "Saved actions": "保存动作",
+      "Files left": "留下文件",
+      "Play this run": "播放这轮任务",
+      "Reset replay": "重置回放",
+      "Open recap letter": "打开复盘信",
+      "Understand my ledger in one minute": "一分钟看懂我的账本",
+      "I just finished a run. Do not scroll the chat first. Watch the replay, check files and commands, then open the recap letter I wrote for you.": "我刚做完一轮任务。先别翻聊天记录，先看回放、检查文件和命令，再打开我写给你的复盘信。",
+      "Watch the replay": "看任务回放",
+      "See how I moved from instruction to delivery.": "看我如何从指令走到交付。",
+      "See where I landed": "看我落到了哪里",
+      "Know whether this run can continue without reading the whole chat.": "不用读完整聊天，也能知道这轮能不能继续。",
+      "Check touched files": "检查动过的文件",
+      "I put files, commands, and pages together instead of leaving only “done”.": "我把文件、命令和页面放在一起，而不只留一句“完成了”。",
+      "Check commands": "检查命令",
+      "test, typecheck, and build are visible. No guessing.": "test、typecheck、build 都看得见，不用猜。",
+      "Inspect the ledger": "检查账本",
+      "The task, file changes, and commands line up.": "任务、文件改动和命令都能对上。",
+      "See next step": "看下一步",
+      "Next time does not start from zero.": "下一次不用从零开始。",
+      "Open my letter": "打开我写的信",
+      "I already wrote it. You only open it.": "我已经写好了，你只负责打开。",
+      "Tune the agent radio": "调到 Agent 电台",
+      "Overhear what the agent thinks after the work is done.": "听听工作做完后，Agent 在想什么。",
+      "Start with step one": "从第一步开始",
+      "I will replay this task from instruction to delivery.": "我会把这轮任务从指令回放到交付。",
+      "Guide me": "带我看",
+      "Back to overview": "回到概览",
+      "Copy plain summary": "复制纯文本摘要",
+      "The recap letter I wrote for you": "我写给你的复盘信",
+      "I already wrote this letter. Open it to see what I worked on, what passed, and where tomorrow should begin.": "这封信我已经写好了。打开它，你会看到我做了什么、什么跑通了、明天从哪里开始。",
+      "things saved": "件事已保存",
+      "The letter is ready": "信已经写好",
+      "Click “Open this letter” and I will unfold today’s recap for you.": "点击“打开这封信”，我会把今天的复盘展开给你看。",
+      "Open this letter": "打开这封信",
+      "Copy this recap": "复制这封复盘",
+      "The letter is here. Open it and I will hand you the trail.": "信在这里。你打开它，我就把轨迹交给你。",
+      "Press “Play this run”; arrow keys move through pages, and I will cover files, commands, and the first next step.": "点击“播放这轮任务”；方向键可以翻页。我会带你看文件、命令和第一个下一步。",
+      "I am walking through the ledger: files, commands, next step, then the recap letter.": "我正在带你走过账本：文件、命令、下一步，然后是复盘信。",
+      "Press “Play this run”; arrow keys move through pages. I will cover files, commands, the next step, then hand you the letter.": "点击“播放这轮任务”；方向键可以翻页。我会讲文件、命令、下一步，然后把信交给你。",
+      "I replay this task like it just finished: instruction, files, commands, and delivery are all visible.": "我会像任务刚完成一样回放它：指令、文件、命令和交付都看得见。",
+      "I answer the plain questions first: what files changed, what commands ran, and whether anything is blocked.": "我先回答最朴素的问题：哪些文件变了、哪些命令跑过、有没有阻塞。",
+      "I put files, commands, and pages together so you do not have to hunt through the chat line by line.": "我把文件、命令和页面放在一起，你不用逐行翻聊天。",
+      "test, typecheck, and build are visible here. Passed checks are clear; failed ones would stay visible too.": "test、typecheck、build 都在这里。通过的检查很清楚，失败的也会留下来。",
+      "This is the audit view: task received, files changed, and commands run all line up.": "这是审计视图：收到的任务、改过的文件、跑过的命令都能对上。",
+      "Finally, check the next step. The next session can continue from here.": "最后看下一步。下一轮可以从这里继续。",
+      "The letter is from me to you. You only open it; inside is what I did, what passed, and where tomorrow begins.": "这封信是我写给你的。你只需要打开它，里面是我做了什么、什么跑通了、明天从哪里开始。",
+      "The work is done, but the agent is still muttering to itself: instructions received, choices made, and the strange relief of leaving a trail.": "工作已经做完，但 Agent 还在自言自语：收到过什么指令、做过哪些选择，以及留下轨迹后那种奇怪的松弛感。",
+      "You opened it. What I did, what passed, and where to begin next are all inside.": "你已经打开了。我做了什么、什么跑通了、下一步从哪里开始，都在里面。",
+      "Copied": "已复制",
+      "You can paste it into a work note or product summary.": "你可以把它贴进工作记录或产品摘要。",
+      "These three lines are ready": "这三行已经准备好",
+      "I copied the recap. You can paste it directly.": "我已经复制了复盘，可以直接粘贴。",
+      "I placed the recap below and selected it for you.": "我把复盘放在下面，并替你选中了。"
+};
+    const dashboardTextEn = Object.fromEntries(Object.entries(dashboardTextZh).map(([en, zh]) => [zh, en]));
+    let dashboardI18nApplying = false;
+    function replaceDashboardTextNodes(map) {
+      if (!document.body) return;
+      dashboardI18nApplying = true;
+      const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const parent = node.parentElement;
+          if (!parent || parent.closest("script, style, audio, video")) return NodeFilter.FILTER_REJECT;
+          return NodeFilter.FILTER_ACCEPT;
+        }
+      });
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach((node) => {
+        const raw = node.nodeValue || "";
+        const trimmed = raw.trim();
+        if (!trimmed || !map[trimmed]) return;
+        node.nodeValue = raw.replace(trimmed, map[trimmed]);
+      });
+      dashboardI18nApplying = false;
+    }
+    function translateDashboardText(language) {
+      replaceDashboardTextNodes(language === "zh" ? dashboardTextZh : dashboardTextEn);
+    }
+    function currentWorkLetter() {
+      return dashboardLanguage === "zh" ? workLetterZh : workLetter;
+    }
+    function currentRunReplaySteps() {
+      return dashboardLanguage === "zh" ? runReplayStepsZh : runReplaySteps;
+    }
+    function currentDemoSteps() {
+      return dashboardLanguage === "zh" ? demoStepsZh : demoSteps;
+    }
+    function setDashboardLanguage(language, options = { persist: true, restartRadio: false }) {
+      dashboardLanguage = language === "zh" ? "zh" : "en";
+      document.documentElement.lang = dashboardLanguage === "zh" ? "zh-CN" : "en";
+      if (options.persist) {
+        try { window.localStorage?.setItem("donegraph-dashboard-lang", dashboardLanguage); } catch {}
+      }
+      dashboardLangButtons.forEach((button) => {
+        const isActive = button.dataset.dashboardLang === dashboardLanguage;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+      if (radioLanguage !== dashboardLanguage) setRadioLanguage(dashboardLanguage, { restart: options.restartRadio });
+      const activeRunIndex = runStepButtons.findIndex((button) => button.classList.contains("active"));
+      if (activeRunIndex >= 0) setRunStep(activeRunIndex, { scroll: false });
+      else if (runLog) runLog.textContent = dashboardLanguage === "zh" ? initialRunLogZh : initialRunLog;
+      if (demoIndex >= 0) {
+        const activeDemoIndex = demoIndex;
+        demoIndex = -1;
+        setDemoStep(activeDemoIndex, { scroll: false });
+      } else if (demoResult) {
+        demoResult.innerHTML = dashboardLanguage === "zh"
+          ? "<strong>从第一步开始</strong>我会把这轮任务从指令回放到交付。"
+          : "<strong>Start with step one</strong>I will replay this task from instruction to delivery.";
+      }
+      if (letterOutput?.classList.contains("ready")) letterOutput.textContent = currentWorkLetter();
+      translateDashboardText(dashboardLanguage);
+    }
+    const dashboardLanguageObserver = new MutationObserver(() => {
+      if (dashboardI18nApplying) return;
+      window.requestAnimationFrame(() => translateDashboardText(dashboardLanguage));
+    });
+    if (document.body) dashboardLanguageObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
     const workLetter = "To you, the person I worked with today:\n\nI saved this run for you. You can breathe for a second.\nToday I worked around one job: turning the DoneGraph product replay into a real work trail people can understand.\nI kept 12 things and confirmed 3 commands passed. The loose threads are here now, so tomorrow does not start by digging through a long chat.\nThe key files I touched today: DESIGN.md, .donegraph/dashboard.html, landing.html.\nThe commands I confirmed: npm test, npm run typecheck, npm run build.\nIf you only want the next step, start here: write down the commands that passed.\n\nYou do not need to organize this for me. I already wrote it. You only open it.\nThat is enough for today. Thank you for carrying the direction this far; I have held the trail for you. If a teammate, tomorrow-you, or another AI needs context, take this recap with you.\nThe DoneGraph agent";
+    const workLetterZh = "写给今天和我一起工作的人：\n\n我把这轮任务替你收好了。你可以先松一口气。\n今天我围绕一件事工作：把 DoneGraph 的产品回放，做成普通人也能看懂的真实工作轨迹。\n我保存了 12 件事，并确认 3 个命令已经跑通。散落的线索现在都在这里，明天不用再从一长串聊天记录里挖上下文。\n今天我触达的关键文件：DESIGN.md、.donegraph/dashboard.html、landing.html。\n我确认过的命令：npm test、npm run typecheck、npm run build。\n如果你只想知道下一步，就从这里开始：写下已经跑通的命令。\n\n你不用替我整理这些。我已经写好了，你只负责打开它。\n今天到这里就够了。谢谢你把方向推到这里；我已经替你守住了这条轨迹。如果队友、明天的你，或者另一个 AI 需要上下文，就带着这封复盘继续。\nDoneGraph Agent";
     const initialRunLog = "ready This task is done. Press “Play this run” and I will replay the work.\ngoal Turn the DoneGraph product replay into a real work trail people can understand.";
+    const initialRunLogZh = "ready 这轮任务已经完成。点击“播放这轮任务”，我会回放整个过程。\ngoal 把 DoneGraph 产品回放变成任何人都能看懂的真实工作轨迹。";
     const runReplaySteps = [{"title":"Task received","detail":"You asked me to turn the DoneGraph product replay into a real work trail people can understand.","log":"> User said: turn the DoneGraph product replay into a real work trail people can understand."},{"title":"Project scan","detail":"I saved 13 actions from this run and checked what actually happened.","log":"captured 13 events from this local run"},{"title":"Touched files","detail":"I touched these key places: DESIGN.md, .donegraph/dashboard.html, landing.html","log":"touched DESIGN.md\ntouched .donegraph/dashboard.html\ntouched landing.html"},{"title":"Ran checks","detail":"I confirmed: npm test, npm run typecheck, npm run build.","log":"pass npm test\npass npm run typecheck\npass npm run build"},{"title":"Delivered","detail":"I delivered .donegraph/dashboard.html and left a next step: write down the commands that passed.","log":"wrote .donegraph/dashboard.html\nnext write down the commands that passed."}];
+    const runReplayStepsZh = [{"title":"收到任务","detail":"你让我把 DoneGraph 产品回放变成普通人也能看懂的真实工作轨迹。","log":"> 用户说：把 DoneGraph 产品回放变成普通人也能看懂的真实工作轨迹。"},{"title":"扫描项目","detail":"我保存了这轮任务里的 13 个动作，并检查实际发生了什么。","log":"captured 13 events from this local run"},{"title":"触达文件","detail":"我触达了这些关键位置：DESIGN.md、.donegraph/dashboard.html、landing.html","log":"touched DESIGN.md\ntouched .donegraph/dashboard.html\ntouched landing.html"},{"title":"运行检查","detail":"我确认了：npm test、npm run typecheck、npm run build。","log":"pass npm test\npass npm run typecheck\npass npm run build"},{"title":"完成交付","detail":"我交付了 .donegraph/dashboard.html，并留下下一步：写下已经跑通的命令。","log":"wrote .donegraph/dashboard.html\nnext write down the commands that passed."}];
     const demoSteps = [
       { target: "run", title: "Watch the replay", result: "I replay this task like it just finished: instruction, files, commands, and delivery are all visible." },
       { target: "0", title: "See where I landed", result: "I answer the plain questions first: what files changed, what commands ran, and whether anything is blocked." },
@@ -3440,6 +3725,48 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
       { target: "letter", title: "Open my letter", result: "The letter is from me to you. You only open it; inside is what I did, what passed, and where tomorrow begins." },
       { target: "radio", title: "Tune the agent radio", result: "The work is done, but the agent is still muttering to itself: instructions received, choices made, and the strange relief of leaving a trail." }
     ];
+    const demoStepsZh = [
+      {
+            "target": "run",
+            "title": "看任务回放",
+            "result": "我会像任务刚完成一样回放它：指令、文件、命令和交付都看得见。"
+      },
+      {
+            "target": "0",
+            "title": "看我落到了哪里",
+            "result": "我先回答最朴素的问题：哪些文件变了、哪些命令跑过、有没有阻塞。"
+      },
+      {
+            "target": "1",
+            "title": "检查动过的文件",
+            "result": "我把文件、命令和页面放在一起，你不用逐行翻聊天。"
+      },
+      {
+            "target": "2",
+            "title": "检查命令",
+            "result": "test、typecheck、build 都在这里。通过的检查很清楚，失败的也会留下来。"
+      },
+      {
+            "target": "3",
+            "title": "检查账本",
+            "result": "这是审计视图：收到的任务、改过的文件、跑过的命令都能对上。"
+      },
+      {
+            "target": "2",
+            "title": "看下一步",
+            "result": "最后看下一步。下一轮可以从这里继续。"
+      },
+      {
+            "target": "letter",
+            "title": "打开我写的信",
+            "result": "这封信是我写给你的。你只需要打开它，里面是我做了什么、什么跑通了、明天从哪里开始。"
+      },
+      {
+            "target": "radio",
+            "title": "调到 Agent 电台",
+            "result": "工作已经做完，但 Agent 还在自言自语：收到过什么指令、做过哪些选择，以及留下轨迹后那种奇怪的松弛感。"
+      }
+];
     const radioSegmentsZh = [
       {
         frequency: "88.4",
@@ -3620,7 +3947,7 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
     let radioBgmMuted = false;
     let radioIsRoaming = false;
     let radioLoopTimer = 0;
-    let radioLanguage = "zh";
+    let radioLanguage = dashboardLanguage;
     let radioVoice = "female";
     const radioVoiceFolders = {
       zh: {
@@ -3756,13 +4083,14 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
       if (options.scroll) journalStage?.scrollIntoView({ block: "start", behavior: "smooth" });
     }
     function setDemoStep(index, options = { scroll: true }) {
-      demoIndex = Math.max(0, Math.min(index, demoSteps.length - 1));
-      const step = demoSteps[demoIndex];
+      const steps = currentDemoSteps();
+      demoIndex = Math.max(0, Math.min(index, steps.length - 1));
+      const step = steps[demoIndex];
       demoStepButtons.forEach((button, buttonIndex) => {
         button.classList.toggle("active", buttonIndex === demoIndex);
         button.classList.toggle("done", buttonIndex < demoIndex);
       });
-      if (demoMeter) demoMeter.style.width = String(((demoIndex + 1) / demoSteps.length) * 100) + "%";
+      if (demoMeter) demoMeter.style.width = String(((demoIndex + 1) / currentDemoSteps().length) * 100) + "%";
       if (demoResult) {
         demoResult.innerHTML = "<strong>" + step.title + "</strong>" + step.result;
       }
@@ -3801,7 +4129,7 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
       runTimer = 0;
     }
     function runLogText(index) {
-      return runReplaySteps
+      return currentRunReplaySteps()
         .slice(0, index + 1)
         .map((step, stepIndex) => {
           const number = String(stepIndex + 1).padStart(2, "0");
@@ -3810,7 +4138,7 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
         .join("\n\n");
     }
     function setRunStep(index, options = { scroll: false }) {
-      const safeIndex = Math.max(0, Math.min(index, runReplaySteps.length - 1));
+      const safeIndex = Math.max(0, Math.min(index, currentRunReplaySteps().length - 1));
       runStepButtons.forEach((button, buttonIndex) => {
         button.classList.toggle("active", buttonIndex === safeIndex);
         button.classList.toggle("done", buttonIndex < safeIndex);
@@ -3821,7 +4149,7 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
     function resetRunReplay(options = { scroll: true }) {
       stopRunReplay();
       runStepButtons.forEach((button) => button.classList.remove("active", "done"));
-      if (runLog) runLog.textContent = initialRunLog;
+      if (runLog) runLog.textContent = dashboardLanguage === "zh" ? initialRunLogZh : initialRunLog;
       if (options.scroll) runConsole?.scrollIntoView({ block: "start", behavior: "smooth" });
     }
     function playRunReplay(options = { scroll: true }) {
@@ -3841,10 +4169,10 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
     }
     function openWorkLetter(options = { scroll: true }) {
       if (!letterOutput) return;
-      letterOutput.textContent = workLetter;
+      letterOutput.textContent = currentWorkLetter();
       letterOutput.classList.remove("envelope");
       letterOutput.classList.add("ready");
-      if (letterStatus) letterStatus.textContent = "You opened it. What I did, what passed, and where to begin next are all inside.";
+      if (letterStatus) letterStatus.textContent = dashboardLanguage === "zh" ? "你已经打开了。我做了什么、什么跑通了、下一步从哪里开始，都在里面。" : "You opened it. What I did, what passed, and where to begin next are all inside.";
       if (options.scroll) letterConsole?.scrollIntoView({ block: "start", behavior: "smooth" });
     }
     function selectLetterText() {
@@ -3892,11 +4220,15 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
       selection?.addRange(range);
     }
     async function copyDemoSummary() {
-      const summary = [
+      const summary = (dashboardLanguage === "zh" ? [
+        "我的工作账本：我动过哪些文件、哪些命令跑通、下一步建议先做什么。",
+        "这轮任务已经 100% 收好：12 件事已记录，3 个命令跑通。",
+        "不用翻完整聊天记录，也能知道我这轮干了什么。"
+      ] : [
         "My work ledger: files I touched, commands that passed, and the next step I suggest.",
         "This run is 100% saved: 12 things recorded, 3 commands passed.",
         "You do not need the full chat to understand what I did."
-      ].join("\n");
+      ]).join("\n");
       const copied = await copyTextToClipboard(summary);
       if (copied) {
         if (demoResult) demoResult.innerHTML = "<strong>Copied</strong>You can paste it into a work note or product summary.";
@@ -3909,7 +4241,7 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
     }
     async function copyWorkLetter() {
       openWorkLetter({ scroll: false });
-      const copied = await copyTextToClipboard(workLetter);
+      const copied = await copyTextToClipboard(currentWorkLetter());
       if (copied) {
         if (letterStatus) letterStatus.textContent = "I copied the recap. You can paste it directly.";
         return;
@@ -3991,7 +4323,13 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
       }
     }
     function renderRadioLanguageButtons() {
-      radioLanguageButtons.forEach((button) => {
+      dashboardLangButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        stopTour();
+        setDashboardLanguage(button.dataset.dashboardLang || "en", { persist: true, restartRadio: true });
+      });
+    });
+    radioLanguageButtons.forEach((button) => {
         const isActive = button.dataset.radioLang === radioLanguage;
         button.classList.toggle("active", isActive);
         button.setAttribute("aria-pressed", String(isActive));
@@ -4300,7 +4638,7 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
     radioLanguageButtons.forEach((button) => {
       button.addEventListener("click", () => {
         stopTour();
-        setRadioLanguage(button.dataset.radioLang || "zh");
+        setDashboardLanguage(button.dataset.radioLang || "zh", { persist: true, restartRadio: true });
       });
     });
     radioVoiceButtons.forEach((button) => {
@@ -4322,6 +4660,7 @@ goal Turn the DoneGraph product replay into a real work trail people can underst
     renderRadioIdle();
     renderRadioLanguageButtons();
     renderRadioVoiceButtons();
+    setDashboardLanguage(dashboardLanguage, { persist: false, restartRadio: false });
     showSpread(targetFromHash(), { updateHash: false, scroll: false });
   </script>
 </body>
