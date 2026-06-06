@@ -1,16 +1,20 @@
 # DoneGraph
 
-Turn your work with AI into a visible achievement graph: what you asked for, what changed, what was proven, what is blocked, and where the next session should continue.
+DoneGraph is the trust layer for AI work. It turns an agent session into a safe, shareable work trail: what the user asked for, what changed, what was verified, what is still open, and where the next session should continue.
 
 Works as a local plugin for Codex, Claude Code, Cursor, VS Code Copilot, and shell-based AI workflows.
 
 [English](./README.md) | [简体中文](./READMEs/README.zh-CN.md)
 
+**Live product:** https://donegraph.space  
+**Upload space:** https://donegraph.space/share  
+**Agent skill:** https://donegraph.space/skill.md
+
 ---
 
 **You have been building with an AI agent for three hours. It edited files, ran tests, changed direction twice, and left a long chat behind. What is actually done?**
 
-DoneGraph is a local AI collaboration plugin that turns goals, actions, decisions, artifacts, evidence, blockers, and next steps into a `.donegraph/` folder you can hand to someone else. The dashboard gives a judge, teammate, or next AI session the state of the work without making them reread the whole conversation.
+DoneGraph turns goals, actions, decisions, artifacts, evidence, blockers, and next steps into a clean work record the user can inspect. It generates a replay dashboard, proof summary, recap letter, Agent Radio debrief, and safe snapshot. Users can also create an upload space at `donegraph.space/share`, give the generated instruction to their agent, and receive future safe snapshots automatically.
 
 > **The point is simple: progress should feel earned, inspectable, and easy to resume.**
 
@@ -36,7 +40,11 @@ Open `.donegraph/dashboard.html` to see what was completed, which evidence suppo
 
 ### Publish A Safe Snapshot
 
-Generate `.donegraph/safe-snapshot.json` when you want to share one AI run without exposing the raw chat, file contents, local paths, or secret-looking values. The hosted `share.html` page can import that snapshot in the browser, and `/api/snapshots` can store it when Supabase is configured.
+Generate `.donegraph/safe-snapshot.json` when you want to share one AI run without exposing the raw chat, file contents, local paths, or secret-looking values. The hosted share page can import snapshots in the browser, while the cloud API stores safe snapshots through Vercel Blob or Supabase.
+
+### Auto Upload From Agents
+
+Open `https://donegraph.space/share`, create an upload space, and copy the generated Agent instruction. The agent can then publish future safe snapshots with `DONEGRAPH_UPLOAD_TOKEN` at stable stopping points.
 
 ### Resume Large Tasks Cleanly
 
@@ -121,7 +129,7 @@ DoneGraph writes:
 
 The dashboard includes a real-run replay, a guided walkthrough, a copyable plain-language summary, and a daily recap letter written by the AI for the user.
 
-For hackathon review, open `landing.html` after `npm run demo`. It gives judges a product landing page first, with the real dashboard embedded inside the page.
+For the hosted product experience, open `https://donegraph.space`. For local review, open `landing.html` after `npm run demo`; it gives the product landing page first, with the real dashboard embedded inside the page.
 
 ---
 
@@ -352,7 +360,7 @@ packages/core             Pure graph, summary, Markdown, and dashboard rendering
 plugins/donegraph         Codex plugin root, skills, and wrapper script
 platforms/*               Thin integration notes for other AI environments
 install.sh                Multi-platform local installer
-scripts/demo-donegraph.sh 3-minute hackathon demo path
+scripts/demo-donegraph.sh 3-minute product demo path
 landing.html              Product landing page that embeds the generated dashboard
 ```
 

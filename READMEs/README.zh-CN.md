@@ -1,16 +1,20 @@
 # DoneGraph
 
-把你和 AI 的协作过程变成可见的任务成就图谱：目标是什么、做了什么、证据在哪里、哪里卡住了、下一轮从哪继续。
+DoneGraph 是 AI 工作的信任层。它把一轮 Agent 协作变成安全、可分享的工作轨迹：用户提出了什么、AI 改了什么、哪些结果验证过、还有什么没收口、下一轮应该从哪里继续。
 
 支持 Codex、Claude Code、Cursor、VS Code Copilot，以及 shell 形态的 AI 工作流。
 
 [English](../README.md) | [简体中文](./README.zh-CN.md)
 
+**线上产品：** https://donegraph.space  
+**上传空间：** https://donegraph.space/share  
+**Agent 接入指令：** https://donegraph.space/skill.md
+
 ---
 
 **你和 AI 已经一起做了三个小时。它改了文件、跑了测试、中途换了两次方向，最后留下了一长串聊天记录。可是，到底完成了什么？**
 
-DoneGraph 是一个本地 AI 协作插件。它会把目标、动作、决策、产物、验证、阻塞和下一步写入 `.donegraph/`，再生成静态 dashboard 和交接文件。团队、评委或下一轮 AI 打开之后，可以直接看到这轮工作的真实状态。
+DoneGraph 会把目标、动作、决策、产物、验证、阻塞和下一步整理成一份人能看懂的工作记录。它生成任务回放、证据摘要、AI 写给用户的复盘信、Agent Radio 复盘，以及安全快照。用户也可以在 `donegraph.space/share` 创建上传空间，把页面生成的指令交给 Agent，让后续安全快照自动回传。
 
 > **目标很简单：让进展有成就感、能检查、能接力。**
 
@@ -36,7 +40,11 @@ DoneGraph 是一个本地 AI 协作插件。它会把目标、动作、决策、
 
 ### 发布安全快照
 
-需要共享某一次 AI 工作时，生成 `.donegraph/safe-snapshot.json`。它只保留工作摘要、进度、复盘信和电台脚本，不包含原始聊天、文件内容、本机路径和疑似密钥。线上 `share.html` 可以在浏览器里导入这份快照；配置 Supabase 后，`/api/snapshots` 可以把它保存成一次性分享链接。
+需要共享某一次 AI 工作时，生成 `.donegraph/safe-snapshot.json`。它只保留工作摘要、进度、复盘信和电台脚本，不包含原始聊天、文件内容、本机路径和疑似密钥。线上分享页可以在浏览器里导入快照；云端 API 支持用 Vercel Blob 或 Supabase 保存安全快照。
+
+### Agent 自动上传
+
+打开 `https://donegraph.space/share` 创建上传空间，复制页面生成的 Agent 指令。Agent 拿到 `DONEGRAPH_UPLOAD_TOKEN` 后，可以在稳定节点自动发布安全快照。
 
 ### 让大任务容易继续
 
@@ -121,7 +129,7 @@ DoneGraph 会写出：
 
 Dashboard 里有真实任务回放、一步一步的演示、能复制的人话摘要，也能让 AI 把今天干过的活写成一封给你的复盘信。
 
-黑客松展示时，先打开 `landing.html`。它是给评委看的产品落地页，页面里直接嵌入真实 dashboard。
+线上产品体验打开 `https://donegraph.space`。本地评审时，运行 `npm run demo` 后打开 `landing.html`；页面会先展示产品落地页，再嵌入真实 dashboard。
 
 ---
 
@@ -340,8 +348,8 @@ packages/core             图谱、摘要、Markdown、Dashboard 渲染
 plugins/donegraph         Codex 插件根目录、skills 和 wrapper
 platforms/*               其他 AI 环境的轻量接入说明
 install.sh                多平台本地安装脚本
-scripts/demo-donegraph.sh 3 分钟黑客松 demo 路径
-landing.html              给评委看的产品落地页，内嵌生成后的 dashboard
+scripts/demo-donegraph.sh 3 分钟产品 demo 路径
+landing.html              产品落地页，内嵌生成后的 dashboard
 donegraph-vercel-site/share.html 单次安全快照导入和发布页
 ```
 

@@ -17,24 +17,27 @@ Make AI progress inspectable.
 
 ## Short Description
 
-DoneGraph turns a human-AI work session into a local achievement graph: goals, actions, artifacts, proof, blockers, and next steps. It gives judges, teammates, and the next AI session a self-contained dashboard, so they can see the real state of the work without digging through the whole chat.
+DoneGraph turns an AI work session into a safe, shareable work trail. It captures goals, files, commands, artifacts, proof, blockers, and next steps, then gives the user a replay dashboard, AI-written recap letter, Agent Radio debrief, and automatic cloud snapshot upload.
 
 ## Long Description
 
-DoneGraph is a local-first AI collaboration plugin for builders using Codex, Claude Code, Cursor, Copilot-style tools, or shell-based agent workflows. In long AI-agent sessions, the hard part often arrives at handoff: what changed, which checks passed, what still hurts, and where should the next session start?
+DoneGraph is an AI work-trail product for builders using Codex, Claude Code, Cursor, Copilot-style tools, or shell-based agent workflows. In long AI-agent sessions, the hard part often arrives at handoff: what changed, which checks passed, what still hurts, and where should the next session start?
 
 The product records clean-room collaboration events into `.donegraph/session.jsonl`, builds a structured task graph, and writes four reviewable artifacts: `task-graph.json`, `achievement-log.md`, `next-steps.md`, and `dashboard.html`.
 
-For the UCWS demo, `npm run demo` plays the full story: it starts a session, captures local project context, records checkpoints, runs test/typecheck/build, attaches proof, and generates a judge-friendly dashboard. `landing.html` is the product landing page for judges: it explains the promise in plain language, embeds the real dashboard, and links straight into the replay. The dashboard uses plain vibe coding language: what did AI do, which checks passed, and where should the next session continue? It includes a live panel for step-by-step review, a copyable plain-language summary, a daily recap letter written by the AI for the user, and a visible `带我看一遍` button that walks through progress, checks, next steps, and the letter.
+The hosted product is live at `https://donegraph.space`. A user can create an upload space at `/share`, copy one Agent instruction, and let their agent upload safe DoneGraph snapshots automatically through a private Vercel Blob-backed API. For the local demo, `npm run demo` plays the full story: it starts a session, captures local project context, records checkpoints, runs test/typecheck/build, attaches proof, and generates the dashboard. The dashboard uses plain vibe coding language: what did AI do, which checks passed, and where should the next session continue? It includes step-by-step review, a copyable plain-language summary, a daily recap letter written by the AI for the user, Agent Radio, and a visible guided walkthrough.
 
 DoneGraph keeps its model deliberately narrow: it records collaboration progress between a person and AI, with evidence attached to each meaningful milestone. That makes it useful for hackathon review, async handoff, project continuation, and AI-agent auditability.
 
 ## Demo URL
 
-Use the repository demo instructions if no hosted URL is available:
-https://github.com/serein431/DoneGraph#3-minute-hackathon-demo
+https://donegraph.space
 
-If the platform requires a live URL, use a publicly hosted copy of `landing.html` with `.donegraph/dashboard.html` beside it. If static hosting is not ready, use the GitHub demo section or a short demo video link.
+Upload space / Agent onboarding:
+https://donegraph.space/share
+
+Live dashboard:
+https://donegraph.space/.donegraph/dashboard.html
 
 ## Repository URL
 
@@ -42,7 +45,7 @@ https://github.com/serein431/DoneGraph
 
 ## Tech Stack
 
-TypeScript, Node.js, npm workspaces, Vitest, static HTML/CSS dashboard, Codex/Claude/Cursor-compatible skill wrappers, local JSONL artifact pipeline.
+TypeScript, Node.js, npm workspaces, Vitest, static HTML/CSS dashboard, Vercel, Vercel Blob, Codex/Claude/Cursor-compatible skill wrappers, local JSONL artifact pipeline.
 
 ## Track
 
@@ -93,7 +96,7 @@ Likely platform fields found from the event frontend:
 - `name`: DoneGraph
 - `tagline`: Make AI progress inspectable.
 - `description`: use Short Description or Long Description depending on field size.
-- `demoUrl`: hosted `landing.html`, GitHub demo section, hosted dashboard URL, or demo video URL.
+- `demoUrl`: https://donegraph.space
 - `repoUrl`: https://github.com/serein431/DoneGraph
 - `track`: Skill
 - `techStack`: TypeScript, Node.js, npm workspaces, Vitest, static HTML/CSS dashboard, AI plugin skills.

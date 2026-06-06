@@ -12,7 +12,7 @@ Your AI finally shows its work.
 
 ## Short Description
 
-DoneGraph makes AI work trustworthy after the run. It captures what the agent changed, which commands passed, what shipped, what stayed unresolved, and where the next session should begin. Instead of forcing a user, teammate, or future AI to dig through a long chat, DoneGraph turns the session into a replayable work trail, attached proof, and a warm recap letter from the AI to the user.
+DoneGraph makes AI work trustworthy after the run. It captures what the agent changed, which commands passed, what shipped, what stayed unresolved, and where the next session should begin. Instead of forcing a user, teammate, or future AI to dig through a long chat, DoneGraph turns the session into a replayable work trail, attached proof, an AI-written recap letter, Agent Radio, and automatic safe snapshot upload.
 
 ## Long Description
 
@@ -22,7 +22,9 @@ The AI edited files, ran commands, changed direction, fixed some things, maybe l
 
 DoneGraph turns that moment into a product surface.
 
-It is a local-first plugin for Codex, Claude Code, Cursor, Copilot-style tools, and shell-based agent workflows. During a session, the AI records goals, actions, artifacts, proof, blockers, and next steps into `.donegraph/`. At the end, DoneGraph generates a static dashboard that can replay the run: the original request, files touched, commands passed, delivered artifacts, and the suggested next step.
+It is an AI work-trail product for Codex, Claude Code, Cursor, Copilot-style tools, and shell-based agent workflows. During a session, the AI records goals, actions, artifacts, proof, blockers, and next steps into `.donegraph/`. At the end, DoneGraph generates a dashboard that can replay the run: the original request, files touched, commands passed, delivered artifacts, and the suggested next step.
+
+The live product is available at `https://donegraph.space`. A user can create an upload space, copy one Agent instruction, and let the agent upload safe snapshots automatically. The cloud upload uses a private Vercel Blob-backed API, while the safe snapshot excludes raw chat, file contents, local machine paths, and secrets.
 
 For this hackathon demo, the product also includes a daily recap letter written from the AI to the user. The letter says, in plain language, what the AI worked on today, what it verified, and where tomorrow should start. It keeps the emotional value without losing evidence.
 
@@ -35,13 +37,13 @@ DoneGraph is not trying to understand every line of code. It models the collabor
 Best option:
 
 ```text
-Hosted landing.html URL
+https://donegraph.space
 ```
 
-Fallback if no hosted URL is ready:
+Agent onboarding:
 
 ```text
-https://github.com/serein431/DoneGraph#3-minute-hackathon-demo
+https://donegraph.space/share
 ```
 
 ## Repository URL
@@ -56,7 +58,7 @@ Skill
 
 ## Tech Stack
 
-TypeScript, Node.js, npm workspaces, Vitest, static HTML/CSS dashboard, local JSONL event pipeline, Codex/Claude/Cursor-compatible plugin skills.
+TypeScript, Node.js, npm workspaces, Vitest, static HTML/CSS dashboard, Vercel, Vercel Blob, local JSONL event pipeline, Codex/Claude/Cursor-compatible plugin skills.
 
 ## How To Demo
 
