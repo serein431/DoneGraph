@@ -216,17 +216,23 @@ DONEGRAPH_UPLOAD_TOKEN=<token> donegraph publish --target https://donegraph.spac
 
 如果云端还没配好，`donegraph publish` 仍会把 `.donegraph/safe-snapshot.json` 留在本地，用户可以去 `/share` 手动导入。
 
-如果要启用云端上传，在部署环境里配置：
+Vercel 部署可以直接使用 Vercel Blob：
+
+```text
+BLOB_READ_WRITE_TOKEN
+DONEGRAPH_PUBLIC_URL=https://donegraph.space
+```
+
+Supabase 也仍然支持，适合后续做更完整的数据表和查询：
 
 ```text
 SUPABASE_URL
 SUPABASE_SERVICE_ROLE_KEY
-DONEGRAPH_PUBLIC_URL=https://donegraph.space
 DONEGRAPH_SNAPSHOT_TABLE=donegraph_snapshots
 DONEGRAPH_SPACE_TABLE=donegraph_upload_spaces
 ```
 
-最小 Supabase 表结构：
+如果选择 Supabase，最小表结构：
 
 ```sql
 create extension if not exists pgcrypto;

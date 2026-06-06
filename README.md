@@ -228,17 +228,23 @@ DONEGRAPH_UPLOAD_TOKEN=<token> donegraph publish --target https://donegraph.spac
 
 If cloud upload is not configured yet, `donegraph publish` still writes `.donegraph/safe-snapshot.json` locally so the user can import it on `/share`.
 
-To enable cloud upload, deploy with these environment variables:
+The Vercel deployment can use Vercel Blob directly:
+
+```text
+BLOB_READ_WRITE_TOKEN
+DONEGRAPH_PUBLIC_URL=https://donegraph.space
+```
+
+Supabase is still supported as an alternative database-backed storage path:
 
 ```text
 SUPABASE_URL
 SUPABASE_SERVICE_ROLE_KEY
-DONEGRAPH_PUBLIC_URL=https://donegraph.space
 DONEGRAPH_SNAPSHOT_TABLE=donegraph_snapshots
 DONEGRAPH_SPACE_TABLE=donegraph_upload_spaces
 ```
 
-Minimal Supabase tables:
+Minimal Supabase tables, if you choose Supabase:
 
 ```sql
 create extension if not exists pgcrypto;

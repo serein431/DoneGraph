@@ -57,7 +57,7 @@ function setupMessage() {
   return {
     error: "Cloud upload is not turned on for this deployment yet.",
     setup:
-      "Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, then create donegraph_upload_spaces and donegraph_snapshots."
+      "Connect Vercel Blob or set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY, then create the DoneGraph storage tables."
   };
 }
 
@@ -95,6 +95,10 @@ function generateUploadToken() {
   return `dgup_${crypto.randomBytes(32).toString("base64url")}`;
 }
 
+function generateId(prefix) {
+  return `${prefix}_${crypto.randomUUID()}`;
+}
+
 function hashUploadToken(token) {
   return crypto.createHash("sha256").update(token).digest("hex");
 }
@@ -119,12 +123,61 @@ async function findUploadSpace(config, token) {
   return Array.isArray(rows) ? rows[0] : undefined;
 }
 
+function blobConfig() {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return undefined;
+  return {
+    publicUrl: (process.env.DONEGRAPH_PUBLIC_URL || DEFAULT_PUBLIC_URL).replace(/\/$/, ""),
+    token: process.env.BLOB_READ_WRITE_TOKEN
+  };
+}
+
+async function blobSdk() {
+  return import("@vercel/blob");
+}
+
+async function putBlobJson(config, pathname, value) {
+  const { put } = await blobSdk();
+  return put(pathname, JSON.stringify(value), {
+    access: "private",
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    contentType: "application/json",
+    token: config.token
+  });
+}
+
+async function getBlobJson(config, pathname) {
+  const { get } = await blobSdk();
+  try {
+    const result = await get(pathname, { access: "private", token: config.token });
+    if (!result || result.statusCode !== 200 || !result.stream) return undefined;
+    return new Response(result.stream).json();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/not found|404/i.test(message)) return undefined;
+    throw error;
+  }
+}
+
+async function findBlobUploadSpace(config, token) {
+  if (!token) return undefined;
+  const tokenHash = hashUploadToken(token);
+  const tokenRef = await getBlobJson(config, `tokens/${tokenHash}.json`);
+  if (!tokenRef?.space_id) return undefined;
+  return getBlobJson(config, `spaces/${tokenRef.space_id}.json`);
+}
+
 module.exports = {
+  blobConfig,
   envConfig,
+  findBlobUploadSpace,
   findUploadSpace,
+  generateId,
   generateUploadToken,
+  getBlobJson,
   hashUploadToken,
   publicBaseUrl,
+  putBlobJson,
   readJsonBody,
   send,
   setupMessage,

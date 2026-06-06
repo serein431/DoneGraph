@@ -1,7 +1,12 @@
 const {
+  blobConfig,
   envConfig,
+  findBlobUploadSpace,
   findUploadSpace,
+  generateId,
+  getBlobJson,
   publicBaseUrl,
+  putBlobJson,
   readJsonBody,
   send,
   setupMessage,
@@ -27,16 +32,27 @@ module.exports = async function handler(req, res) {
   }
 
   const config = envConfig();
-  if (!config) {
+  const blob = blobConfig();
+  if (!config && !blob) {
     send(res, 503, setupMessage());
     return;
   }
+  const activeConfig = config || blob;
 
   try {
     if (req.method === "GET") {
       const id = new URL(req.url, "https://donegraph.space").searchParams.get("id");
       if (!id) {
         send(res, 400, { error: "Missing snapshot id." });
+        return;
+      }
+      if (blob && !config) {
+        const row = await getBlobJson(blob, `snapshots/${id}.json`);
+        if (!row) {
+          send(res, 404, { error: "Snapshot not found." });
+          return;
+        }
+        send(res, 200, { id: row.id, snapshot: row.snapshot, created_at: row.created_at, storage: "vercel_blob" });
         return;
       }
       const rows = await supabaseRequest(
@@ -58,11 +74,36 @@ module.exports = async function handler(req, res) {
       return;
     }
     const uploadToken = uploadTokenFromRequest(req);
-    const space = await findUploadSpace(config, uploadToken);
+    const space = config ? await findUploadSpace(config, uploadToken) : await findBlobUploadSpace(blob, uploadToken);
     if (!space) {
       send(res, 401, {
         error: "Create an upload space first, then publish with its Agent token.",
-        action: `${publicBaseUrl(req, config)}/share`
+        action: `${publicBaseUrl(req, activeConfig)}/share`
+      });
+      return;
+    }
+
+    if (blob && !config) {
+      const id = generateId("snap");
+      const createdAt = new Date().toISOString();
+      await putBlobJson(blob, `snapshots/${id}.json`, {
+        id,
+        space_id: space.id,
+        created_at: createdAt,
+        snapshot,
+        goal: snapshot.goal || null,
+        generated_at: snapshot.generated_at || null,
+        privacy_mode: snapshot.privacy.mode,
+        summary: snapshot.summary || null,
+        storage: "vercel_blob"
+      });
+      const baseUrl = publicBaseUrl(req, blob);
+      send(res, 200, {
+        id,
+        share_url: `${baseUrl}/share?id=${encodeURIComponent(id)}`,
+        space_id: space.id,
+        storage: "vercel_blob",
+        stored: true
       });
       return;
     }
