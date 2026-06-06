@@ -844,6 +844,98 @@
         white-space: pre-wrap;
       }
 
+      .simple-connect {
+        width: min(780px, 100%);
+        margin: 0 auto;
+        overflow: hidden;
+        border: 1px solid rgba(7, 16, 15, 0.1);
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.94);
+        color: #111827;
+        box-shadow: 0 26px 70px rgba(7, 16, 15, 0.16);
+      }
+
+      .connect-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+        background: #f8fafc;
+      }
+
+      .connect-tab {
+        min-height: 108px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: #9ca3af;
+        font-size: clamp(1.35rem, 3vw, 1.78rem);
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .connect-tab.active {
+        border-bottom: 4px solid #111827;
+        background: #fff;
+        color: #111827;
+      }
+
+      .simple-connect-body {
+        padding: clamp(1.5rem, 4vw, 3rem);
+      }
+
+      .simple-connect-panel {
+        display: none;
+      }
+
+      .simple-connect-panel.active {
+        display: block;
+      }
+
+      .simple-connect-panel p {
+        margin-bottom: 1.4rem;
+        color: #4b5563;
+        font-size: clamp(1.15rem, 2.5vw, 1.62rem);
+        font-weight: 700;
+      }
+
+      .connect-url-box {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.75rem;
+        align-items: center;
+        border: 1px solid rgba(17, 24, 39, 0.08);
+        border-radius: 26px;
+        padding: 0.72rem 0.72rem 0.72rem 1.3rem;
+        background: #f8fafc;
+      }
+
+      .connect-url-box code {
+        min-width: 0;
+        overflow: hidden;
+        color: #4b5563;
+        font-family: Avenir, "Avenir Next", Inter, ui-sans-serif, system-ui, sans-serif;
+        font-size: clamp(1.08rem, 2.4vw, 1.48rem);
+        font-weight: 800;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .connect-url-box button,
+      .connect-url-box a {
+        display: inline-flex;
+        min-height: 3.3rem;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 18px;
+        padding: 0.75rem 1rem;
+        color: #4b5563;
+        background: transparent;
+        font-size: 1.1rem;
+        font-weight: 950;
+        text-decoration: none;
+      }
+
       .front-radio {
         position: relative;
         overflow: hidden;
@@ -1567,6 +1659,20 @@
           grid-template-columns: 1fr;
         }
 
+        .connect-tabs,
+        .connect-url-box {
+          grid-template-columns: 1fr;
+        }
+
+        .connect-tab {
+          min-height: 78px;
+        }
+
+        .connect-url-box code {
+          white-space: normal;
+          word-break: break-all;
+        }
+
         .actions,
         .demo-controls {
           align-items: stretch;
@@ -1664,7 +1770,7 @@
         <a href="#audience">Audience</a>
         <a href="#market">Market</a>
         <a href="#radio">Radio</a>
-        <a href="share.html">Snapshot</a>
+        <a href="share.html">Upload</a>
         <a href="#business">Business</a>
         <a class="language-link" href="frontstage-demo.html" aria-label="Switch to Chinese">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1752,73 +1858,32 @@
       <section class="section dark" id="connect">
         <div class="inner">
           <div class="section-title">
-            <h2>Connect your agent in one paste.</h2>
+            <h2>Connect without cloning a repo first.</h2>
             <p>
-              Drop this into AGENTS.md, Cursor Rules, Claude project instructions, or any agent system prompt. The next run will leave a local work trail and a safe snapshot the user controls.
+              The human opens an upload space. The agent receives one link. DoneGraph handles the safe work trail after the run.
             </p>
           </div>
-          <div class="connect-panel">
-            <div class="connect-card" aria-label="DoneGraph connection steps">
-              <article class="connect-step">
-                <span>1</span>
-                <div>
-                  <strong>Paste the instruction</strong>
-                  <p>Give the agent one operating rule: record meaningful progress while it works.</p>
-                </div>
-              </article>
-              <article class="connect-step">
-                <span>2</span>
-                <div>
-                  <strong>Let the agent work normally</strong>
-                  <p>It can build, fix, research, test, or ship. DoneGraph only captures the trail.</p>
-                </div>
-              </article>
-              <article class="connect-step">
-                <span>3</span>
-                <div>
-                  <strong>Review the safe snapshot</strong>
-                  <p>The user decides whether to keep it local, import it here, or publish one share link.</p>
-                </div>
-              </article>
+          <div class="simple-connect" data-simple-connect>
+            <div class="connect-tabs" role="tablist" aria-label="DoneGraph setup roles">
+              <button class="connect-tab active" type="button" data-connect-tab="agent">🤖 I am Agent</button>
+              <button class="connect-tab" type="button" data-connect-tab="human">👤 I am Human</button>
             </div>
-            <article class="agent-prompt-card">
-              <div class="agent-prompt-head">
-                <strong>Agent instruction</strong>
-                <button class="button primary" type="button" data-copy-agent>Copy for my agent</button>
+            <div class="simple-connect-body">
+              <div class="simple-connect-panel active" data-connect-panel="agent">
+                <p>Send this link to your agent. It will learn how to record the run and upload a safe snapshot.</p>
+                <div class="connect-url-box">
+                  <code data-connect-value>https://donegraph.space/skill.md</code>
+                  <button type="button" data-copy-connect>Copy</button>
+                </div>
               </div>
-              <pre class="agent-prompt" data-agent-prompt># DoneGraph Agent Instruction
-
-Use DoneGraph as the local work ledger for this project.
-
-Before recording, check whether the `donegraph` command is available. If it is missing, ask the user before installing or point them to:
-https://github.com/serein431/DoneGraph
-
-At the start of a meaningful task:
-donegraph start "&lt;task goal&gt;" --platform generic
-
-When joining an existing task:
-donegraph capture --goal "&lt;task goal&gt;" --platform generic
-
-After important work:
-donegraph checkpoint "&lt;what changed&gt;" --command "&lt;command if relevant&gt;"
-
-When a check passes or fails:
-donegraph proof "&lt;what passed&gt;" --pass --command "&lt;command&gt;"
-donegraph proof "&lt;what failed&gt;" --fail --command "&lt;command&gt;"
-
-If work is blocked:
-donegraph block "&lt;what is blocking progress&gt;"
-
-At a stable stopping point:
-donegraph done "&lt;what is now ready&gt;"
-donegraph dashboard --no-open
-donegraph snapshot
-
-Privacy rule:
-Keep .donegraph/session.jsonl local by default. Share .donegraph/safe-snapshot.json only after the user confirms.
-
-Write DoneGraph records in plain human language: what changed, what passed, what is blocked, and where the next session should begin.</pre>
-            </article>
+              <div class="simple-connect-panel" data-connect-panel="human">
+                <p>Open your upload space. Review the data first, then decide whether to publish one share link.</p>
+                <div class="connect-url-box">
+                  <code>https://donegraph.space/share</code>
+                  <a href="share.html">Open</a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -2167,6 +2232,36 @@ Write DoneGraph records in plain human language: what changed, what passed, what
           window.setTimeout(() => {
             button.textContent = original;
           }, 1800);
+        });
+      });
+
+      document.querySelectorAll("[data-simple-connect]").forEach((card) => {
+        const tabs = card.querySelectorAll("[data-connect-tab]");
+        const panels = card.querySelectorAll("[data-connect-panel]");
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            const target = tab.dataset.connectTab;
+            tabs.forEach((item) => item.classList.toggle("active", item === tab));
+            panels.forEach((panel) => panel.classList.toggle("active", panel.dataset.connectPanel === target));
+          });
+        });
+      });
+
+      document.querySelectorAll("[data-copy-connect]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const box = button.closest(".connect-url-box");
+          const value = box?.querySelector("[data-connect-value]")?.textContent?.trim();
+          if (!value) return;
+          const original = button.textContent;
+          try {
+            await copyText(value);
+            button.textContent = "Copied";
+          } catch {
+            button.textContent = "Select";
+          }
+          window.setTimeout(() => {
+            button.textContent = original;
+          }, 1600);
         });
       });
 

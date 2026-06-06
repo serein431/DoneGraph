@@ -840,6 +840,98 @@
         white-space: pre-wrap;
       }
 
+      .simple-connect {
+        width: min(780px, 100%);
+        margin: 0 auto;
+        overflow: hidden;
+        border: 1px solid rgba(7, 16, 15, 0.1);
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.94);
+        color: #111827;
+        box-shadow: 0 26px 70px rgba(7, 16, 15, 0.16);
+      }
+
+      .connect-tabs {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        border-bottom: 1px solid rgba(17, 24, 39, 0.08);
+        background: #f8fafc;
+      }
+
+      .connect-tab {
+        min-height: 108px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        color: #9ca3af;
+        font-size: clamp(1.35rem, 3vw, 1.78rem);
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .connect-tab.active {
+        border-bottom: 4px solid #111827;
+        background: #fff;
+        color: #111827;
+      }
+
+      .simple-connect-body {
+        padding: clamp(1.5rem, 4vw, 3rem);
+      }
+
+      .simple-connect-panel {
+        display: none;
+      }
+
+      .simple-connect-panel.active {
+        display: block;
+      }
+
+      .simple-connect-panel p {
+        margin-bottom: 1.4rem;
+        color: #4b5563;
+        font-size: clamp(1.15rem, 2.5vw, 1.62rem);
+        font-weight: 700;
+      }
+
+      .connect-url-box {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 0.75rem;
+        align-items: center;
+        border: 1px solid rgba(17, 24, 39, 0.08);
+        border-radius: 26px;
+        padding: 0.72rem 0.72rem 0.72rem 1.3rem;
+        background: #f8fafc;
+      }
+
+      .connect-url-box code {
+        min-width: 0;
+        overflow: hidden;
+        color: #4b5563;
+        font-family: Avenir, "Avenir Next", Inter, ui-sans-serif, system-ui, sans-serif;
+        font-size: clamp(1.08rem, 2.4vw, 1.48rem);
+        font-weight: 800;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .connect-url-box button,
+      .connect-url-box a {
+        display: inline-flex;
+        min-height: 3.3rem;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 18px;
+        padding: 0.75rem 1rem;
+        color: #4b5563;
+        background: transparent;
+        font-size: 1.1rem;
+        font-weight: 950;
+        text-decoration: none;
+      }
+
       .front-radio {
         position: relative;
         overflow: hidden;
@@ -1582,6 +1674,20 @@
           grid-template-columns: 1fr;
         }
 
+        .connect-tabs,
+        .connect-url-box {
+          grid-template-columns: 1fr;
+        }
+
+        .connect-tab {
+          min-height: 78px;
+        }
+
+        .connect-url-box code {
+          white-space: normal;
+          word-break: break-all;
+        }
+
         .actions,
         .demo-controls {
           align-items: stretch;
@@ -1688,7 +1794,7 @@
         <a href="#audience">受众</a>
         <a href="#market">市场</a>
         <a href="#radio">电台</a>
-        <a href="share.html">快照</a>
+        <a href="share.html">上传</a>
         <a href="#business">商业化</a>
         <a class="language-link" href="en.html" aria-label="切换到英文">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1776,73 +1882,32 @@
       <section class="section dark" id="connect">
         <div class="inner">
           <div class="section-title">
-            <h2>一段指令，把你的 Agent 接进成迹。</h2>
+            <h2>先注册上传空间，再把链接交给 Agent。</h2>
             <p>
-              复制到 AGENTS.md、Cursor Rules、Claude 项目说明或任何 Agent 系统提示词里。下一轮任务结束后，本地会留下工作轨迹，并生成由用户决定是否分享的安全快照。
+              用户不需要先 clone 仓库。人打开上传空间，Agent 读取一条接入链接，任务结束后上传安全快照。
             </p>
           </div>
-          <div class="connect-panel">
-            <div class="connect-card" aria-label="成迹接入步骤">
-              <article class="connect-step">
-                <span>1</span>
-                <div>
-                  <strong>复制这段指令</strong>
-                  <p>给 Agent 一个工作习惯：边干活，边把关键进展记进成迹。</p>
-                </div>
-              </article>
-              <article class="connect-step">
-                <span>2</span>
-                <div>
-                  <strong>照常让 AI 干活</strong>
-                  <p>修 bug、做页面、跑检查、写文档都可以。成迹只记录轨迹。</p>
-                </div>
-              </article>
-              <article class="connect-step">
-                <span>3</span>
-                <div>
-                  <strong>用户确认后再分享</strong>
-                  <p>快照可以只留在本地，也可以导入网页，最后再决定是否发布链接。</p>
-                </div>
-              </article>
+          <div class="simple-connect" data-simple-connect>
+            <div class="connect-tabs" role="tablist" aria-label="成迹接入身份">
+              <button class="connect-tab active" type="button" data-connect-tab="agent">🤖 我是 Agent</button>
+              <button class="connect-tab" type="button" data-connect-tab="human">👤 我是 Human</button>
             </div>
-            <article class="agent-prompt-card">
-              <div class="agent-prompt-head">
-                <strong>Agent 指令</strong>
-                <button class="button primary" type="button" data-copy-agent>复制给我的 Agent</button>
+            <div class="simple-connect-body">
+              <div class="simple-connect-panel active" data-connect-panel="agent">
+                <p>将此提示发送给你的 Agent，以接入成迹记录和上传。</p>
+                <div class="connect-url-box">
+                  <code data-connect-value>https://donegraph.space/skill.md</code>
+                  <button type="button" data-copy-connect>复制</button>
+                </div>
               </div>
-              <pre class="agent-prompt" data-agent-prompt># 成迹 DoneGraph Agent 指令
-
-这个项目使用 DoneGraph 作为本地 AI 工作账本。
-
-开始记录前，先检查 `donegraph` 命令是否可用。如果不可用，不要擅自安装，先询问用户，或让用户查看：
-https://github.com/serein431/DoneGraph
-
-开始一个明确任务时：
-donegraph start "&lt;任务目标&gt;" --platform generic
-
-接手一个已经进行中的任务时：
-donegraph capture --goal "&lt;任务目标&gt;" --platform generic
-
-完成关键工作后：
-donegraph checkpoint "&lt;做了什么&gt;" --command "&lt;相关命令，可选&gt;"
-
-检查通过或失败时：
-donegraph proof "&lt;什么检查通过了&gt;" --pass --command "&lt;命令&gt;"
-donegraph proof "&lt;什么检查失败了&gt;" --fail --command "&lt;命令&gt;"
-
-遇到阻塞时：
-donegraph block "&lt;卡在哪里&gt;"
-
-到达稳定收尾点时：
-donegraph done "&lt;现在已经准备好了什么&gt;"
-donegraph dashboard --no-open
-donegraph snapshot
-
-隐私规则：
-默认把 .donegraph/session.jsonl 留在本地。只有用户确认后，才分享 .donegraph/safe-snapshot.json。
-
-记录时说人话：写清楚改了什么、什么跑通了、哪里还卡着、下一轮应该从哪里开始。</pre>
-            </article>
+              <div class="simple-connect-panel" data-connect-panel="human">
+                <p>打开你的上传空间。先检查数据，再决定是否发布分享链接。</p>
+                <div class="connect-url-box">
+                  <code>https://donegraph.space/share</code>
+                  <a href="share.html">打开</a>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -2191,6 +2256,36 @@ donegraph snapshot
           window.setTimeout(() => {
             button.textContent = original;
           }, 1800);
+        });
+      });
+
+      document.querySelectorAll("[data-simple-connect]").forEach((card) => {
+        const tabs = card.querySelectorAll("[data-connect-tab]");
+        const panels = card.querySelectorAll("[data-connect-panel]");
+        tabs.forEach((tab) => {
+          tab.addEventListener("click", () => {
+            const target = tab.dataset.connectTab;
+            tabs.forEach((item) => item.classList.toggle("active", item === tab));
+            panels.forEach((panel) => panel.classList.toggle("active", panel.dataset.connectPanel === target));
+          });
+        });
+      });
+
+      document.querySelectorAll("[data-copy-connect]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const box = button.closest(".connect-url-box");
+          const value = box?.querySelector("[data-connect-value]")?.textContent?.trim();
+          if (!value) return;
+          const original = button.textContent;
+          try {
+            await copyText(value);
+            button.textContent = "已复制";
+          } catch {
+            button.textContent = "手动选择";
+          }
+          window.setTimeout(() => {
+            button.textContent = original;
+          }, 1600);
         });
       });
 

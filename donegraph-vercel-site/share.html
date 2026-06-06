@@ -162,6 +162,36 @@
         padding: clamp(1rem, 3vw, 1.4rem);
       }
 
+      .space-form {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+        gap: 0.7rem;
+        margin-bottom: 0.9rem;
+      }
+
+      .space-form input {
+        min-width: 0;
+        min-height: 3rem;
+        border: 1px solid rgba(189, 247, 231, 0.2);
+        border-radius: 0.55rem;
+        padding: 0.82rem 0.95rem;
+        color: var(--paper);
+        background: rgba(189, 247, 231, 0.06);
+        font: inherit;
+      }
+
+      .space-form input::placeholder {
+        color: rgba(247, 241, 221, 0.45);
+      }
+
+      .space-status {
+        min-height: 1.2rem;
+        margin: 0 0 0.9rem;
+        color: var(--mint);
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
       .dropzone {
         display: grid;
         min-height: 260px;
@@ -460,7 +490,8 @@
       @media (max-width: 900px) {
         .hero,
         .snapshot-head,
-        .content-grid {
+        .content-grid,
+        .space-form {
           grid-template-columns: 1fr;
         }
 
@@ -515,13 +546,19 @@
     <main>
       <section class="hero" id="top">
         <div>
-          <p class="eyebrow">Safe Snapshot / One Run Only</p>
-          <h1>Publish the trail, not the private work.</h1>
+          <p class="eyebrow">Upload Space / Safe Snapshot</p>
+          <h1>Create a space. Upload one AI run.</h1>
           <p class="hero-copy">
-            A DoneGraph snapshot carries the useful story of an AI session: what moved, what passed, what the agent wrote back, and where the next run should begin.
+            Register a lightweight DoneGraph space, review the safe snapshot in your browser, then publish only if you want a share link.
           </p>
         </div>
         <section class="panel drop-panel" id="snapshot" aria-label="Snapshot importer">
+          <form class="space-form" data-space-form>
+            <input type="text" name="spaceName" placeholder="Workspace name" autocomplete="organization" data-space-name />
+            <input type="email" name="spaceEmail" placeholder="Email" autocomplete="email" data-space-email />
+            <button class="primary" type="submit">Create space</button>
+          </form>
+          <p class="space-status" data-space-status>Use a space name first, then upload the run.</p>
           <label class="dropzone" data-dropzone>
             <input type="file" accept="application/json,.json" data-file-input />
             <span>
@@ -596,7 +633,12 @@
       const publishButton = document.querySelector("[data-publish]");
       const keepButton = document.querySelector("[data-keep]");
       const shareResult = document.querySelector("[data-share-result]");
+      const spaceForm = document.querySelector("[data-space-form]");
+      const spaceName = document.querySelector("[data-space-name]");
+      const spaceEmail = document.querySelector("[data-space-email]");
+      const spaceStatus = document.querySelector("[data-space-status]");
       let currentSnapshot = null;
+      let currentSpace = null;
 
       const sampleSnapshot = {
         version: "1",
@@ -643,6 +685,27 @@
       function setStatus(text, isError = false) {
         statusEl.textContent = text;
         statusEl.classList.toggle("error", isError);
+      }
+
+      function saveSpace(space) {
+        currentSpace = space;
+        localStorage.setItem("donegraph.uploadSpace", JSON.stringify(space));
+        if (spaceStatus) spaceStatus.textContent = `${space.name} is ready. Upload a run when the agent finishes.`;
+      }
+
+      function loadSpace() {
+        const saved = localStorage.getItem("donegraph.uploadSpace");
+        if (!saved) return;
+        try {
+          const space = JSON.parse(saved);
+          if (!space?.name) return;
+          currentSpace = space;
+          if (spaceName) spaceName.value = space.name;
+          if (spaceEmail) spaceEmail.value = space.email || "";
+          if (spaceStatus) spaceStatus.textContent = `${space.name} is ready. Upload a run when the agent finishes.`;
+        } catch {
+          localStorage.removeItem("donegraph.uploadSpace");
+        }
       }
 
       function escapeText(value) {
@@ -736,6 +799,18 @@
 
       document.querySelector("[data-load-sample]").addEventListener("click", () => renderSnapshot(sampleSnapshot));
 
+      spaceForm?.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const name = spaceName?.value?.trim() || "My DoneGraph Space";
+        const email = spaceEmail?.value?.trim() || "";
+        saveSpace({
+          id: `space_${Date.now().toString(36)}`,
+          name,
+          email,
+          created_at: new Date().toISOString()
+        });
+      });
+
       keepButton.addEventListener("click", () => {
         if (!currentSnapshot) return;
         localStorage.setItem("donegraph.safeSnapshot", JSON.stringify(currentSnapshot));
@@ -744,12 +819,20 @@
 
       publishButton.addEventListener("click", async () => {
         if (!currentSnapshot) return;
+        if (!currentSpace) {
+          setStatus("Create an upload space first.", true);
+          spaceName?.focus();
+          return;
+        }
         publishButton.disabled = true;
         setStatus("Publishing this one safe snapshot...");
         try {
           const response = await fetch("/api/snapshots", {
             method: "POST",
-            headers: { "content-type": "application/json" },
+            headers: {
+              "content-type": "application/json",
+              "x-donegraph-space": currentSpace?.id || ""
+            },
             body: JSON.stringify(currentSnapshot)
           });
           const payload = await response.json();
@@ -767,6 +850,7 @@
 
       const params = new URLSearchParams(window.location.search);
       const remoteId = params.get("id");
+      loadSpace();
       if (remoteId) {
         setStatus("Loading snapshot...");
         loadRemoteSnapshot(remoteId).catch((error) => setStatus(error.message, true));
