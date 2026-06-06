@@ -853,7 +853,7 @@
 
       .connect-tabs {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
         border-bottom: 1px solid rgba(17, 24, 39, 0.08);
         background: #f8fafc;
       }
@@ -866,7 +866,7 @@
         color: #9ca3af;
         font-size: clamp(1.35rem, 3vw, 1.78rem);
         font-weight: 900;
-        cursor: pointer;
+        cursor: default;
       }
 
       .connect-tab.active {
@@ -1884,13 +1884,12 @@
           <div class="section-title">
             <h2>先注册上传空间，再把链接交给 Agent。</h2>
             <p>
-              用户不需要先 clone 仓库。人打开上传空间，Agent 读取一条接入链接，任务结束后上传安全快照。
+              用户不需要先 clone 仓库。把这个链接发给 Agent，它会读取接入规则，并在用户确认后上传安全快照。
             </p>
           </div>
           <div class="simple-connect" data-simple-connect>
             <div class="connect-tabs" role="tablist" aria-label="成迹接入身份">
               <button class="connect-tab active" type="button" data-connect-tab="agent">🤖 我是 Agent</button>
-              <button class="connect-tab" type="button" data-connect-tab="human">👤 我是 Human</button>
             </div>
             <div class="simple-connect-body">
               <div class="simple-connect-panel active" data-connect-panel="agent">
@@ -1898,13 +1897,6 @@
                 <div class="connect-url-box">
                   <code data-connect-value>https://donegraph.space/skill.md</code>
                   <button type="button" data-copy-connect>复制</button>
-                </div>
-              </div>
-              <div class="simple-connect-panel" data-connect-panel="human">
-                <p>打开你的上传空间。先检查数据，再决定是否发布分享链接。</p>
-                <div class="connect-url-box">
-                  <code>https://donegraph.space/share</code>
-                  <a href="share.html">打开</a>
                 </div>
               </div>
             </div>

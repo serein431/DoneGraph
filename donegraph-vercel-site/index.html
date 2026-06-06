@@ -857,7 +857,7 @@
 
       .connect-tabs {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
         border-bottom: 1px solid rgba(17, 24, 39, 0.08);
         background: #f8fafc;
       }
@@ -870,7 +870,7 @@
         color: #9ca3af;
         font-size: clamp(1.35rem, 3vw, 1.78rem);
         font-weight: 900;
-        cursor: pointer;
+        cursor: default;
       }
 
       .connect-tab.active {
@@ -1860,13 +1860,12 @@
           <div class="section-title">
             <h2>Connect without cloning a repo first.</h2>
             <p>
-              The human opens an upload space. The agent receives one link. DoneGraph handles the safe work trail after the run.
+              Send one link to the agent. It learns how to record the run and upload a safe snapshot when the user confirms.
             </p>
           </div>
           <div class="simple-connect" data-simple-connect>
             <div class="connect-tabs" role="tablist" aria-label="DoneGraph setup roles">
               <button class="connect-tab active" type="button" data-connect-tab="agent">🤖 I am Agent</button>
-              <button class="connect-tab" type="button" data-connect-tab="human">👤 I am Human</button>
             </div>
             <div class="simple-connect-body">
               <div class="simple-connect-panel active" data-connect-panel="agent">
@@ -1874,13 +1873,6 @@
                 <div class="connect-url-box">
                   <code data-connect-value>https://donegraph.space/skill.md</code>
                   <button type="button" data-copy-connect>Copy</button>
-                </div>
-              </div>
-              <div class="simple-connect-panel" data-connect-panel="human">
-                <p>Open your upload space. Review the data first, then decide whether to publish one share link.</p>
-                <div class="connect-url-box">
-                  <code>https://donegraph.space/share</code>
-                  <a href="share.html">Open</a>
                 </div>
               </div>
             </div>
