@@ -34,6 +34,10 @@ Progress is tied to proof. A passing command, manual check, failing test, unknow
 
 Open `.donegraph/dashboard.html` to see what was completed, which evidence supports it, how the records connect, and where the next session should pick up.
 
+### Publish A Safe Snapshot
+
+Generate `.donegraph/safe-snapshot.json` when you want to share one AI run without exposing the raw chat, file contents, local paths, or secret-looking values. The hosted `share.html` page can import that snapshot in the browser, and `/api/snapshots` can store it when Supabase is configured.
+
 ### Resume Large Tasks Cleanly
 
 DoneGraph writes `achievement-log.md` and `next-steps.md` so the next AI session can continue from the real task state instead of asking you to reconstruct the story.
@@ -111,6 +115,8 @@ DoneGraph writes:
 .donegraph/achievement-log.md
 .donegraph/next-steps.md
 .donegraph/dashboard.html
+.donegraph/safe-snapshot.json
+.donegraph/safe-snapshot.md
 ```
 
 The dashboard includes a real-run replay, a guided walkthrough, a copyable plain-language summary, and a daily recap letter written by the AI for the user.
@@ -131,6 +137,8 @@ Plugin commands:
 /donegraph-done <completion summary>
 /donegraph-dashboard [--no-open]
 /donegraph-summary
+/donegraph snapshot
+/donegraph publish --target https://donegraph.space
 ```
 
 Terminal fallback:
@@ -142,6 +150,8 @@ donegraph checkpoint "Implemented CLI" --command "npm test"
 donegraph proof "Tests passed" --pass --command "npm test"
 donegraph done "Demo ready"
 donegraph dashboard
+donegraph snapshot
+donegraph publish --target https://donegraph.space
 ```
 
 Development fallback inside this repo:
@@ -205,9 +215,38 @@ landing.html
 .donegraph/achievement-log.md
 .donegraph/next-steps.md
 .donegraph/dashboard.html
+.donegraph/safe-snapshot.json
 ```
 
 Keep `session.jsonl` private if the raw event stream contains sensitive task notes.
+
+For a safer share flow, use:
+
+```bash
+donegraph snapshot
+```
+
+Then open `https://donegraph.space/share.html` and import `.donegraph/safe-snapshot.json`. To enable one-time cloud publishing, deploy with these environment variables:
+
+```text
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+DONEGRAPH_SNAPSHOT_TABLE=donegraph_snapshots
+```
+
+Minimal Supabase table:
+
+```sql
+create table donegraph_snapshots (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  generated_at timestamptz,
+  goal text,
+  privacy_mode text,
+  summary jsonb,
+  snapshot jsonb not null
+);
+```
 
 ---
 
@@ -246,6 +285,9 @@ donegraph CLI
         |
         v
 task-graph.json + achievement-log.md + next-steps.md + dashboard.html
+        |
+        v
+safe-snapshot.json for one-run sharing
 ```
 
 Adapters stay thin. The graph logic lives in `packages/core`; the CLI and storage layer live in `apps/cli`; each platform wrapper only maps a user command to the same CLI.

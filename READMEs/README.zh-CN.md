@@ -34,6 +34,10 @@ DoneGraph 是一个本地 AI 协作插件。它会把目标、动作、决策、
 
 打开 `.donegraph/dashboard.html`，可以看到做成了什么、哪些证据能支撑、记录之间怎么连起来，以及下一轮应该从哪接上。
 
+### 发布安全快照
+
+需要共享某一次 AI 工作时，生成 `.donegraph/safe-snapshot.json`。它只保留工作摘要、进度、复盘信和电台脚本，不包含原始聊天、文件内容、本机路径和疑似密钥。线上 `share.html` 可以在浏览器里导入这份快照；配置 Supabase 后，`/api/snapshots` 可以把它保存成一次性分享链接。
+
 ### 让大任务容易继续
 
 DoneGraph 会写出 `achievement-log.md` 和 `next-steps.md`。下一轮 AI 可以直接从真实任务状态继续，而不是让你重新讲一遍前情提要。
@@ -111,6 +115,8 @@ DoneGraph 会写出：
 .donegraph/achievement-log.md
 .donegraph/next-steps.md
 .donegraph/dashboard.html
+.donegraph/safe-snapshot.json
+.donegraph/safe-snapshot.md
 ```
 
 Dashboard 里有真实任务回放、一步一步的演示、能复制的人话摘要，也能让 AI 把今天干过的活写成一封给你的复盘信。
@@ -129,6 +135,8 @@ Dashboard 里有真实任务回放、一步一步的演示、能复制的人话�
 /donegraph-done <completion summary>
 /donegraph-dashboard [--no-open]
 /donegraph-summary
+/donegraph snapshot
+/donegraph publish --target https://donegraph.space
 ```
 
 终端 fallback：
@@ -140,6 +148,8 @@ donegraph checkpoint "Implemented CLI" --command "npm test"
 donegraph proof "Tests passed" --pass --command "npm test"
 donegraph done "Demo ready"
 donegraph dashboard
+donegraph snapshot
+donegraph publish --target https://donegraph.space
 ```
 
 ---
@@ -191,9 +201,38 @@ landing.html
 .donegraph/achievement-log.md
 .donegraph/next-steps.md
 .donegraph/dashboard.html
+.donegraph/safe-snapshot.json
 ```
 
 如果原始事件流里包含敏感任务备注，可以不要共享 `session.jsonl`。
+
+更安全的共享路径：
+
+```bash
+donegraph snapshot
+```
+
+然后打开 `https://donegraph.space/share.html`，导入 `.donegraph/safe-snapshot.json`。如果要启用一次性云端发布，在部署环境里配置：
+
+```text
+SUPABASE_URL
+SUPABASE_SERVICE_ROLE_KEY
+DONEGRAPH_SNAPSHOT_TABLE=donegraph_snapshots
+```
+
+最小 Supabase 表结构：
+
+```sql
+create table donegraph_snapshots (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  generated_at timestamptz,
+  goal text,
+  privacy_mode text,
+  summary jsonb,
+  snapshot jsonb not null
+);
+```
 
 ---
 
@@ -232,6 +271,9 @@ donegraph CLI
         |
         v
 task-graph.json + achievement-log.md + next-steps.md + dashboard.html
+        |
+        v
+safe-snapshot.json 用来做单次安全分享
 ```
 
 适配层保持很薄。图谱逻辑在 `packages/core`，CLI 和存储层在 `apps/cli`，各平台 wrapper 只把用户命令映射到同一个 CLI。
@@ -277,6 +319,7 @@ platforms/*               其他 AI 环境的轻量接入说明
 install.sh                多平台本地安装脚本
 scripts/demo-donegraph.sh 3 分钟黑客松 demo 路径
 landing.html              给评委看的产品落地页，内嵌生成后的 dashboard
+donegraph-vercel-site/share.html 单次安全快照导入和发布页
 ```
 
 ## 验证

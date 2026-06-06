@@ -125,6 +125,50 @@ export interface DoneGraph {
   next_steps: string[];
 }
 
+export interface DoneGraphSafeSnapshotItem {
+  title: string;
+  detail: string;
+  status: EvidenceStatus;
+}
+
+export interface DoneGraphSafeSnapshotWorkItem extends DoneGraphSafeSnapshotItem {
+  type: DoneGraphNodeType;
+  signal?: string;
+}
+
+export interface DoneGraphSafeSnapshotRadioSegment {
+  title: string;
+  line: string;
+}
+
+export interface DoneGraphSafeSnapshot {
+  version: "1";
+  kind: "donegraph.safe_snapshot";
+  generated_at: string;
+  goal: string;
+  platform: DoneGraphPlatform;
+  privacy: {
+    mode: "single_safe_snapshot";
+    raw_session_included: false;
+    uploaded_fields: string[];
+    excluded_fields: string[];
+    redactions: string[];
+  };
+  summary: DoneGraphSummary;
+  milestones: DoneGraphSafeSnapshotItem[];
+  achievements: DoneGraphSafeSnapshotItem[];
+  work_trail: DoneGraphSafeSnapshotWorkItem[];
+  next_steps: string[];
+  letter: {
+    subject: string;
+    body: string;
+  };
+  radio: {
+    intro: string;
+    segments: DoneGraphSafeSnapshotRadioSegment[];
+  };
+}
+
 export interface DoneGraphCaptureInput {
   platform: DoneGraphPlatform;
   goal?: string;
@@ -164,6 +208,29 @@ function escapeHtml(value: string): string {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+export function redactDoneGraphText(value: string): string {
+  return normalizeText(value)
+    .replace(/(api[_-]?key|token|secret|password|passwd|authorization)\s*[:=]\s*["']?[^\s"',;]+/gi, "$1=[redacted]")
+    .replace(/\bsk-[A-Za-z0-9_-]{12,}\b/g, "[redacted key]")
+    .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, "[redacted email]")
+    .replace(/(?:\/Users|\/home)\/[^\s，。；;]+/g, "[local path]")
+    .replace(/[A-Z]:\\[^\s，。；;]+/gi, "[local path]")
+    .replace(/\bnpm(?:\s+run)?\s+[\w:-]+/gi, "project check")
+    .replace(/\b(?:apps|packages|plugins|platforms|scripts|src|test|tests|READMEs?)\/[^\s，。；;]+/gi, "[project file]")
+    .replace(/\.donegraph\/[^\s，。；;]+/gi, "[donegraph artifact]")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function safeSignalForCommand(command: string | undefined): string | undefined {
+  const intent = commandIntent(command);
+  if (intent === "typecheck") return "Type structure checked";
+  if (intent === "build") return "Build path checked";
+  if (intent === "lint") return "Quality check found";
+  if (intent === "test") return "Test path checked";
+  return command ? "Project check recorded" : undefined;
 }
 
 function statusForEvent(event: DoneGraphEvent): EvidenceStatus {
@@ -957,6 +1024,129 @@ function progressProofDetail(item: DashboardStoryCopy, page: number): string {
 function dashboardNarrativeFor(graph: DoneGraph): string {
   const nextStep = graph.next_steps[0] ? dashboardNextStep(graph.next_steps[0]) : "继续记录下一段协作。";
   return `这轮协作已经走完 ${graph.summary.milestones_completed} / ${graph.summary.milestones_total} 个里程碑，当前阶段是「${graph.summary.current_stage}」，并沉淀 ${graph.summary.evidence_passed} 条通过证据。下一步是：${nextStep}`;
+}
+
+function safeSnapshotItemForNode(node: DoneGraphNode): DoneGraphSafeSnapshotWorkItem {
+  const copy = storyCopyForNode(node);
+  return {
+    type: node.type,
+    title: redactDoneGraphText(copy.title),
+    detail: redactDoneGraphText(copy.detail),
+    status: node.status,
+    signal: safeSignalForCommand(node.metadata.command)
+  };
+}
+
+function safeSnapshotLetter(graph: DoneGraph, workTrail: DoneGraphSafeSnapshotWorkItem[]): { subject: string; body: string } {
+  const goal = redactDoneGraphText(graph.goal || "this AI run");
+  const strongestSignal =
+    workTrail.find((item) => item.status === "pass" && item.signal)?.signal ??
+    `${graph.summary.milestones_completed} of ${graph.summary.milestones_total} milestones are already visible`;
+  const nextStep = redactDoneGraphText(graph.next_steps[0] ?? "continue from the last recorded step");
+  const body = [
+    "Hi, I saved the useful part of this AI session for you.",
+    `The run was about: ${goal}.`,
+    `I kept the trail small on purpose: ${workTrail.length} work moments, ${graph.summary.evidence_passed} passed checks, and ${graph.summary.blockers} blockers.`,
+    `The strongest signal I can show safely is: ${strongestSignal}.`,
+    `I did not include the raw chat, private file contents, local machine paths, or secret-looking values.`,
+    `When you come back, begin here: ${nextStep}.`
+  ].join("\n\n");
+  return {
+    subject: "Your AI work trail is ready",
+    body
+  };
+}
+
+function safeSnapshotRadio(graph: DoneGraph, workTrail: DoneGraphSafeSnapshotWorkItem[]): DoneGraphSafeSnapshot["radio"] {
+  const segments = workTrail.slice(0, 4).map((item) => ({
+    title: item.title,
+    line:
+      item.signal && item.status === "pass"
+        ? `${item.detail} I kept the proof signal, not the private command.`
+        : item.detail
+  }));
+  if (segments.length === 0) {
+    segments.push({
+      title: "I am waiting for the first trace",
+      line: "Once the user runs an AI task, I can turn the useful part into a small, safe replay."
+    });
+  }
+  segments.push({
+    title: "The next handoff is already warm",
+    line: redactDoneGraphText(graph.next_steps[0] ?? "The next step will appear here after the run has enough signal.")
+  });
+  return {
+    intro: "A quiet agent radio script generated from the safe snapshot.",
+    segments
+  };
+}
+
+export function buildSafeSnapshot(graph: DoneGraph, generatedAt = graph.generated_at): DoneGraphSafeSnapshot {
+  const workTrail = graph.nodes
+    .filter((node) => node.type !== "next_step")
+    .slice(0, 18)
+    .map(safeSnapshotItemForNode);
+  const achievements = graph.achievements.slice(0, 12).map((item) => ({
+    title: redactDoneGraphText(item.title),
+    detail: redactDoneGraphText(item.detail),
+    status: item.status
+  }));
+  const milestones = graph.milestones.map((item) => ({
+    title: redactDoneGraphText(item.title),
+    detail: redactDoneGraphText(item.detail),
+    status: item.status
+  }));
+  const nextSteps = graph.next_steps.map(redactDoneGraphText);
+
+  return {
+    version: "1",
+    kind: "donegraph.safe_snapshot",
+    generated_at: generatedAt,
+    goal: redactDoneGraphText(graph.goal),
+    platform: graph.platform,
+    privacy: {
+      mode: "single_safe_snapshot",
+      raw_session_included: false,
+      uploaded_fields: ["summary", "milestones", "achievements", "work_trail", "next_steps", "letter", "radio"],
+      excluded_fields: ["raw session log", "full chat", "file contents", "local machine paths", "secret-looking values"],
+      redactions: ["local paths", "project file paths", "API keys", "tokens", "password-like values", "emails"]
+    },
+    summary: graph.summary,
+    milestones,
+    achievements,
+    work_trail: workTrail,
+    next_steps: nextSteps,
+    letter: safeSnapshotLetter(graph, workTrail),
+    radio: safeSnapshotRadio(graph, workTrail)
+  };
+}
+
+export function renderSafeSnapshotMarkdown(snapshot: DoneGraphSafeSnapshot): string {
+  return [
+    "# DoneGraph Safe Snapshot",
+    "",
+    `Generated: ${snapshot.generated_at}`,
+    `Goal: ${snapshot.goal || "Not started"}`,
+    "",
+    "## Privacy Boundary",
+    "",
+    `- Mode: ${snapshot.privacy.mode}`,
+    `- Raw session included: ${snapshot.privacy.raw_session_included ? "yes" : "no"}`,
+    `- Excluded: ${snapshot.privacy.excluded_fields.join(", ")}`,
+    "",
+    "## Work Trail",
+    "",
+    ...snapshot.work_trail.map((item) => `- [${item.status}] ${item.title}: ${item.detail}${item.signal ? ` (${item.signal})` : ""}`),
+    "",
+    "## Letter",
+    "",
+    snapshot.letter.body,
+    "",
+    "## Radio",
+    "",
+    ...snapshot.radio.segments.map((item) => `- ${item.title}: ${item.line}`),
+    ""
+  ].join("\n");
 }
 
 function nodeTypeText(type: DoneGraphNodeType): string {

@@ -1,10 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+  buildSafeSnapshot,
   buildDoneGraph,
   renderAchievementLog,
   renderDashboardHtml,
-  renderNextSteps
+  renderNextSteps,
+  renderSafeSnapshotMarkdown
 } from "@donegraph/core";
 import type { DoneGraph, DoneGraphEvent, DoneGraphEventType, DoneGraphPlatform } from "@donegraph/core";
 
@@ -16,6 +18,8 @@ export interface DoneGraphPaths {
   achievementLog: string;
   nextSteps: string;
   dashboardHtml: string;
+  safeSnapshotJson: string;
+  safeSnapshotMarkdown: string;
   fingerprintsJson: string;
 }
 
@@ -55,6 +59,8 @@ export function pathsForWorkspace(workspacePath: string): DoneGraphPaths {
     achievementLog: path.join(workspace, ".donegraph", "achievement-log.md"),
     nextSteps: path.join(workspace, ".donegraph", "next-steps.md"),
     dashboardHtml: path.join(workspace, ".donegraph", "dashboard.html"),
+    safeSnapshotJson: path.join(workspace, ".donegraph", "safe-snapshot.json"),
+    safeSnapshotMarkdown: path.join(workspace, ".donegraph", "safe-snapshot.md"),
     fingerprintsJson: path.join(workspace, ".donegraph", "fingerprints.json")
   };
 }
@@ -96,6 +102,9 @@ export function writeDoneGraphArtifacts(workspacePath: string, graph: DoneGraph)
   fs.writeFileSync(paths.achievementLog, renderAchievementLog(graph), "utf8");
   fs.writeFileSync(paths.nextSteps, renderNextSteps(graph), "utf8");
   fs.writeFileSync(paths.dashboardHtml, renderDashboardHtml(graph), "utf8");
+  const safeSnapshot = buildSafeSnapshot(graph, graph.generated_at);
+  fs.writeFileSync(paths.safeSnapshotJson, `${JSON.stringify(safeSnapshot, null, 2)}\n`, "utf8");
+  fs.writeFileSync(paths.safeSnapshotMarkdown, renderSafeSnapshotMarkdown(safeSnapshot), "utf8");
   return paths;
 }
 

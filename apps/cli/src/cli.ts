@@ -12,7 +12,7 @@ import {
   readDoneGraphEvents
 } from "./donegraphStorage.js";
 import { buildCaptureEvents } from "@donegraph/core";
-import type { DoneGraphEvent, DoneGraphEventMetadata, DoneGraphEventType, DoneGraphPlatform, EvidenceStatus } from "@donegraph/core";
+import type { DoneGraphEvent, DoneGraphEventMetadata, DoneGraphEventType, DoneGraphPlatform, DoneGraphSafeSnapshot, EvidenceStatus } from "@donegraph/core";
 
 type WriteLine = (line: string) => void;
 
@@ -71,6 +71,8 @@ function usage(): string {
     "  donegraph proof <text> --pass|--fail|--unknown|--blocked [--command <cmd>] [--workspace <path>]",
     "  donegraph done <text> [--workspace <path>]",
     "  donegraph capture [--goal <goal>] [--platform codex|claude|cursor|generic] [--verify] [--workspace <path>]",
+    "  donegraph snapshot [--workspace <path>]",
+    "  donegraph publish [--target https://donegraph.space] [--workspace <path>]",
     "  donegraph build [--workspace <path>]",
     "  donegraph dashboard [--workspace <path>] [--no-open]",
     "  donegraph summary [--workspace <path>]",
@@ -80,6 +82,8 @@ function usage(): string {
     "  donegraph checkpoint \"Implemented CLI\" --command \"npm test\"",
     "  donegraph proof \"Tests passed\" --pass --command \"npm test\"",
     "  donegraph capture --goal \"Make AI progress visible\" --platform codex --verify",
+    "  donegraph snapshot",
+    "  donegraph publish --target https://donegraph.space",
     "  donegraph done \"The demo is ready\"",
     "  donegraph dashboard --no-open"
   ].join("\n");
@@ -397,6 +401,32 @@ function printArtifacts(write: WriteLine, workspacePath: string): void {
   write(`- ${paths.achievementLog}`);
   write(`- ${paths.nextSteps}`);
   write(`- ${paths.dashboardHtml}`);
+  write(`- ${paths.safeSnapshotJson}`);
+}
+
+async function publishSafeSnapshot(input: {
+  target: string;
+  snapshot: DoneGraphSafeSnapshot;
+}): Promise<{ id?: string; url?: string; share_url?: string }> {
+  const baseUrl = input.target.endsWith("/") ? input.target : `${input.target}/`;
+  const endpoint = new URL("/api/snapshots", baseUrl);
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(input.snapshot)
+  });
+  const body = await response.text();
+  let parsed: unknown;
+  try {
+    parsed = body ? JSON.parse(body) : {};
+  } catch {
+    parsed = { error: body };
+  }
+  if (!response.ok) {
+    const error = parsed && typeof parsed === "object" && "error" in parsed ? String(parsed.error) : `HTTP ${response.status}`;
+    throw new Error(error);
+  }
+  return parsed as { id?: string; url?: string; share_url?: string };
 }
 
 export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {}): Promise<number> {
@@ -492,6 +522,33 @@ export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {
     write(`Captured ${capturedEvents.length} context events. Progress is now ${graph.summary.progress_percent}%.`);
     printArtifacts(write, parsed.workspacePath);
     return 0;
+  }
+
+  if (parsed.command === "snapshot") {
+    const { graph, paths } = buildDoneGraphArtifacts(parsed.workspacePath, now());
+    write(`Safe snapshot created for ${graph.goal || "this run"}.`);
+    write("Privacy: raw session, full chat, file contents, local paths, and secret-looking values are excluded.");
+    write(`Snapshot: ${paths.safeSnapshotJson}`);
+    write(`Readable copy: ${paths.safeSnapshotMarkdown}`);
+    return 0;
+  }
+
+  if (parsed.command === "publish") {
+    const { paths } = buildDoneGraphArtifacts(parsed.workspacePath, now());
+    const snapshot = JSON.parse(fs.readFileSync(paths.safeSnapshotJson, "utf8")) as DoneGraphSafeSnapshot;
+    const target = optionalString(parsed.options, "target") ?? "https://donegraph.space";
+    try {
+      const result = await publishSafeSnapshot({ target, snapshot });
+      const baseUrl = target.endsWith("/") ? target.slice(0, -1) : target;
+      const shareUrl = result.share_url ?? result.url ?? (result.id ? `${baseUrl}/share.html?id=${encodeURIComponent(result.id)}` : `${baseUrl}/share.html`);
+      write(`Safe snapshot published: ${shareUrl}`);
+      return 0;
+    } catch (error) {
+      write(`Cloud publish is not connected yet: ${error instanceof Error ? error.message : String(error)}`);
+      write(`Safe snapshot stayed local: ${paths.safeSnapshotJson}`);
+      write(`Open ${target.replace(/\/$/, "")}/share.html and import that file for a no-server demo.`);
+      return 0;
+    }
   }
 
   const shortcutType = shortcutCommands.get(parsed.command);

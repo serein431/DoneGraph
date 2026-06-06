@@ -1,0 +1,786 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DoneGraph Safe Snapshot</title>
+    <meta
+      name="description"
+      content="Open a DoneGraph safe snapshot: a one-run AI work trail with the private session left out."
+    />
+    <style>
+      :root {
+        --ink: #06100f;
+        --panel: rgba(10, 28, 27, 0.84);
+        --panel-2: rgba(16, 42, 39, 0.68);
+        --paper: #f7f1dd;
+        --muted: rgba(247, 241, 221, 0.68);
+        --mint: #bdf7e7;
+        --cyan: #45e3d0;
+        --amber: #e2b36b;
+        --line: rgba(189, 247, 231, 0.22);
+        --danger: #ff8f8f;
+        --shadow: 0 30px 90px rgba(0, 0, 0, 0.38);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--ink);
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        color: var(--paper);
+        background:
+          radial-gradient(circle at 18% 12%, rgba(69, 227, 208, 0.24), transparent 26rem),
+          radial-gradient(circle at 82% 0%, rgba(226, 179, 107, 0.16), transparent 30rem),
+          linear-gradient(135deg, #06100f 0%, #092321 48%, #050909 100%);
+        font-family: Avenir, "Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.45;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.28;
+        background-image:
+          linear-gradient(rgba(189, 247, 231, 0.12) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(189, 247, 231, 0.1) 1px, transparent 1px);
+        background-size: 44px 44px;
+        mask-image: radial-gradient(circle at 50% 20%, #000 0%, transparent 72%);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar {
+        position: sticky;
+        z-index: 10;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem clamp(1rem, 4vw, 2rem);
+        border-bottom: 1px solid var(--line);
+        background: rgba(6, 16, 15, 0.82);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand,
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .brand {
+        text-decoration: none;
+        font-weight: 900;
+      }
+
+      .brand img {
+        width: 2.35rem;
+        height: 2.35rem;
+        border: 1px solid rgba(189, 247, 231, 0.28);
+        border-radius: 0.72rem;
+        object-fit: cover;
+      }
+
+      .nav a {
+        color: var(--muted);
+        font-size: 0.92rem;
+        text-decoration: none;
+      }
+
+      .nav a:hover,
+      .nav a:focus-visible {
+        color: var(--mint);
+      }
+
+      main {
+        position: relative;
+        width: min(1220px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: clamp(2.2rem, 6vw, 5rem) 0 4rem;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+        gap: clamp(1.5rem, 4vw, 3rem);
+        align-items: end;
+        min-height: 58vh;
+      }
+
+      .eyebrow {
+        margin: 0 0 1rem;
+        color: var(--mint);
+        font-size: 0.78rem;
+        font-weight: 900;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 760px;
+        margin-bottom: 1rem;
+        font-size: clamp(3.4rem, 9vw, 7.6rem);
+        line-height: 0.9;
+        letter-spacing: 0;
+      }
+
+      .hero-copy {
+        max-width: 680px;
+        color: rgba(247, 241, 221, 0.78);
+        font-size: clamp(1.1rem, 2vw, 1.42rem);
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(145deg, rgba(12, 33, 31, 0.92), rgba(7, 17, 16, 0.82)),
+          radial-gradient(circle at 80% 0%, rgba(69, 227, 208, 0.18), transparent 20rem);
+        box-shadow: var(--shadow);
+      }
+
+      .drop-panel {
+        padding: clamp(1rem, 3vw, 1.4rem);
+      }
+
+      .dropzone {
+        display: grid;
+        min-height: 260px;
+        place-items: center;
+        padding: 2rem;
+        border: 1px dashed rgba(189, 247, 231, 0.46);
+        background: rgba(189, 247, 231, 0.06);
+        text-align: center;
+      }
+
+      .dropzone.dragging {
+        border-color: var(--cyan);
+        background: rgba(69, 227, 208, 0.12);
+      }
+
+      .dropzone strong {
+        display: block;
+        margin-bottom: 0.6rem;
+        font-size: clamp(1.35rem, 3vw, 2rem);
+      }
+
+      .dropzone p {
+        max-width: 36rem;
+        margin: 0 auto 1.2rem;
+        color: var(--muted);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        align-items: center;
+        justify-content: center;
+      }
+
+      button,
+      .button {
+        appearance: none;
+        display: inline-flex;
+        min-height: 3rem;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.82rem 1.1rem;
+        border: 1px solid rgba(189, 247, 231, 0.34);
+        border-radius: 0.55rem;
+        color: var(--paper);
+        background: rgba(189, 247, 231, 0.08);
+        font: inherit;
+        font-weight: 900;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      button.primary,
+      .button.primary {
+        color: #06100f;
+        border-color: var(--mint);
+        background: var(--mint);
+      }
+
+      button:disabled {
+        cursor: not-allowed;
+        opacity: 0.42;
+      }
+
+      input[type="file"] {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+      }
+
+      .status {
+        min-height: 1.4rem;
+        margin: 0.9rem 0 0;
+        color: var(--muted);
+        text-align: center;
+      }
+
+      .status.error {
+        color: var(--danger);
+      }
+
+      .snapshot {
+        display: none;
+        margin-top: clamp(2rem, 6vw, 5rem);
+      }
+
+      .snapshot.loaded {
+        display: block;
+      }
+
+      .snapshot-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .headline-card,
+      .privacy-card,
+      .letter-card,
+      .radio-card {
+        padding: clamp(1.1rem, 3vw, 1.6rem);
+      }
+
+      .headline-card h2 {
+        margin-bottom: 0.8rem;
+        font-size: clamp(2rem, 5vw, 4.4rem);
+        line-height: 0.94;
+        letter-spacing: 0;
+      }
+
+      .headline-card p {
+        color: var(--muted);
+        font-size: 1.08rem;
+      }
+
+      .metric-row {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-top: 1.2rem;
+      }
+
+      .metric {
+        min-height: 6rem;
+        padding: 0.9rem;
+        border: 1px solid rgba(189, 247, 231, 0.16);
+        background: rgba(189, 247, 231, 0.06);
+      }
+
+      .metric span {
+        display: block;
+        color: var(--mint);
+        font-size: clamp(1.7rem, 4vw, 2.8rem);
+        font-weight: 950;
+        line-height: 1;
+      }
+
+      .metric small {
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      .privacy-card h3,
+      .letter-card h3,
+      .radio-card h3,
+      .trail h3 {
+        margin-bottom: 0.8rem;
+        color: var(--mint);
+        font-size: 0.92rem;
+        font-weight: 950;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .privacy-card ul,
+      .trail-list,
+      .radio-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .privacy-card li {
+        padding: 0.76rem 0;
+        border-bottom: 1px solid rgba(189, 247, 231, 0.12);
+        color: var(--muted);
+      }
+
+      .privacy-card li:last-child {
+        border-bottom: 0;
+      }
+
+      .content-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(300px, 0.86fr);
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .letter-card {
+        background:
+          linear-gradient(150deg, rgba(247, 241, 221, 0.97), rgba(226, 211, 168, 0.95)),
+          radial-gradient(circle at 20% 0%, rgba(255, 255, 255, 0.8), transparent 18rem);
+        color: #241a10;
+      }
+
+      .letter-card h3 {
+        color: #7f5328;
+      }
+
+      .letter-card pre {
+        margin: 0;
+        white-space: pre-wrap;
+        color: #2f2317;
+        font-family: "Bradley Hand", "Segoe Print", "Comic Sans MS", cursive;
+        font-size: clamp(1.02rem, 1.8vw, 1.28rem);
+        line-height: 1.62;
+      }
+
+      .radio-card {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .radio-card::before {
+        content: "";
+        position: absolute;
+        inset: -30%;
+        background: conic-gradient(from 90deg, transparent, rgba(69, 227, 208, 0.24), transparent, rgba(226, 179, 107, 0.14), transparent);
+        animation: spin 11s linear infinite;
+        opacity: 0.5;
+      }
+
+      .radio-card > * {
+        position: relative;
+      }
+
+      .radio-list li {
+        display: grid;
+        gap: 0.3rem;
+        padding: 0.9rem 0;
+        border-bottom: 1px solid rgba(189, 247, 231, 0.13);
+      }
+
+      .radio-list strong {
+        color: var(--paper);
+      }
+
+      .radio-list span {
+        color: var(--muted);
+      }
+
+      .trail {
+        margin-top: 1rem;
+      }
+
+      .trail-list {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+
+      .trail-list li {
+        min-height: 10rem;
+        padding: 1rem;
+        border: 1px solid rgba(189, 247, 231, 0.15);
+        background: rgba(189, 247, 231, 0.055);
+      }
+
+      .trail-list small {
+        display: inline-flex;
+        margin-bottom: 0.7rem;
+        color: var(--mint);
+        font-size: 0.72rem;
+        font-weight: 950;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .trail-list strong {
+        display: block;
+        margin-bottom: 0.52rem;
+        font-size: 1.08rem;
+      }
+
+      .trail-list span {
+        display: block;
+        color: var(--muted);
+      }
+
+      .share-result {
+        display: none;
+        margin-top: 0.9rem;
+        padding: 0.8rem;
+        border: 1px solid rgba(189, 247, 231, 0.18);
+        background: rgba(189, 247, 231, 0.06);
+        color: var(--muted);
+        word-break: break-word;
+      }
+
+      .share-result.visible {
+        display: block;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .hero,
+        .snapshot-head,
+        .content-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .metric-row {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .trail-list {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .nav {
+          width: 100%;
+          overflow-x: auto;
+        }
+
+        h1 {
+          font-size: clamp(2.7rem, 18vw, 4.3rem);
+        }
+
+        .dropzone {
+          min-height: 220px;
+          padding: 1.4rem;
+        }
+
+        .metric-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">
+        <img src="assets/submission/donegraph-logo.png" alt="" aria-hidden="true" />
+        <span>DoneGraph</span>
+      </a>
+      <nav class="nav" aria-label="Snapshot navigation">
+        <a href="/">Product</a>
+        <a href="/.donegraph/dashboard.html?lang=en#page-0">Replay</a>
+        <a href="#snapshot">Snapshot</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div>
+          <p class="eyebrow">Safe Snapshot / One Run Only</p>
+          <h1>Publish the trail, not the private work.</h1>
+          <p class="hero-copy">
+            A DoneGraph snapshot carries the useful story of an AI session: what moved, what passed, what the agent wrote back, and where the next run should begin.
+          </p>
+        </div>
+        <section class="panel drop-panel" id="snapshot" aria-label="Snapshot importer">
+          <label class="dropzone" data-dropzone>
+            <input type="file" accept="application/json,.json" data-file-input />
+            <span>
+              <strong>Drop a safe-snapshot.json</strong>
+              <p>The page renders it in this browser first. Cloud publish only happens when the user asks.</p>
+              <span class="actions">
+                <span class="button primary">Choose snapshot</span>
+                <button type="button" data-load-sample>Load sample</button>
+              </span>
+            </span>
+          </label>
+          <p class="status" data-status></p>
+        </section>
+      </section>
+
+      <section class="snapshot" data-snapshot-view aria-live="polite">
+        <div class="snapshot-head">
+          <article class="panel headline-card">
+            <p class="eyebrow" data-snapshot-generated>Snapshot ready</p>
+            <h2 data-snapshot-goal>AI work trail</h2>
+            <p data-snapshot-summary>Open a safe run to see its proof trail.</p>
+            <div class="metric-row">
+              <div class="metric"><span data-metric-progress>0%</span><small>Progress</small></div>
+              <div class="metric"><span data-metric-events>0</span><small>Events</small></div>
+              <div class="metric"><span data-metric-proof>0</span><small>Passed checks</small></div>
+              <div class="metric"><span data-metric-next>0</span><small>Next steps</small></div>
+            </div>
+            <div class="actions" style="justify-content: flex-start; margin-top: 1.2rem">
+              <button class="primary" type="button" data-publish disabled>Publish once</button>
+              <button type="button" data-keep disabled>Keep in this browser</button>
+            </div>
+            <div class="share-result" data-share-result></div>
+          </article>
+
+          <article class="panel privacy-card">
+            <h3>Privacy Boundary</h3>
+            <ul data-privacy-list>
+              <li>Raw session excluded</li>
+              <li>File contents excluded</li>
+              <li>Local paths excluded</li>
+              <li>Secrets redacted</li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <article class="letter-card">
+            <h3 data-letter-subject>Your AI work trail is ready</h3>
+            <pre data-letter-body></pre>
+          </article>
+
+          <article class="panel radio-card">
+            <h3>Agent Radio</h3>
+            <ul class="radio-list" data-radio-list></ul>
+          </article>
+        </div>
+
+        <section class="panel trail">
+          <div class="headline-card" style="padding-bottom: 0">
+            <h3>Work Trail</h3>
+          </div>
+          <ul class="trail-list" data-trail-list></ul>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const statusEl = document.querySelector("[data-status]");
+      const fileInput = document.querySelector("[data-file-input]");
+      const dropzone = document.querySelector("[data-dropzone]");
+      const snapshotView = document.querySelector("[data-snapshot-view]");
+      const publishButton = document.querySelector("[data-publish]");
+      const keepButton = document.querySelector("[data-keep]");
+      const shareResult = document.querySelector("[data-share-result]");
+      let currentSnapshot = null;
+
+      const sampleSnapshot = {
+        version: "1",
+        kind: "donegraph.safe_snapshot",
+        generated_at: "2026-06-06T10:00:00.000Z",
+        goal: "Prepare a product demo that makes AI work feel inspectable and human.",
+        platform: "codex",
+        privacy: {
+          mode: "single_safe_snapshot",
+          raw_session_included: false,
+          uploaded_fields: ["summary", "milestones", "achievements", "work_trail", "next_steps", "letter", "radio"],
+          excluded_fields: ["raw session log", "full chat", "file contents", "local machine paths", "secret-looking values"],
+          redactions: ["local paths", "project file paths", "API keys", "tokens", "password-like values", "emails"]
+        },
+        summary: {
+          total_events: 12,
+          progress_percent: 83,
+          evidence_passed: 3,
+          next_steps: 1,
+          milestones_completed: 5,
+          milestones_total: 6,
+          current_stage: "handoff ready"
+        },
+        work_trail: [
+          { type: "goal", title: "The goal is clear", detail: "The AI run has a named outcome and a replayable trail.", status: "pass" },
+          { type: "artifact", title: "The dashboard exists", detail: "The work became a replay, a letter, and a radio moment.", status: "pass" },
+          { type: "evidence", title: "The checks have signal", detail: "The snapshot kept proof categories without exposing the raw command.", status: "pass", signal: "Test path checked" }
+        ],
+        next_steps: ["Open the share page, import the snapshot, and publish only when the user confirms."],
+        letter: {
+          subject: "Your AI work trail is ready",
+          body: "Hi, I saved the useful part of this AI session for you.\n\nThe run was about: Prepare a product demo that makes AI work feel inspectable and human.\n\nI kept the trail small on purpose: 3 work moments, 3 passed checks, and no raw session.\n\nWhen you come back, begin here: open the share page and publish only when you confirm."
+        },
+        radio: {
+          intro: "A quiet agent radio script generated from the safe snapshot.",
+          segments: [
+            { title: "I kept the useful part", line: "The work trail is here, but the private work stayed behind." },
+            { title: "The letter is the handoff", line: "I wrote back so tomorrow does not begin cold." },
+            { title: "The radio is still on", line: "If nobody turns me off, I keep softly debriefing the run." }
+          ]
+        }
+      };
+
+      function setStatus(text, isError = false) {
+        statusEl.textContent = text;
+        statusEl.classList.toggle("error", isError);
+      }
+
+      function escapeText(value) {
+        return String(value ?? "");
+      }
+
+      function isSafeSnapshot(value) {
+        return Boolean(value && value.kind === "donegraph.safe_snapshot" && value.privacy?.raw_session_included === false);
+      }
+
+      function renderList(parent, items, renderItem) {
+        parent.innerHTML = "";
+        items.forEach((item, index) => {
+          const li = document.createElement("li");
+          renderItem(li, item, index);
+          parent.append(li);
+        });
+      }
+
+      function renderSnapshot(snapshot) {
+        if (!isSafeSnapshot(snapshot)) throw new Error("This is not a DoneGraph safe snapshot.");
+        currentSnapshot = snapshot;
+        document.querySelector("[data-snapshot-generated]").textContent = `Generated ${new Date(snapshot.generated_at).toLocaleString()}`;
+        document.querySelector("[data-snapshot-goal]").textContent = snapshot.goal || "AI work trail";
+        document.querySelector("[data-snapshot-summary]").textContent = `${snapshot.summary?.milestones_completed ?? 0} of ${snapshot.summary?.milestones_total ?? 0} milestones are visible. The raw session is not included.`;
+        document.querySelector("[data-metric-progress]").textContent = `${snapshot.summary?.progress_percent ?? 0}%`;
+        document.querySelector("[data-metric-events]").textContent = snapshot.summary?.total_events ?? snapshot.work_trail?.length ?? 0;
+        document.querySelector("[data-metric-proof]").textContent = snapshot.summary?.evidence_passed ?? 0;
+        document.querySelector("[data-metric-next]").textContent = snapshot.summary?.next_steps ?? snapshot.next_steps?.length ?? 0;
+        document.querySelector("[data-letter-subject]").textContent = snapshot.letter?.subject || "Your AI work trail is ready";
+        document.querySelector("[data-letter-body]").textContent = snapshot.letter?.body || "";
+
+        renderList(document.querySelector("[data-privacy-list]"), snapshot.privacy.excluded_fields || [], (li, item) => {
+          li.textContent = item;
+        });
+        renderList(document.querySelector("[data-radio-list]"), snapshot.radio?.segments || [], (li, item) => {
+          const strong = document.createElement("strong");
+          strong.textContent = item.title;
+          const span = document.createElement("span");
+          span.textContent = item.line;
+          li.append(strong, span);
+        });
+        renderList(document.querySelector("[data-trail-list]"), snapshot.work_trail || [], (li, item) => {
+          const small = document.createElement("small");
+          small.textContent = `${item.type || "work"} / ${item.status || "unknown"}`;
+          const strong = document.createElement("strong");
+          strong.textContent = item.title;
+          const span = document.createElement("span");
+          span.textContent = item.signal ? `${item.detail} · ${item.signal}` : item.detail;
+          li.append(small, strong, span);
+        });
+
+        snapshotView.classList.add("loaded");
+        publishButton.disabled = false;
+        keepButton.disabled = false;
+        shareResult.classList.remove("visible");
+        setStatus("Snapshot opened in this browser.");
+        snapshotView.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+
+      async function loadFile(file) {
+        const text = await file.text();
+        renderSnapshot(JSON.parse(text));
+      }
+
+      async function loadRemoteSnapshot(id) {
+        const response = await fetch(`/api/snapshots?id=${encodeURIComponent(id)}`);
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || "Snapshot could not be loaded.");
+        renderSnapshot(payload.snapshot);
+      }
+
+      fileInput.addEventListener("change", () => {
+        const file = fileInput.files?.[0];
+        if (!file) return;
+        loadFile(file).catch((error) => setStatus(error.message, true));
+      });
+
+      dropzone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        dropzone.classList.add("dragging");
+      });
+      dropzone.addEventListener("dragleave", () => dropzone.classList.remove("dragging"));
+      dropzone.addEventListener("drop", (event) => {
+        event.preventDefault();
+        dropzone.classList.remove("dragging");
+        const file = event.dataTransfer?.files?.[0];
+        if (!file) return;
+        loadFile(file).catch((error) => setStatus(error.message, true));
+      });
+
+      document.querySelector("[data-load-sample]").addEventListener("click", () => renderSnapshot(sampleSnapshot));
+
+      keepButton.addEventListener("click", () => {
+        if (!currentSnapshot) return;
+        localStorage.setItem("donegraph.safeSnapshot", JSON.stringify(currentSnapshot));
+        setStatus("Snapshot kept in this browser.");
+      });
+
+      publishButton.addEventListener("click", async () => {
+        if (!currentSnapshot) return;
+        publishButton.disabled = true;
+        setStatus("Publishing this one safe snapshot...");
+        try {
+          const response = await fetch("/api/snapshots", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(currentSnapshot)
+          });
+          const payload = await response.json();
+          if (!response.ok) throw new Error(payload.error || "Cloud publish failed.");
+          const url = payload.share_url || (payload.id ? `/share.html?id=${encodeURIComponent(payload.id)}` : "/share.html");
+          shareResult.innerHTML = `Published once: <a href="${url}">${url}</a>`;
+          shareResult.classList.add("visible");
+          setStatus("Published.");
+        } catch (error) {
+          setStatus(error.message || "Cloud publish failed. The snapshot stayed in this browser.", true);
+        } finally {
+          publishButton.disabled = false;
+        }
+      });
+
+      const params = new URLSearchParams(window.location.search);
+      const remoteId = params.get("id");
+      if (remoteId) {
+        setStatus("Loading snapshot...");
+        loadRemoteSnapshot(remoteId).catch((error) => setStatus(error.message, true));
+      } else {
+        const saved = localStorage.getItem("donegraph.safeSnapshot");
+        if (saved) {
+          try {
+            renderSnapshot(JSON.parse(saved));
+            setStatus("Opened the snapshot kept in this browser.");
+          } catch {
+            localStorage.removeItem("donegraph.safeSnapshot");
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

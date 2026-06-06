@@ -196,6 +196,49 @@ describe("donegraph CLI", () => {
     expect(output.join("\n")).toContain("dashboard.html");
   });
 
+  it("creates a safe snapshot without raw commands, local paths, or the session log", async () => {
+    const workspace = tempWorkspace();
+    const output: string[] = [];
+
+    await runDoneGraphCli(["start", "Publish a safe run", "--platform", "codex"], {
+      cwd: workspace,
+      write: () => undefined,
+      now: () => "2026-05-28T00:00:00.000Z",
+      uuid: () => "goal"
+    });
+    await runDoneGraphCli(["proof", "Tests passed with token=sk-testsecret123456", "--pass", "--command", "npm test"], {
+      cwd: workspace,
+      write: () => undefined,
+      now: () => "2026-05-28T00:01:00.000Z",
+      uuid: () => "proof"
+    });
+
+    const code = await runDoneGraphCli(["snapshot"], {
+      cwd: workspace,
+      write: (line) => output.push(line),
+      now: () => "2026-05-28T00:02:00.000Z"
+    });
+    const snapshotPath = path.join(workspace, ".donegraph", "safe-snapshot.json");
+    const snapshotRaw = fs.readFileSync(snapshotPath, "utf8");
+    const snapshot = JSON.parse(snapshotRaw) as {
+      kind: string;
+      privacy: { raw_session_included: boolean; excluded_fields: string[] };
+      work_trail: Array<{ signal?: string }>;
+      letter: { body: string };
+    };
+
+    expect(code).toBe(0);
+    expect(output.join("\n")).toContain("Safe snapshot created");
+    expect(snapshot.kind).toBe("donegraph.safe_snapshot");
+    expect(snapshot.privacy.raw_session_included).toBe(false);
+    expect(snapshot.privacy.excluded_fields).toContain("raw session log");
+    expect(snapshotRaw).not.toContain("npm test");
+    expect(snapshotRaw).not.toContain("sk-testsecret123456");
+    expect(snapshotRaw).not.toContain(workspace);
+    expect(snapshot.work_trail.some((item) => item.signal === "Test path checked")).toBe(true);
+    expect(snapshot.letter.body).toContain("I did not include the raw chat");
+  });
+
   it("auto-captures project context into DoneGraph events", async () => {
     const workspace = tempWorkspace();
     fs.writeFileSync(
