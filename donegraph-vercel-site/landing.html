@@ -427,6 +427,64 @@
         color: var(--ink);
       }
 
+      .vote-callout {
+        display: flex;
+        max-width: 680px;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding: 0.86rem 0.92rem 0.86rem 1rem;
+        border: 1px solid rgba(189, 247, 231, 0.28);
+        border-radius: 0.8rem;
+        background: rgba(7, 16, 15, 0.58);
+        box-shadow: 0 18px 46px rgba(0, 0, 0, 0.22), inset 0 0 24px rgba(101, 216, 191, 0.06);
+      }
+
+      .vote-copy {
+        display: grid;
+        gap: 0.16rem;
+      }
+
+      .vote-copy strong {
+        color: var(--mint);
+        font-size: 0.9rem;
+      }
+
+      .vote-copy span {
+        color: rgba(245, 239, 220, 0.72);
+        font-size: 0.92rem;
+      }
+
+      .vote-link {
+        display: inline-flex;
+        min-height: 46px;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        gap: 0.54rem;
+        border-radius: 999px;
+        padding: 0.72rem 0.92rem;
+        border: 1px solid rgba(189, 247, 231, 0.42);
+        color: var(--ink);
+        background: var(--mint);
+        font-weight: 950;
+        text-decoration: none;
+        box-shadow: 0 0 24px rgba(101, 216, 191, 0.18);
+      }
+
+      .vote-arrow {
+        display: inline-grid;
+        width: 1.4rem;
+        height: 1.4rem;
+        place-items: center;
+        border-radius: 50%;
+        color: var(--mint);
+        background: var(--ink);
+        font-size: 0.76rem;
+        line-height: 1;
+      }
+
       .proof-row {
         display: flex;
         flex-wrap: wrap;
@@ -1694,6 +1752,15 @@
           flex-direction: column;
         }
 
+        .vote-callout {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .vote-link {
+          width: 100%;
+        }
+
         .button {
           width: 100%;
         }
@@ -1795,6 +1862,7 @@
         <a href="#market">市场</a>
         <a href="#radio">电台</a>
         <a href="share.html">上传</a>
+        <a href="https://evol.epicconnector.ai/projects/9640986c-ff7f-4b4b-8c85-fce4b557a009" target="_blank" rel="noopener">投票</a>
         <a href="#business">商业化</a>
         <a class="language-link" href="en.html" aria-label="切换到英文">
           <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -1845,6 +1913,16 @@
           </p>
           <div class="actions">
             <a class="button primary" href=".donegraph/dashboard.html?lang=zh#page-0" target="_blank" rel="noopener">打开真实回放</a>
+          </div>
+          <div class="vote-callout" aria-label="给成迹投票">
+            <div class="vote-copy">
+              <strong>帮成迹在 UCWS 作品墙投一票</strong>
+              <span>打开链接注册/登录，然后点项目卡片右侧的 ▲ 箭头。</span>
+            </div>
+            <a class="vote-link" href="https://evol.epicconnector.ai/projects/9640986c-ff7f-4b4b-8c85-fce4b557a009" target="_blank" rel="noopener">
+              <span class="vote-arrow" aria-hidden="true">▲</span>
+              去投票
+            </a>
           </div>
           <ul class="proof-row">
             <li>面向 AI-native builders</li>
