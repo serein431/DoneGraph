@@ -759,6 +759,91 @@
         color: rgba(245, 239, 220, 0.72);
       }
 
+      .connect-panel {
+        display: grid;
+        grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .connect-card,
+      .agent-prompt-card {
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background:
+          radial-gradient(circle at 88% 0%, rgba(189, 247, 231, 0.18), transparent 20rem),
+          rgba(245, 239, 220, 0.06);
+      }
+
+      .connect-card {
+        display: grid;
+        gap: 1rem;
+        padding: 1.35rem;
+      }
+
+      .connect-step {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1rem;
+        align-items: start;
+        padding: 1rem;
+        border: 1px solid rgba(189, 247, 231, 0.14);
+        background: rgba(7, 16, 15, 0.22);
+      }
+
+      .connect-step span {
+        display: grid;
+        width: 2.45rem;
+        height: 2.45rem;
+        place-items: center;
+        border-radius: 999px;
+        background: var(--mint);
+        color: var(--ink);
+        font-weight: 950;
+      }
+
+      .connect-step strong {
+        display: block;
+        margin-bottom: 0.22rem;
+        color: var(--paper);
+        font-size: 1.08rem;
+      }
+
+      .connect-step p {
+        margin: 0;
+        color: rgba(245, 239, 220, 0.68);
+      }
+
+      .agent-prompt-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .agent-prompt-head strong {
+        color: var(--mint);
+        font-size: 0.86rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .agent-prompt {
+        max-height: 520px;
+        margin: 0;
+        overflow: auto;
+        padding: 1.1rem;
+        background: rgba(1, 8, 8, 0.62);
+        color: rgba(245, 239, 220, 0.88);
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.88rem;
+        line-height: 1.56;
+        white-space: pre-wrap;
+      }
+
       .front-radio {
         position: relative;
         overflow: hidden;
@@ -1171,7 +1256,8 @@
         }
 
         .split,
-        .asset-showcase {
+        .asset-showcase,
+        .connect-panel {
           grid-template-columns: 1fr;
         }
 
@@ -1333,6 +1419,7 @@
         .section-inner,
         .split,
         .asset-showcase,
+        .connect-panel,
         .market-head,
         .estimate,
         .radio-stage {
@@ -1475,6 +1562,7 @@
         .price-grid,
         .asset-grid,
         .radio-stage,
+        .connect-panel,
         .market-grid {
           grid-template-columns: 1fr;
         }
@@ -1572,6 +1660,7 @@
       </a>
       <nav class="nav" aria-label="Page navigation">
         <a href="#problem">Problem</a>
+        <a href="#connect">Connect</a>
         <a href="#audience">Audience</a>
         <a href="#market">Market</a>
         <a href="#radio">Radio</a>
@@ -1655,6 +1744,80 @@
             <article class="quote">
               <strong>The next session starts cold.</strong>
               <p>Switch the person, the agent, or the day, and the same context has to be rebuilt.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="connect">
+        <div class="inner">
+          <div class="section-title">
+            <h2>Connect your agent in one paste.</h2>
+            <p>
+              Drop this into AGENTS.md, Cursor Rules, Claude project instructions, or any agent system prompt. The next run will leave a local work trail and a safe snapshot the user controls.
+            </p>
+          </div>
+          <div class="connect-panel">
+            <div class="connect-card" aria-label="DoneGraph connection steps">
+              <article class="connect-step">
+                <span>1</span>
+                <div>
+                  <strong>Paste the instruction</strong>
+                  <p>Give the agent one operating rule: record meaningful progress while it works.</p>
+                </div>
+              </article>
+              <article class="connect-step">
+                <span>2</span>
+                <div>
+                  <strong>Let the agent work normally</strong>
+                  <p>It can build, fix, research, test, or ship. DoneGraph only captures the trail.</p>
+                </div>
+              </article>
+              <article class="connect-step">
+                <span>3</span>
+                <div>
+                  <strong>Review the safe snapshot</strong>
+                  <p>The user decides whether to keep it local, import it here, or publish one share link.</p>
+                </div>
+              </article>
+            </div>
+            <article class="agent-prompt-card">
+              <div class="agent-prompt-head">
+                <strong>Agent instruction</strong>
+                <button class="button primary" type="button" data-copy-agent>Copy for my agent</button>
+              </div>
+              <pre class="agent-prompt" data-agent-prompt># DoneGraph Agent Instruction
+
+Use DoneGraph as the local work ledger for this project.
+
+Before recording, check whether the `donegraph` command is available. If it is missing, ask the user before installing or point them to:
+https://github.com/serein431/DoneGraph
+
+At the start of a meaningful task:
+donegraph start "&lt;task goal&gt;" --platform generic
+
+When joining an existing task:
+donegraph capture --goal "&lt;task goal&gt;" --platform generic
+
+After important work:
+donegraph checkpoint "&lt;what changed&gt;" --command "&lt;command if relevant&gt;"
+
+When a check passes or fails:
+donegraph proof "&lt;what passed&gt;" --pass --command "&lt;command&gt;"
+donegraph proof "&lt;what failed&gt;" --fail --command "&lt;command&gt;"
+
+If work is blocked:
+donegraph block "&lt;what is blocking progress&gt;"
+
+At a stable stopping point:
+donegraph done "&lt;what is now ready&gt;"
+donegraph dashboard --no-open
+donegraph snapshot
+
+Privacy rule:
+Keep .donegraph/session.jsonl local by default. Share .donegraph/safe-snapshot.json only after the user confirms.
+
+Write DoneGraph records in plain human language: what changed, what passed, what is blocked, and where the next session should begin.</pre>
             </article>
           </div>
         </div>
@@ -1971,6 +2134,41 @@
       const frontRadioLetter = document.querySelector("[data-front-radio-letter]");
       const frontRadioRadio = document.querySelector("[data-front-radio-radio]");
       const frontRadioSection = document.querySelector("#radio");
+      const agentPrompt = document.querySelector("[data-agent-prompt]");
+      const agentCopyButtons = document.querySelectorAll("[data-copy-agent]");
+
+      async function copyText(text) {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.append(textarea);
+        textarea.select();
+        const copied = document.execCommand("copy");
+        textarea.remove();
+        return copied;
+      }
+
+      agentCopyButtons.forEach((button) => {
+        button.addEventListener("click", async () => {
+          if (!agentPrompt) return;
+          const original = button.textContent;
+          try {
+            await copyText(agentPrompt.textContent.trim());
+            button.textContent = "Copied";
+          } catch {
+            button.textContent = "Select the text";
+          }
+          window.setTimeout(() => {
+            button.textContent = original;
+          }, 1800);
+        });
+      });
 
       if (heroVideo && heroSound) {
         const setHeroSoundState = (isOn) => {

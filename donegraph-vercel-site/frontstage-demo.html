@@ -755,6 +755,91 @@
         color: rgba(245, 239, 220, 0.72);
       }
 
+      .connect-panel {
+        display: grid;
+        grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .connect-card,
+      .agent-prompt-card {
+        overflow: hidden;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        background:
+          radial-gradient(circle at 88% 0%, rgba(189, 247, 231, 0.18), transparent 20rem),
+          rgba(245, 239, 220, 0.06);
+      }
+
+      .connect-card {
+        display: grid;
+        gap: 1rem;
+        padding: 1.35rem;
+      }
+
+      .connect-step {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1rem;
+        align-items: start;
+        padding: 1rem;
+        border: 1px solid rgba(189, 247, 231, 0.14);
+        background: rgba(7, 16, 15, 0.22);
+      }
+
+      .connect-step span {
+        display: grid;
+        width: 2.45rem;
+        height: 2.45rem;
+        place-items: center;
+        border-radius: 999px;
+        background: var(--mint);
+        color: var(--ink);
+        font-weight: 950;
+      }
+
+      .connect-step strong {
+        display: block;
+        margin-bottom: 0.22rem;
+        color: var(--paper);
+        font-size: 1.08rem;
+      }
+
+      .connect-step p {
+        margin: 0;
+        color: rgba(245, 239, 220, 0.68);
+      }
+
+      .agent-prompt-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .agent-prompt-head strong {
+        color: var(--mint);
+        font-size: 0.86rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .agent-prompt {
+        max-height: 520px;
+        margin: 0;
+        overflow: auto;
+        padding: 1.1rem;
+        background: rgba(1, 8, 8, 0.62);
+        color: rgba(245, 239, 220, 0.88);
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        font-size: 0.88rem;
+        line-height: 1.56;
+        white-space: pre-wrap;
+      }
+
       .front-radio {
         position: relative;
         overflow: hidden;
@@ -1167,7 +1252,8 @@
         }
 
         .split,
-        .asset-showcase {
+        .asset-showcase,
+        .connect-panel {
           grid-template-columns: 1fr;
         }
 
@@ -1329,6 +1415,7 @@
         .section-inner,
         .split,
         .asset-showcase,
+        .connect-panel,
         .market-head,
         .estimate,
         .radio-stage {
@@ -1490,6 +1577,7 @@
         .price-grid,
         .asset-grid,
         .radio-stage,
+        .connect-panel,
         .market-grid {
           grid-template-columns: 1fr;
         }
@@ -1596,6 +1684,7 @@
       </a>
       <nav class="nav" aria-label="页面导航">
         <a href="#problem">痛点</a>
+        <a href="#connect">接入</a>
         <a href="#audience">受众</a>
         <a href="#market">市场</a>
         <a href="#radio">电台</a>
@@ -1679,6 +1768,80 @@
             <article class="quote">
               <strong>下一轮协作又从零开始。</strong>
               <p>换个人、换个 Agent、换一天，同样的上下文又要重新搭一遍。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section dark" id="connect">
+        <div class="inner">
+          <div class="section-title">
+            <h2>一段指令，把你的 Agent 接进成迹。</h2>
+            <p>
+              复制到 AGENTS.md、Cursor Rules、Claude 项目说明或任何 Agent 系统提示词里。下一轮任务结束后，本地会留下工作轨迹，并生成由用户决定是否分享的安全快照。
+            </p>
+          </div>
+          <div class="connect-panel">
+            <div class="connect-card" aria-label="成迹接入步骤">
+              <article class="connect-step">
+                <span>1</span>
+                <div>
+                  <strong>复制这段指令</strong>
+                  <p>给 Agent 一个工作习惯：边干活，边把关键进展记进成迹。</p>
+                </div>
+              </article>
+              <article class="connect-step">
+                <span>2</span>
+                <div>
+                  <strong>照常让 AI 干活</strong>
+                  <p>修 bug、做页面、跑检查、写文档都可以。成迹只记录轨迹。</p>
+                </div>
+              </article>
+              <article class="connect-step">
+                <span>3</span>
+                <div>
+                  <strong>用户确认后再分享</strong>
+                  <p>快照可以只留在本地，也可以导入网页，最后再决定是否发布链接。</p>
+                </div>
+              </article>
+            </div>
+            <article class="agent-prompt-card">
+              <div class="agent-prompt-head">
+                <strong>Agent 指令</strong>
+                <button class="button primary" type="button" data-copy-agent>复制给我的 Agent</button>
+              </div>
+              <pre class="agent-prompt" data-agent-prompt># 成迹 DoneGraph Agent 指令
+
+这个项目使用 DoneGraph 作为本地 AI 工作账本。
+
+开始记录前，先检查 `donegraph` 命令是否可用。如果不可用，不要擅自安装，先询问用户，或让用户查看：
+https://github.com/serein431/DoneGraph
+
+开始一个明确任务时：
+donegraph start "&lt;任务目标&gt;" --platform generic
+
+接手一个已经进行中的任务时：
+donegraph capture --goal "&lt;任务目标&gt;" --platform generic
+
+完成关键工作后：
+donegraph checkpoint "&lt;做了什么&gt;" --command "&lt;相关命令，可选&gt;"
+
+检查通过或失败时：
+donegraph proof "&lt;什么检查通过了&gt;" --pass --command "&lt;命令&gt;"
+donegraph proof "&lt;什么检查失败了&gt;" --fail --command "&lt;命令&gt;"
+
+遇到阻塞时：
+donegraph block "&lt;卡在哪里&gt;"
+
+到达稳定收尾点时：
+donegraph done "&lt;现在已经准备好了什么&gt;"
+donegraph dashboard --no-open
+donegraph snapshot
+
+隐私规则：
+默认把 .donegraph/session.jsonl 留在本地。只有用户确认后，才分享 .donegraph/safe-snapshot.json。
+
+记录时说人话：写清楚改了什么、什么跑通了、哪里还卡着、下一轮应该从哪里开始。</pre>
             </article>
           </div>
         </div>
@@ -1995,6 +2158,41 @@
       const frontRadioLetter = document.querySelector("[data-front-radio-letter]");
       const frontRadioRadio = document.querySelector("[data-front-radio-radio]");
       const frontRadioSection = document.querySelector("#radio");
+      const agentPrompt = document.querySelector("[data-agent-prompt]");
+      const agentCopyButtons = document.querySelectorAll("[data-copy-agent]");
+
+      async function copyText(text) {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(text);
+          return true;
+        }
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.append(textarea);
+        textarea.select();
+        const copied = document.execCommand("copy");
+        textarea.remove();
+        return copied;
+      }
+
+      agentCopyButtons.forEach((button) => {
+        button.addEventListener("click", async () => {
+          if (!agentPrompt) return;
+          const original = button.textContent;
+          try {
+            await copyText(agentPrompt.textContent.trim());
+            button.textContent = "已复制";
+          } catch {
+            button.textContent = "请手动选择文本";
+          }
+          window.setTimeout(() => {
+            button.textContent = original;
+          }, 1800);
+        });
+      });
 
       if (heroVideo && heroSound) {
         const setHeroSoundState = (isOn) => {
