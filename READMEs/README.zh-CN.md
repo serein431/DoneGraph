@@ -206,26 +206,43 @@ landing.html
 
 如果原始事件流里包含敏感任务备注，可以不要共享 `session.jsonl`。
 
-更安全的共享路径：
+自动云端上传的路径：
 
 ```bash
-donegraph snapshot
+DONEGRAPH_UPLOAD_TOKEN=<token> donegraph publish --target https://donegraph.space
 ```
 
-然后打开 `https://donegraph.space/share.html`，导入 `.donegraph/safe-snapshot.json`。如果要启用一次性云端发布，在部署环境里配置：
+用户先打开 `https://donegraph.space/share` 创建上传空间，复制页面生成的 Agent 指令。Agent 拿到 token 后，就能在一个稳定节点自动上传安全快照。
+
+如果云端还没配好，`donegraph publish` 仍会把 `.donegraph/safe-snapshot.json` 留在本地，用户可以去 `/share` 手动导入。
+
+如果要启用云端上传，在部署环境里配置：
 
 ```text
 SUPABASE_URL
 SUPABASE_SERVICE_ROLE_KEY
+DONEGRAPH_PUBLIC_URL=https://donegraph.space
 DONEGRAPH_SNAPSHOT_TABLE=donegraph_snapshots
+DONEGRAPH_SPACE_TABLE=donegraph_upload_spaces
 ```
 
 最小 Supabase 表结构：
 
 ```sql
+create extension if not exists pgcrypto;
+
+create table donegraph_upload_spaces (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  name text not null,
+  email text,
+  upload_token_hash text not null unique
+);
+
 create table donegraph_snapshots (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
+  space_id uuid references donegraph_upload_spaces(id) on delete set null,
   generated_at timestamptz,
   goal text,
   privacy_mode text,

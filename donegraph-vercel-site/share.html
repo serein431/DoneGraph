@@ -192,6 +192,45 @@
         font-weight: 800;
       }
 
+      .space-status.error {
+        color: var(--danger);
+      }
+
+      .agent-card {
+        display: none;
+        margin-bottom: 0.9rem;
+        padding: 0.9rem;
+        border: 1px solid rgba(189, 247, 231, 0.18);
+        background: rgba(189, 247, 231, 0.06);
+      }
+
+      .agent-card.visible {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .agent-card strong {
+        color: var(--mint);
+      }
+
+      .agent-card p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .agent-card textarea {
+        width: 100%;
+        min-height: 8rem;
+        resize: vertical;
+        border: 1px solid rgba(189, 247, 231, 0.2);
+        border-radius: 0.55rem;
+        padding: 0.85rem;
+        color: var(--paper);
+        background: rgba(5, 12, 12, 0.72);
+        font: 0.86rem/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
       .dropzone {
         display: grid;
         min-height: 260px;
@@ -549,21 +588,30 @@
           <p class="eyebrow">Upload Space / Safe Snapshot</p>
           <h1>Create a space. Upload one AI run.</h1>
           <p class="hero-copy">
-            Register a lightweight DoneGraph space, review the safe snapshot in your browser, then publish only if you want a share link.
+            Register a lightweight DoneGraph space, copy the Agent instruction, and let the safe work snapshot come back automatically.
           </p>
         </div>
         <section class="panel drop-panel" id="snapshot" aria-label="Snapshot importer">
           <form class="space-form" data-space-form>
             <input type="text" name="spaceName" placeholder="Workspace name" autocomplete="organization" data-space-name />
             <input type="email" name="spaceEmail" placeholder="Email" autocomplete="email" data-space-email />
-            <button class="primary" type="submit">Create space</button>
+            <button class="primary" type="submit" data-space-button>Create space</button>
           </form>
           <p class="space-status" data-space-status>Use a space name first, then upload the run.</p>
+          <div class="agent-card" data-agent-card>
+            <strong>Agent auto-upload is ready</strong>
+            <p>Copy this to your agent. It can send safe DoneGraph snapshots back to this space without exposing the raw chat.</p>
+            <textarea readonly data-agent-instruction></textarea>
+            <div class="actions" style="justify-content: flex-start">
+              <button class="primary" type="button" data-copy-agent>Copy Agent instruction</button>
+              <a class="button" href="/skill.md" target="_blank" rel="noopener">Open skill</a>
+            </div>
+          </div>
           <label class="dropzone" data-dropzone>
             <input type="file" accept="application/json,.json" data-file-input />
             <span>
               <strong>Drop a safe-snapshot.json</strong>
-              <p>The page renders it in this browser first. Cloud publish only happens when the user asks.</p>
+              <p>Review a snapshot here, or let your agent upload it automatically with the generated instruction.</p>
               <span class="actions">
                 <span class="button primary">Choose snapshot</span>
                 <button type="button" data-load-sample>Load sample</button>
@@ -637,6 +685,10 @@
       const spaceName = document.querySelector("[data-space-name]");
       const spaceEmail = document.querySelector("[data-space-email]");
       const spaceStatus = document.querySelector("[data-space-status]");
+      const spaceButton = document.querySelector("[data-space-button]");
+      const agentCard = document.querySelector("[data-agent-card]");
+      const agentInstruction = document.querySelector("[data-agent-instruction]");
+      const copyAgentButton = document.querySelector("[data-copy-agent]");
       let currentSnapshot = null;
       let currentSpace = null;
 
@@ -667,10 +719,10 @@
           { type: "artifact", title: "The dashboard exists", detail: "The work became a replay, a letter, and a radio moment.", status: "pass" },
           { type: "evidence", title: "The checks have signal", detail: "The snapshot kept proof categories without exposing the raw command.", status: "pass", signal: "Test path checked" }
         ],
-        next_steps: ["Open the share page, import the snapshot, and publish only when the user confirms."],
+        next_steps: ["Create an upload space, give the Agent instruction to the agent, and let future snapshots arrive automatically."],
         letter: {
           subject: "Your AI work trail is ready",
-          body: "Hi, I saved the useful part of this AI session for you.\n\nThe run was about: Prepare a product demo that makes AI work feel inspectable and human.\n\nI kept the trail small on purpose: 3 work moments, 3 passed checks, and no raw session.\n\nWhen you come back, begin here: open the share page and publish only when you confirm."
+          body: "Hi, I saved the useful part of this AI session for you.\n\nThe run was about: Prepare a product demo that makes AI work feel inspectable and human.\n\nI kept the trail small on purpose: 3 work moments, 3 passed checks, and no raw session.\n\nWhen you come back, begin here: create an upload space and give the Agent instruction to your agent."
         },
         radio: {
           intro: "A quiet agent radio script generated from the safe snapshot.",
@@ -687,10 +739,58 @@
         statusEl.classList.toggle("error", isError);
       }
 
+      function setSpaceStatus(text, isError = false) {
+        if (!spaceStatus) return;
+        spaceStatus.textContent = text;
+        spaceStatus.classList.toggle("error", isError);
+      }
+
+      function friendlyCloudError(error) {
+        const message = error?.message || String(error || "");
+        if (/supabase|relation|schema|table|column|not configured|not turned on|unexpected token|failed to fetch/i.test(message)) {
+          return "Cloud upload is not ready on this deployment yet. You can still review snapshots locally.";
+        }
+        return message || "Cloud upload is not ready. You can still review snapshots locally.";
+      }
+
+      function instructionFor(space) {
+        return [
+          "# DoneGraph Agent Instruction",
+          "",
+          "Open and follow this skill:",
+          "https://donegraph.space/skill.md",
+          "",
+          "Use this upload token for my DoneGraph space:",
+          `DONEGRAPH_UPLOAD_TOKEN=${space.upload_token}`,
+          "DONEGRAPH_TARGET=https://donegraph.space",
+          "",
+          "At each stable stopping point, create a safe snapshot and upload it:",
+          "donegraph publish --target https://donegraph.space",
+          "",
+          "Upload only the DoneGraph safe snapshot. Do not upload raw chat, file contents, local paths, secrets, tokens, passwords, or private keys."
+        ].join("\n");
+      }
+
+      function renderAgentCard(space) {
+        if (!agentCard || !agentInstruction) return;
+        if (!space?.upload_token) {
+          agentCard.classList.remove("visible");
+          agentInstruction.value = "";
+          return;
+        }
+        agentInstruction.value = instructionFor(space);
+        agentCard.classList.add("visible");
+      }
+
       function saveSpace(space) {
         currentSpace = space;
         localStorage.setItem("donegraph.uploadSpace", JSON.stringify(space));
-        if (spaceStatus) spaceStatus.textContent = `${space.name} is ready. Upload a run when the agent finishes.`;
+        renderAgentCard(space);
+        if (space.upload_token) {
+          setSpaceStatus(`${space.name} is connected. Give the Agent instruction to your agent once.`);
+        } else {
+          setSpaceStatus(`${space.name} is saved locally. Cloud upload is not ready on this deployment yet.`, true);
+        }
       }
 
       function loadSpace() {
@@ -702,7 +802,12 @@
           currentSpace = space;
           if (spaceName) spaceName.value = space.name;
           if (spaceEmail) spaceEmail.value = space.email || "";
-          if (spaceStatus) spaceStatus.textContent = `${space.name} is ready. Upload a run when the agent finishes.`;
+          renderAgentCard(space);
+          if (space.upload_token) {
+            setSpaceStatus(`${space.name} is connected. Give the Agent instruction to your agent once.`);
+          } else {
+            setSpaceStatus(`${space.name} is saved locally. Cloud upload is not ready on this deployment yet.`, true);
+          }
         } catch {
           localStorage.removeItem("donegraph.uploadSpace");
         }
@@ -799,16 +904,44 @@
 
       document.querySelector("[data-load-sample]").addEventListener("click", () => renderSnapshot(sampleSnapshot));
 
-      spaceForm?.addEventListener("submit", (event) => {
+      spaceForm?.addEventListener("submit", async (event) => {
         event.preventDefault();
         const name = spaceName?.value?.trim() || "My DoneGraph Space";
         const email = spaceEmail?.value?.trim() || "";
-        saveSpace({
-          id: `space_${Date.now().toString(36)}`,
-          name,
-          email,
-          created_at: new Date().toISOString()
-        });
+        if (spaceButton) spaceButton.disabled = true;
+        setSpaceStatus("Creating cloud upload space...");
+        try {
+          const response = await fetch("/api/spaces", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ name, email })
+          });
+          const payload = await response.json();
+          if (!response.ok) throw new Error(payload.error || "Cloud upload space could not be created.");
+          saveSpace(payload);
+        } catch (error) {
+          saveSpace({
+            id: `local_${Date.now().toString(36)}`,
+            name,
+            email,
+            created_at: new Date().toISOString()
+          });
+          setSpaceStatus(friendlyCloudError(error), true);
+        } finally {
+          if (spaceButton) spaceButton.disabled = false;
+        }
+      });
+
+      copyAgentButton?.addEventListener("click", async () => {
+        if (!agentInstruction?.value) return;
+        try {
+          await navigator.clipboard.writeText(agentInstruction.value);
+          setSpaceStatus("Agent instruction copied.");
+        } catch {
+          agentInstruction.focus();
+          agentInstruction.select();
+          setSpaceStatus("Select and copy the Agent instruction.");
+        }
       });
 
       keepButton.addEventListener("click", () => {
@@ -824,6 +957,10 @@
           spaceName?.focus();
           return;
         }
+        if (!currentSpace.upload_token) {
+          setStatus("Cloud upload is not ready for this space yet. Keep the snapshot in this browser or create a new upload space.", true);
+          return;
+        }
         publishButton.disabled = true;
         setStatus("Publishing this one safe snapshot...");
         try {
@@ -831,7 +968,8 @@
             method: "POST",
             headers: {
               "content-type": "application/json",
-              "x-donegraph-space": currentSpace?.id || ""
+              "x-donegraph-space": currentSpace?.id || "",
+              "x-donegraph-upload-token": currentSpace.upload_token
             },
             body: JSON.stringify(currentSnapshot)
           });
@@ -842,7 +980,7 @@
           shareResult.classList.add("visible");
           setStatus("Published.");
         } catch (error) {
-          setStatus(error.message || "Cloud publish failed. The snapshot stayed in this browser.", true);
+          setStatus(friendlyCloudError(error), true);
         } finally {
           publishButton.disabled = false;
         }

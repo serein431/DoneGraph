@@ -239,6 +239,49 @@ describe("donegraph CLI", () => {
     expect(snapshot.letter.body).toContain("I did not include the raw chat");
   });
 
+  it("publishes a safe snapshot with an upload token", async () => {
+    const workspace = tempWorkspace();
+    const output: string[] = [];
+    const requests: Array<{ input: RequestInfo | URL; init?: RequestInit }> = [];
+    const fetcher: typeof fetch = async (input, init) => {
+      requests.push({ input, init });
+      return new Response(JSON.stringify({ id: "snap_123", share_url: "https://donegraph.space/share?id=snap_123" }), {
+        status: 200,
+        headers: { "content-type": "application/json" }
+      });
+    };
+
+    await runDoneGraphCli(["start", "Auto upload a safe run", "--platform", "codex"], {
+      cwd: workspace,
+      write: () => undefined,
+      now: () => "2026-05-28T00:00:00.000Z",
+      uuid: () => "goal"
+    });
+    await runDoneGraphCli(["done", "Ready to publish"], {
+      cwd: workspace,
+      write: () => undefined,
+      now: () => "2026-05-28T00:01:00.000Z",
+      uuid: () => "done"
+    });
+
+    const code = await runDoneGraphCli(
+      ["publish", "--target", "https://donegraph.space", "--upload-token", "dgup_test_token"],
+      {
+        cwd: workspace,
+        fetch: fetcher,
+        write: (line) => output.push(line),
+        now: () => "2026-05-28T00:02:00.000Z"
+      }
+    );
+
+    const headers = requests[0]?.init?.headers as Record<string, string>;
+    expect(code).toBe(0);
+    expect(String(requests[0]?.input)).toBe("https://donegraph.space/api/snapshots");
+    expect(headers["x-donegraph-upload-token"]).toBe("dgup_test_token");
+    expect(headers["content-type"]).toBe("application/json");
+    expect(output.join("\n")).toContain("https://donegraph.space/share?id=snap_123");
+  });
+
   it("auto-captures project context into DoneGraph events", async () => {
     const workspace = tempWorkspace();
     fs.writeFileSync(

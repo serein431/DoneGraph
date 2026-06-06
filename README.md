@@ -220,26 +220,41 @@ landing.html
 
 Keep `session.jsonl` private if the raw event stream contains sensitive task notes.
 
-For a safer share flow, use:
+For automatic cloud upload, create an upload space at `https://donegraph.space/share`, copy the generated Agent instruction, then let the agent publish at stable stopping points:
 
 ```bash
-donegraph snapshot
+DONEGRAPH_UPLOAD_TOKEN=<token> donegraph publish --target https://donegraph.space
 ```
 
-Then open `https://donegraph.space/share.html` and import `.donegraph/safe-snapshot.json`. To enable one-time cloud publishing, deploy with these environment variables:
+If cloud upload is not configured yet, `donegraph publish` still writes `.donegraph/safe-snapshot.json` locally so the user can import it on `/share`.
+
+To enable cloud upload, deploy with these environment variables:
 
 ```text
 SUPABASE_URL
 SUPABASE_SERVICE_ROLE_KEY
+DONEGRAPH_PUBLIC_URL=https://donegraph.space
 DONEGRAPH_SNAPSHOT_TABLE=donegraph_snapshots
+DONEGRAPH_SPACE_TABLE=donegraph_upload_spaces
 ```
 
-Minimal Supabase table:
+Minimal Supabase tables:
 
 ```sql
+create extension if not exists pgcrypto;
+
+create table donegraph_upload_spaces (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  name text not null,
+  email text,
+  upload_token_hash text not null unique
+);
+
 create table donegraph_snapshots (
   id uuid primary key default gen_random_uuid(),
   created_at timestamptz not null default now(),
+  space_id uuid references donegraph_upload_spaces(id) on delete set null,
   generated_at timestamptz,
   goal text,
   privacy_mode text,

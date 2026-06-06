@@ -22,6 +22,7 @@ interface RunCliOptions {
   uuid?: () => string;
   write?: WriteLine;
   openFile?: (filePath: string) => void;
+  fetch?: typeof fetch;
 }
 
 interface ParsedCommand {
@@ -72,7 +73,7 @@ function usage(): string {
     "  donegraph done <text> [--workspace <path>]",
     "  donegraph capture [--goal <goal>] [--platform codex|claude|cursor|generic] [--verify] [--workspace <path>]",
     "  donegraph snapshot [--workspace <path>]",
-    "  donegraph publish [--target https://donegraph.space] [--workspace <path>]",
+    "  donegraph publish [--target https://donegraph.space] [--upload-token <token>] [--workspace <path>]",
     "  donegraph build [--workspace <path>]",
     "  donegraph dashboard [--workspace <path>] [--no-open]",
     "  donegraph summary [--workspace <path>]",
@@ -83,7 +84,7 @@ function usage(): string {
     "  donegraph proof \"Tests passed\" --pass --command \"npm test\"",
     "  donegraph capture --goal \"Make AI progress visible\" --platform codex --verify",
     "  donegraph snapshot",
-    "  donegraph publish --target https://donegraph.space",
+    "  DONEGRAPH_UPLOAD_TOKEN=<token> donegraph publish --target https://donegraph.space",
     "  donegraph done \"The demo is ready\"",
     "  donegraph dashboard --no-open"
   ].join("\n");
@@ -407,12 +408,16 @@ function printArtifacts(write: WriteLine, workspacePath: string): void {
 async function publishSafeSnapshot(input: {
   target: string;
   snapshot: DoneGraphSafeSnapshot;
+  uploadToken?: string;
+  fetcher?: typeof fetch;
 }): Promise<{ id?: string; url?: string; share_url?: string }> {
   const baseUrl = input.target.endsWith("/") ? input.target : `${input.target}/`;
   const endpoint = new URL("/api/snapshots", baseUrl);
-  const response = await fetch(endpoint, {
+  const headers: Record<string, string> = { "content-type": "application/json" };
+  if (input.uploadToken) headers["x-donegraph-upload-token"] = input.uploadToken;
+  const response = await (input.fetcher ?? fetch)(endpoint, {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers,
     body: JSON.stringify(input.snapshot)
   });
   const body = await response.text();
@@ -536,17 +541,18 @@ export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {
   if (parsed.command === "publish") {
     const { paths } = buildDoneGraphArtifacts(parsed.workspacePath, now());
     const snapshot = JSON.parse(fs.readFileSync(paths.safeSnapshotJson, "utf8")) as DoneGraphSafeSnapshot;
-    const target = optionalString(parsed.options, "target") ?? "https://donegraph.space";
+    const target = optionalString(parsed.options, "target") ?? process.env.DONEGRAPH_TARGET ?? "https://donegraph.space";
+    const uploadToken = optionalString(parsed.options, "upload-token") ?? process.env.DONEGRAPH_UPLOAD_TOKEN;
     try {
-      const result = await publishSafeSnapshot({ target, snapshot });
+      const result = await publishSafeSnapshot({ target, snapshot, uploadToken, fetcher: options.fetch });
       const baseUrl = target.endsWith("/") ? target.slice(0, -1) : target;
-      const shareUrl = result.share_url ?? result.url ?? (result.id ? `${baseUrl}/share.html?id=${encodeURIComponent(result.id)}` : `${baseUrl}/share.html`);
+      const shareUrl = result.share_url ?? result.url ?? (result.id ? `${baseUrl}/share?id=${encodeURIComponent(result.id)}` : `${baseUrl}/share`);
       write(`Safe snapshot published: ${shareUrl}`);
       return 0;
     } catch (error) {
-      write(`Cloud publish is not connected yet: ${error instanceof Error ? error.message : String(error)}`);
+      write(`Cloud upload did not finish: ${error instanceof Error ? error.message : String(error)}`);
       write(`Safe snapshot stayed local: ${paths.safeSnapshotJson}`);
-      write(`Open ${target.replace(/\/$/, "")}/share.html and import that file for a no-server demo.`);
+      write(`Open ${target.replace(/\/$/, "")}/share and import that file for a local review.`);
       return 0;
     }
   }
