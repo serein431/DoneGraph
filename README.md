@@ -1,4 +1,13 @@
-# DoneGraph
+# DoneGraph · The Memory Layer for AI-Built Work
+
+[![Tests](https://img.shields.io/badge/tests-14%2F14%20passed-brightgreen)](https://github.com/serein431/DoneGraph/actions)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
+[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
+[![Platforms](https://img.shields.io/badge/platforms-7-purple)](#multi-platform-installation)
+[![UCWS 2026](https://img.shields.io/badge/UCWS%20Singapore-2026-orange)](https://evol.epicconnector.ai/events/ucws-singapore-hackathon---2026-cxgy/project-wall)
+
+> 🏆 **UCWS Singapore Hackathon 2026 — Skill Track**  
+> [→ Judge Evaluation Sheet](./EVALUATION.md) | [→ Architecture Overview](./ARCHITECTURE.md)
 
 DoneGraph is the trust layer for AI work. It turns an agent session into a safe, shareable work trail: what the user asked for, what changed, what was verified, what is still open, and where the next session should continue.
 
