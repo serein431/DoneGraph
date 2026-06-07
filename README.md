@@ -1,6 +1,7 @@
 # DoneGraph · The Memory Layer for AI-Built Work
 
-[![Tests](https://img.shields.io/badge/tests-14%2F14%20passed-brightgreen)](https://github.com/serein431/DoneGraph/actions)
+[![CI](https://img.shields.io/badge/CI-test%20%7C%20typecheck%20%7C%20build-brightgreen)](https://github.com/serein431/DoneGraph/actions)
+[![Tests](https://img.shields.io/badge/tests-29%2F29%20passed-brightgreen)](https://github.com/serein431/DoneGraph/actions)
 [![TypeScript](https://img.shields.io/badge/TypeScript-strict-blue)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 [![Platforms](https://img.shields.io/badge/platforms-7-purple)](#multi-platform-installation)
