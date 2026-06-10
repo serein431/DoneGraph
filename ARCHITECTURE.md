@@ -4,7 +4,7 @@
 
 ## System Overview
 
-DoneGraph is a local-first, multi-platform plugin that turns AI agent sessions into inspectable, shareable work trails. It sits **above** the AI coding tool layer — not replacing any agent, but giving every agent a memory layer.
+DoneGraph is AI Accountability Infrastructure — a local-first, multi-platform plugin that makes human-AI collaboration auditable, resumable, and trustworthy. It sits **above** the AI coding tool layer: not replacing any agent, but giving every agent an accountability layer where "done" requires proof and every decision is traceable.
 
 ```
 ┌─────────────────────────────────────────────────────────┐
@@ -49,33 +49,51 @@ DoneGraph is a local-first, multi-platform plugin that turns AI agent sessions i
 └─────────────────────────────────────────────────────────┘
 ```
 
-## Core Design Principles
+## Five Axioms of AI Accountability
 
-### 1. Local-First, Zero Dependency
-DoneGraph runs entirely locally. No cloud account required. The graph engine has zero external runtime dependencies beyond Node.js.
+### 1. Earned Progress
+"Done" without evidence is not done. Activity is not progress. The Accountability Score hard gate enforces this: any completion event without passing evidence results in an UNACCOUNTED verdict, regardless of the composite score.
 
-### 2. Clean-Room Schema
-DoneGraph does NOT import external code graphs, AST parsers, or third-party schemas. It models **collaboration progress** — the facts of what happened between a human and AI:
+### 2. Transparent Handoff
+Every session ends with a clear state for the next human or AI to continue from. `achievement-log.md` and `next-steps.md` are always generated. The Handoff Quality dimension scores how actionable the handoff is.
+
+### 3. Privacy by Default
+Raw sessions never leave the machine. Sharing requires explicit redaction through the safe snapshot pipeline. Three privacy tiers formalize the boundary: `local_only` (nothing leaves), `redacted_share` (safe snapshot with full redaction), `full_disclosure` (explicit opt-in).
+
+### 4. Clean-Room Fidelity
+The graph models collaboration facts, not code structure. No external code graphs, AST parsers, or third-party schemas. Seven node types, eight edge types — all describe what happened between a human and AI:
 
 | Node Type | Example |
 |-----------|---------|
 | `goal` | "Ship the hackathon demo" |
 | `task` | "Implemented CLI checkpoint command" |
-| `decision` | "Chose pixel-farm-board design system" |
+| `decision` | "Chose journal-island design system" |
 | `artifact` | `.donegraph/dashboard.html` |
-| `evidence` | "npm test: 14/14 passed" |
+| `evidence` | "npm test: 29/29 passed" |
 | `blocker` | "Need to handle large file uploads" |
-| `achievement` | "Demo can replay real work run" |
 | `next_step` | "Add team collaboration features" |
 
-### 3. Proof-Backed Progress
-Every claim in the graph is tied to verifiable evidence:
-- `--pass` → commands that succeeded
-- `--fail` → commands that failed (transparency)
-- `--blocked` → work that couldn't proceed
-- `--unknown` → ambiguous verification
+### 5. Immutable Trail
+Events are append-only. `session.jsonl` is a ledger, not a draft. No event is ever modified or deleted. This makes the work trail auditable and tamper-evident.
 
-### 4. Multi-Platform, Single Core
+## Accountability Score
+
+Every session is scored on six dimensions to produce a composite Accountability Score (0–100):
+
+| Dimension | Weight | What It Measures |
+|-----------|--------|------------------|
+| Evidence Coverage | 25 | % of checkpoints with linked evidence |
+| Completion Integrity | 25 | Whether "done" claims are backed by passing evidence |
+| Decision Traceability | 15 | Whether decisions have context and downstream tasks |
+| Handoff Quality | 15 | Whether next steps exist and unknowns are resolved |
+| Privacy Safety | 10 | Whether sensitive content has been redacted |
+| Graph Coherence | 10 | Whether all nodes are connected in the graph |
+
+Three verdicts: **ACCOUNTABLE** (≥80, no hard gate failures), **PARTIAL** (50–80), **UNACCOUNTED** (<50 or hard gate failure).
+
+Hard gate: Completion Integrity fails when a completion event exists but no evidence has status `pass`. This single gate enforces Axiom 1 (Earned Progress) at the scoring layer.
+
+## Multi-Platform, Single Core
 All 7 platforms (Codex, Claude Code, Cursor, VS Code, Gemini, OpenCode, Shell) route through the same `donegraph` CLI. Platform adapters are thin wrappers (~50 lines each).
 
 ## Data Flow

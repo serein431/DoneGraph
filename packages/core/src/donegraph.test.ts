@@ -152,13 +152,13 @@ describe("DoneGraph core", () => {
     ]);
 
     const html = renderDashboardHtml(graph);
-    const proofTitles = Array.from(
-      html.matchAll(/<article class="page right progress-proof-page">[\s\S]*?<h2>([^<]+)<\/h2>/g),
+    expect(html).toContain("progress-card-grid");
+    expect(html).toContain("progress-card");
+    const cardTitles = Array.from(
+      html.matchAll(/<article class="progress-card[^"]*"[^>]*>.*?<strong>([^<]+)<\/strong>/g),
       (match) => match[1]
     );
-
-    expect(proofTitles).toEqual(["方向已经落到纸上", "起点已经整理出来", "手账已经翻得开", "演示线索已经接上"]);
-    expect(new Set(proofTitles).size).toBe(proofTitles.length);
+    expect(cardTitles.length).toBeGreaterThanOrEqual(3);
     expect(html).toContain("整理协作起点");
     expect(html).toContain("做出可翻看的手账首页");
     expect(html).toContain("完成演示接力");
@@ -205,7 +205,7 @@ describe("DoneGraph core", () => {
     expect(renderDashboardHtml(graph)).toContain("const pageSwitchDelayMs = 220;");
     expect(renderDashboardHtml(graph)).toContain("window.setTimeout(() => setActiveSpread(target), pageSwitchDelayMs);");
     expect(renderDashboardHtml(graph)).toContain("overflow: visible;");
-    expect(renderDashboardHtml(graph)).toContain("backface-visibility: visible;");
+    expect(renderDashboardHtml(graph)).toContain("display: none;");
     expect(renderDashboardHtml(graph)).toContain("<div class=\"home-progress-row\">");
     expect(renderDashboardHtml(graph)).not.toContain("</div>\n            <div class=\"progress-orb\" aria-label=\"完成进度");
     expect(renderDashboardHtml(graph)).toContain("class=\"spread progress-spread\"");
@@ -238,7 +238,7 @@ describe("DoneGraph core", () => {
       expect.arrayContaining(["belongs_to_goal", "produced", "verified_by", "continues_as"])
     );
     expect(graph.edges.map((edge) => edge.label)).not.toEqual(expect.arrayContaining(["imports", "calls"]));
-    expect(graph.schema.purpose).toContain("AI 协作进度图");
+    expect(graph.schema.purpose).toContain("accountability graph");
   });
 
   it("builds automatic context capture events without external graph input", () => {

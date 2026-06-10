@@ -1,5 +1,11 @@
 export type EvidenceStatus = "pass" | "fail" | "unknown" | "blocked";
 
+export type VerificationDepth = "command_verified" | "manual_verified" | "self_reported" | "contradicted";
+
+export type EvidenceConfidence = "high" | "medium" | "low";
+
+export type PrivacyTier = "local_only" | "redacted_share" | "full_disclosure";
+
 export type DoneGraphPlatform = "codex" | "claude" | "cursor" | "generic";
 
 export type DoneGraphEventType =
@@ -44,6 +50,8 @@ export interface DoneGraphEventMetadata {
   command?: string;
   status?: EvidenceStatus;
   source?: string;
+  verification_depth?: VerificationDepth;
+  confidence?: EvidenceConfidence;
 }
 
 export interface DoneGraphEvent {
@@ -110,14 +118,797 @@ export interface DoneGraphSummary {
   progress_percent: number;
 }
 
+export type AccountabilityVerdict = "ACCOUNTABLE" | "PARTIAL" | "UNACCOUNTED";
+
+export interface AccountabilityDimension {
+  id: string;
+  label: string;
+  score: number;
+  weight: number;
+  detail: string;
+  hard_gate_failed: boolean;
+}
+
+export interface AccountabilityScore {
+  composite: number;
+  verdict: AccountabilityVerdict;
+  dimensions: AccountabilityDimension[];
+  hard_gates_passed: boolean;
+  hard_gate_failures: string[];
+}
+
+export type DashboardLang = "zh" | "en";
+
+export interface DashboardLocale {
+  lang: DashboardLang;
+  htmlLang: string;
+  pageTitle: string;
+  schemaPurpose: string;
+
+  // Header
+  headerProgressMap: string;
+  headerGeneratedAt: string;
+
+  // Home page
+  kickerJournal: string;
+  kickerCleanRoom: string;
+  homeTitleLine1: string;
+  homeTitleLine2: string;
+  homeTitleLine3: string;
+  flipToCompleted: string;
+  seeEvidence: string;
+  todayProgress: string;
+  milestonesLabel: string;
+  progressDone: string;
+  statMilestones: string;
+  statVerified: string;
+  statBlockers: string;
+
+  // Home progress caption
+  homeProgressCaption: (milestoneProgress: string, currentStage: string) => string;
+
+  // Blocker text
+  blockerNone: string;
+  blockerSome: (count: number) => string;
+
+  // Completed pages
+  kickerCompleted: string;
+  completedPageOf: (page: number, total: number) => string;
+  whatThisPageCompleted: string;
+  noCompletedPages: string;
+  noCompletedPagesStory: string;
+  kickerAwaitingRecord: string;
+  awaitingProof: string;
+  whereToStart: string;
+  whereToStartNote: string;
+  backToProgress: string;
+  previousPage: string;
+  nextCompleted: string;
+  seeEvidenceShort: string;
+
+  // Evidence & handoff pages
+  kickerEvidence: string;
+  kickerVerificationState: string;
+  evidenceCards: string;
+  noEvidenceRecorded: string;
+  kickerNextPage: string;
+  kickerHandoff: string;
+  continueFromHere: string;
+  handoffFooterNote: string;
+
+  // Detail pages
+  kickerCleanRoomStructure: string;
+  kickerDetail: string;
+  cleanRoomStructure: string;
+  sourceRecords: string;
+  noSourceRecords: string;
+  captureRecordsCount: (count: number) => string;
+  kickerRelationshipTrace: string;
+  kickerOptional: string;
+  relationshipTrace: string;
+  noRelationshipEdges: string;
+  achievementLedger: string;
+  noAchievements: string;
+
+  // Page controls
+  navProgress: string;
+  navCompleted: string;
+  navEvidence: string;
+  navDetail: string;
+  navAriaLabel: string;
+
+  // Status text
+  statusPass: string;
+  statusFail: string;
+  statusBlocked: string;
+  statusUnknown: string;
+
+  // Node type labels
+  nodeGoal: string;
+  nodeTask: string;
+  nodeDecision: string;
+  nodeArtifact: string;
+  nodeEvidence: string;
+  nodeBlocker: string;
+  nodeAchievement: string;
+  nodeNextStep: string;
+
+  // Event titles (titleForEvent)
+  eventGoal: string;
+  eventDecision: string;
+  eventArtifact: string;
+  eventVerificationPrefix: string;
+  eventVerificationFallback: string;
+  eventBlocker: string;
+  eventCompletion: string;
+  eventActionPrefix: string;
+  eventActionFallback: string;
+
+  // Stage names (currentStageFor)
+  stageDemoReady: string;
+  stageGoalUndefined: string;
+  stageAwaitingImplementation: string;
+  stageAwaitingArtifact: string;
+  stageAwaitingEvidence: string;
+  stageDemoAlmostReady: string;
+  stageHandoffPending: string;
+
+  // Milestones
+  milestoneGoalDefined: string;
+  milestoneGoalDetail: string;
+  milestoneImplStarted: string;
+  milestoneImplDetail: string;
+  milestoneArtifactCreated: string;
+  milestoneArtifactDetail: string;
+  milestoneEvidenceCollected: string;
+  milestoneEvidenceDetail: string;
+  milestoneDemoReady: string;
+  milestoneDemoReadyDetail: string;
+  milestoneDemoNotYet: string;
+  milestoneHandoffReady: string;
+  milestoneHandoffReadyDetail: string;
+  milestoneHandoffNotYet: string;
+
+  // Next step titles (used in node title)
+  nextStepLabel: string;
+
+  // nextStepsForNodes text
+  nextStepFixFailed: (detail: string) => string;
+  nextStepUnblock: (detail: string) => string;
+  nextStepAddEvidence: (detail: string) => string;
+  nextStepAddVerification: string;
+  nextStepConsolidate: string;
+
+  // Narrative
+  narrativeNoGoal: string;
+  narrativeTemplate: (completed: number, total: number, stage: string, evidencePassed: number, nextStep: string) => string;
+
+  // Dashboard narrative (wraps the above with cleaned next step)
+  dashboardNarrativeContinue: string;
+
+  // Story copy for nodes (storyCopyForNode)
+  storyGoalTitle: string;
+  storyGoalDetailPrefix: string;
+  storyGoalFallback: string;
+  storyGoalKind: string;
+
+  storyDecisionTitle: string;
+  storyDecisionFallback: string;
+  storyDecisionKind: string;
+
+  storyArtifactDashboardTitle: string;
+  storyArtifactDashboardDetail: string;
+  storyArtifactTitle: string;
+  storyArtifactFallback: string;
+  storyArtifactKind: string;
+
+  storyEvidenceTypecheckTitle: string;
+  storyEvidenceTypecheckDetail: string;
+  storyEvidenceBuildTitle: string;
+  storyEvidenceBuildDetail: string;
+  storyEvidenceTestAutoTitle: string;
+  storyEvidenceTestAutoDetail: string;
+  storyEvidenceTestManualTitle: string;
+  storyEvidenceTestManualDetail: string;
+  storyEvidencePassTitle: string;
+  storyEvidenceUnconfirmedTitle: string;
+  storyEvidenceFallback: string;
+  storyEvidenceKind: string;
+
+  storyBlockerTitle: string;
+  storyBlockerFallback: string;
+  storyBlockerKind: string;
+
+  storyNextStepTitle: string;
+  storyNextStepFallback: string;
+  storyNextStepKind: string;
+
+  storyBuildTitle: string;
+  storyBuildFallback: string;
+  storyBuildKind: string;
+
+  storyTestTitle: string;
+  storyTestFallback: string;
+
+  storyTaskScanTitle: string;
+  storyTaskScanFallback: string;
+  storyTaskJournalTitle: string;
+  storyTaskJournalFallback: string;
+  storyTaskDemoTitle: string;
+  storyTaskDemoFallback: string;
+
+  storyPhaseCompleteTitle: string;
+  storyDefaultTitle: string;
+  storyDefaultFallback: string;
+  storyPushKind: string;
+
+  // storyCopyForAchievement fallback
+  achievementTypecheckTitle: string;
+  achievementTypecheckDetail: string;
+  achievementBuildTitle: string;
+  achievementBuildDetail: string;
+  achievementTestTitle: string;
+  achievementTestDetail: string;
+  achievementFallbackTitle: string;
+  achievementFallbackDetail: string;
+  achievementProgressKind: string;
+
+  // dashboardNextStep fallback
+  dashboardNextStepFallback: string;
+
+  // progressProofTitle
+  proofGoalTitle: string;
+  proofDecisionTitle: string;
+  proofArtifactJournalTitle: string;
+  proofArtifactTitle: string;
+  proofEvidenceAutoTitle: string;
+  proofEvidenceManualTitle: string;
+  proofEvidenceStructureTitle: string;
+  proofEvidenceBuildTitle: string;
+  proofEvidenceTitle: string;
+  proofBlockerTitle: string;
+  proofNextStepTitle: string;
+  proofScanTitle: string;
+  proofJournalTitle: string;
+  proofDemoTitle: string;
+  proofCoreTitle: string;
+  proofFallbackTitle: (page: number) => string;
+
+  // progressProofDetail
+  proofGoalDetail: string;
+  proofDecisionDetail: string;
+  proofArtifactJournalDetail: string;
+  proofArtifactDetail: string;
+  proofEvidenceAutoDetail: string;
+  proofEvidenceManualDetail: string;
+  proofEvidenceStructureDetail: string;
+  proofEvidenceBuildDetail: string;
+  proofEvidenceDetail: string;
+  proofBlockerDetail: string;
+  proofNextStepDetail: string;
+  proofScanDetail: string;
+  proofJournalDetail: string;
+  proofDemoDetail: string;
+  proofCoreDetail: string;
+  proofFallbackDetail: (page: number) => string;
+
+  // cleanDashboardText replacements
+  cleanVerifyPassed: string;
+  cleanVerifyEntryFound: string;
+  cleanChangeSummary: string;
+  cleanProjectCheck: string;
+  cleanJournal: string;
+  cleanProjectContent: string;
+  cleanToolName: string;
+  cleanToolLabel: string;
+  cleanCoreLabel: string;
+}
+
+const zhLocale: DashboardLocale = {
+  lang: "zh",
+  htmlLang: "zh-CN",
+  pageTitle: "DoneGraph 进度手账",
+  schemaPurpose: "洁净室重写的 AI 协作进度图，用来记录目标、动作、产物、证据、决策、阻塞、成就和下一步。",
+
+  headerProgressMap: "完成进度地图",
+  headerGeneratedAt: "生成于",
+
+  kickerJournal: "进度手账",
+  kickerCleanRoom: "洁净室重写",
+  homeTitleLine1: "DoneGraph",
+  homeTitleLine2: "进度岛",
+  homeTitleLine3: "手账",
+  flipToCompleted: "翻到完成页",
+  seeEvidence: "看看证据",
+  todayProgress: "今日进度",
+  milestonesLabel: "个里程碑",
+  progressDone: "已完成",
+  statMilestones: "里程碑",
+  statVerified: "已验证",
+  statBlockers: "阻塞",
+
+  homeProgressCaption: (mp, stage) =>
+    `首页先给一个安定的答案：已经走完 ${mp} 个里程碑，当前阶段是「${stage}」。`,
+  blockerNone: "这一轮暂时没有阻塞，可以安心往前翻。",
+  blockerSome: (count) => `还有 ${count} 个阻塞需要先处理。`,
+
+  kickerCompleted: "完成",
+  completedPageOf: (page, total) => `第 ${page} / ${total} 页`,
+  whatThisPageCompleted: "这一页完成了什么",
+  noCompletedPages: "还没有可翻看的完成页",
+  noCompletedPagesStory: "等下一次记录目标、产物或验证结果后，这里会自动长出新的进度页。",
+  kickerAwaitingRecord: "等待记录",
+  awaitingProof: "待证明",
+  whereToStart: "从哪里开始",
+  whereToStartNote: "先把这轮协作真正完成的一步写进 DoneGraph，手账就会从这里继续翻下去。",
+  backToProgress: "回到进度",
+  previousPage: "上一页",
+  nextCompleted: "下一条完成",
+  seeEvidenceShort: "看证据",
+
+  kickerEvidence: "证据",
+  kickerVerificationState: "验证状态",
+  evidenceCards: "证据贴纸",
+  noEvidenceRecorded: "还没有记录验证证据。",
+  kickerNextPage: "下一页",
+  kickerHandoff: "交接",
+  continueFromHere: "从这里继续",
+  handoffFooterNote: "下一轮 AI 继续之前，先读这一页就能知道该从哪里接上。",
+
+  kickerCleanRoomStructure: "洁净室结构",
+  kickerDetail: "细节",
+  cleanRoomStructure: "洁净室结构",
+  sourceRecords: "来源记录",
+  noSourceRecords: "当前记录来自手动事件。",
+  captureRecordsCount: (count) => `${count} 条捕获记录`,
+  kickerRelationshipTrace: "关系线索",
+  kickerOptional: "可选",
+  relationshipTrace: "关系线索",
+  noRelationshipEdges: "还没有关系连线。",
+  achievementLedger: "成就账本",
+  noAchievements: "还没有成就记录。",
+
+  navProgress: "进度",
+  navCompleted: "完成",
+  navEvidence: "证据",
+  navDetail: "细节",
+  navAriaLabel: "手账页",
+
+  statusPass: "已证明",
+  statusFail: "待修复",
+  statusBlocked: "被阻塞",
+  statusUnknown: "待证明",
+
+  nodeGoal: "目标",
+  nodeTask: "任务",
+  nodeDecision: "决策",
+  nodeArtifact: "产物",
+  nodeEvidence: "证据",
+  nodeBlocker: "阻塞",
+  nodeAchievement: "成就",
+  nodeNextStep: "下一步",
+
+  eventGoal: "任务目标",
+  eventDecision: "关键决策",
+  eventArtifact: "产物确认",
+  eventVerificationPrefix: "验证：",
+  eventVerificationFallback: "验证证据",
+  eventBlocker: "阻塞项",
+  eventCompletion: "阶段完成",
+  eventActionPrefix: "执行：",
+  eventActionFallback: "推进动作",
+
+  stageDemoReady: "可以交付演示",
+  stageGoalUndefined: "目标还没定",
+  stageAwaitingImplementation: "等待开始实现",
+  stageAwaitingArtifact: "等待产物出现",
+  stageAwaitingEvidence: "等待证据验证",
+  stageDemoAlmostReady: "演示还差收尾",
+  stageHandoffPending: "交接还要整理",
+
+  milestoneGoalDefined: "目标已确定",
+  milestoneGoalDetail: "还没有记录这轮协作的目标。",
+  milestoneImplStarted: "实现已启动",
+  milestoneImplDetail: "还没有记录实现动作或关键决策。",
+  milestoneArtifactCreated: "产物已出现",
+  milestoneArtifactDetail: "还没有记录 README、代码、插件或演示产物。",
+  milestoneEvidenceCollected: "证据已收集",
+  milestoneEvidenceDetail: "还没有记录可判断的验证证据。",
+  milestoneDemoReady: "演示已可用",
+  milestoneDemoReadyDetail: "已有完成记录和通过证据。",
+  milestoneDemoNotYet: "还需要一条阶段完成记录，把进度变成可演示成果。",
+  milestoneHandoffReady: "交接已清楚",
+  milestoneHandoffReadyDetail: "下一轮可以直接接着已完成成果继续。",
+  milestoneHandoffNotYet: "还需要把下一步、风险或验证缺口写清楚。",
+
+  nextStepLabel: "下一步",
+
+  nextStepFixFailed: (detail) => `先修复失败验证：${detail}`,
+  nextStepUnblock: (detail) => `先解除阻塞：${detail}`,
+  nextStepAddEvidence: (detail) => `补充可判断证据：${detail}`,
+  nextStepAddVerification: "为本轮产物补充至少一条 verification 记录，说明用什么命令证明它可用。",
+  nextStepConsolidate: "把已通过的证据固化到 README、测试或下一轮任务清单，然后开启下一阶段目标。",
+
+  narrativeNoGoal: "DoneGraph 还没有任务目标。",
+  narrativeTemplate: (completed, total, stage, evidencePassed, nextStep) =>
+    `这轮协作已经走完 ${completed} / ${total} 个里程碑，当前阶段是「${stage}」，并沉淀 ${evidencePassed} 条通过证据。下一步是：${nextStep}`,
+
+  dashboardNarrativeContinue: "继续记录下一段协作。",
+
+  storyGoalTitle: "把目标说清楚",
+  storyGoalDetailPrefix: "这轮协作先确定了方向：",
+  storyGoalFallback: "要完成的事情已经被写下来。",
+  storyGoalKind: "目标",
+
+  storyDecisionTitle: "做出一个关键选择",
+  storyDecisionFallback: "这一步把后面的路线定得更清楚。",
+  storyDecisionKind: "决策",
+
+  storyArtifactDashboardTitle: "做出可以翻看的进度手账",
+  storyArtifactDashboardDetail: "进展被整理成一页页可以打开的手账，不再只是一段聊天记录。",
+  storyArtifactTitle: "留下了可交付成果",
+  storyArtifactFallback: "这一步把协作里的想法变成了可以继续使用的东西。",
+  storyArtifactKind: "产物",
+
+  storyEvidenceTypecheckTitle: "确认结构没有松动",
+  storyEvidenceTypecheckDetail: "类型和接口检查已经过了一遍，后面可以更安心地继续接。",
+  storyEvidenceBuildTitle: "把成果打包到可运行状态",
+  storyEvidenceBuildDetail: "项目可以完整生成成果，说明这轮工作已经不只是想法。",
+  storyEvidenceTestAutoTitle: "自动检查跑过核心流程",
+  storyEvidenceTestAutoDetail: "自动验证已经帮你扫过核心流程，这一步说明基础行为没有明显断掉。",
+  storyEvidenceTestManualTitle: "关键流程检查已经通过",
+  storyEvidenceTestManualDetail: "这条手动证明把关键流程确认了一遍，可以放心算进已完成进度。",
+  storyEvidencePassTitle: "留下一条可靠证据",
+  storyEvidenceUnconfirmedTitle: "留下一条待确认线索",
+  storyEvidenceFallback: "这一步用来说明当前进展是否站得住。",
+  storyEvidenceKind: "验证",
+
+  storyBlockerTitle: "发现需要先处理的阻塞",
+  storyBlockerFallback: "这里需要先停一下，把卡住的地方处理掉。",
+  storyBlockerKind: "阻塞",
+
+  storyNextStepTitle: "下一步已经写清楚",
+  storyNextStepFallback: "下一轮可以从这里接着走。",
+  storyNextStepKind: "下一步",
+
+  storyBuildTitle: "把核心工具推进到可运行",
+  storyBuildFallback: "DoneGraph 的主要流程已经成形，可以继续围绕体验打磨。",
+  storyBuildKind: "推进",
+
+  storyTestTitle: "让核心流程先跑稳",
+  storyTestFallback: "这一步让项目从想法继续往可验证的成果靠近。",
+
+  storyTaskScanTitle: "整理协作起点",
+  storyTaskScanFallback: "这一步把散在上下文整理成可以继续推进的起点。",
+  storyTaskJournalTitle: "做出可翻看的手账首页",
+  storyTaskJournalFallback: "这一步把进度变成可以打开和翻看的手账首页。",
+  storyTaskDemoTitle: "完成演示接力",
+  storyTaskDemoFallback: "这一步把完成进度、证据和下一步接力整理到一起。",
+
+  storyPhaseCompleteTitle: "完成一个阶段",
+  storyDefaultTitle: "推进了一步",
+  storyDefaultFallback: "这一步让任务继续往前走。",
+  storyPushKind: "推进",
+
+  achievementTypecheckTitle: "确认结构没有松动",
+  achievementTypecheckDetail: "类型和接口检查已经过了一遍，后面可以更安心地继续接。",
+  achievementBuildTitle: "把成果打包到可运行状态",
+  achievementBuildDetail: "项目可以完整生成成果，说明这轮工作已经不只是想法。",
+  achievementTestTitle: "确认关键流程跑得稳",
+  achievementTestDetail: "核心行为已经真实检查过，这一步可以算进已完成的进度。",
+  achievementFallbackTitle: "完成一段进展",
+  achievementFallbackDetail: "这一步让任务继续往前走。",
+  achievementProgressKind: "进展",
+
+  dashboardNextStepFallback: "把已完成的进展固定下来，再开启下一阶段目标。",
+
+  proofGoalTitle: "方向已经落到纸上",
+  proofDecisionTitle: "路线已经选定",
+  proofArtifactJournalTitle: "可以打开的成果已经出现",
+  proofArtifactTitle: "交付物已经落地",
+  proofEvidenceAutoTitle: "自动验证已经扫过",
+  proofEvidenceManualTitle: "手动证明已经补上",
+  proofEvidenceStructureTitle: "类型结构已经稳住",
+  proofEvidenceBuildTitle: "构建结果已经过关",
+  proofEvidenceTitle: "验证让进度站得住",
+  proofBlockerTitle: "风险已经被看见",
+  proofNextStepTitle: "接力点已经清楚",
+  proofScanTitle: "起点已经整理出来",
+  proofJournalTitle: "手账已经翻得开",
+  proofDemoTitle: "演示线索已经接上",
+  proofCoreTitle: "核心流程已经推进",
+  proofFallbackTitle: (page) => `第 ${page} 页也算数`,
+
+  proofGoalDetail: "目标页证明这轮协作已经有了共同坐标，后面的动作、产物和验证才知道往哪里靠。",
+  proofDecisionDetail: "决策页记录路线选择，下一次接手时不用重新猜为什么这么做。",
+  proofArtifactJournalDetail: "这页说明成果已经变成能打开、能翻看、能交给别人理解的东西。",
+  proofArtifactDetail: "这页说明协作不只停在讨论里，已经留下了可以继续使用的交付物。",
+  proofEvidenceAutoDetail: "自动验证已经帮你扫过一遍基础流程，这页说明机器可重复检查的部分已经留下记录。",
+  proofEvidenceManualDetail: "这条手动证明把最后确认补上，说明它不是自动扫描里的同一条进展。",
+  proofEvidenceStructureDetail: "这页说明类型和接口已经对齐，后面继续接功能时不容易踩到结构问题。",
+  proofEvidenceBuildDetail: "这页说明成果已经能完整生成，演示和交付可以继续往前走。",
+  proofEvidenceDetail: "验证页说明这一步不是口头完成，而是已经有证据支撑，可以安心算进进度。",
+  proofBlockerDetail: "阻塞页把卡点摆到明面上，避免下一轮继续在同一个地方打转。",
+  proofNextStepDetail: "接力页把下一步放在这里，让后面的人能直接续上。",
+  proofScanDetail: "这页把散在上下文收成一个起点，后面翻到这里时，能知道这轮协作从哪里开始。",
+  proofJournalDetail: "这页说明进度已经从聊天里走出来，变成能打开、能翻看、能给别人看的首页。",
+  proofDemoDetail: "这页把完成进度、证据和接力点收在一起，演示时能讲清楚已经走到哪里。",
+  proofCoreDetail: "这页说明核心流程已经往可用状态推进，后面可以把注意力放到体验和收尾。",
+  proofFallbackDetail: (page) => `第 ${page} 页记录的是一次具体推进。它不需要变成报告，只要能让人看见任务确实往前走了一格。`,
+
+  cleanVerifyPassed: "真实检查已经通过",
+  cleanVerifyEntryFound: "已经找到可以证明进展的检查入口。",
+  cleanChangeSummary: "这些变化已经被整理成一条可以继续追的进展。",
+  cleanProjectCheck: "一次项目检查",
+  cleanJournal: "进度手账",
+  cleanProjectContent: "相关项目内容",
+  cleanToolName: "DoneGraph 工具",
+  cleanToolLabel: "工具",
+  cleanCoreLabel: "核心",
+};
+
+const enLocale: DashboardLocale = {
+  lang: "en",
+  htmlLang: "en",
+  pageTitle: "DoneGraph Progress Journal",
+  schemaPurpose: "A clean-room AI collaboration progress graph that records goals, actions, artifacts, evidence, decisions, blockers, achievements, and next steps.",
+
+  headerProgressMap: "Progress Map",
+  headerGeneratedAt: "Generated",
+
+  kickerJournal: "Progress Journal",
+  kickerCleanRoom: "Clean-Room",
+  homeTitleLine1: "DoneGraph",
+  homeTitleLine2: "Progress",
+  homeTitleLine3: "Journal",
+  flipToCompleted: "See Completed",
+  seeEvidence: "See Evidence",
+  todayProgress: "Today's Progress",
+  milestonesLabel: "milestones",
+  progressDone: "Done",
+  statMilestones: "Milestones",
+  statVerified: "Verified",
+  statBlockers: "Blockers",
+
+  homeProgressCaption: (mp, stage) =>
+    `Here is the quick answer: ${mp} milestones reached so far. Current stage: "${stage}".`,
+  blockerNone: "No blockers right now -- safe to keep going.",
+  blockerSome: (count) => `${count} blocker${count === 1 ? "" : "s"} to resolve first.`,
+
+  kickerCompleted: "Completed",
+  completedPageOf: (page, total) => `Page ${page} / ${total}`,
+  whatThisPageCompleted: "What got done here",
+  noCompletedPages: "No completed pages yet",
+  noCompletedPagesStory: "Once a goal, artifact, or verification is recorded, new progress pages will appear here automatically.",
+  kickerAwaitingRecord: "Awaiting record",
+  awaitingProof: "Pending",
+  whereToStart: "Where to start",
+  whereToStartNote: "Record one real completed step in DoneGraph, and the journal will pick up from here.",
+  backToProgress: "Back to Progress",
+  previousPage: "Previous",
+  nextCompleted: "Next Completed",
+  seeEvidenceShort: "Evidence",
+
+  kickerEvidence: "Evidence",
+  kickerVerificationState: "Verification State",
+  evidenceCards: "Evidence Cards",
+  noEvidenceRecorded: "No verification evidence recorded yet.",
+  kickerNextPage: "Next Page",
+  kickerHandoff: "Handoff",
+  continueFromHere: "Continue From Here",
+  handoffFooterNote: "Before the next AI picks up, reading this page is enough to know where to resume.",
+
+  kickerCleanRoomStructure: "Clean-Room Structure",
+  kickerDetail: "Detail",
+  cleanRoomStructure: "Clean-Room Structure",
+  sourceRecords: "Source Records",
+  noSourceRecords: "Current records come from manual events.",
+  captureRecordsCount: (count) => `${count} captured record${count === 1 ? "" : "s"}`,
+  kickerRelationshipTrace: "Relationship Trace",
+  kickerOptional: "Optional",
+  relationshipTrace: "Relationship Trace",
+  noRelationshipEdges: "No relationship edges yet.",
+  achievementLedger: "Achievement Ledger",
+  noAchievements: "No achievements recorded yet.",
+
+  navProgress: "Progress",
+  navCompleted: "Completed",
+  navEvidence: "Evidence",
+  navDetail: "Detail",
+  navAriaLabel: "Journal pages",
+
+  statusPass: "Verified",
+  statusFail: "Needs Fix",
+  statusBlocked: "Blocked",
+  statusUnknown: "Pending",
+
+  nodeGoal: "Goal",
+  nodeTask: "Task",
+  nodeDecision: "Decision",
+  nodeArtifact: "Artifact",
+  nodeEvidence: "Evidence",
+  nodeBlocker: "Blocker",
+  nodeAchievement: "Achievement",
+  nodeNextStep: "Next Step",
+
+  eventGoal: "Goal",
+  eventDecision: "Key Decision",
+  eventArtifact: "Artifact Confirmed",
+  eventVerificationPrefix: "Verify: ",
+  eventVerificationFallback: "Verification Evidence",
+  eventBlocker: "Blocker",
+  eventCompletion: "Phase complete",
+  eventActionPrefix: "Action: ",
+  eventActionFallback: "Progress Action",
+
+  stageDemoReady: "Demo-ready",
+  stageGoalUndefined: "Goal not set",
+  stageAwaitingImplementation: "Awaiting implementation",
+  stageAwaitingArtifact: "Awaiting artifact",
+  stageAwaitingEvidence: "Awaiting evidence",
+  stageDemoAlmostReady: "Demo almost ready",
+  stageHandoffPending: "Handoff pending",
+
+  milestoneGoalDefined: "Goal defined",
+  milestoneGoalDetail: "No goal recorded for this round yet.",
+  milestoneImplStarted: "Implementation started",
+  milestoneImplDetail: "No implementation actions or key decisions recorded yet.",
+  milestoneArtifactCreated: "Artifact created",
+  milestoneArtifactDetail: "No README, code, plugin, or demo artifact recorded yet.",
+  milestoneEvidenceCollected: "Evidence collected",
+  milestoneEvidenceDetail: "No verifiable evidence recorded yet.",
+  milestoneDemoReady: "Demo ready",
+  milestoneDemoReadyDetail: "Completion record and passing evidence are in place.",
+  milestoneDemoNotYet: "A phase-completion record is still needed to turn progress into a demonstrable result.",
+  milestoneHandoffReady: "Handoff clear",
+  milestoneHandoffReadyDetail: "The next round can pick up directly from completed work.",
+  milestoneHandoffNotYet: "Next steps, risks, or verification gaps still need to be documented.",
+
+  nextStepLabel: "Next Step",
+
+  nextStepFixFailed: (detail) => `Fix the failing verification first: ${detail}`,
+  nextStepUnblock: (detail) => `Resolve the blocker first: ${detail}`,
+  nextStepAddEvidence: (detail) => `Add verifiable evidence: ${detail}`,
+  nextStepAddVerification: "Add at least one verification record explaining which command proves the artifact works.",
+  nextStepConsolidate: "Lock in the passing evidence to the README, tests, or next-round task list, then start the next goal.",
+
+  narrativeNoGoal: "DoneGraph has no goal set yet.",
+  narrativeTemplate: (completed, total, stage, evidencePassed, nextStep) =>
+    `This round has reached ${completed} / ${total} milestones. Current stage: "${stage}", with ${evidencePassed} piece${evidencePassed === 1 ? "" : "s"} of passing evidence. Next step: ${nextStep}`,
+
+  dashboardNarrativeContinue: "Continue recording the next round.",
+
+  storyGoalTitle: "Goal made clear",
+  storyGoalDetailPrefix: "This round started by locking in the direction: ",
+  storyGoalFallback: "The objective has been written down.",
+  storyGoalKind: "Goal",
+
+  storyDecisionTitle: "Key choice made",
+  storyDecisionFallback: "This step clarified the path forward.",
+  storyDecisionKind: "Decision",
+
+  storyArtifactDashboardTitle: "Built a browsable progress journal",
+  storyArtifactDashboardDetail: "Progress has been organized into pages you can open and browse, not just a chat log.",
+  storyArtifactTitle: "Deliverable produced",
+  storyArtifactFallback: "This step turned ideas from the collaboration into something reusable.",
+  storyArtifactKind: "Artifact",
+
+  storyEvidenceTypecheckTitle: "Type structure verified intact",
+  storyEvidenceTypecheckDetail: "Types and interfaces have been checked -- safe to keep building on top.",
+  storyEvidenceBuildTitle: "Build confirmed runnable",
+  storyEvidenceBuildDetail: "The project generates a full build, proving this round is beyond just ideas.",
+  storyEvidenceTestAutoTitle: "Auto-check ran core flows",
+  storyEvidenceTestAutoDetail: "Automated verification swept through core flows, confirming nothing is obviously broken.",
+  storyEvidenceTestManualTitle: "Key flow check passed",
+  storyEvidenceTestManualDetail: "This manual proof confirmed the key flow once over -- safe to count toward completed progress.",
+  storyEvidencePassTitle: "Solid evidence recorded",
+  storyEvidenceUnconfirmedTitle: "Unconfirmed lead recorded",
+  storyEvidenceFallback: "This step helps judge whether current progress stands up.",
+  storyEvidenceKind: "Verification",
+
+  storyBlockerTitle: "Blocker surfaced",
+  storyBlockerFallback: "Pause here and clear the obstacle before moving on.",
+  storyBlockerKind: "Blocker",
+
+  storyNextStepTitle: "Next step documented",
+  storyNextStepFallback: "The next round can pick up from here.",
+  storyNextStepKind: "Next Step",
+
+  storyBuildTitle: "Core tool pushed to runnable state",
+  storyBuildFallback: "The main flow is in shape -- ready for experience polish.",
+  storyBuildKind: "Progress",
+
+  storyTestTitle: "Core flow stabilized",
+  storyTestFallback: "This step moved the project from idea toward verifiable result.",
+
+  storyTaskScanTitle: "Collaboration starting point organized",
+  storyTaskScanFallback: "Scattered context has been gathered into a starting point for further progress.",
+  storyTaskJournalTitle: "Built a browsable journal front page",
+  storyTaskJournalFallback: "Progress is now something you can open and flip through.",
+  storyTaskDemoTitle: "Demo relay completed",
+  storyTaskDemoFallback: "Completed progress, evidence, and next-step relay are organized together.",
+
+  storyPhaseCompleteTitle: "Phase completed",
+  storyDefaultTitle: "Moved forward one step",
+  storyDefaultFallback: "This step keeps the task moving.",
+  storyPushKind: "Progress",
+
+  achievementTypecheckTitle: "Type structure verified intact",
+  achievementTypecheckDetail: "Types and interfaces have been checked -- safe to keep building on top.",
+  achievementBuildTitle: "Build confirmed runnable",
+  achievementBuildDetail: "The project generates a full build, proving this round is beyond just ideas.",
+  achievementTestTitle: "Key flow confirmed stable",
+  achievementTestDetail: "Core behavior has been verified for real -- this step counts toward completed progress.",
+  achievementFallbackTitle: "Progress recorded",
+  achievementFallbackDetail: "This step keeps the task moving.",
+  achievementProgressKind: "Progress",
+
+  dashboardNextStepFallback: "Lock in completed progress, then start the next goal.",
+
+  proofGoalTitle: "Direction is on paper",
+  proofDecisionTitle: "Route has been chosen",
+  proofArtifactJournalTitle: "A browsable result has appeared",
+  proofArtifactTitle: "Deliverable has landed",
+  proofEvidenceAutoTitle: "Auto-verification swept through",
+  proofEvidenceManualTitle: "Manual proof filled in",
+  proofEvidenceStructureTitle: "Type structure held firm",
+  proofEvidenceBuildTitle: "Build result passed",
+  proofEvidenceTitle: "Verification makes progress stand",
+  proofBlockerTitle: "Risk has been made visible",
+  proofNextStepTitle: "Relay point is clear",
+  proofScanTitle: "Starting point organized",
+  proofJournalTitle: "Journal can be flipped open",
+  proofDemoTitle: "Demo thread connected",
+  proofCoreTitle: "Core flow has advanced",
+  proofFallbackTitle: (page) => `Page ${page} counts too`,
+
+  proofGoalDetail: "The goal page proves this round of collaboration has a shared coordinate -- actions, artifacts, and verifications know where to aim.",
+  proofDecisionDetail: "The decision page records the route choice, so the next person does not have to guess why.",
+  proofArtifactJournalDetail: "This page shows the result has become something you can open, browse, and hand to someone else.",
+  proofArtifactDetail: "This page shows the collaboration went beyond talk -- a reusable deliverable has been produced.",
+  proofEvidenceAutoDetail: "Automated verification swept through the basics. This page proves machine-repeatable checks have been recorded.",
+  proofEvidenceManualDetail: "This manual proof filled in the final confirmation -- it is not the same progress as an automated scan.",
+  proofEvidenceStructureDetail: "This page shows types and interfaces are aligned, reducing the risk of structural issues when building further.",
+  proofEvidenceBuildDetail: "This page shows the build completes successfully -- demo and delivery can keep moving forward.",
+  proofEvidenceDetail: "The verification page shows this step was not just words -- evidence backs it up, safe to count toward progress.",
+  proofBlockerDetail: "The blocker page surfaces the obstacle openly, preventing the next round from spinning in the same spot.",
+  proofNextStepDetail: "The relay page leaves the next step here so the next person can pick up directly.",
+  proofScanDetail: "This page gathers scattered context into a starting point, so anyone flipping back can see where this round began.",
+  proofJournalDetail: "This page shows progress has left the chat and become something you can open, browse, and share.",
+  proofDemoDetail: "This page collects completed progress, evidence, and relay points together -- ready for a clear demo.",
+  proofCoreDetail: "This page shows the core flow has advanced toward a usable state -- attention can shift to experience and wrap-up.",
+  proofFallbackDetail: (page) => `Page ${page} records a concrete step forward. It does not need to be a report -- it just needs to show the task moved one square ahead.`,
+
+  cleanVerifyPassed: "Real check already passed",
+  cleanVerifyEntryFound: "Found a verification entry that can prove progress.",
+  cleanChangeSummary: "These changes have been organized into a trackable progress item.",
+  cleanProjectCheck: "a project check",
+  cleanJournal: "progress journal",
+  cleanProjectContent: "related project content",
+  cleanToolName: "DoneGraph tool",
+  cleanToolLabel: "tool",
+  cleanCoreLabel: "core",
+};
+
+function getLocale(lang: DashboardLang): DashboardLocale {
+  return lang === "en" ? enLocale : zhLocale;
+}
+
 export interface DoneGraph {
-  version: "1";
+  version: "2";
   schema: DoneGraphSchemaInfo;
   generated_at: string;
   goal: string;
   platform: DoneGraphPlatform;
+  privacy_tier: PrivacyTier;
   narrative: string;
+  ai_analysis?: {
+    story: string;
+    risks: string[];
+    insights: string[];
+  };
   summary: DoneGraphSummary;
+  accountability: AccountabilityScore;
   nodes: DoneGraphNode[];
   edges: DoneGraphEdge[];
   milestones: DoneGraphMilestone[];
@@ -142,12 +933,13 @@ export interface DoneGraphSafeSnapshotRadioSegment {
 }
 
 export interface DoneGraphSafeSnapshot {
-  version: "1";
+  version: "2";
   kind: "donegraph.safe_snapshot";
   generated_at: string;
   goal: string;
   platform: DoneGraphPlatform;
   privacy: {
+    tier: PrivacyTier;
     mode: "single_safe_snapshot";
     raw_session_included: false;
     uploaded_fields: string[];
@@ -155,6 +947,7 @@ export interface DoneGraphSafeSnapshot {
     redactions: string[];
   };
   summary: DoneGraphSummary;
+  accountability: AccountabilityScore;
   milestones: DoneGraphSafeSnapshotItem[];
   achievements: DoneGraphSafeSnapshotItem[];
   work_trail: DoneGraphSafeSnapshotWorkItem[];
@@ -180,9 +973,175 @@ export interface DoneGraphCaptureInput {
   uuid: () => string;
 }
 
+export interface RecapCommit {
+  hash: string;
+  message: string;
+  timestamp: string;
+  filesChanged: number;
+}
+
+export interface RecapTestResult {
+  script: string;
+  passed: boolean;
+  duration_ms?: number;
+}
+
+export interface RecapInput {
+  commits: RecapCommit[];
+  changedFiles: string[];
+  diffStat: string;
+  testResults: RecapTestResult[];
+  platform: DoneGraphPlatform;
+  projectName?: string;
+  goal?: string;
+  now: () => string;
+  uuid: () => string;
+}
+
+export interface RecapAnalysisItem {
+  title: string;
+  detail: string;
+  type: "goal" | "decision" | "action" | "artifact" | "verification" | "blocker" | "completion";
+  status?: "pass" | "fail" | "unknown" | "blocked";
+}
+
+export interface RecapAnalysis {
+  version: "1";
+  summary: string;
+  story: string;
+  items: RecapAnalysisItem[];
+  risks: string[];
+  insights: string[];
+  next_steps: string[];
+}
+
+export function buildRecapEventsFromAnalysis(
+  analysis: RecapAnalysis,
+  testResults: RecapTestResult[],
+  platform: DoneGraphPlatform,
+  now: () => string,
+  uuid: () => string
+): DoneGraphEvent[] {
+  const events: DoneGraphEvent[] = [];
+
+  for (const item of analysis.items) {
+    events.push({
+      id: uuid(),
+      timestamp: now(),
+      platform,
+      type: item.type,
+      text: item.title,
+      metadata: {
+        ...(item.status ? { status: item.status } : {}),
+        source: "ai-analysis"
+      }
+    });
+  }
+
+  for (const result of testResults) {
+    events.push({
+      id: uuid(),
+      timestamp: now(),
+      platform,
+      type: "verification",
+      text: `${result.script}: ${result.passed ? "passed" : "failed"}${result.duration_ms ? ` (${(result.duration_ms / 1000).toFixed(1)}s)` : ""}`,
+      metadata: {
+        command: result.script,
+        status: result.passed ? "pass" : "fail",
+        source: "recap-verify"
+      }
+    });
+  }
+
+  return events;
+}
+
+export function buildRecapEvents(input: RecapInput): DoneGraphEvent[] {
+  const events: DoneGraphEvent[] = [];
+  const { commits, changedFiles, testResults, platform, now, uuid } = input;
+
+  const goalText = input.goal
+    ?? (commits.length > 0
+      ? commits.map((c) => c.message).join("; ")
+      : "Work session recap");
+
+  events.push({
+    id: uuid(),
+    timestamp: commits[0]?.timestamp ?? now(),
+    platform,
+    type: "goal",
+    text: goalText,
+    metadata: {}
+  });
+
+  for (const commit of commits) {
+    events.push({
+      id: uuid(),
+      timestamp: commit.timestamp,
+      platform,
+      type: "action",
+      text: commit.message,
+      metadata: { source: "git-commit" }
+    });
+  }
+
+  if (changedFiles.length > 0) {
+    const fileGroups = new Map<string, string[]>();
+    for (const file of changedFiles) {
+      const dir = file.includes("/") ? file.split("/")[0]! : ".";
+      if (!fileGroups.has(dir)) fileGroups.set(dir, []);
+      fileGroups.get(dir)!.push(file);
+    }
+    const summary = Array.from(fileGroups.entries())
+      .sort((a, b) => b[1].length - a[1].length)
+      .slice(0, 5)
+      .map(([dir, files]) => `${dir}/ (${files.length} files)`)
+      .join(", ");
+    events.push({
+      id: uuid(),
+      timestamp: now(),
+      platform,
+      type: "artifact",
+      text: `${changedFiles.length} files changed: ${summary}`,
+      metadata: { source: "git-diff" }
+    });
+  }
+
+  for (const result of testResults) {
+    events.push({
+      id: uuid(),
+      timestamp: now(),
+      platform,
+      type: "verification",
+      text: `${result.script}: ${result.passed ? "passed" : "failed"}${result.duration_ms ? ` (${(result.duration_ms / 1000).toFixed(1)}s)` : ""}`,
+      metadata: {
+        command: result.script,
+        status: result.passed ? "pass" : "fail",
+        source: "recap-verify"
+      }
+    });
+  }
+
+  const allPassed = testResults.length > 0 && testResults.every((r) => r.passed);
+  events.push({
+    id: uuid(),
+    timestamp: now(),
+    platform,
+    type: "completion",
+    text: allPassed
+      ? `Session complete: ${commits.length} commits, ${changedFiles.length} files, ${testResults.filter((r) => r.passed).length}/${testResults.length} checks passed`
+      : testResults.length === 0
+        ? `Session complete: ${commits.length} commits, ${changedFiles.length} files changed`
+        : `Session complete with issues: ${testResults.filter((r) => !r.passed).length}/${testResults.length} checks failed`,
+    metadata: {}
+  });
+
+  return events;
+}
+
 const doneGraphSchema: DoneGraphSchemaInfo = {
   name: "DoneGraph",
-  purpose: "洁净室重写的 AI 协作进度图，用来记录目标、动作、产物、证据、决策、阻塞、成就和下一步。",
+  purpose: "Clean-room AI collaboration accountability graph: goals, actions, artifacts, evidence, decisions, blockers, and next steps.",
   node_types: ["goal", "task", "decision", "artifact", "evidence", "blocker", "achievement", "next_step"],
   edge_labels: [
     "belongs_to_goal",
@@ -645,10 +1604,119 @@ function buildEdges(nodes: DoneGraphNode[]): DoneGraphEdge[] {
   return edges;
 }
 
+function computeAccountabilityScore(
+  nodes: DoneGraphNode[],
+  edges: DoneGraphEdge[],
+  nextSteps: string[]
+): AccountabilityScore {
+  const hardGateFailures: string[] = [];
+
+  const evidenceNodes = nodes.filter((n) => n.type === "evidence");
+  const taskNodes = nodes.filter((n) => n.type === "task");
+  const decisionNodes = nodes.filter((n) => n.type === "decision");
+  const scoreableNodes = nodes.filter((n) => n.type !== "next_step" && n.type !== "goal");
+  const completionNodes = taskNodes.filter((n) => n.title === "阶段完成" || n.title === "Phase complete");
+
+  const verifiedByTargets = new Set(edges.filter((e) => e.label === "verified_by").map((e) => e.from));
+  const nodesWithEvidence = scoreableNodes.filter((n) => verifiedByTargets.has(n.id)).length;
+  const evidenceCoverageScore = scoreableNodes.length === 0 ? 0 : Math.round((nodesWithEvidence / scoreableNodes.length) * 100);
+
+  const decidedByTargets = new Set(edges.filter((e) => e.label === "decided_by").map((e) => e.from));
+  const tracedDecisions = decisionNodes.filter((n) => n.detail.trim().length > 0 && decidedByTargets.has(n.id)).length;
+  const decisionScore = decisionNodes.length === 0 ? 100 : Math.round((tracedDecisions / decisionNodes.length) * 100);
+
+  const hasPassEvidence = evidenceNodes.some((n) => n.status === "pass");
+  const completionWithoutEvidence = completionNodes.length > 0 && !hasPassEvidence;
+  if (completionWithoutEvidence) {
+    hardGateFailures.push("Completion declared without any passing evidence");
+  }
+  const completionScore = completionNodes.length === 0 ? 50 : completionWithoutEvidence ? 0 : 100;
+
+  const hasNextSteps = nextSteps.length > 0 && nextSteps.some((s) => s.trim().length > 0);
+  const unresolvedUnknowns = evidenceNodes.filter((n) => n.status === "unknown").length;
+  const unknownPenalty = Math.min(unresolvedUnknowns * 15, 60);
+  const handoffScore = Math.max(0, (hasNextSteps ? 100 : 40) - unknownPenalty);
+
+  let privacyLeaks = 0;
+  for (const node of nodes) {
+    const redacted = redactDoneGraphText(node.detail);
+    if (redacted !== node.detail) privacyLeaks++;
+  }
+  const privacyScore = Math.max(0, 100 - privacyLeaks * 20);
+
+  const incomingTargets = new Set(edges.map((e) => e.to));
+  const nonGoalNodes = nodes.filter((n) => n.type !== "goal" && n.type !== "next_step");
+  const connectedCount = nonGoalNodes.filter((n) => incomingTargets.has(n.id)).length;
+  const coherenceScore = nonGoalNodes.length === 0 ? 100 : Math.round((connectedCount / nonGoalNodes.length) * 100);
+
+  const dimensions: AccountabilityDimension[] = [
+    { id: "evidence_coverage", label: "Evidence Coverage", score: evidenceCoverageScore, weight: 25, detail: `${nodesWithEvidence}/${scoreableNodes.length} nodes have linked evidence`, hard_gate_failed: false },
+    { id: "decision_traceability", label: "Decision Traceability", score: decisionScore, weight: 15, detail: decisionNodes.length === 0 ? "No decisions recorded" : `${tracedDecisions}/${decisionNodes.length} decisions traced to downstream tasks`, hard_gate_failed: false },
+    { id: "completion_integrity", label: "Completion Integrity", score: completionScore, weight: 25, detail: completionWithoutEvidence ? "Completion declared without passing evidence" : completionNodes.length === 0 ? "No completion events yet" : "Completion backed by evidence", hard_gate_failed: completionWithoutEvidence },
+    { id: "handoff_quality", label: "Handoff Quality", score: handoffScore, weight: 15, detail: `${hasNextSteps ? "Next steps defined" : "No next steps"}${unresolvedUnknowns > 0 ? `, ${unresolvedUnknowns} unresolved unknowns` : ""}`, hard_gate_failed: false },
+    { id: "privacy_safety", label: "Privacy Safety", score: privacyScore, weight: 10, detail: privacyLeaks === 0 ? "No privacy leaks detected" : `${privacyLeaks} nodes contain unredacted sensitive content`, hard_gate_failed: false },
+    { id: "graph_coherence", label: "Graph Coherence", score: coherenceScore, weight: 10, detail: `${connectedCount}/${nonGoalNodes.length} non-goal nodes have incoming edges`, hard_gate_failed: false }
+  ];
+
+  const totalWeight = dimensions.reduce((sum, d) => sum + d.weight, 0);
+  const composite = totalWeight === 0 ? 0 : Math.round(dimensions.reduce((sum, d) => sum + d.score * d.weight, 0) / totalWeight);
+  const hardGatesPassed = hardGateFailures.length === 0;
+
+  let verdict: AccountabilityVerdict;
+  if (composite >= 80 && hardGatesPassed) verdict = "ACCOUNTABLE";
+  else if (composite >= 50 && hardGatesPassed) verdict = "PARTIAL";
+  else verdict = "UNACCOUNTED";
+
+  return { composite, verdict, dimensions, hard_gates_passed: hardGatesPassed, hard_gate_failures: hardGateFailures };
+}
+
+function inferVerificationDepth(event: DoneGraphEvent): VerificationDepth {
+  if (event.type !== "verification") return "self_reported";
+  if (event.metadata.command && event.metadata.source === "capture-verify") return "command_verified";
+  if (event.metadata.command) return "manual_verified";
+  return "self_reported";
+}
+
+function confidenceForDepth(depth: VerificationDepth): EvidenceConfidence {
+  if (depth === "command_verified") return "high";
+  if (depth === "manual_verified") return "medium";
+  return "low";
+}
+
+function detectContradictions(nodes: DoneGraphNode[]): void {
+  const evidenceByCommand = new Map<string, DoneGraphNode[]>();
+  for (const node of nodes) {
+    if (node.type !== "evidence" || !node.metadata.command) continue;
+    const key = node.metadata.command;
+    if (!evidenceByCommand.has(key)) evidenceByCommand.set(key, []);
+    evidenceByCommand.get(key)!.push(node);
+  }
+  for (const group of evidenceByCommand.values()) {
+    if (group.length < 2) continue;
+    const lastFail = [...group].reverse().find((n) => n.status === "fail");
+    if (!lastFail) continue;
+    for (const node of group) {
+      if (node === lastFail) continue;
+      if (node.status === "pass") {
+        node.metadata.verification_depth = "contradicted";
+        node.metadata.confidence = "low";
+      }
+    }
+  }
+}
+
 export function buildDoneGraph(events: DoneGraphEvent[], generatedAt = new Date().toISOString()): DoneGraph {
   const sorted = [...events].sort((a, b) => a.timestamp.localeCompare(b.timestamp));
   const goalEvent = sorted.find((event) => event.type === "goal");
-  const nodes = sorted.map(nodeForEvent);
+  const enriched = sorted.map((event) => {
+    if (!event.metadata.verification_depth) {
+      const depth = inferVerificationDepth(event);
+      return { ...event, metadata: { ...event.metadata, verification_depth: depth, confidence: event.metadata.confidence ?? confidenceForDepth(depth) } };
+    }
+    return event;
+  });
+  const nodes = enriched.map(nodeForEvent);
+  detectContradictions(nodes);
   const nextSteps = nextStepsForNodes(nodes);
   const nextStepNodes: DoneGraphNode[] = nextSteps.map((step, index) => ({
     id: `node_next_${index + 1}`,
@@ -662,13 +1730,16 @@ export function buildDoneGraph(events: DoneGraphEvent[], generatedAt = new Date(
   const allNodes = [...nodes, ...nextStepNodes];
   const milestones = buildMilestones(allNodes);
   const edges = buildEdges(allNodes);
+  const accountability = computeAccountabilityScore(allNodes, edges, nextSteps);
   const base = {
-    version: "1" as const,
+    version: "2" as const,
     schema: doneGraphSchema,
     generated_at: generatedAt,
     goal: goalEvent?.text ?? "",
     platform: goalEvent?.platform ?? sorted[0]?.platform ?? "generic",
+    privacy_tier: "local_only" as PrivacyTier,
     summary: summaryFor(allNodes, sorted.length, nextSteps, milestones),
+    accountability,
     nodes: allNodes,
     edges,
     milestones,
@@ -739,11 +1810,11 @@ function statusLabel(status: EvidenceStatus): string {
   return "unknown";
 }
 
-function statusText(status: EvidenceStatus): string {
-  if (status === "pass") return "已证明";
-  if (status === "fail") return "待修复";
-  if (status === "blocked") return "被阻塞";
-  return "待证明";
+function statusText(status: EvidenceStatus, locale: DashboardLocale = zhLocale): string {
+  if (status === "pass") return locale.statusPass;
+  if (status === "fail") return locale.statusFail;
+  if (status === "blocked") return locale.statusBlocked;
+  return locale.statusUnknown;
 }
 
 interface DashboardStoryCopy {
@@ -770,129 +1841,161 @@ function commandIntent(value: string | undefined): "test" | "typecheck" | "build
   return undefined;
 }
 
-function cleanDashboardText(value: string | undefined, fallback: string): string {
+function cleanDashboardText(value: string | undefined, fallback: string, locale: DashboardLocale = zhLocale): string {
   const cleaned = normalizeText(value ?? "")
-    .replace(/真实运行验证命令并通过[:：]?\s*[\w\s:.-]+/gi, "真实检查已经通过")
-    .replace(/发现可用于证明进展的验证入口[:：][^。]+。?/g, "已经找到可以证明进展的检查入口。")
-    .replace(/代表文件[:：][^。；;]+[。；;]?/g, "这些变化已经被整理成一条可以继续追的进展。")
+    .replace(/真实运行验证命令并通过[:：]?\s*[\w\s:.-]+/gi, locale.cleanVerifyPassed)
+    .replace(/发现可用于证明进展的验证入口[:：][^。]+。?/g, locale.cleanVerifyEntryFound)
+    .replace(/代表文件[:：][^。；;]+[。；;]?/g, locale.cleanChangeSummary)
     .replace(/\bpath=[^\s，。；;]+/gi, "")
     .replace(/\bcommand=[^\s，。；;]+/gi, "")
-    .replace(/\bnpm(?:\s+run)?\s+[\w:-]+/gi, "一次项目检查")
-    .replace(/\.donegraph\/[^\s，。；;]+/gi, "进度手账")
-    .replace(/\b(?:apps|packages|plugins|platforms|scripts|src|test|tests|READMEs?)\/[^\s，。；;]+/gi, "相关项目内容")
-    .replace(/DoneGraph CLI/g, "DoneGraph 工具")
-    .replace(/\bCLI\b/g, "工具")
-    .replace(/命令优先的/g, "核心")
+    .replace(/\bnpm(?:\s+run)?\s+[\w:-]+/gi, locale.cleanProjectCheck)
+    .replace(/\.donegraph\/[^\s，。；;]+/gi, locale.cleanJournal)
+    .replace(/\b(?:apps|packages|plugins|platforms|scripts|src|test|tests|READMEs?)\/[^\s，。；;]+/gi, locale.cleanProjectContent)
+    .replace(/DoneGraph CLI/g, locale.cleanToolName)
+    .replace(/\bCLI\b/g, locale.cleanToolLabel)
+    .replace(/命令优先的/g, locale.cleanCoreLabel)
     .replace(/\s+/g, " ")
     .replace(/\s+([，。；])/g, "$1")
     .trim();
   return cleaned.length > 0 ? cleaned : fallback;
 }
 
-function storyCopyForNode(node: DoneGraphNode): DashboardStoryCopy {
+function storyCopyForNode(node: DoneGraphNode, locale: DashboardLocale = zhLocale): DashboardStoryCopy {
   const intent = commandIntent(`${node.metadata.command ?? ""} ${node.title} ${node.detail}`);
   const path = node.metadata.path?.toLowerCase() ?? "";
 
   if (node.type === "goal") {
     return {
-      title: "把目标说清楚",
-      detail: `这轮协作先确定了方向：${cleanDashboardText(node.detail, "要完成的事情已经被写下来。")}`,
-      kind: "目标"
+      title: locale.storyGoalTitle,
+      detail: `${locale.storyGoalDetailPrefix}${cleanDashboardText(node.detail, locale.storyGoalFallback, locale)}`,
+      kind: locale.storyGoalKind
     };
   }
 
   if (node.type === "decision") {
     return {
-      title: "做出一个关键选择",
-      detail: cleanDashboardText(node.detail, "这一步把后面的路线定得更清楚。"),
-      kind: "决策"
+      title: locale.storyDecisionTitle,
+      detail: cleanDashboardText(node.detail, locale.storyDecisionFallback, locale),
+      kind: locale.storyDecisionKind
     };
   }
 
   if (node.type === "artifact" && path.includes("dashboard")) {
     return {
-      title: "做出可以翻看的进度手账",
-      detail: "进展被整理成一页页可以打开的手账，不再只是一段聊天记录。",
-      kind: "产物"
+      title: locale.storyArtifactDashboardTitle,
+      detail: locale.storyArtifactDashboardDetail,
+      kind: locale.storyArtifactKind
     };
   }
 
   if (node.type === "artifact") {
     return {
-      title: "留下了可交付成果",
-      detail: cleanDashboardText(node.detail, "这一步把协作里的想法变成了可以继续使用的东西。"),
-      kind: "产物"
+      title: locale.storyArtifactTitle,
+      detail: cleanDashboardText(node.detail, locale.storyArtifactFallback, locale),
+      kind: locale.storyArtifactKind
     };
   }
 
   if (node.type === "evidence" && intent === "typecheck") {
     return {
-      title: "确认结构没有松动",
-      detail: "类型和接口检查已经过了一遍，后面可以更安心地继续接。",
-      kind: "验证"
+      title: locale.storyEvidenceTypecheckTitle,
+      detail: locale.storyEvidenceTypecheckDetail,
+      kind: locale.storyEvidenceKind
     };
   }
 
   if (node.type === "evidence" && intent === "build") {
     return {
-      title: "把成果打包到可运行状态",
-      detail: "项目可以完整生成成果，说明这轮工作已经不只是想法。",
-      kind: "验证"
+      title: locale.storyEvidenceBuildTitle,
+      detail: locale.storyEvidenceBuildDetail,
+      kind: locale.storyEvidenceKind
     };
   }
 
   if (node.type === "evidence" && intent === "test") {
     if (node.metadata.source === "capture-verify") {
       return {
-        title: "自动检查跑过核心流程",
-        detail: "自动验证已经帮你扫过核心流程，这一步说明基础行为没有明显断掉。",
-        kind: "验证"
+        title: locale.storyEvidenceTestAutoTitle,
+        detail: locale.storyEvidenceTestAutoDetail,
+        kind: locale.storyEvidenceKind
       };
     }
     return {
-      title: "关键流程检查已经通过",
-      detail: "这条手动证明把关键流程确认了一遍，可以放心算进已完成进度。",
-      kind: "验证"
+      title: locale.storyEvidenceTestManualTitle,
+      detail: locale.storyEvidenceTestManualDetail,
+      kind: locale.storyEvidenceKind
     };
   }
 
   if (node.type === "evidence") {
     return {
-      title: node.status === "pass" ? "留下一条可靠证据" : "留下一条待确认线索",
-      detail: cleanDashboardText(node.detail, "这一步用来说明当前进展是否站得住。"),
-      kind: "验证"
+      title: node.status === "pass" ? locale.storyEvidencePassTitle : locale.storyEvidenceUnconfirmedTitle,
+      detail: cleanDashboardText(node.detail, locale.storyEvidenceFallback, locale),
+      kind: locale.storyEvidenceKind
     };
   }
 
   if (node.type === "blocker") {
     return {
-      title: "发现需要先处理的阻塞",
-      detail: cleanDashboardText(node.detail, "这里需要先停一下，把卡住的地方处理掉。"),
-      kind: "阻塞"
+      title: locale.storyBlockerTitle,
+      detail: cleanDashboardText(node.detail, locale.storyBlockerFallback, locale),
+      kind: locale.storyBlockerKind
     };
   }
 
   if (node.type === "next_step") {
     return {
-      title: "下一步已经写清楚",
-      detail: cleanDashboardText(node.detail, "下一轮可以从这里接着走。"),
-      kind: "下一步"
+      title: locale.storyNextStepTitle,
+      detail: cleanDashboardText(node.detail, locale.storyNextStepFallback, locale),
+      kind: locale.storyNextStepKind
     };
   }
 
   if (intent === "build") {
     return {
-      title: "把核心工具推进到可运行",
-      detail: cleanDashboardText(node.detail, "DoneGraph 的主要流程已经成形，可以继续围绕体验打磨。"),
-      kind: "推进"
+      title: locale.storyBuildTitle,
+      detail: cleanDashboardText(node.detail, locale.storyBuildFallback, locale),
+      kind: locale.storyPushKind
     };
   }
 
   if (intent === "test") {
     return {
-      title: "让核心流程先跑稳",
-      detail: cleanDashboardText(node.detail, "这一步让项目从想法继续往可验证的成果靠近。"),
-      kind: "推进"
+      title: locale.storyTestTitle,
+      detail: cleanDashboardText(node.detail, locale.storyTestFallback, locale),
+      kind: locale.storyPushKind
+    };
+  }
+
+  if (node.metadata.source === "git-commit") {
+    const msg = normalizeText(node.detail).replace(/^[a-f0-9]{6,40}\s+/i, "");
+    const short = msg.length > 60 ? `${msg.slice(0, 57)}...` : msg;
+    return {
+      title: short || locale.storyDefaultTitle,
+      detail: msg,
+      kind: "commit"
+    };
+  }
+
+  if (node.metadata.source === "git-diff") {
+    return {
+      title: locale.lang === "en" ? "Files changed" : "文件变更",
+      detail: normalizeText(node.detail),
+      kind: locale.lang === "en" ? "diff" : "变更"
+    };
+  }
+
+  if (node.metadata.source === "recap-verify") {
+    const cmd = node.metadata.command ?? "";
+    const label = cmd.includes("test") ? (locale.lang === "en" ? "Tests" : "测试")
+      : cmd.includes("typecheck") || cmd.includes("tsc") ? (locale.lang === "en" ? "Types" : "类型")
+      : cmd.includes("build") ? (locale.lang === "en" ? "Build" : "构建")
+      : cmd.includes("lint") ? (locale.lang === "en" ? "Lint" : "检查")
+      : (locale.lang === "en" ? "Check" : "检查");
+    return {
+      title: `${label}: ${node.status === "pass" ? (locale.lang === "en" ? "passed" : "通过") : (locale.lang === "en" ? "failed" : "失败")}`,
+      detail: normalizeText(node.detail),
+      kind: locale.lang === "en" ? "check" : "验证"
     };
   }
 
@@ -900,130 +2003,166 @@ function storyCopyForNode(node: DoneGraphNode): DashboardStoryCopy {
     const raw = `${node.title} ${node.detail}`;
     if (raw.includes("自动扫描") || raw.includes("协作进度起点")) {
       return {
-        title: "整理协作起点",
-        detail: cleanDashboardText(node.detail, "这一步把散在上下文整理成可以继续推进的起点。"),
-        kind: "推进"
+        title: locale.storyTaskScanTitle,
+        detail: cleanDashboardText(node.detail, locale.storyTaskScanFallback, locale),
+        kind: locale.storyPushKind
       };
     }
     if (raw.includes("手账") || raw.includes("翻看") || raw.includes("首页")) {
       return {
-        title: "做出可翻看的手账首页",
-        detail: cleanDashboardText(node.detail, "这一步把进度变成可以打开和翻看的手账首页。"),
-        kind: "推进"
+        title: locale.storyTaskJournalTitle,
+        detail: cleanDashboardText(node.detail, locale.storyTaskJournalFallback, locale),
+        kind: locale.storyPushKind
       };
     }
     if (raw.includes("演示") || raw.includes("交接")) {
       return {
-        title: "完成演示接力",
-        detail: cleanDashboardText(node.detail, "这一步把完成进度、证据和下一步接力整理到一起。"),
-        kind: "推进"
+        title: locale.storyTaskDemoTitle,
+        detail: cleanDashboardText(node.detail, locale.storyTaskDemoFallback, locale),
+        kind: locale.storyPushKind
       };
     }
   }
 
   return {
-    title: node.title === "阶段完成" ? "完成一个阶段" : "推进了一步",
-    detail: cleanDashboardText(node.detail, "这一步让任务继续往前走。"),
-    kind: "推进"
+    title: node.title === "阶段完成" || node.title === "Phase complete" ? locale.storyPhaseCompleteTitle : locale.storyDefaultTitle,
+    detail: cleanDashboardText(node.detail, locale.storyDefaultFallback, locale),
+    kind: locale.storyPushKind
   };
 }
 
-function storyCopyForAchievement(item: DoneGraphAchievement, sourceNode: DoneGraphNode | undefined): DashboardStoryCopy {
-  if (sourceNode) return storyCopyForNode(sourceNode);
+function storyCopyForAchievement(item: DoneGraphAchievement, sourceNode: DoneGraphNode | undefined, locale: DashboardLocale = zhLocale): DashboardStoryCopy {
+  if (sourceNode) return storyCopyForNode(sourceNode, locale);
 
   const raw = `${item.title} ${item.detail}`;
   const intent = commandIntent(raw);
   if (intent === "typecheck") {
-    return { title: "确认结构没有松动", detail: "类型和接口检查已经过了一遍，后面可以更安心地继续接。", kind: "验证" };
+    return { title: locale.achievementTypecheckTitle, detail: locale.achievementTypecheckDetail, kind: locale.storyEvidenceKind };
   }
   if (intent === "build") {
-    return { title: "把成果打包到可运行状态", detail: "项目可以完整生成成果，说明这轮工作已经不只是想法。", kind: "推进" };
+    return { title: locale.achievementBuildTitle, detail: locale.achievementBuildDetail, kind: locale.storyPushKind };
   }
   if (intent === "test") {
-    return { title: "确认关键流程跑得稳", detail: "核心行为已经真实检查过，这一步可以算进已完成的进度。", kind: "验证" };
+    return { title: locale.achievementTestTitle, detail: locale.achievementTestDetail, kind: locale.storyEvidenceKind };
   }
   return {
-    title: cleanDashboardText(item.title, "完成一段进展"),
-    detail: cleanDashboardText(item.detail, "这一步让任务继续往前走。"),
-    kind: "进展"
+    title: cleanDashboardText(item.title, locale.achievementFallbackTitle, locale),
+    detail: cleanDashboardText(item.detail, locale.achievementFallbackDetail, locale),
+    kind: locale.achievementProgressKind
   };
 }
 
-function dashboardNextStep(step: string): string {
-  return cleanDashboardText(step, "把已完成的进展固定下来，再开启下一阶段目标。");
+function localizeStage(stage: string, locale: DashboardLocale): string {
+  // The stage comes from currentStageFor() which always returns Chinese.
+  // Map Chinese stage names to locale equivalents.
+  if (stage === "可以交付演示") return locale.stageDemoReady;
+  if (stage === "目标还没定") return locale.stageGoalUndefined;
+  if (stage === "等待开始实现") return locale.stageAwaitingImplementation;
+  if (stage === "等待产物出现") return locale.stageAwaitingArtifact;
+  if (stage === "等待证据验证") return locale.stageAwaitingEvidence;
+  if (stage === "演示还差收尾") return locale.stageDemoAlmostReady;
+  if (stage === "交接还要整理") return locale.stageHandoffPending;
+  return stage;
 }
 
-function progressProofTitle(item: DashboardStoryCopy, page: number): string {
+function localizeNextStep(step: string, locale: DashboardLocale): string {
+  // Next steps come from nextStepsForNodes() which always returns Chinese.
+  // Map known Chinese patterns to locale equivalents.
+  if (step.startsWith("先修复失败验证：")) return locale.nextStepFixFailed(step.slice("先修复失败验证：".length));
+  if (step.startsWith("先解除阻塞：")) return locale.nextStepUnblock(step.slice("先解除阻塞：".length));
+  if (step.startsWith("补充可判断证据：")) return locale.nextStepAddEvidence(step.slice("补充可判断证据：".length));
+  if (step === "为本轮产物补充至少一条 verification 记录，说明用什么命令证明它可用。") return locale.nextStepAddVerification;
+  if (step === "把已通过的证据固化到 README、测试或下一轮任务清单，然后开启下一阶段目标。") return locale.nextStepConsolidate;
+  return step;
+}
+
+function dashboardNextStep(step: string, locale: DashboardLocale = zhLocale): string {
+  const localized = localizeNextStep(step, locale);
+  return cleanDashboardText(localized, locale.dashboardNextStepFallback, locale);
+}
+
+function progressProofTitle(item: DashboardStoryCopy, page: number, locale: DashboardLocale = zhLocale): string {
   const raw = `${item.title} ${item.detail}`;
-  if (item.kind === "目标") return "方向已经落到纸上";
-  if (item.kind === "决策") return "路线已经选定";
-  if (item.kind === "产物") return item.title.includes("手账") ? "可以打开的成果已经出现" : "交付物已经落地";
-  if (item.kind === "验证" && item.title.includes("自动检查")) return "自动验证已经扫过";
-  if (item.kind === "验证" && item.detail.includes("手动证明")) return "手动证明已经补上";
-  if (item.kind === "验证" && item.title.includes("结构")) return "类型结构已经稳住";
-  if (item.kind === "验证" && item.title.includes("打包")) return "构建结果已经过关";
-  if (item.kind === "验证") return "验证让进度站得住";
-  if (item.kind === "阻塞") return "风险已经被看见";
-  if (item.kind === "下一步") return "接力点已经清楚";
-  if (raw.includes("自动扫描") || raw.includes("协作进度起点")) return "起点已经整理出来";
-  if (raw.includes("手账") || raw.includes("翻看") || raw.includes("首页")) return "手账已经翻得开";
-  if (raw.includes("演示") || raw.includes("交接")) return "演示线索已经接上";
-  if (item.title.includes("核心") || item.detail.includes("核心")) return "核心流程已经推进";
-  return `第 ${page} 页也算数`;
+  if (item.kind === locale.storyGoalKind) return locale.proofGoalTitle;
+  if (item.kind === locale.storyDecisionKind) return locale.proofDecisionTitle;
+  if (item.kind === locale.storyArtifactKind) {
+    return (item.title.includes("手账") || item.title.includes("journal") || item.title.includes("browsable"))
+      ? locale.proofArtifactJournalTitle : locale.proofArtifactTitle;
+  }
+  if (item.kind === locale.storyEvidenceKind) {
+    if (item.title.includes("自动检查") || item.title.includes("Auto-check")) return locale.proofEvidenceAutoTitle;
+    if (item.detail.includes("手动证明") || item.detail.includes("manual proof")) return locale.proofEvidenceManualTitle;
+    if (item.title.includes("结构") || item.title.includes("structure") || item.title.includes("Type")) return locale.proofEvidenceStructureTitle;
+    if (item.title.includes("打包") || item.title.includes("Build") || item.title.includes("runnable")) return locale.proofEvidenceBuildTitle;
+    return locale.proofEvidenceTitle;
+  }
+  if (item.kind === locale.storyBlockerKind) return locale.proofBlockerTitle;
+  if (item.kind === locale.storyNextStepKind) return locale.proofNextStepTitle;
+  if (raw.includes("自动扫描") || raw.includes("协作进度起点") || raw.includes("starting point") || raw.includes("Collaboration starting")) return locale.proofScanTitle;
+  if (raw.includes("手账") || raw.includes("翻看") || raw.includes("首页") || raw.includes("journal") || raw.includes("browsable")) return locale.proofJournalTitle;
+  if (raw.includes("演示") || raw.includes("交接") || raw.includes("demo") || raw.includes("Demo") || raw.includes("relay")) return locale.proofDemoTitle;
+  if (item.title.includes("核心") || item.detail.includes("核心") || item.title.includes("Core") || item.detail.includes("core")) return locale.proofCoreTitle;
+  return locale.proofFallbackTitle(page);
 }
 
-function progressProofDetail(item: DashboardStoryCopy, page: number): string {
+function progressProofDetail(item: DashboardStoryCopy, page: number, locale: DashboardLocale = zhLocale): string {
   const raw = `${item.title} ${item.detail}`;
-  if (item.kind === "目标") {
-    return "目标页证明这轮协作已经有了共同坐标，后面的动作、产物和验证才知道往哪里靠。";
+  if (item.kind === locale.storyGoalKind) {
+    return locale.proofGoalDetail;
   }
-  if (item.kind === "决策") {
-    return "决策页记录路线选择，下一次接手时不用重新猜为什么这么做。";
+  if (item.kind === locale.storyDecisionKind) {
+    return locale.proofDecisionDetail;
   }
-  if (item.kind === "产物") {
-    return item.title.includes("手账")
-      ? "这页说明成果已经变成能打开、能翻看、能交给别人理解的东西。"
-      : "这页说明协作不只停在讨论里，已经留下了可以继续使用的交付物。";
+  if (item.kind === locale.storyArtifactKind) {
+    return (item.title.includes("手账") || item.title.includes("journal") || item.title.includes("browsable"))
+      ? locale.proofArtifactJournalDetail
+      : locale.proofArtifactDetail;
   }
-  if (item.kind === "验证") {
-    if (item.title.includes("自动检查")) {
-      return "自动验证已经帮你扫过一遍基础流程，这页说明机器可重复检查的部分已经留下记录。";
+  if (item.kind === locale.storyEvidenceKind) {
+    if (item.title.includes("自动检查") || item.title.includes("Auto-check")) {
+      return locale.proofEvidenceAutoDetail;
     }
-    if (item.detail.includes("手动证明")) {
-      return "这条手动证明把最后确认补上，说明它不是自动扫描里的同一条进展。";
+    if (item.detail.includes("手动证明") || item.detail.includes("manual proof")) {
+      return locale.proofEvidenceManualDetail;
     }
-    if (item.title.includes("结构")) {
-      return "这页说明类型和接口已经对齐，后面继续接功能时不容易踩到结构问题。";
+    if (item.title.includes("结构") || item.title.includes("structure") || item.title.includes("Type")) {
+      return locale.proofEvidenceStructureDetail;
     }
-    if (item.title.includes("打包")) {
-      return "这页说明成果已经能完整生成，演示和交付可以继续往前走。";
+    if (item.title.includes("打包") || item.title.includes("Build") || item.title.includes("runnable")) {
+      return locale.proofEvidenceBuildDetail;
     }
-    return "验证页说明这一步不是口头完成，而是已经有证据支撑，可以安心算进进度。";
+    return locale.proofEvidenceDetail;
   }
-  if (item.kind === "阻塞") {
-    return "阻塞页把卡点摆到明面上，避免下一轮继续在同一个地方打转。";
+  if (item.kind === locale.storyBlockerKind) {
+    return locale.proofBlockerDetail;
   }
-  if (item.kind === "下一步") {
-    return "接力页把下一步放在这里，让后面的人能直接续上。";
+  if (item.kind === locale.storyNextStepKind) {
+    return locale.proofNextStepDetail;
   }
-  if (raw.includes("自动扫描") || raw.includes("协作进度起点")) {
-    return "这页把散在上下文收成一个起点，后面翻到这里时，能知道这轮协作从哪里开始。";
+  if (raw.includes("自动扫描") || raw.includes("协作进度起点") || raw.includes("starting point") || raw.includes("Collaboration starting")) {
+    return locale.proofScanDetail;
   }
-  if (raw.includes("手账") || raw.includes("翻看") || raw.includes("首页")) {
-    return "这页说明进度已经从聊天里走出来，变成能打开、能翻看、能给别人看的首页。";
+  if (raw.includes("手账") || raw.includes("翻看") || raw.includes("首页") || raw.includes("journal") || raw.includes("browsable")) {
+    return locale.proofJournalDetail;
   }
-  if (raw.includes("演示") || raw.includes("交接")) {
-    return "这页把完成进度、证据和接力点收在一起，演示时能讲清楚已经走到哪里。";
+  if (raw.includes("演示") || raw.includes("交接") || raw.includes("demo") || raw.includes("Demo") || raw.includes("relay")) {
+    return locale.proofDemoDetail;
   }
-  if (item.title.includes("核心") || item.detail.includes("核心")) {
-    return "这页说明核心流程已经往可用状态推进，后面可以把注意力放到体验和收尾。";
+  if (item.title.includes("核心") || item.detail.includes("核心") || item.title.includes("Core") || item.detail.includes("core")) {
+    return locale.proofCoreDetail;
   }
-  return `第 ${page} 页记录的是一次具体推进。它不需要变成报告，只要能让人看见任务确实往前走了一格。`;
+  return locale.proofFallbackDetail(page);
 }
 
-function dashboardNarrativeFor(graph: DoneGraph): string {
-  const nextStep = graph.next_steps[0] ? dashboardNextStep(graph.next_steps[0]) : "继续记录下一段协作。";
-  return `这轮协作已经走完 ${graph.summary.milestones_completed} / ${graph.summary.milestones_total} 个里程碑，当前阶段是「${graph.summary.current_stage}」，并沉淀 ${graph.summary.evidence_passed} 条通过证据。下一步是：${nextStep}`;
+function dashboardNarrativeFor(graph: DoneGraph, locale: DashboardLocale = zhLocale): string {
+  const nextStep = graph.next_steps[0] ? dashboardNextStep(graph.next_steps[0], locale) : locale.dashboardNarrativeContinue;
+  return locale.narrativeTemplate(
+    graph.summary.milestones_completed,
+    graph.summary.milestones_total,
+    localizeStage(graph.summary.current_stage, locale),
+    graph.summary.evidence_passed,
+    nextStep
+  );
 }
 
 function safeSnapshotItemForNode(node: DoneGraphNode): DoneGraphSafeSnapshotWorkItem {
@@ -1099,19 +2238,21 @@ export function buildSafeSnapshot(graph: DoneGraph, generatedAt = graph.generate
   const nextSteps = graph.next_steps.map(redactDoneGraphText);
 
   return {
-    version: "1",
+    version: "2",
     kind: "donegraph.safe_snapshot",
     generated_at: generatedAt,
     goal: redactDoneGraphText(graph.goal),
     platform: graph.platform,
     privacy: {
+      tier: "redacted_share",
       mode: "single_safe_snapshot",
       raw_session_included: false,
-      uploaded_fields: ["summary", "milestones", "achievements", "work_trail", "next_steps", "letter", "radio"],
+      uploaded_fields: ["summary", "accountability", "milestones", "achievements", "work_trail", "next_steps", "letter", "radio"],
       excluded_fields: ["raw session log", "full chat", "file contents", "local machine paths", "secret-looking values"],
       redactions: ["local paths", "project file paths", "API keys", "tokens", "password-like values", "emails"]
     },
     summary: graph.summary,
+    accountability: graph.accountability,
     milestones,
     achievements,
     work_trail: workTrail,
@@ -1149,27 +2290,27 @@ export function renderSafeSnapshotMarkdown(snapshot: DoneGraphSafeSnapshot): str
   ].join("\n");
 }
 
-function nodeTypeText(type: DoneGraphNodeType): string {
+function nodeTypeText(type: DoneGraphNodeType, locale: DashboardLocale = zhLocale): string {
   const labels: Record<DoneGraphNodeType, string> = {
-    goal: "目标",
-    task: "任务",
-    decision: "决策",
-    artifact: "产物",
-    evidence: "证据",
-    blocker: "阻塞",
-    achievement: "成就",
-    next_step: "下一步"
+    goal: locale.nodeGoal,
+    task: locale.nodeTask,
+    decision: locale.nodeDecision,
+    artifact: locale.nodeArtifact,
+    evidence: locale.nodeEvidence,
+    blocker: locale.nodeBlocker,
+    achievement: locale.nodeAchievement,
+    next_step: locale.nodeNextStep
   };
   return labels[type];
 }
 
-function renderNode(node: DoneGraphNode, index: number): string {
+function renderNode(node: DoneGraphNode, index: number, locale: DashboardLocale = zhLocale): string {
   return [
     `<article class="journal-card ${escapeHtml(node.type)} ${escapeHtml(statusLabel(node.status))}" style="--delay: ${index * 70}ms">`,
-    `<div class="card-cap"><span class="card-number">${String(index + 1).padStart(2, "0")}</span><span class="card-kind">${escapeHtml(nodeTypeText(node.type))}</span></div>`,
+    `<div class="card-cap"><span class="card-number">${String(index + 1).padStart(2, "0")}</span><span class="card-kind">${escapeHtml(nodeTypeText(node.type, locale))}</span></div>`,
     `<h3>${escapeHtml(node.title)}</h3>`,
     `<p>${escapeHtml(node.detail)}</p>`,
-    `<div class="stamp ${escapeHtml(statusLabel(node.status))}">${escapeHtml(statusText(node.status))}</div>`,
+    `<div class="stamp ${escapeHtml(statusLabel(node.status))}">${escapeHtml(statusText(node.status, locale))}</div>`,
     node.metadata.path ? `<code>${escapeHtml(node.metadata.path)}</code>` : "",
     node.metadata.command ? `<code>${escapeHtml(node.metadata.command)}</code>` : "",
     node.metadata.source ? `<small class="source">${escapeHtml(node.metadata.source)}</small>` : "",
@@ -1177,7 +2318,8 @@ function renderNode(node: DoneGraphNode, index: number): string {
   ].join("");
 }
 
-export function renderDashboardHtml(graph: DoneGraph): string {
+export function renderDashboardHtml(graph: DoneGraph, lang: DashboardLang = "zh"): string {
+  const locale = getLocale(lang);
   const milestoneProgress = `${graph.summary.milestones_completed} / ${graph.summary.milestones_total}`;
   const nodeIndex = new Map(graph.nodes.map((node, index) => [node.id, index + 1]));
   const sourceNodeByEventId = new Map<string, DoneGraphNode>();
@@ -1189,38 +2331,46 @@ export function renderDashboardHtml(graph: DoneGraph): string {
   const progressItems: DashboardProgressItem[] = graph.achievements.map((item) => {
     const sourceNode = item.source_event_ids.map((eventId) => sourceNodeByEventId.get(eventId)).find(Boolean);
     return {
-      ...storyCopyForAchievement(item, sourceNode),
+      ...storyCopyForAchievement(item, sourceNode, locale),
       status: item.status
     };
   });
-  const progressSpreadCount = Math.max(progressItems.length, 1);
+  const ITEMS_PER_PAGE = 6;
+  const progressPages: DashboardProgressItem[][] = [];
+  for (let i = 0; i < progressItems.length; i += ITEMS_PER_PAGE) {
+    progressPages.push(progressItems.slice(i, i + ITEMS_PER_PAGE));
+  }
+  const progressSpreadCount = Math.max(progressPages.length, 1);
   const evidenceSpread = progressSpreadCount + 1;
   const detailSpread = progressSpreadCount + 2;
   const progressSpreads =
-    progressItems.length > 0
-      ? progressItems
-          .map((item, index) => {
+    progressPages.length > 0
+      ? progressPages
+          .map((pageItems, index) => {
             const spread = index + 1;
             const page = index + 1;
             const previousTarget = page === 1 ? "0" : String(spread - 1);
-            const nextTarget = page === progressItems.length ? String(evidenceSpread) : String(spread + 1);
-            const nextLabel = page === progressItems.length ? "看证据" : "下一条完成";
+            const nextTarget = page === progressPages.length ? String(evidenceSpread) : String(spread + 1);
+            const nextLabel = page === progressPages.length ? locale.seeEvidenceShort : locale.nextCompleted;
+            const leftCards = pageItems.map((item, i) =>
+              `<article class="progress-card ${escapeHtml(statusLabel(item.status))}" style="--delay: ${i * 60}ms"><span class="progress-card-num">${String(index * ITEMS_PER_PAGE + i + 1).padStart(2, "0")}</span><strong>${escapeHtml(item.title)}</strong><p>${escapeHtml(item.detail)}</p><span class="progress-card-badge">${escapeHtml(statusText(item.status, locale))}</span></article>`
+            ).join("\n");
+            const rightItems = pageItems.map((item, i) =>
+              `<li class="proof-list-item"><span class="stamp-inline ${escapeHtml(statusLabel(item.status))}">${escapeHtml(statusText(item.status, locale))}</span> ${escapeHtml(progressProofTitle(item, index * ITEMS_PER_PAGE + i + 1, locale))}</li>`
+            ).join("\n");
             return `<section class="spread progress-spread" data-spread="${spread}" data-progress-page="${page}">
         <article class="page left progress-page">
-          <div class="page-kicker"><span>完成</span><span>第 ${page} / ${progressItems.length} 页</span></div>
-          <p class="progress-page-number">${String(page).padStart(2, "0")}</p>
-          <h2>这一页完成了什么</h2>
-          <h3>${escapeHtml(item.title)}</h3>
-          <p class="progress-story">${escapeHtml(item.detail)}</p>
+          <div class="page-kicker"><span>${escapeHtml(locale.kickerCompleted)}</span><span>${escapeHtml(locale.completedPageOf(page, progressPages.length))}</span></div>
+          <h2>${escapeHtml(locale.whatThisPageCompleted)}</h2>
+          <div class="progress-card-grid">${leftCards}</div>
         </article>
         <article class="page right progress-proof-page">
-          <div class="page-kicker"><span>${escapeHtml(item.kind)}</span><span>${escapeHtml(statusText(item.status))}</span></div>
-          <h2>${escapeHtml(progressProofTitle(item, page))}</h2>
-          <p class="soft-note">${escapeHtml(progressProofDetail(item, page))}</p>
-          <div class="stamp ${escapeHtml(statusLabel(item.status))}">${escapeHtml(statusText(item.status))}</div>
+          <div class="page-kicker"><span>${escapeHtml(pageItems[0]?.kind ?? "")}</span><span>${pageItems.length} items</span></div>
+          <h2>${escapeHtml(progressProofTitle(pageItems[0]!, page, locale))}</h2>
+          <ul class="proof-list">${rightItems}</ul>
           <div class="progress-pager">
-            <button class="secondary" type="button" data-jump="${previousTarget}">${page === 1 ? "回到进度" : "上一页"}</button>
-            <button type="button" data-jump="${nextTarget}">${nextLabel}</button>
+            <button class="secondary" type="button" data-jump="${previousTarget}">${page === 1 ? escapeHtml(locale.backToProgress) : escapeHtml(locale.previousPage)}</button>
+            <button type="button" data-jump="${nextTarget}">${escapeHtml(nextLabel)}</button>
           </div>
         </article>
       </section>`;
@@ -1228,33 +2378,32 @@ export function renderDashboardHtml(graph: DoneGraph): string {
           .join("\n\n")
       : `<section class="spread progress-spread" data-spread="1" data-progress-page="1">
         <article class="page left progress-page">
-          <div class="page-kicker"><span>完成</span><span>第 1 / 1 页</span></div>
-          <p class="progress-page-number">01</p>
-          <h2>这一页完成了什么</h2>
-          <h3>还没有可翻看的完成页</h3>
-          <p class="progress-story">等下一次记录目标、产物或验证结果后，这里会自动长出新的进度页。</p>
+          <div class="page-kicker"><span>${escapeHtml(locale.kickerCompleted)}</span><span>${escapeHtml(locale.completedPageOf(1, 1))}</span></div>
+          <h2>${escapeHtml(locale.whatThisPageCompleted)}</h2>
+          <h3>${escapeHtml(locale.noCompletedPages)}</h3>
+          <p class="progress-story">${escapeHtml(locale.noCompletedPagesStory)}</p>
         </article>
         <article class="page right progress-proof-page">
-          <div class="page-kicker"><span>等待记录</span><span>待证明</span></div>
-          <h2>从哪里开始</h2>
-          <p class="soft-note">先把这轮协作真正完成的一步写进 DoneGraph，手账就会从这里继续翻下去。</p>
+          <div class="page-kicker"><span>${escapeHtml(locale.kickerAwaitingRecord)}</span><span>${escapeHtml(locale.awaitingProof)}</span></div>
+          <h2>${escapeHtml(locale.whereToStart)}</h2>
+          <p class="soft-note">${escapeHtml(locale.whereToStartNote)}</p>
           <div class="progress-pager">
-            <button class="secondary" type="button" data-jump="0">回到进度</button>
-            <button type="button" data-jump="${evidenceSpread}">看证据</button>
+            <button class="secondary" type="button" data-jump="0">${escapeHtml(locale.backToProgress)}</button>
+            <button type="button" data-jump="${evidenceSpread}">${escapeHtml(locale.seeEvidenceShort)}</button>
           </div>
         </article>
       </section>`;
   const achievements = progressItems
-    .map((item) => `<li><span>${escapeHtml(statusText(item.status))}</span>${escapeHtml(item.title)}</li>`)
+    .map((item) => `<li><span>${escapeHtml(statusText(item.status, locale))}</span>${escapeHtml(item.title)}</li>`)
     .join("\n");
   const evidenceCards = graph.nodes
     .filter((node) => node.type === "evidence")
     .map((node, index) => {
-      const copy = storyCopyForNode(node);
-      return `<article class="proof-card ${escapeHtml(statusLabel(node.status))}" style="--delay: ${index * 80}ms"><span>${escapeHtml(statusText(node.status))}</span><strong>${escapeHtml(copy.title)}</strong><p>${escapeHtml(copy.detail)}</p></article>`;
+      const copy = storyCopyForNode(node, locale);
+      return `<article class="proof-card ${escapeHtml(statusLabel(node.status))}" style="--delay: ${index * 80}ms"><span>${escapeHtml(statusText(node.status, locale))}</span><strong>${escapeHtml(copy.title)}</strong><p>${escapeHtml(copy.detail)}</p></article>`;
     })
     .join("\n");
-  const nextSteps = graph.next_steps.map((step) => `<li>${escapeHtml(dashboardNextStep(step))}</li>`).join("\n");
+  const nextSteps = graph.next_steps.map((step) => `<li>${escapeHtml(dashboardNextStep(step, locale))}</li>`).join("\n");
   const schemaLabels = graph.schema.edge_labels
     .map((label) => `<span class="badge">${escapeHtml(label)}</span>`)
     .join("");
@@ -1272,19 +2421,19 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     return counts;
   }, new Map<string, number>());
   const sources = Array.from(sourceCounts.entries())
-    .map(([source, count]) => `<li><span>${escapeHtml(source)}</span>${count} 条捕获记录</li>`)
+    .map(([source, count]) => `<li><span>${escapeHtml(source)}</span>${escapeHtml(locale.captureRecordsCount(count))}</li>`)
     .join("\n");
   const blockerText =
-    graph.summary.blockers === 0 ? "这一轮暂时没有阻塞，可以安心往前翻。" : `还有 ${graph.summary.blockers} 个阻塞需要先处理。`;
+    graph.summary.blockers === 0 ? locale.blockerNone : locale.blockerSome(graph.summary.blockers);
 
   return `<!doctype html>
-<html lang="zh-CN">
+<html lang="${locale.htmlLang}">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="donegraph-template-contract" content="${DASHBOARD_TEMPLATE_CONTRACT}" />
   <meta name="donegraph-dynamic-surface" content="${DASHBOARD_DYNAMIC_SURFACE}" />
-  <title>DoneGraph 进度手账</title>
+  <title>${escapeHtml(locale.pageTitle)}</title>
   <style>
     :root {
       --meadow: #dbeed5;
@@ -1336,7 +2485,6 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     }
     .journal-shell {
       width: min(1380px, calc(100vw - 32px));
-      min-height: 100vh;
       display: grid;
       align-content: center;
       gap: 18px;
@@ -1365,7 +2513,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     .journal-stage {
       position: relative;
       display: grid;
-      min-height: 760px;
+      min-height: auto;
       perspective: 2200px;
       transform-style: preserve-3d;
       isolation: isolate;
@@ -1463,28 +2611,28 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       grid-area: 1 / 1;
       position: relative;
       z-index: 2;
-      display: grid;
+      display: none;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 12px;
       opacity: 0;
       pointer-events: none;
-      transform: translateY(4px) scale(.998);
-      filter: saturate(.96);
       overflow: visible;
-      transition: opacity .24s ease, transform .34s cubic-bezier(.2, .8, .2, 1), filter .24s ease;
     }
     .spread.active {
+      display: grid;
       z-index: 3;
       opacity: 1;
       pointer-events: auto;
-      transform: translateY(0) scale(1);
-      filter: none;
+      animation: spreadFadeIn .4s ease both;
+    }
+    @keyframes spreadFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     .page {
       position: relative;
       z-index: 1;
       min-width: 0;
-      min-height: 740px;
       padding: clamp(24px, 3.2vw, 44px);
       border: 1px solid rgba(78, 92, 64, .2);
       background:
@@ -1573,11 +2721,64 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     .story {
       max-width: 58ch;
       margin: 0;
-      color: #6d5638;
-      font-size: clamp(17px, 1.8vw, 23px);
-      line-height: 1.42;
+      color: #8a7b66;
+      font-size: clamp(16px, 1.6vw, 20px);
+      line-height: 1.6;
+      font-weight: 600;
       overflow-wrap: anywhere;
     }
+
+    /* ── NPC 对话框 ────────────────────────────── */
+    .npc-dialog {
+      position: relative;
+      margin: 14px 0;
+      background: rgb(247, 243, 223);
+      border: 2px solid #e8dcc8;
+      border-radius: 24px;
+      padding: 22px 26px 20px;
+      box-shadow: 0 4px 0 #e0d0b0, 0 6px 18px rgba(61,52,40,.10);
+      animation: animal-zoom-in .3s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .npc-dialog::before {
+      content: "";
+      position: absolute;
+      top: -2px; left: 20px;
+      width: 28px; height: 14px;
+      background: rgb(247,243,223);
+      border-left: 2px solid #e8dcc8;
+      border-right: 2px solid #e8dcc8;
+      border-top: 2px solid rgb(247,243,223);
+      clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+      transform: rotate(180deg) translateY(100%);
+    }
+    .npc-speaker {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 10px;
+      padding: 3px 12px;
+      border-radius: 99px;
+      background: #19c8b9;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    @keyframes animal-zoom-in {
+      from { opacity: 0; transform: scale(.92) translateY(6px); }
+      to   { opacity: 1; transform: scale(1)  translateY(0);    }
+    }
+
+    /* ── 打字机光标 ───────────────────────────── */
+    .typewriter-cursor::after {
+      content: "▋";
+      animation: tw-blink 1s step-end infinite;
+      color: var(--moss);
+      margin-left: 2px;
+    }
+    @keyframes tw-blink { 50% { opacity: 0; } }
+
     .home-copy {
       display: flex;
       flex-direction: column;
@@ -1599,32 +2800,38 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     }
     .home-actions button {
       min-height: 48px;
-      padding: 12px 18px;
-      border: 1px solid rgba(121, 79, 39, .2);
-      border-radius: 22px;
-      background: var(--teal);
-      color: #fffdf3;
+      padding: 12px 28px;
+      border: 2px solid #d4a800;
+      border-radius: 39.81px;
+      background: #ffcc00;
+      color: #725d42;
       font: inherit;
-      font-weight: 900;
+      font-size: 16px;
+      font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 7px 0 #0f8f86, 0 14px 22px rgba(29, 190, 176, .18);
-      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+      box-shadow: 0 5px 0 #d4a800;
+      transition: transform .15s, box-shadow .15s;
     }
     .home-actions button.secondary {
-      background: #fff7dc;
-      color: var(--ink);
-      box-shadow: 0 7px 0 var(--button-shadow), 0 14px 22px rgba(121, 79, 39, .12);
+      background: rgb(247,243,223);
+      color: #725d42;
+      border-color: rgba(114,93,66,.3);
+      box-shadow: 0 5px 0 #e0d0b0;
     }
     .home-actions button:hover {
       transform: translateY(-2px);
-      filter: saturate(1.08);
+      box-shadow: 0 7px 0 #d4a800;
+    }
+    .home-actions button.secondary:hover {
+      box-shadow: 0 7px 0 #e0d0b0;
+      background: #fffbee;
     }
     .home-actions button:active {
-      transform: translateY(4px);
-      box-shadow: 0 3px 0 #0f8f86, 0 8px 16px rgba(29, 190, 176, .14);
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #d4a800;
     }
     .home-actions button.secondary:active {
-      box-shadow: 0 3px 0 var(--button-shadow), 0 8px 16px rgba(121, 79, 39, .10);
+      box-shadow: 0 2px 0 #e0d0b0;
     }
     .home-map {
       display: grid;
@@ -1637,7 +2844,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     }
     .island-scene {
       position: relative;
-      min-height: 430px;
+      min-height: 220px;
       border-radius: 32px;
       background:
         radial-gradient(ellipse at 50% 62%, rgba(131, 201, 153, .26) 0 39%, transparent 40%),
@@ -2132,28 +3339,29 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     }
     .page-controls button {
       min-height: 44px;
-      padding: 10px 16px;
-      border: 1px solid rgba(121, 79, 39, .18);
-      border-radius: 18px;
-      background: #fff7dc;
-      color: var(--ink);
+      padding: 10px 22px;
+      border: 2px solid rgba(114, 93, 66, .25);
+      border-radius: 39.81px;
+      background: rgb(247,243,223);
+      color: #725d42;
       font: inherit;
       font-size: 13px;
-      font-weight: 900;
-      letter-spacing: .05em;
-      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: .04em;
       cursor: pointer;
-      box-shadow: 0 6px 0 var(--button-shadow), 0 12px 22px rgba(91, 63, 32, .10);
-      transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+      box-shadow: 0 4px 0 #e0d0b0;
+      transition: transform .15s, box-shadow .15s, background .15s;
     }
-    .page-controls button:hover { transform: translateY(-2px); }
+    .page-controls button:hover { transform: translateY(-2px); box-shadow: 0 6px 0 #e0d0b0; }
     .page-controls button:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 var(--button-shadow), 0 8px 16px rgba(91, 63, 32, .08);
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 #e0d0b0;
     }
     .page-controls button.active {
-      background: var(--teal);
-      color: #fffdf3;
+      background: #ffcc00;
+      border-color: #d4a800;
+      box-shadow: 0 4px 0 #d4a800;
+      color: #725d42;
       box-shadow: 0 6px 0 #0f8f86, 0 12px 22px rgba(29, 190, 176, .18);
     }
     @keyframes page-turn-forward {
@@ -2259,7 +3467,7 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         padding: 7px 9px;
       }
       .journal-stage {
-        min-height: 636px;
+        min-height: auto;
       }
       .journal-stage::before {
         inset: -12px -8px 12px;
@@ -2269,7 +3477,6 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         gap: 8px;
       }
       .page {
-        min-height: 616px;
         padding: 18px;
       }
       .book-spine {
@@ -2362,7 +3569,6 @@ export function renderDashboardHtml(graph: DoneGraph): string {
         gap: 14px;
       }
       .home-spread .page {
-        min-height: 640px;
         padding: 24px;
       }
       .home-title {
@@ -2395,15 +3601,301 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       .journal-top { display: grid; }
       .page { border-radius: 24px; padding: 18px; }
       h1 { font-size: 42px; }
+    /* Accountability badge */
+    .accountability-badge {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      border-radius: 20px;
+      background: rgba(255, 249, 233, .88);
+      border: 1px solid rgba(121, 79, 39, .14);
+      box-shadow: 0 4px 0 rgba(213, 169, 110, .16);
+      position: relative;
+      z-index: 1;
+      margin-bottom: 10px;
+    }
+    .accountability-score {
+      width: 56px;
+      height: 56px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      font: 900 22px/1 "SFMono-Regular", Menlo, monospace;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .verdict-accountable .accountability-score { background: #19c8b9; box-shadow: 0 4px 0 #0fa898; }
+    .verdict-partial .accountability-score { background: #f5c31c; color: #725d42; box-shadow: 0 4px 0 #d4a800; }
+    .verdict-unaccounted .accountability-score { background: #e05a5a; box-shadow: 0 4px 0 #b83838; }
+    .accountability-verdict {
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .accountability-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .04em;
+      margin-top: 2px;
+    }
+
+    /* Progress card grid */
+    .progress-card-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .progress-card {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      align-items: center;
+      gap: 4px 10px;
+      padding: 10px 14px;
+      border-radius: 18px;
+      background: rgb(247,243,223);
+      border: 2px solid #e8dcc8;
+      border-left: 5px solid var(--moss);
+      box-shadow: 0 2px 0 #e0d0b0;
+      transition: transform .2s, box-shadow .2s;
+      animation: fadeSlideIn .35s cubic-bezier(.34,1.56,.64,1) both;
+      animation-delay: var(--delay, 0ms);
+    }
+    .progress-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 0 #e0d0b0;
+    }
+    .progress-card:nth-child(6n+1) { border-left-color: #82d5bb; }
+    .progress-card:nth-child(6n+2) { border-left-color: #889df0; }
+    .progress-card:nth-child(6n+3) { border-left-color: #f8a6b2; }
+    .progress-card:nth-child(6n+4) { border-left-color: #f7cd67; }
+    .progress-card:nth-child(6n+5) { border-left-color: #e59266; }
+    .progress-card:nth-child(6n+6) { border-left-color: #8ac68a; }
+    @keyframes fadeSlideIn { from { opacity: 0; transform: translateX(-8px) scale(.97); } }
+    .progress-card-num {
+      grid-row: 1 / 3;
+      align-self: center;
+      text-align: center;
+      color: var(--muted);
+      font: 700 13px/1 "SFMono-Regular", Menlo, monospace;
+      opacity: .6;
+    }
+    .progress-card strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .progress-card p {
+      grid-column: 2;
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .progress-card-badge {
+      grid-row: 1 / 3;
+      align-self: center;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .progress-card.status-pass { border-left-color: var(--moss); }
+    .progress-card.status-fail { border-left-color: #c45; }
+    .progress-card.status-unknown { border-left-color: var(--amber); }
+    .progress-card.status-pass .progress-card-badge { background: var(--meadow); color: #2d5a27; }
+    .progress-card.status-fail .progress-card-badge { background: #fce4e4; color: #a33; }
+    .progress-card.status-unknown .progress-card-badge { background: var(--field); color: #8a6d2d; }
+
+    /* Proof list */
+    .proof-list {
+      list-style: none;
+      padding: 0;
+      margin: 12px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .proof-list-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      color: #634d31;
+      line-height: 1.3;
+    }
+    .stamp-inline {
+      flex-shrink: 0;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    .stamp-inline.status-pass { background: var(--meadow); color: #2d5a27; }
+    .stamp-inline.status-fail { background: #fce4e4; color: #a33; }
+    .stamp-inline.status-unknown { background: var(--field); color: #8a6d2d; }
+
+    /* AI analysis sections */
+    .ai-insights, .ai-risks {
+      margin: 12px 0 0;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .ai-insights { background: rgba(79, 146, 108, .1); }
+    .ai-risks { background: rgba(201, 120, 75, .1); }
+    .ai-insights h4, .ai-risks h4 {
+      margin: 0 0 6px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .ai-insights h4 { color: var(--moss); }
+    .ai-risks h4 { color: var(--clay); }
+    .ai-insights ul, .ai-risks ul {
+      margin: 0;
+      padding-left: 16px;
+    }
+    .ai-insights li, .ai-risks li {
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+
+    }
+
+    /* ---- Animal Crossing / island-ui enhancements ---- */
+
+    /* NPC dialog box (organic blob shape) */
+    .npc-dialog {
+      clip-path: url(#animal-dialog-clip);
+      background: rgb(247, 243, 223);
+      padding: 32px 36px 28px;
+      margin: 16px 0;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 1.6;
+      color: #8a7b66;
+      animation: animal-zoom-in 0.3s ease;
+    }
+    .npc-dialog-inner {
+      max-width: 58ch;
+    }
+    @keyframes animal-zoom-in {
+      from { opacity: 0; transform: scale(0.92); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Typewriter effect for NPC dialog text */
+    .typewriter-text {
+      overflow: hidden;
+    }
+    .typewriter-cursor::after {
+      content: "\\25CB";
+      animation: blink 1s step-end infinite;
+      color: var(--moss);
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* Progress card color cycling (Animal Crossing pastel palette) */
+    .progress-card:nth-child(6n+1) { border-left-color: #82d5bb; }
+    .progress-card:nth-child(6n+2) { border-left-color: #889df0; }
+    .progress-card:nth-child(6n+3) { border-left-color: #f8a6b2; }
+    .progress-card:nth-child(6n+4) { border-left-color: #f7cd67; }
+    .progress-card:nth-child(6n+5) { border-left-color: #e59266; }
+    .progress-card:nth-child(6n+6) { border-left-color: #8ac68a; }
+
+    /* Accountability badge teal accent for ACCOUNTABLE */
+    .verdict-accountable .accountability-score { background: #19c8b9; }
+    .verdict-accountable .accountability-verdict { color: #19c8b9; }
+    .verdict-partial .accountability-verdict { color: var(--clay); }
+    .verdict-unaccounted .accountability-verdict { color: #c45; }
+
+    /* Proof cards with Animal Crossing pastel backgrounds */
+    .proof-card.passed,
+    .proof-card.pass {
+      background: rgba(130, 213, 187, .18);
+      border: 2px solid #82d5bb;
+      border-radius: 20px;
+    }
+    .proof-card.unknown {
+      background: rgba(247, 205, 103, .18);
+      border: 2px solid #f7cd67;
+      border-radius: 20px;
+    }
+    .proof-card.failed,
+    .proof-card.blocked {
+      background: rgba(248, 166, 178, .18);
+      border: 2px solid #f8a6b2;
+      border-radius: 20px;
+    }
+
+    /* Page controls: pill-shaped Animal Crossing buttons */
+    .page-controls button {
+      border-radius: 39.81px;
+      border: 2px solid rgba(114, 93, 66, 0.3);
+      box-shadow: 0 4px 0 var(--button-shadow), 0 10px 18px rgba(91, 63, 32, .10);
+      transition: all 0.2s;
+    }
+    .page-controls button:hover {
+      border-color: rgba(114, 93, 66, 0.6);
+      transform: translateY(-1px);
+    }
+    .page-controls button:active {
+      box-shadow: 0 2px 0 var(--button-shadow), 0 6px 12px rgba(91, 63, 32, .08);
+      transform: translateY(2px);
+    }
+    .page-controls button.active {
+      border-color: #19c8b9;
+      box-shadow: 0 4px 0 #0f8f86, 0 10px 18px rgba(29, 190, 176, .18);
+    }
+
+    /* Game-style session footer */
+    .session-footer {
+      text-align: center;
+      padding: 24px 16px 32px;
+      color: #8a7b66;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    .session-footer-line {
+      display: inline-block;
+      padding: 8px 20px;
+      border: 2px solid #e8dcc8;
+      border-radius: 24px;
+      background: rgba(247, 243, 223, .8);
+      box-shadow: 0 3px 10px 0 rgba(61, 52, 40, 0.1);
     }
   </style>
 </head>
 <body>
+  <svg style="position:absolute;width:0;height:0" aria-hidden="true">
+    <clipPath id="animal-dialog-clip" clipPathUnits="objectBoundingBox">
+      <path d="M0.501,0.005 L0.501,0.005 L0.523,0.005 L0.549,0.006 C0.704,0.01,0.796,0.017,0.825,0.027 L0.827,0.028 C0.872,0.045,0.939,0.044,0.978,0.17 C1,0.254,1,0.365,0.99,0.505 L0.988,0.513 C0.979,0.558,0.971,0.598,0.965,0.633 C0.956,0.689,0.979,0.77,0.964,0.865 C0.953,0.928,0.921,0.966,0.869,0.979 C0.821,0.986,0.773,0.992,0.726,0.995 L0.712,0.996 L0.694,0.997 C0.648,1,0.586,1,0.507,1 L0.501,1 L0.464,1 C0.385,1,0.325,0.998,0.283,0.995 C0.234,0.992,0.184,0.987,0.133,0.979 C0.081,0.966,0.05,0.928,0.039,0.865 C0.023,0.77,0.047,0.689,0.037,0.633 C0.031,0.595,0.023,0.552,0.013,0.505 C-0.006,0.365,-0.002,0.254,0.024,0.17 C0.064,0.045,0.13,0.045,0.174,0.028 L0.175,0.028 C0.204,0.017,0.303,0.009,0.474,0.005 L0.501,0.005"/>
+    </clipPath>
+  </svg>
   <main class="journal-shell" data-template-contract="${DASHBOARD_TEMPLATE_CONTRACT}" data-dynamic-surface="${DASHBOARD_DYNAMIC_SURFACE}">
     <header class="journal-top">
-      <span>完成进度地图</span>
+      <span>${escapeHtml(locale.headerProgressMap)}</span>
       <span>${escapeHtml(graph.platform)}</span>
-      <span>生成于 ${escapeHtml(graph.generated_at)}</span>
+      <span>${escapeHtml(locale.headerGeneratedAt)} ${escapeHtml(graph.generated_at)}</span>
     </header>
     <section class="journal-stage" aria-live="polite">
       <div class="book-spine" aria-hidden="true"></div>
@@ -2411,18 +3903,23 @@ export function renderDashboardHtml(graph: DoneGraph): string {
       <section class="spread active home-spread" data-spread="0">
         <article class="page left home-copy">
           <div>
-          <div class="page-kicker"><span>进度手账</span><span>洁净室重写</span></div>
-          <h1 class="home-title"><span>DoneGraph</span><span>进度岛</span><span>手账</span></h1>
-          <p class="story">${escapeHtml(dashboardNarrativeFor(graph))}</p>
+          <div class="page-kicker"><span>${escapeHtml(locale.kickerJournal)}</span><span>${escapeHtml(locale.kickerCleanRoom)}</span></div>
+          <h1 class="home-title"><span>${escapeHtml(locale.homeTitleLine1)}</span><span>${escapeHtml(locale.homeTitleLine2)}</span><span>${escapeHtml(locale.homeTitleLine3)}</span></h1>
+          <div class="npc-dialog">
+            <span class="npc-speaker">${locale.lang === "en" ? "DoneGraph" : "DoneGraph"}</span>
+            <p class="story typewriter-text" id="npc-story-text">${escapeHtml(graph.ai_analysis?.story ?? dashboardNarrativeFor(graph, locale))}</p>
+${graph.ai_analysis?.insights?.length ? `<div class="ai-insights"><h4>${locale.lang === "en" ? "Insights" : "洞察"}</h4><ul>${graph.ai_analysis.insights.map((i) => `<li>${escapeHtml(i)}</li>`).join("")}</ul></div>` : ""}
+${graph.ai_analysis?.risks?.length ? `<div class="ai-risks"><h4>${locale.lang === "en" ? "Risks" : "风险"}</h4><ul>${graph.ai_analysis.risks.map((r) => `<li>${escapeHtml(r)}</li>`).join("")}</ul></div>` : ""}
+          </div>
           <div class="home-actions">
-            <button type="button" data-jump="1">翻到完成页</button>
-            <button class="secondary" type="button" data-jump="${evidenceSpread}">看看证据</button>
+            <button type="button" data-jump="1">${escapeHtml(locale.flipToCompleted)}</button>
+            <button class="secondary" type="button" data-jump="${evidenceSpread}">${escapeHtml(locale.seeEvidence)}</button>
           </div>
           </div>
           <div class="soft-note">${escapeHtml(blockerText)}</div>
         </article>
         <article class="page right home-map">
-          <div class="page-kicker"><span>今日进度</span><span>${milestoneProgress} 个里程碑</span></div>
+          <div class="page-kicker"><span>${escapeHtml(locale.todayProgress)}</span><span>${milestoneProgress} ${escapeHtml(locale.milestonesLabel)}</span></div>
           <div class="island-scene" aria-hidden="true">
             <div class="island-ground">
               <div class="path-ribbon"></div>
@@ -2435,13 +3932,20 @@ export function renderDashboardHtml(graph: DoneGraph): string {
             </div>
           </div>
           <div class="home-progress-row">
-            <div class="progress-orb" aria-label="完成进度 ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>已完成</span></div>
-            <p class="progress-caption">首页先给一个安定的答案：已经走完 ${milestoneProgress} 个里程碑，当前阶段是「${escapeHtml(graph.summary.current_stage)}」。</p>
+            <div class="progress-orb" aria-label="${escapeHtml(locale.headerProgressMap)} ${graph.summary.progress_percent}%"><strong>${graph.summary.progress_percent}%</strong><span>${escapeHtml(locale.progressDone)}</span></div>
+            <p class="progress-caption">${escapeHtml(locale.homeProgressCaption(milestoneProgress, localizeStage(graph.summary.current_stage, locale)))}</p>
+          </div>
+          <div class="accountability-badge verdict-${graph.accountability.verdict.toLowerCase()}" aria-label="Accountability: ${graph.accountability.verdict}">
+            <span class="accountability-score">${graph.accountability.composite}</span>
+            <div>
+              <span class="accountability-verdict">${graph.accountability.verdict}</span>
+              <span class="accountability-label">Accountability Score</span>
+            </div>
           </div>
           <div class="home-stat-strip">
-            <div class="home-stat"><span>里程碑</span><strong>${milestoneProgress}</strong></div>
-            <div class="home-stat"><span>已验证</span><strong>${graph.summary.evidence_passed}</strong></div>
-            <div class="home-stat"><span>阻塞</span><strong>${graph.summary.blockers}</strong></div>
+            <div class="home-stat"><span>${escapeHtml(locale.statMilestones)}</span><strong>${milestoneProgress}</strong></div>
+            <div class="home-stat"><span>${escapeHtml(locale.statVerified)}</span><strong>${graph.summary.evidence_passed}</strong></div>
+            <div class="home-stat"><span>${escapeHtml(locale.statBlockers)}</span><strong>${graph.summary.blockers}</strong></div>
           </div>
         </article>
       </section>
@@ -2450,41 +3954,41 @@ export function renderDashboardHtml(graph: DoneGraph): string {
 
       <section class="spread" data-spread="${evidenceSpread}">
         <article class="page left">
-          <div class="page-kicker"><span>证据</span><span>验证状态</span></div>
-          <h2>证据贴纸</h2>
-          <section class="proof-grid">${evidenceCards || "<p class=\"soft-note\">还没有记录验证证据。</p>"}</section>
+          <div class="page-kicker"><span>${escapeHtml(locale.kickerEvidence)}</span><span>${escapeHtml(locale.kickerVerificationState)}</span></div>
+          <h2>${escapeHtml(locale.evidenceCards)}</h2>
+          <section class="proof-grid">${evidenceCards || `<p class="soft-note">${escapeHtml(locale.noEvidenceRecorded)}</p>`}</section>
         </article>
         <article class="page right">
-          <div class="page-kicker"><span>下一页</span><span>交接</span></div>
-          <h2>从这里继续</h2>
+          <div class="page-kicker"><span>${escapeHtml(locale.kickerNextPage)}</span><span>${escapeHtml(locale.kickerHandoff)}</span></div>
+          <h2>${escapeHtml(locale.continueFromHere)}</h2>
           <ul class="ledger-list">${nextSteps}</ul>
-          <p class="footer-note">下一轮 AI 继续之前，先读这一页就能知道该从哪里接上。</p>
+          <p class="footer-note">${escapeHtml(locale.handoffFooterNote)}</p>
         </article>
       </section>
 
       <section class="spread" data-spread="${detailSpread}">
         <article class="page left">
-          <div class="page-kicker"><span>洁净室结构</span><span>细节</span></div>
-          <h2>洁净室结构</h2>
-          <p class="soft-note">${escapeHtml(graph.schema.purpose)}</p>
+          <div class="page-kicker"><span>${escapeHtml(locale.kickerCleanRoomStructure)}</span><span>${escapeHtml(locale.kickerDetail)}</span></div>
+          <h2>${escapeHtml(locale.cleanRoomStructure)}</h2>
+          <p class="soft-note">${escapeHtml(locale.schemaPurpose)}</p>
           <div class="badge-list">${schemaLabels}</div>
-          <h3>来源记录</h3>
-          <ul class="ledger-list">${sources || "<li>当前记录来自手动事件。</li>"}</ul>
+          <h3>${escapeHtml(locale.sourceRecords)}</h3>
+          <ul class="ledger-list">${sources || `<li>${escapeHtml(locale.noSourceRecords)}</li>`}</ul>
         </article>
         <article class="page right">
-          <div class="page-kicker"><span>关系线索</span><span>可选</span></div>
-          <h2>关系线索</h2>
-          <ul class="ledger-list edge-list">${relationshipTrace || "<li>还没有关系连线。</li>"}</ul>
-          <h3>成就账本</h3>
-          <ul class="ledger-list">${achievements || "<li>还没有成就记录。</li>"}</ul>
+          <div class="page-kicker"><span>${escapeHtml(locale.kickerRelationshipTrace)}</span><span>${escapeHtml(locale.kickerOptional)}</span></div>
+          <h2>${escapeHtml(locale.relationshipTrace)}</h2>
+          <ul class="ledger-list edge-list">${relationshipTrace || `<li>${escapeHtml(locale.noRelationshipEdges)}</li>`}</ul>
+          <h3>${escapeHtml(locale.achievementLedger)}</h3>
+          <ul class="ledger-list">${achievements || `<li>${escapeHtml(locale.noAchievements)}</li>`}</ul>
         </article>
       </section>
     </section>
-    <nav class="page-controls" aria-label="手账页">
-      <button class="active" type="button" data-target="0">进度</button>
-      <button type="button" data-target="1">完成</button>
-      <button type="button" data-target="${evidenceSpread}">证据</button>
-      <button type="button" data-target="${detailSpread}">细节</button>
+    <nav class="page-controls" aria-label="${escapeHtml(locale.navAriaLabel)}">
+      <button class="active" type="button" data-target="0">${escapeHtml(locale.navProgress)}</button>
+      <button type="button" data-target="1">${escapeHtml(locale.navCompleted)}</button>
+      <button type="button" data-target="${evidenceSpread}">${escapeHtml(locale.navEvidence)}</button>
+      <button type="button" data-target="${detailSpread}">${escapeHtml(locale.navDetail)}</button>
     </nav>
   </main>
   <script>
@@ -2527,6 +4031,35 @@ export function renderDashboardHtml(graph: DoneGraph): string {
     });
     jumpButtons.forEach((button) => {
       button.addEventListener("click", () => showSpread(button.dataset.jump || "0"));
+    });
+
+    // Typewriter effect for NPC dialog
+    const storyEl = document.getElementById("npc-story-text");
+    if (storyEl) {
+      const fullText = storyEl.textContent || "";
+      storyEl.textContent = "";
+      storyEl.classList.add("typewriter-cursor");
+      let i = 0;
+      const tw = setInterval(() => {
+        storyEl.textContent = fullText.slice(0, ++i);
+        if (i >= fullText.length) {
+          clearInterval(tw);
+          storyEl.classList.remove("typewriter-cursor");
+        }
+      }, 28);
+    }
+
+    // Bounce animation on progress cards when entering view
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.style.animationPlayState = "running";
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll(".progress-card").forEach((card) => {
+      card.style.animationPlayState = "paused";
+      observer.observe(card);
     });
   </script>
 </body>

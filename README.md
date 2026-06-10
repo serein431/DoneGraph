@@ -1,4 +1,4 @@
-# DoneGraph · The Memory Layer for AI-Built Work
+# DoneGraph · AI Accountability Infrastructure
 
 [![CI](https://img.shields.io/badge/CI-test%20%7C%20typecheck%20%7C%20build-brightgreen)](https://github.com/serein431/DoneGraph/actions)
 [![Tests](https://img.shields.io/badge/tests-29%2F29%20passed-brightgreen)](https://github.com/serein431/DoneGraph/actions)
@@ -10,7 +10,9 @@
 > 🏆 **UCWS Singapore Hackathon 2026 — Skill Track**  
 > [→ Judge Evaluation Sheet](./EVALUATION.md) | [→ Architecture Overview](./ARCHITECTURE.md)
 
-DoneGraph is the trust layer for AI work. It turns an agent session into a safe, shareable work trail: what the user asked for, what changed, what was verified, what is still open, and where the next session should continue.
+> **The git log for human-AI collaboration.**
+
+`git log` records what the code did. DoneGraph records what the human and AI decided, why, with what proof, and what is still open. It is the accountability layer that makes AI-assisted work auditable, resumable, and trustworthy.
 
 Works as a local plugin for Codex, Claude Code, Cursor, VS Code Copilot, and shell-based AI workflows.
 
@@ -22,11 +24,21 @@ Works as a local plugin for Codex, Claude Code, Cursor, VS Code Copilot, and she
 
 ---
 
-**You have been building with an AI agent for three hours. It edited files, ran tests, changed direction twice, and left a long chat behind. What is actually done?**
+## The Problem
 
-DoneGraph turns goals, actions, decisions, artifacts, evidence, blockers, and next steps into a clean work record the user can inspect. It generates a replay dashboard, proof summary, recap letter, Agent Radio debrief, and safe snapshot. Users can also create an upload space at `donegraph.space/share`, give the generated instruction to their agent, and receive future safe snapshots automatically.
+You have been building with an AI agent for three hours. It edited files, ran tests, changed direction twice, and left a long chat behind. Three questions remain unanswered:
 
-> **The point is simple: progress should feel earned, inspectable, and easy to resume.**
+1. **What is actually done?** — Activity is not progress. Chat history is not proof.
+2. **Can someone else trust it?** — A teammate, a reviewer, the next AI session — none of them can reconstruct the decision chain from a raw chat log.
+3. **Where does the next session start?** — Context windows expire. Memory resets. The next agent starts cold.
+
+DoneGraph exists because in the AI era, "done" is too cheap to say and too hard to verify.
+
+## The Solution
+
+DoneGraph turns goals, actions, decisions, artifacts, evidence, blockers, and next steps into a structured **accountability graph** — a clean work record with a 6-dimension **Accountability Score** that measures how trustworthy the work trail is. It generates a replay dashboard, proof summary, recap letter, Agent Radio debrief, and safe snapshot.
+
+> **Every claim of "done" must be backed by evidence. Activity is not progress. Progress is earned.**
 
 ---
 
@@ -63,6 +75,37 @@ DoneGraph writes `achievement-log.md` and `next-steps.md` so the next AI session
 ### Stay Clean-Room
 
 DoneGraph does not import external code graphs, third-party graph schemas, or `.understand-anything` artifacts. Its graph models one thing only: collaboration progress between a person and AI.
+
+---
+
+## Five Axioms of AI Accountability
+
+DoneGraph is built on five design axioms. These are not aspirational — they are structural constraints enforced by the code.
+
+| # | Axiom | Principle | Enforcement |
+|---|-------|-----------|-------------|
+| 1 | **Earned Progress** | "Done" without evidence is not done. Activity is not progress. | Accountability Score hard gate: completion without `pass` evidence = UNACCOUNTED |
+| 2 | **Transparent Handoff** | Every session ends with a clear state for the next human or AI. | `next-steps.md` and `achievement-log.md` are always generated |
+| 3 | **Privacy by Default** | Raw sessions never leave the machine. Sharing requires explicit redaction. | Three privacy tiers: `local_only`, `redacted_share`, `full_disclosure` |
+| 4 | **Clean-Room Fidelity** | The graph models collaboration facts, not code structure. | 7 node types (goal, task, decision, artifact, evidence, blocker, next_step), no external schema dependencies |
+| 5 | **Immutable Trail** | Events are append-only. The session log is a ledger, not a draft. | `session.jsonl` is append-only; no event is ever modified or deleted |
+
+---
+
+## 6-Dimension Accountability Rubric
+
+Every DoneGraph session is scored on six dimensions. The composite score determines the verdict.
+
+| # | Dimension | Weight | Hard Gate |
+|---|-----------|--------|-----------|
+| 1 | Evidence Coverage | 25 | — |
+| 2 | Completion Integrity | 25 | Completion without `pass` evidence → UNACCOUNTED |
+| 3 | Decision Traceability | 15 | — |
+| 4 | Handoff Quality | 15 | — |
+| 5 | Privacy Safety | 10 | — |
+| 6 | Graph Coherence | 10 | — |
+
+Three verdicts: **ACCOUNTABLE** (≥80) · **PARTIAL** (50–80) · **UNACCOUNTED** (<50 or hard gate failure).
 
 ---
 

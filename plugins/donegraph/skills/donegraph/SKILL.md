@@ -1,49 +1,55 @@
 ---
 name: donegraph
-description: Use when the user wants to track AI collaboration progress, auto-capture local context, record completed work, create an achievement graph, summarize handoff state, or open the DoneGraph dashboard.
-argument-hint: ["capture|start <goal>|checkpoint <text>|proof <text>|done <text>|dashboard|summary"]
+description: AI Accountability Infrastructure. Use /donegraph-recap to auto-summarize what this session accomplished with a visual dashboard, or use sub-commands to track progress step by step.
+argument-hint: ["recap|capture|start <goal>|checkpoint <text>|proof <text>|done <text>|dashboard|summary"]
 ---
 
 # /donegraph
 
-DoneGraph turns the current AI collaboration into local artifacts under `.donegraph/`.
+DoneGraph is AI Accountability Infrastructure — it turns your AI coding session into a visual, evidence-backed work record.
 
-Prefer the user-friendly commands:
+## Quickest path: one-click recap
+
+When the user is done working, or asks to see what was accomplished:
+
+```bash
+../../scripts/donegraph recap --lang en
+```
+
+This automatically scans git history, runs project checks, scores the session on 6 accountability dimensions, and opens a visual dashboard. No manual tracking needed.
+
+## Step-by-step tracking (optional)
+
+For more granular control during a session:
 
 ```bash
 ../../scripts/donegraph start "<goal>" --platform codex
-../../scripts/donegraph capture --goal "<goal>" --platform codex
 ../../scripts/donegraph checkpoint "<what changed>" --command "<command>"
 ../../scripts/donegraph proof "<what was verified>" --pass --command "<command>"
-../../scripts/donegraph block "<what is blocked>"
 ../../scripts/donegraph done "<stable stopping point>"
-../../scripts/donegraph dashboard
+../../scripts/donegraph dashboard --lang en
 ```
 
-## When To Record
+## When to auto-trigger recap
 
-- At the beginning of a meaningful task, run `start`.
-- When joining an existing or mid-flight project, run `capture` to infer initial progress from local context.
-- After important work, record an `action`.
-- When files or outputs matter, record an `artifact`.
-- When a command, test, or human check proves something, record a `verification`.
-- When work cannot proceed cleanly, record a `blocker`.
-- At a stable stopping point, record a `completion`, then run `build` or `dashboard`.
+Run `recap` automatically when the user says:
+- "summarize what we did" / "recap" / "what did we accomplish"
+- "wrap up" / "let's see the results" / "show me what changed"
+- Or at any natural stopping point in the session
 
 ## Command Routing
 
-- If `$ARGUMENTS` begins with `capture`, `start`, `checkpoint`, `proof`, `verify`, `block`, `done`, `build`, `dashboard`, or `summary`, pass the arguments directly to `../../scripts/donegraph`.
-- If the user gives a plain goal with no subcommand, run `start "$ARGUMENTS" --platform codex`.
+- If `$ARGUMENTS` begins with `recap`, `capture`, `start`, `checkpoint`, `proof`, `verify`, `block`, `done`, `build`, `dashboard`, `summary`, or `snapshot`, pass the arguments directly to `../../scripts/donegraph`.
+- If the user gives a plain goal with no subcommand, run `recap --lang en`.
 - If the wrapper is missing, ask the user to run `./install.sh codex` from the DoneGraph checkout and restart the CLI.
 
 ## Output Contract
 
-The CLI writes:
+The CLI writes to `.donegraph/`:
 
-- `.donegraph/session.jsonl`
-- `.donegraph/task-graph.json`
-- `.donegraph/achievement-log.md`
-- `.donegraph/next-steps.md`
-- `.donegraph/dashboard.html`
-
-Use these files as the handoff state for the next AI session.
+- `session.jsonl` — append-only event ledger
+- `task-graph.json` — structured accountability graph
+- `dashboard.html` — visual recap with page-turn animations
+- `achievement-log.md` — completed work summary
+- `next-steps.md` — handoff for the next session
+- `safe-snapshot.json` — privacy-safe shareable format

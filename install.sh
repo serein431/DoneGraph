@@ -32,7 +32,7 @@ PLUGIN_LINK="$HOME/.donegraph-plugin"
 platforms_table() {
   cat <<EOF
 codex|$HOME/.agents/skills|per-skill
-claude|$HOME/.agents/skills|per-skill
+claude|$HOME/.claude/skills|per-skill
 cursor|$HOME/.cursor/skills|folder
 vscode|$HOME/.copilot/skills|per-skill
 gemini|$HOME/.agents/skills|per-skill

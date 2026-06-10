@@ -1,0 +1,14 @@
+{
+  "name": "@donegraph/mcp-server",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "bin": {
+    "donegraph-mcp-server": "./src/index.ts"
+  },
+  "dependencies": {
+    "@donegraph/core": "file:../core",
+    "@modelcontextprotocol/sdk": "^1.12.1"
+  }
+}

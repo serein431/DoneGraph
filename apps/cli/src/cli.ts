@@ -11,8 +11,66 @@ import {
   pathsForWorkspace,
   readDoneGraphEvents
 } from "./donegraphStorage.js";
-import { buildCaptureEvents } from "@donegraph/core";
-import type { DoneGraphEvent, DoneGraphEventMetadata, DoneGraphEventType, DoneGraphPlatform, DoneGraphSafeSnapshot, EvidenceStatus } from "@donegraph/core";
+import { buildCaptureEvents, buildRecapEvents, buildRecapEventsFromAnalysis } from "@donegraph/core";
+import type { AccountabilityVerdict, DashboardLang, DoneGraphEvent, DoneGraphEventMetadata, DoneGraphEventType, DoneGraphPlatform, DoneGraphSafeSnapshot, EvidenceStatus, RecapAnalysis, RecapCommit, RecapTestResult } from "@donegraph/core";
+
+interface SessionMemoryEntry {
+  session_id: string;
+  goal: string;
+  verdict: AccountabilityVerdict;
+  composite: number;
+  progress_percent: number;
+  evidence_passed: number;
+  blockers: number;
+  timestamp: string;
+}
+
+interface CrossSessionMemory {
+  version: "1";
+  sessions: SessionMemoryEntry[];
+}
+
+function memoryPath(): string {
+  const home = process.env["HOME"] ?? process.env["USERPROFILE"] ?? ".";
+  return path.join(home, ".donegraph", "memory.json");
+}
+
+function readMemory(): CrossSessionMemory {
+  const filePath = memoryPath();
+  if (!fs.existsSync(filePath)) return { version: "1", sessions: [] };
+  try {
+    const parsed = JSON.parse(fs.readFileSync(filePath, "utf8")) as CrossSessionMemory;
+    if (parsed.version === "1" && Array.isArray(parsed.sessions)) return parsed;
+  } catch {
+    // fall through
+  }
+  return { version: "1", sessions: [] };
+}
+
+function writeMemory(memory: CrossSessionMemory): void {
+  const dir = path.dirname(memoryPath());
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(memoryPath(), `${JSON.stringify(memory, null, 2)}\n`, "utf8");
+}
+
+function sessionIdFor(goal: string, timestamp: string): string {
+  return crypto.createHash("sha256").update(`${goal}|${timestamp}`).digest("hex").slice(0, 12);
+}
+
+function printMemoryInsights(memory: CrossSessionMemory, write: WriteLine): void {
+  if (memory.sessions.length === 0) return;
+  const recent = memory.sessions.slice(-5);
+  write("");
+  write(`Cross-session memory: ${memory.sessions.length} previous session(s).`);
+  const avgScore = Math.round(recent.reduce((sum, s) => sum + s.composite, 0) / recent.length);
+  write(`  Recent accountability average: ${avgScore}/100`);
+  const blockerSessions = recent.filter((s) => s.blockers > 0);
+  if (blockerSessions.length > 0) {
+    write(`  ${blockerSessions.length}/${recent.length} recent sessions had blockers.`);
+  }
+  const lastSession = memory.sessions[memory.sessions.length - 1]!;
+  write(`  Last session: "${lastSession.goal}" — ${lastSession.verdict} (${lastSession.composite}/100)`);
+}
 
 type WriteLine = (line: string) => void;
 
@@ -75,7 +133,8 @@ function usage(): string {
     "  donegraph snapshot [--workspace <path>]",
     "  donegraph publish [--target https://donegraph.space] [--upload-token <token>] [--workspace <path>]",
     "  donegraph build [--workspace <path>]",
-    "  donegraph dashboard [--workspace <path>] [--no-open]",
+    "  donegraph recap [--last <n>] [--since <time>] [--goal <goal>] [--lang en|zh] [--no-open] [--workspace <path>]",
+    "  donegraph dashboard [--workspace <path>] [--no-open] [--lang en|zh]",
     "  donegraph summary [--workspace <path>]",
     "",
     "Examples:",
@@ -156,6 +215,48 @@ function changedFilesFor(workspacePath: string): string[] {
     return [...new Set(files)];
   } catch {
     return fallbackWorkspaceFiles(workspacePath);
+  }
+}
+
+function recapReadGitLog(workspacePath: string, lastN: number, since?: string): RecapCommit[] {
+  try {
+    const args = ["-C", workspacePath, "log", `--max-count=${lastN}`, "--format=%H|%s|%aI|%an"];
+    if (since) args.push(`--since=${since}`);
+    const raw = execFileSync("git", args, { encoding: "utf8", stdio: ["ignore", "pipe", "ignore"] });
+    return raw.split(/\r?\n/).filter(Boolean).map((line) => {
+      const [hash = "", message = "", timestamp = ""] = line.split("|");
+      let filesChanged = 0;
+      try {
+        const stat = execFileSync("git", ["-C", workspacePath, "diff", "--shortstat", `${hash}~1`, hash], {
+          encoding: "utf8",
+          stdio: ["ignore", "pipe", "ignore"]
+        });
+        const match = stat.match(/(\d+) files? changed/);
+        if (match) filesChanged = parseInt(match[1]!, 10);
+      } catch { /* first commit or other edge case */ }
+      return { hash, message, timestamp, filesChanged };
+    });
+  } catch {
+    return [];
+  }
+}
+
+function recapGitDiffStat(workspacePath: string, since?: string): string {
+  try {
+    if (since) {
+      const raw = execFileSync("git", ["-C", workspacePath, "diff", "--stat", `HEAD@{${since}}`], {
+        encoding: "utf8",
+        stdio: ["ignore", "pipe", "ignore"]
+      });
+      return raw.trim();
+    }
+    const raw = execFileSync("git", ["-C", workspacePath, "diff", "--stat", "HEAD"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"]
+    });
+    return raw.trim();
+  } catch {
+    return "";
   }
 }
 
@@ -459,6 +560,7 @@ export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {
     const { graph } = buildDoneGraphArtifacts(parsed.workspacePath, now());
     write(`DoneGraph started for ${platform}: ${graph.goal}`);
     printArtifacts(write, parsed.workspacePath);
+    printMemoryInsights(readMemory(), write);
     return 0;
   }
 
@@ -561,7 +663,7 @@ export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {
   if (shortcutType) {
     const defaultStatus = parsed.command === "block" ? "blocked" : undefined;
     const text = requireText(optionalString(parsed.options, "text") ?? positionalText(parsed.positionals), "Text");
-    return recordEvent({
+    const result = recordEvent({
       parsed,
       type: shortcutType,
       text,
@@ -570,6 +672,150 @@ export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {
       uuid,
       write
     });
+    if (parsed.command === "done") {
+      const { graph } = buildDoneGraphArtifacts(parsed.workspacePath, now());
+      const memory = readMemory();
+      const timestamp = now();
+      memory.sessions.push({
+        session_id: sessionIdFor(graph.goal, timestamp),
+        goal: graph.goal,
+        verdict: graph.accountability.verdict,
+        composite: graph.accountability.composite,
+        progress_percent: graph.summary.progress_percent,
+        evidence_passed: graph.summary.evidence_passed,
+        blockers: graph.summary.blockers,
+        timestamp
+      });
+      writeMemory(memory);
+      write(`Session saved to cross-session memory (${memory.sessions.length} total).`);
+    }
+    return result;
+  }
+
+  if (parsed.command === "recap") {
+    const langValue = optionalString(parsed.options, "lang");
+    const dashboardLang: DashboardLang = langValue === "zh" ? "zh" : "en";
+    const lastN = parseInt(optionalString(parsed.options, "last") ?? "20", 10);
+    const since = optionalString(parsed.options, "since");
+    const goal = optionalString(parsed.options, "goal");
+
+    write("Scanning git history...");
+    const commits = recapReadGitLog(parsed.workspacePath, lastN, since);
+    const changedFiles = changedFilesFor(parsed.workspacePath);
+    const diffStat = recapGitDiffStat(parsed.workspacePath, since);
+    write(`  ${commits.length} commits, ${changedFiles.length} files changed`);
+
+    write("Running project checks...");
+    const scripts = packageScriptsFor(parsed.workspacePath).filter((s) => ["test", "typecheck", "build", "lint"].includes(s));
+    const testResults: RecapTestResult[] = [];
+    for (const script of scripts) {
+      const cmd = commandForScript(script);
+      write(`  Running ${cmd}...`);
+      const start = Date.now();
+      try {
+        execFileSync("npm", script === "test" ? ["test"] : ["run", script], {
+          cwd: parsed.workspacePath,
+          stdio: "ignore",
+          timeout: 120_000
+        });
+        testResults.push({ script: cmd, passed: true, duration_ms: Date.now() - start });
+        write(`    PASS (${((Date.now() - start) / 1000).toFixed(1)}s)`);
+      } catch {
+        testResults.push({ script: cmd, passed: false, duration_ms: Date.now() - start });
+        write(`    FAIL (${((Date.now() - start) / 1000).toFixed(1)}s)`);
+      }
+    }
+
+    const platform = platformFrom(optionalString(parsed.options, "platform") ?? "generic");
+    const analysisFile = optionalString(parsed.options, "analysis");
+    let analysis: RecapAnalysis | undefined;
+
+    if (analysisFile) {
+      try {
+        analysis = JSON.parse(fs.readFileSync(path.resolve(parsed.workspacePath, analysisFile), "utf8")) as RecapAnalysis;
+        write(`Using AI analysis from ${analysisFile}`);
+      } catch (err) {
+        write(`Warning: could not read analysis file, falling back to rule-based recap`);
+      }
+    }
+
+    let events: DoneGraphEvent[];
+    if (analysis) {
+      events = buildRecapEventsFromAnalysis(analysis, testResults, platform, now, uuid);
+    } else {
+      events = buildRecapEvents({
+        commits,
+        changedFiles,
+        diffStat,
+        testResults,
+        platform,
+        projectName: projectNameFor(parsed.workspacePath),
+        goal,
+        now,
+        uuid
+      });
+    }
+
+    for (const event of events) {
+      appendDoneGraphEvent(parsed.workspacePath, event);
+    }
+    const { graph: rawGraph, paths } = buildDoneGraphArtifacts(parsed.workspacePath, now(), dashboardLang);
+    const graph = analysis
+      ? { ...rawGraph, ai_analysis: { story: analysis.story, risks: analysis.risks, insights: analysis.insights } }
+      : rawGraph;
+    if (analysis) {
+      const artifactPath = path.join(parsed.workspacePath, ".donegraph", "dashboard.html");
+      const { renderDashboardHtml } = await import("@donegraph/core");
+      fs.writeFileSync(artifactPath, renderDashboardHtml(graph, dashboardLang), "utf8");
+    }
+
+    write("");
+    write("=== RECAP ===");
+    write("");
+    write(`Goal: ${graph.goal}`);
+    write(`Progress: ${graph.summary.progress_percent}%`);
+    write(`Accountability: ${graph.accountability.verdict} (${graph.accountability.composite}/100)`);
+    write("");
+    if (commits.length > 0) {
+      write(`Commits:`);
+      for (const c of commits.slice(0, 8)) {
+        write(`  ${c.hash.slice(0, 7)} ${c.message}`);
+      }
+      if (commits.length > 8) write(`  ... and ${commits.length - 8} more`);
+      write("");
+    }
+    if (testResults.length > 0) {
+      write(`Checks:`);
+      for (const r of testResults) {
+        write(`  ${r.passed ? "PASS" : "FAIL"} ${r.script}${r.duration_ms ? ` (${(r.duration_ms / 1000).toFixed(1)}s)` : ""}`);
+      }
+      write("");
+    }
+    write(`Score breakdown:`);
+    for (const dim of graph.accountability.dimensions) {
+      const bar = "█".repeat(Math.round(dim.score / 10)) + "░".repeat(10 - Math.round(dim.score / 10));
+      write(`  ${bar} ${dim.score}  ${dim.label}`);
+    }
+    write("");
+
+    const memory = readMemory();
+    memory.sessions.push({
+      session_id: sessionIdFor(graph.goal, now()),
+      goal: graph.goal,
+      verdict: graph.accountability.verdict,
+      composite: graph.accountability.composite,
+      progress_percent: graph.summary.progress_percent,
+      evidence_passed: graph.summary.evidence_passed,
+      blockers: graph.summary.blockers,
+      timestamp: now()
+    });
+    writeMemory(memory);
+
+    write(`Dashboard: ${paths.dashboardHtml}`);
+    if (!parsed.options.has("no-open")) {
+      (options.openFile ?? openDashboardFile)(paths.dashboardHtml);
+    }
+    return 0;
   }
 
   if (parsed.command === "build") {
@@ -580,7 +826,9 @@ export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {
   }
 
   if (parsed.command === "dashboard") {
-    const { paths } = buildDoneGraphArtifacts(parsed.workspacePath, now());
+    const langValue = optionalString(parsed.options, "lang");
+    const dashboardLang: DashboardLang | undefined = langValue === "en" ? "en" : langValue === "zh" ? "zh" : undefined;
+    const { paths } = buildDoneGraphArtifacts(parsed.workspacePath, now(), dashboardLang);
     write(`DoneGraph dashboard: ${paths.dashboardHtml}`);
     if (!parsed.options.has("no-open")) {
       (options.openFile ?? openDashboardFile)(paths.dashboardHtml);
@@ -595,6 +843,14 @@ export async function runDoneGraphCli(argv: string[], options: RunCliOptions = {
     write(`Goal: ${graph.goal || "Not started"}`);
     write("");
     write(graph.narrative);
+    write("");
+    write(`Accountability: ${graph.accountability.verdict} (${graph.accountability.composite}/100)`);
+    for (const dim of graph.accountability.dimensions) {
+      write(`  ${dim.label}: ${dim.score}/100 (weight ${dim.weight})${dim.hard_gate_failed ? " [HARD GATE FAILED]" : ""}`);
+    }
+    if (graph.accountability.hard_gate_failures.length > 0) {
+      write(`  Hard gate failures: ${graph.accountability.hard_gate_failures.join(", ")}`);
+    }
     write("");
     write(`Artifacts: ${paths.achievementLog}, ${paths.nextSteps}`);
     write("");

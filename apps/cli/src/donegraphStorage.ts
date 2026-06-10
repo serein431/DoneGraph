@@ -8,7 +8,7 @@ import {
   renderNextSteps,
   renderSafeSnapshotMarkdown
 } from "@donegraph/core";
-import type { DoneGraph, DoneGraphEvent, DoneGraphEventType, DoneGraphPlatform } from "@donegraph/core";
+import type { DashboardLang, DoneGraph, DoneGraphEvent, DoneGraphEventType, DoneGraphPlatform } from "@donegraph/core";
 
 export interface DoneGraphPaths {
   workspace: string;
@@ -96,24 +96,24 @@ export function readDoneGraphEvents(workspacePath: string): DoneGraphEvent[] {
     });
 }
 
-export function writeDoneGraphArtifacts(workspacePath: string, graph: DoneGraph): DoneGraphPaths {
+export function writeDoneGraphArtifacts(workspacePath: string, graph: DoneGraph, lang?: DashboardLang): DoneGraphPaths {
   const paths = ensureWorkspace(workspacePath);
   fs.writeFileSync(paths.graphJson, `${JSON.stringify(graph, null, 2)}\n`, "utf8");
   fs.writeFileSync(paths.achievementLog, renderAchievementLog(graph), "utf8");
   fs.writeFileSync(paths.nextSteps, renderNextSteps(graph), "utf8");
-  fs.writeFileSync(paths.dashboardHtml, renderDashboardHtml(graph), "utf8");
+  fs.writeFileSync(paths.dashboardHtml, renderDashboardHtml(graph, lang), "utf8");
   const safeSnapshot = buildSafeSnapshot(graph, graph.generated_at);
   fs.writeFileSync(paths.safeSnapshotJson, `${JSON.stringify(safeSnapshot, null, 2)}\n`, "utf8");
   fs.writeFileSync(paths.safeSnapshotMarkdown, renderSafeSnapshotMarkdown(safeSnapshot), "utf8");
   return paths;
 }
 
-export function buildDoneGraphArtifacts(workspacePath: string, generatedAt = new Date().toISOString()): {
+export function buildDoneGraphArtifacts(workspacePath: string, generatedAt = new Date().toISOString(), lang?: DashboardLang): {
   graph: DoneGraph;
   paths: DoneGraphPaths;
 } {
   const events = readDoneGraphEvents(workspacePath);
   const graph = buildDoneGraph(events, generatedAt);
-  const paths = writeDoneGraphArtifacts(workspacePath, graph);
+  const paths = writeDoneGraphArtifacts(workspacePath, graph, lang);
   return { graph, paths };
 }

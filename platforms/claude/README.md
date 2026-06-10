@@ -1,29 +1,40 @@
 # DoneGraph for Claude Code
 
-Native marketplace shape:
-
-```bash
-/plugin marketplace add serein431/DoneGraph
-/plugin install donegraph
-```
-
-Local install while developing:
+## Install
 
 ```bash
 ./install.sh claude
 ```
 
-Recommended flow:
+## Usage
+
+At the end of any coding session, just say:
+
+> "recap what we did" or type `/donegraph-recap`
+
+DoneGraph will automatically:
+1. Scan your recent git commits
+2. Run test / typecheck / build
+3. Score the session's accountability
+4. Open a visual dashboard in the browser
+
+That's it. One command, full recap.
+
+## What you get
+
+`.donegraph/dashboard.html` — a page-turning visual journal showing:
+- What was completed, with evidence stamps
+- 6-dimension accountability score
+- Handoff notes for the next session
+
+## Advanced: step-by-step tracking
+
+For more control during a session:
 
 ```bash
 /donegraph-start Build the demo handoff graph
-/donegraph-capture --goal "Build the demo handoff graph"
-/donegraph-checkpoint Implemented dashboard generation --path ".donegraph/dashboard.html"
+/donegraph-checkpoint Implemented dashboard generation
 /donegraph-proof Tests passed --pass --command "npm test"
 /donegraph-done Ready for handoff
 /donegraph-dashboard
 ```
-
-Claude should read `.donegraph/next-steps.md` before continuing a large task in a later session.
-
-For an existing workspace, run `/donegraph-capture` before the first checkpoint so the graph starts from local project context instead of an empty session.
