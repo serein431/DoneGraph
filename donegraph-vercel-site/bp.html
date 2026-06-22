@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>DoneGraph BP | Trust Layer for AI Work</title>
+    <meta
+      name="description"
+      content="Read or download the official DoneGraph business plan."
+    />
+    <style>
+      :root {
+        --ink: #06100f;
+        --panel: rgba(11, 28, 26, 0.74);
+        --paper: #f7f1dd;
+        --muted: rgba(247, 241, 221, 0.72);
+        --mint: #bdf7e7;
+        --cyan: #55e4d4;
+        --amber: #e0b366;
+        --line: rgba(189, 247, 231, 0.22);
+        --shadow: 0 30px 90px rgba(0, 0, 0, 0.34);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--ink);
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+        color: var(--paper);
+        background:
+          radial-gradient(circle at 78% 10%, rgba(85, 228, 212, 0.2), transparent 31rem),
+          radial-gradient(circle at 18% 16%, rgba(224, 179, 102, 0.14), transparent 29rem),
+          linear-gradient(135deg, #06100f 0%, #09201f 48%, #050909 100%);
+        font-family: Avenir, "Avenir Next", Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.55;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.24;
+        background-image:
+          linear-gradient(rgba(189, 247, 231, 0.12) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(189, 247, 231, 0.1) 1px, transparent 1px);
+        background-size: 44px 44px;
+        mask-image: radial-gradient(circle at 50% 16%, #000 0%, transparent 74%);
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .topbar {
+        position: sticky;
+        z-index: 10;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem clamp(1rem, 4vw, 2rem);
+        border-bottom: 1px solid var(--line);
+        background: rgba(6, 16, 15, 0.82);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand,
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 0.78rem;
+      }
+
+      .brand {
+        text-decoration: none;
+        font-weight: 950;
+      }
+
+      .brand img {
+        width: 2.35rem;
+        height: 2.35rem;
+        border: 1px solid rgba(189, 247, 231, 0.28);
+        border-radius: 0.72rem;
+        object-fit: cover;
+      }
+
+      .nav a {
+        color: var(--muted);
+        font-size: 0.92rem;
+        text-decoration: none;
+      }
+
+      .nav a:hover,
+      .nav a:focus-visible {
+        color: var(--mint);
+      }
+
+      main {
+        position: relative;
+        width: min(1160px, calc(100vw - 32px));
+        margin: 0 auto;
+        padding: clamp(2.8rem, 7vw, 6.2rem) 0 4rem;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.72fr);
+        gap: clamp(1.4rem, 4vw, 3rem);
+        align-items: end;
+        min-height: 70vh;
+      }
+
+      .eyebrow {
+        margin: 0 0 1rem;
+        color: var(--mint);
+        font-size: 0.78rem;
+        font-weight: 950;
+        letter-spacing: 0.17em;
+        text-transform: uppercase;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 860px;
+        margin-bottom: 1.1rem;
+        font-size: clamp(3.2rem, 8.2vw, 7.8rem);
+        line-height: 0.93;
+        letter-spacing: 0;
+      }
+
+      .lead {
+        max-width: 760px;
+        color: rgba(247, 241, 221, 0.8);
+        font-size: clamp(1.08rem, 2vw, 1.38rem);
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        background:
+          linear-gradient(145deg, rgba(12, 33, 31, 0.9), rgba(7, 17, 16, 0.78)),
+          radial-gradient(circle at 80% 0%, rgba(85, 228, 212, 0.15), transparent 18rem);
+        box-shadow: var(--shadow);
+      }
+
+      .bp-card {
+        padding: clamp(1.1rem, 3vw, 1.5rem);
+      }
+
+      .bp-card h2 {
+        margin-bottom: 0.6rem;
+        color: var(--mint);
+        font-size: 1rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .bp-card p {
+        color: var(--muted);
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        margin-top: 1.25rem;
+      }
+
+      .button {
+        display: inline-flex;
+        min-height: 3rem;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.82rem 1.1rem;
+        border: 1px solid rgba(189, 247, 231, 0.34);
+        border-radius: 999px;
+        color: var(--paper);
+        background: rgba(189, 247, 231, 0.08);
+        font-weight: 950;
+        text-decoration: none;
+      }
+
+      .button.primary {
+        color: #06100f;
+        border-color: var(--mint);
+        background: var(--mint);
+      }
+
+      .bp-points {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.85rem;
+        margin-top: clamp(2rem, 6vw, 4.2rem);
+      }
+
+      .bp-points article {
+        min-height: 13rem;
+        padding: 1.1rem;
+        border: 1px solid rgba(189, 247, 231, 0.16);
+        background: rgba(189, 247, 231, 0.055);
+      }
+
+      .bp-points strong {
+        display: block;
+        margin-bottom: 0.7rem;
+        color: var(--mint);
+        font-size: 0.82rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .bp-points p {
+        margin-bottom: 0;
+        color: var(--muted);
+      }
+
+      .closing {
+        margin-top: 1rem;
+        padding: clamp(1.2rem, 3vw, 1.8rem);
+      }
+
+      .closing p {
+        max-width: 850px;
+        margin-bottom: 0;
+        color: rgba(247, 241, 221, 0.82);
+        font-size: 1.12rem;
+      }
+
+      @media (max-width: 860px) {
+        .hero,
+        .bp-points {
+          grid-template-columns: 1fr;
+        }
+
+        .topbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .nav {
+          width: 100%;
+          overflow-x: auto;
+        }
+      }
+
+      @media (max-width: 560px) {
+        h1 {
+          font-size: clamp(2.65rem, 16vw, 4.5rem);
+        }
+
+        .actions {
+          align-items: stretch;
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">
+        <img src="assets/submission/donegraph-logo.png" alt="" aria-hidden="true" />
+        <span>DoneGraph / 成迹</span>
+      </a>
+      <nav class="nav" aria-label="BP navigation">
+        <a href="/">Product</a>
+        <a href="/share">Upload</a>
+        <a href="/.donegraph/dashboard.html">Replay</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Build the trust layer for AI work</p>
+          <h1>DoneGraph BP</h1>
+          <p class="lead">
+            这里是 DoneGraph / 成迹的完整商业计划书入口。BP 展示了我们对 AI 工作信任层的判断、产品路径、市场机会和商业化方向。
+          </p>
+        </div>
+
+        <aside class="panel bp-card">
+          <h2>Full BP</h2>
+          <p>
+            在线查看 PDF，或下载原始 PPTX。文件较大，打开时可能需要等待几秒。
+          </p>
+          <div class="actions">
+            <a class="button primary" href="/api/bp?file=pdf" target="_blank" rel="noopener">查看完整 BP</a>
+            <a class="button" href="/api/bp?file=pptx">下载 PPT</a>
+          </div>
+        </aside>
+      </section>
+
+      <section class="bp-points" aria-label="BP contents">
+        <article>
+          <strong>01 / Problem</strong>
+          <p>
+            AI Agent 正在进入真实工作流，但用户仍然缺少一层可理解、可验证、可交接的工作记录。
+          </p>
+        </article>
+        <article>
+          <strong>02 / Product</strong>
+          <p>
+            DoneGraph 从 AI 工作轨迹、证据、复盘信和安全快照切入，先做一个最小可用的信任层。
+          </p>
+        </article>
+        <article>
+          <strong>03 / Business</strong>
+          <p>
+            BP 覆盖目标用户、市场机会、增长路径、产品路线和长期商业化可能性。
+          </p>
+        </article>
+      </section>
+
+      <section class="panel closing">
+        <p>
+          如果你对 DoneGraph 的长期方向感兴趣，可以先阅读完整 BP，也欢迎通过官网联系我们，一起讨论 AI Agent 工作流里的信任、交接和协作基础设施。
+        </p>
+      </section>
+    </main>
+  </body>
+</html>
