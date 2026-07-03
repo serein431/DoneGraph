@@ -1,7 +1,7 @@
 ---
 name: donegraph-dashboard
 description: Build and open the local DoneGraph dashboard for the current project.
-argument-hint: ["[--no-open]"]
+argument-hint: "[--no-open]"
 ---
 
 # /donegraph-dashboard

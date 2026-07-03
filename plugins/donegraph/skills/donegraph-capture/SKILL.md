@@ -1,7 +1,7 @@
 ---
 name: donegraph-capture
 description: Automatically capture local project context into a clean-room DoneGraph collaboration graph.
-argument-hint: ["[--goal <goal>] [--platform codex|claude|cursor|generic]"]
+argument-hint: "[--goal <goal>] [--platform codex|claude|cursor|generic]"
 ---
 
 # /donegraph-capture

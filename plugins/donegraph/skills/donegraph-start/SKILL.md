@@ -1,7 +1,7 @@
 ---
 name: donegraph-start
 description: Start a DoneGraph collaboration session for the current project.
-argument-hint: ["<goal> [--platform codex|claude|cursor|generic]"]
+argument-hint: "<goal> [--platform codex|claude|cursor|generic]"
 ---
 
 # /donegraph-start
