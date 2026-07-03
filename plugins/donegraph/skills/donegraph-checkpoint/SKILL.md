@@ -1,7 +1,7 @@
 ---
 name: donegraph-checkpoint
 description: Record a meaningful DoneGraph progress checkpoint for the current AI collaboration.
-argument-hint: ["<what changed> [--command <cmd>] [--path <file>]"]
+argument-hint: "<what changed> [--command <cmd>] [--path <file>]"
 ---
 
 # /donegraph-checkpoint

@@ -1,7 +1,7 @@
 ---
 name: donegraph-proof
 description: Record verification evidence in DoneGraph, including pass, fail, blocked, or unknown status.
-argument-hint: ["<proof text> --pass|--fail|--blocked|--unknown [--command <cmd>]"]
+argument-hint: "<proof text> --pass|--fail|--blocked|--unknown [--command <cmd>]"
 ---
 
 # /donegraph-proof

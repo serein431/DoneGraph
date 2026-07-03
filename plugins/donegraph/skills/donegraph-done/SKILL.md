@@ -1,7 +1,7 @@
 ---
 name: donegraph-done
 description: Record a DoneGraph completion milestone and regenerate handoff artifacts.
-argument-hint: ["<completion summary>"]
+argument-hint: "<completion summary>"
 ---
 
 # /donegraph-done

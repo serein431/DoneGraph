@@ -1,7 +1,7 @@
 ---
 name: donegraph-summary
 description: Print the current DoneGraph collaboration summary and next handoff steps.
-argument-hint: [""]
+argument-hint: ""
 ---
 
 # /donegraph-summary

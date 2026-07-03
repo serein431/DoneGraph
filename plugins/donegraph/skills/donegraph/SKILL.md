@@ -1,7 +1,7 @@
 ---
 name: donegraph
 description: AI Accountability Infrastructure. Use /donegraph-recap to auto-summarize what this session accomplished with a visual dashboard, or use sub-commands to track progress step by step.
-argument-hint: ["recap|capture|start <goal>|checkpoint <text>|proof <text>|done <text>|dashboard|summary"]
+argument-hint: "recap|capture|start <goal>|checkpoint <text>|proof <text>|done <text>|dashboard|summary"
 ---
 
 # /donegraph

@@ -1,7 +1,7 @@
 ---
 name: donegraph-recap
 description: One-click session recap. AI-analyzes git history, runs checks, and generates a visual dashboard with narrative story, insights, and risks.
-argument-hint: ["[--last <n>] [--since <time>] [--lang en|zh]"]
+argument-hint: "[--last <n>] [--since <time>] [--lang en|zh]"
 ---
 
 # /donegraph-recap
